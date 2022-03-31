@@ -27,5 +27,5 @@ did <- H5Dopen(fid, "group1/matrix")
 
 H5Fclose(fid)
 
-## View structure of the files
+## View structure of the file
 h5ls(fp)
