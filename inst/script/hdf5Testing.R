@@ -13,19 +13,43 @@ set.seed(123)
 s <- sample(1:100, 100, TRUE)
 m <- matrix(data = s, nrow = 10, ncol = 10)
 
-## Create group
-h5createGroup(file = fp, group = "group1")
+## Create group (for more structure)
+# h5createGroup(file = fp, group = "apa")
 
 ## Adding data
 h5write(obj = m,
         file = fp,
-        name = "group1/matrix")
+        name = "apa")
 
-## Open file
-fid <- H5Fopen(name = fp)
-did <- H5Dopen(fid, "group1/matrix")
+## Open file (needed for adding attributes)
+# fid <- H5Fopen(name = fp)
+# did <- H5Dopen(fid, "apa")
+# H5Dclose(did)
+# H5Fclose(fid)
 
-H5Fclose(fid)
+## Read file
+h5read(file = fp,
+       name = 'apa',
+       index = list(1:3, 1:3))
+
 
 ## View structure of the file
 h5ls(fp)
+h5delete(fp, 'a')
+h5read(fp, "a")
+
+## Create multidimensional array
+h5createDataset(fp, 'a', c(10, 10, 3))
+
+## Add data
+h5write(m, file = fp, name = 'a', index = list(NULL, NULL, 3))
+
+## Aggregate
+apply(h5read(fp, 'a'), c(1,2), sum)
+
+## Aggregate subset
+apply(h5read(fp, 'a', index = list(1:3, 1:3, NULL)), c(1,2), sum)
+
+
+## Generate large sample data ------------------------------------------------------------
+
