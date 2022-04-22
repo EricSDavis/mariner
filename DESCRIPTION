@@ -1,11 +1,18 @@
 Package: mariner
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Mariner: Explore the Hi-C's
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Authors@R: c(
+    person("Eric", "Davis", role = c("aut", "cre"),
+      email = "ericscottdavis@outlook.com",
+      comment = c(ORCID = "0000-0003-4051-3217"))
+  )
+Maintainer: Eric Davis <ericscottdavis@outlook.com>
+Description: Tools for manipulating paired ranges and
+    working with Hi-C data in R. Functionality includes
+    manipulating/merging paired regions, generating
+    paired ranges, extracting/aggregating interactions
+    from `.hic` files, and visualizing the results.
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
