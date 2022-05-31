@@ -81,15 +81,15 @@ h5write(obj = a,
 h5read(file = fp,
        name = 'a',
        index = list(NULL, NULL, 1:n)) |>
-  apply(c(1,2), sum) |>
-  system.time()
+    apply(c(1,2), sum) |>
+    system.time()
 
 ## Aggregate (on array directly)
 apply(a[,,1:n], c(1,2), sum) |>
-  system.time()
+    system.time()
 
 ## Random access testing
 set.seed(123)
 r <- sample(x = 1:n, 1e6, FALSE)
 apply(a[,, r], c(1,2), sum) |>
-  system.time()
+    system.time()

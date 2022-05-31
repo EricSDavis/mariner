@@ -7,12 +7,27 @@ Authors@R: c(
       email = "ericscottdavis@outlook.com",
       comment = c(ORCID = "0000-0003-4051-3217"))
   )
-Maintainer: Eric Davis <ericscottdavis@outlook.com>
 Description: Tools for manipulating paired ranges and
     working with Hi-C data in R. Functionality includes
     manipulating/merging paired regions, generating
     paired ranges, extracting/aggregating interactions
-    from `.hic` files, and visualizing the results.
+    from `.hic` files, and visualizing the results. 
+    Designed for compatibility with plotgardener for
+    visualization.
+RoxygenNote: 7.2.0
+Suggests:
+    knitr,
+    BiocGenerics,
+    plotgardener,
+    data.table
+Imports:
+    S4Vectors,
+    GenomicRanges,
+    InteractionSet
+biocViews:
+    FunctionalGenomics,
+    Visualization,
+    HiC
+VignetteBuilder: knitr
 License: GPL-3
 Encoding: UTF-8
-LazyData: true
