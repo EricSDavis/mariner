@@ -19,7 +19,8 @@ Suggests:
     knitr,
     BiocGenerics,
     plotgardener,
-    data.table
+    data.table,
+    testthat (>= 3.0.0)
 Imports:
     S4Vectors,
     GenomicRanges,
@@ -31,3 +32,4 @@ biocViews:
 VignetteBuilder: knitr
 License: GPL-3
 Encoding: UTF-8
+Config/testthat/edition: 3
