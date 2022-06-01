@@ -1,10 +1,10 @@
 #' Convert DataFrames to GInteraction objects
 #'
-#' `makeGInteractionsFromDataFrame` takes
+#' `as_ginteractions` takes
 #' a paired-interaction (i.e. BEDPE) formatted
 #' data-frame-like object and converts it to a
 #' GInteractions object. For convenience,
-#' `as_ginteractions` can be used as an alias.
+#' `makeGInteractionsFromDataFrame` can be used as an alias.
 #'
 #' @param df A data.table, data.frame, or DataFrame object.
 #'   Assumes that the first 6 colummns are in the format
@@ -28,32 +28,32 @@
 #'
 #' @return GInteraction object
 #'
-#' @rdname makeGInteractionsFromDataFrame
-#' @aliases as_ginteractions
+#' @rdname as_ginteractions
+#' @aliases makeGInteractionsFromDataFrame
 #'
 #' @examples
 #' ## data.frame
 #' df <- data.frame(chr1 = "chr1", x1 = 10000, x2 = 20000,
 #'                  chr2 = "chr1", y1 = 30000, y2 = 40000)
-#' makeGInteractionsFromDataFrame(df)
+#' as_ginteractions(df)
 #'
 #' ## data.table
 #' library(data.table)
 #' df <- data.table(chr1 = "chr1", x1 = 10000, x2 = 20000,
 #'                  chr2 = "chr1", y1 = 30000, y2 = 40000)
-#' makeGInteractionsFromDataFrame(df)
+#' as_ginteractions(df)
 #'
 #' ## DataFrame
 #' library(S4Vectors)
 #' df <- DataFrame(chr1 = "chr1", x1 = 10000, x2 = 20000,
 #'                 chr2 = "chr1", y1 = 30000, y2 = 40000)
-#' makeGInteractionsFromDataFrame(df)
+#' as_ginteractions(df)
 #'
 #' ## Alias
 #' df <- data.frame(chr1 = "chr1", x1 = 10000, x2 = 20000,
 #'                  chr2 = "chr1", y1 = 30000, y2 = 40000,
 #'                  pval = 0.05, dist = 10000)
-#' as_ginteractions(df)
+#' makeGInteractionsFromDataFrame(df)
 #'
 #' ## Additional metadata
 #' df <- data.frame(chr1 = "chr1", x1 = 10000, x2 = 20000,
@@ -77,9 +77,9 @@
 #' @importFrom InteractionSet GInteractions
 #' @export
 #'
-makeGInteractionsFromDataFrame <- function(df,
-                                           keep.extra.columns = TRUE,
-                                           starts.in.df.are.0based = FALSE) {
+as_ginteractions <- function(df,
+                             keep.extra.columns = TRUE,
+                             starts.in.df.are.0based = FALSE) {
 
     ## Convert data.table/data.frame to DataFrame
     if ("data.frame" %in% class(df)) {
@@ -119,12 +119,12 @@ makeGInteractionsFromDataFrame <- function(df,
 }
 
 
-#' @rdname makeGInteractionsFromDataFrame
+#' @rdname as_ginteractions
 #' @export
-as_ginteractions <- makeGInteractionsFromDataFrame
+makeGInteractionsFromDataFrame <- as_ginteractions
 
 
 #'
 #'
-# setMethod("makeGInteractionsFromDataFrame",
+# setMethod("as_ginteractions",
 #           signature = (x=""))

@@ -33,4 +33,40 @@ test_that("as_ginteractions works with data.frames", {
 
 })
 
+test_that("as_ginteractions works with data.tables", {
 
+    ## Construct GInteractions from data.table
+    library(data.table)
+    gi2 <-
+        data.table(chr1 = "chr1", x1 = 10000, x2 = 20000,
+                   chr2 = "chr1", y1 = 30000, y2 = 40000) |>
+        as_ginteractions()
+
+    expect_true(identical(gi1, gi2))
+
+})
+
+test_that("as_ginteractions works with DataFrames", {
+
+    ## Construct GInteractions from DataFrame
+    library(S4Vectors)
+    gi2 <-
+        DataFrame(chr1 = "chr1", x1 = 10000, x2 = 20000,
+                  chr2 = "chr1", y1 = 30000, y2 = 40000) |>
+        as_ginteractions()
+
+    expect_true(identical(gi1, gi2))
+
+})
+
+test_that("alias (makeGInteractionsFromDataFrame) works", {
+
+    ## Construct GInteractions from DataFrame
+    library(S4Vectors)
+    gi2 <-
+        DataFrame(chr1 = "chr1", x1 = 10000, x2 = 20000,
+                  chr2 = "chr1", y1 = 30000, y2 = 40000) |>
+        makeGInteractionsFromDataFrame()
+
+    expect_true(identical(gi1, gi2))
+})
