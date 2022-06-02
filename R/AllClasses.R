@@ -1,6 +1,7 @@
 #' Class union for "DataFrame-like" objects
 #' @importClassesFrom data.table data.table
 #' @importClassesFrom S4Vectors DFrame
+#' @import methods
 #' @noRd
 setClassUnion("DF_OR_df_OR_dt", c("DFrame", "data.frame", "data.table"))
 

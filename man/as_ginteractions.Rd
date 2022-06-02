@@ -47,6 +47,8 @@ contains data obtained from resources using the
 "0-based start" convention. A notorious example of such
 resource is the UCSC Table Browser
 (http://genome.ucsc.edu/cgi-bin/hgTables).}
+
+\item{...}{Additional arguments.}
 }
 \value{
 GInteraction object
