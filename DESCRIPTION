@@ -24,7 +24,9 @@ Suggests:
 Imports:
     S4Vectors,
     GenomicRanges,
-    InteractionSet
+    InteractionSet,
+    rlang,
+    glue
 biocViews:
     FunctionalGenomics,
     Visualization,

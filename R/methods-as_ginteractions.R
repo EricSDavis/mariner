@@ -70,6 +70,8 @@
 #' @importFrom S4Vectors DataFrame `mcols<-`
 #' @importFrom GenomicRanges makeGRangesFromDataFrame
 #' @importFrom InteractionSet GInteractions
+#' @importFrom rlang abort
+#' @importFrom glue glue
 #' @export
 #'
 as_ginteractions <- function(df,
@@ -82,15 +84,20 @@ as_ginteractions <- function(df,
     } else if ("DFrame" %in% class(df)) {
         df <- df
     } else {
-        stop("class(df) must be either 'data.frame',",
-             "'data.table', or 'DFrame'.")
+        msg <- c(glue("Type for `df` not supported."),
+                 'i' = glue("`class(df)` must be ",
+                            "'data.frame', 'data.table', ",
+                            "or 'DFrame'."),
+                 'x' = glue("Type \"{class(df)}\" is not supported."))
+        abort(msg)
     }
 
     ## Handle improper dimensions
     if(ncol(df) < 6) {
-        stop("ncol(df) must be >= 6 and start with paired ",
-             "interactions (i.e. chr1, start1, end1",
-             "and chr2, start2, end2).")
+        msg <- c(glue("Improper dimensions in `df`."),
+                 'i' = glue("There must be at least 6 columns."),
+                 'x' = glue("You've supplied {ncol(df)} column(s)."))
+        abort(msg)
     }
 
     ## Split into anchors
