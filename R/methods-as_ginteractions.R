@@ -1,3 +1,67 @@
+#' Internal function for `as_ginteractions` method
+#' @inheritParams as_ginteractions
+#' @noRd
+.as_ginteractions <- function(df,
+                              keep.extra.columns,
+                              starts.in.df.are.0based) {
+
+    ## Convert data.table/data.frame to DataFrame
+    if ("data.frame" %in% class(df)) {
+        df <- DataFrame(df)
+    } else if ("DFrame" %in% class(df)) {
+        df <- df
+    } else {
+        msg <- c(glue("Type for `df` not supported."),
+                 'i' = glue("`class(df)` must be ",
+                            "'data.frame', 'data.table', ",
+                            "or 'DFrame'."),
+                 'x' = glue("Type \"{class(df)}\" is not supported."))
+        abort(msg)
+    }
+
+    ## Handle improper dimensions
+    if(ncol(df) < 6) {
+        msg <- c(glue("Improper dimensions in `df`."),
+                 'i' = glue("There must be at least 6 columns."),
+                 'x' = glue("You've supplied {ncol(df)} column(s)."))
+        abort(msg)
+    }
+
+    ## Split into anchors
+    a1 <- df[seq(1,3)] |> `colnames<-`(c('seqnames', 'start', 'end'))
+    a2 <- df[seq(4,6)] |> `colnames<-`(c('seqnames', 'start', 'end'))
+
+    ## Convert anchors to GRanges
+    a1 <-
+        makeGRangesFromDataFrame(df = a1,
+                                 starts.in.df.are.0based =
+                                     starts.in.df.are.0based)
+    a2 <-
+        makeGRangesFromDataFrame(df = a2,
+                                 starts.in.df.are.0based =
+                                     starts.in.df.are.0based)
+
+    ## Create GInteractions object
+    gi <- GInteractions(a1, a2)
+
+    ## Add in metadata columns
+    if (keep.extra.columns & ncol(df) > 6) {
+        mcols(gi) <- df[seq(7, ncol(df))]
+    }
+
+    ## Return
+    return(gi)
+
+}
+
+#' @rdname as_ginteractions
+#' @export
+setMethod("makeGInteractionsFromDataFrame",
+          signature(df = 'DF_OR_df_OR_dt',
+                    keep.extra.columns = 'logical_OR_missing',
+                    starts.in.df.are.0based = 'logical_OR_missing'),
+          definition = .as_ginteractions)
+
 #' Convert DataFrames to GInteraction objects
 #'
 #' `as_ginteractions` takes
@@ -74,66 +138,8 @@
 #' @importFrom glue glue
 #' @export
 #'
-as_ginteractions <- function(df,
-                             keep.extra.columns = TRUE,
-                             starts.in.df.are.0based = FALSE) {
-
-    ## Convert data.table/data.frame to DataFrame
-    if ("data.frame" %in% class(df)) {
-        df <- DataFrame(df)
-    } else if ("DFrame" %in% class(df)) {
-        df <- df
-    } else {
-        msg <- c(glue("Type for `df` not supported."),
-                 'i' = glue("`class(df)` must be ",
-                            "'data.frame', 'data.table', ",
-                            "or 'DFrame'."),
-                 'x' = glue("Type \"{class(df)}\" is not supported."))
-        abort(msg)
-    }
-
-    ## Handle improper dimensions
-    if(ncol(df) < 6) {
-        msg <- c(glue("Improper dimensions in `df`."),
-                 'i' = glue("There must be at least 6 columns."),
-                 'x' = glue("You've supplied {ncol(df)} column(s)."))
-        abort(msg)
-    }
-
-    ## Split into anchors
-    a1 <- df[seq(1,3)] |> `colnames<-`(c('seqnames', 'start', 'end'))
-    a2 <- df[seq(4,6)] |> `colnames<-`(c('seqnames', 'start', 'end'))
-
-    ## Convert anchors to GRanges
-    a1 <-
-        makeGRangesFromDataFrame(df = a1,
-                                 starts.in.df.are.0based =
-                                     starts.in.df.are.0based)
-    a2 <-
-        makeGRangesFromDataFrame(df = a2,
-                                 starts.in.df.are.0based =
-                                     starts.in.df.are.0based)
-
-    ## Create GInteractions object
-    gi <- GInteractions(a1, a2)
-
-    ## Add in metadata columns
-    if (keep.extra.columns & ncol(df) > 6) {
-        mcols(gi) <- df[seq(7, ncol(df))]
-    }
-
-    ## Return
-    return(gi)
-
-}
-
-
-#' @rdname as_ginteractions
-#' @export
-makeGInteractionsFromDataFrame <- as_ginteractions
-
-
-#'
-#'
-# setMethod("as_ginteractions",
-#           signature = (x=""))
+setMethod("as_ginteractions",
+          signature(df = 'DF_OR_df_OR_dt',
+                    keep.extra.columns = 'logical_OR_missing',
+                    starts.in.df.are.0based = 'logical_OR_missing'),
+          definition = .as_ginteractions)

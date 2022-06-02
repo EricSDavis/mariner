@@ -19,12 +19,13 @@ Suggests:
     knitr,
     BiocGenerics,
     plotgardener,
-    data.table,
     testthat (>= 3.0.0)
 Imports:
+    methods,
     S4Vectors,
     GenomicRanges,
     InteractionSet,
+    data.table,
     rlang,
     glue
 biocViews:

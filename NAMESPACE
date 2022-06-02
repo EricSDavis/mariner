@@ -2,6 +2,10 @@
 
 export(as_ginteractions)
 export(makeGInteractionsFromDataFrame)
+exportMethods(as_ginteractions)
+exportMethods(makeGInteractionsFromDataFrame)
+importClassesFrom(S4Vectors,DFrame)
+importClassesFrom(data.table,data.table)
 importFrom(GenomicRanges,makeGRangesFromDataFrame)
 importFrom(InteractionSet,GInteractions)
 importFrom(S4Vectors,DataFrame)
