@@ -67,11 +67,6 @@
 #' ## Add 1 to starts (for 0-based programs)
 #' as_ginteractions(df, starts.in.df.are.0based = TRUE)
 #'
-#' ## Bad usage (make this a test)
-#' #df <- data.frame(chr1 = "chr1", x1 = 10000, x2 = 20000,
-#' #                 chr2 = "chr1", y1 = 30000)
-#' #makeGInteractionsFromDataFrame(df)
-#'
 #' @importFrom S4Vectors DataFrame `mcols<-`
 #' @importFrom GenomicRanges makeGRangesFromDataFrame
 #' @importFrom InteractionSet GInteractions
@@ -94,7 +89,8 @@ as_ginteractions <- function(df,
     ## Handle improper dimensions
     if(ncol(df) < 6) {
         stop("ncol(df) must be >= 6 and start with paired ",
-             "interactions (i.e. chr1, start1, end1 and chr2, start2, end2).")
+             "interactions (i.e. chr1, start1, end1",
+             "and chr2, start2, end2).")
     }
 
     ## Split into anchors
@@ -102,8 +98,14 @@ as_ginteractions <- function(df,
     a2 <- df[seq(4,6)] |> `colnames<-`(c('seqnames', 'start', 'end'))
 
     ## Convert anchors to GRanges
-    a1 <- makeGRangesFromDataFrame(a1, starts.in.df.are.0based)
-    a2 <- makeGRangesFromDataFrame(a2, starts.in.df.are.0based)
+    a1 <-
+        makeGRangesFromDataFrame(df = a1,
+                                 starts.in.df.are.0based =
+                                     starts.in.df.are.0based)
+    a2 <-
+        makeGRangesFromDataFrame(df = a2,
+                                 starts.in.df.are.0based =
+                                     starts.in.df.are.0based)
 
     ## Create GInteractions object
     gi <- GInteractions(a1, a2)

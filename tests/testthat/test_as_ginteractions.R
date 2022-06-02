@@ -29,7 +29,7 @@ test_that("as_ginteractions works with data.frames", {
                    chr2 = "chr1", y1 = 30000, y2 = 40000) |>
         as_ginteractions()
 
-    expect_true(identical(gi1, gi2))
+    expect_identical(gi1, gi2)
 
 })
 
@@ -42,7 +42,7 @@ test_that("as_ginteractions works with data.tables", {
                    chr2 = "chr1", y1 = 30000, y2 = 40000) |>
         as_ginteractions()
 
-    expect_true(identical(gi1, gi2))
+    expect_identical(gi1, gi2)
 
 })
 
@@ -55,7 +55,7 @@ test_that("as_ginteractions works with DataFrames", {
                   chr2 = "chr1", y1 = 30000, y2 = 40000) |>
         as_ginteractions()
 
-    expect_true(identical(gi1, gi2))
+    expect_identical(gi1, gi2)
 
 })
 
@@ -68,5 +68,44 @@ test_that("alias (makeGInteractionsFromDataFrame) works", {
                   chr2 = "chr1", y1 = 30000, y2 = 40000) |>
         makeGInteractionsFromDataFrame()
 
-    expect_true(identical(gi1, gi2))
+    expect_identical(gi1, gi2)
+})
+
+test_that("Additional metadata can be added", {
+
+    ## Construct GInteractions from DataFrame
+    gi2 <-
+        data.frame(chr1 = "chr1", x1 = 10000, x2 = 20000,
+                   chr2 = "chr1", y1 = 30000, y2 = 40000,
+                   pval = 0.05, dist = 10000) |>
+        as_ginteractions()
+
+    ## Add metadata to gi1 object
+    gi3 <- gi1 |> `mcols<-`(value = DataFrame(pval = 0.05, dist = 10000))
+
+    expect_identical(gi3, gi2)
+
+})
+
+test_that("Additional metadata can be ignored", {
+
+    ## Construct GInteractions from DataFrame
+    gi2 <-
+        data.frame(chr1 = "chr1", x1 = 10000, x2 = 20000,
+                   chr2 = "chr1", y1 = 30000, y2 = 40000,
+                   pval = 0.05, dist = 10000) |>
+        as_ginteractions(keep.extra.columns = FALSE)
+
+
+    expect_identical(gi1, gi2)
+
+})
+
+test_that("Require 6 columns", {
+
+    data.frame(chr1 = "chr1", x1 = 10000, x2 = 20000,
+               chr2 = "chr1", y1 = 30000) |>
+        as_ginteractions() |>
+        expect_error()
+
 })

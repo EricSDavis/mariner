@@ -86,9 +86,4 @@ as_ginteractions(df, keep.extra.columns = FALSE)
 ## Add 1 to starts (for 0-based programs)
 as_ginteractions(df, starts.in.df.are.0based = TRUE)
 
-## Bad usage (make this a test)
-#df <- data.frame(chr1 = "chr1", x1 = 10000, x2 = 20000,
-#                 chr2 = "chr1", y1 = 30000)
-#makeGInteractionsFromDataFrame(df)
-
 }
