@@ -1,3 +1,69 @@
+#' Internal function for finding BEDPE format
+#'
+#' Can be either 6 or 10-column format.
+#'
+#' @inheritParams as_ginteractions
+#'
+#' @return A character string denoting BEDPE format.
+#' @noRd
+.findBedpeFormat <- function(df) {
+
+    ## Use the first 10 columns of df
+    df_cols <- colnames(df)[seq(1,10)]
+
+    ## Define 10-column format
+    cols <- c("seqnames1", "start1", "end1", "width1", "strand1",
+              "seqnames2", "start2", "end2", "width2", "strand2")
+
+    ## Check for 10 column format
+    if (ncol(df) > 9) {
+
+        if (identical(df_cols, cols) |
+            identical(df_cols, gsub("seqnames", "chr", cols)) |
+            identical(df_cols, gsub("seqnames", "chrom", cols))) {
+
+            return("bedpe10")
+        }
+    }
+
+    ## Otherwise, assume 6-column format
+    return('bedpe6')
+}
+
+#' Internal function for splitting anchors
+#'
+#' Splits DataFrame-like object into anchors
+#' and converts them to a GInteractions object.
+#'
+#' @param a1Coords vector of indices for the first anchor.
+#' @param a2Coords vector of indices for the second anchor.
+#' @inheritParams as_ginteractions
+#'
+#' @return A GInteractions object
+#' @noRd
+.splitAnchors <- function(df,
+                          a1Coords=seq(1,3),
+                          a2Coords=seq(4,6),
+                          starts.in.df.are.0based) {
+
+    ## Split into anchors
+    a1 <- df[a1Coords] |> `colnames<-`(c('seqnames', 'start', 'end'))
+    a2 <- df[a2Coords] |> `colnames<-`(c('seqnames', 'start', 'end'))
+
+    ## Convert anchors to GRanges
+    a1 <- makeGRangesFromDataFrame(df = a1,
+                                   starts.in.df.are.0based =
+                                       starts.in.df.are.0based)
+
+    a2 <- makeGRangesFromDataFrame(df = a2,
+                                   starts.in.df.are.0based =
+                                       starts.in.df.are.0based)
+
+    ## Return as GInteractions object
+    return(GInteractions(a1, a2))
+
+}
+
 #' Internal function for `as_ginteractions` method
 #' @inheritParams as_ginteractions
 #' @noRd
@@ -6,50 +72,50 @@
                               starts.in.df.are.0based) {
 
     ## Convert data.table/data.frame to DataFrame
-    if ("data.frame" %in% class(df)) {
-        df <- DataFrame(df)
-    } else if ("DFrame" %in% class(df)) {
-        df <- df
-    } else {
-        msg <- c(glue("Type for `df` not supported."),
-                 'i' = glue("`class(df)` must be ",
-                            "'data.frame', 'data.table', ",
-                            "or 'DFrame'."),
-                 'x' = glue("Type \"{class(df)}\" is not supported."))
-        abort(msg)
-    }
+    df <- DataFrame(df)
 
     ## Handle improper dimensions
-    if(ncol(df) < 6) {
+    if (ncol(df) < 6) {
         msg <- c(glue("Improper dimensions in `df`."),
                  'i' = glue("There must be at least 6 columns."),
                  'x' = glue("You've supplied {ncol(df)} column(s)."))
         abort(msg)
     }
 
-    ## Split into anchors
-    a1 <- df[seq(1,3)] |> `colnames<-`(c('seqnames', 'start', 'end'))
-    a2 <- df[seq(4,6)] |> `colnames<-`(c('seqnames', 'start', 'end'))
+    ## Determine BEDPE 10 or 6-column format
+    bedpeFormat <- .findBedpeFormat(df)
 
-    ## Convert anchors to GRanges
-    a1 <-
-        makeGRangesFromDataFrame(df = a1,
-                                 starts.in.df.are.0based =
-                                     starts.in.df.are.0based)
-    a2 <-
-        makeGRangesFromDataFrame(df = a2,
-                                 starts.in.df.are.0based =
-                                     starts.in.df.are.0based)
+    if (identical(bedpeFormat, 'bedpe6')) {
 
-    ## Create GInteractions object
-    gi <- GInteractions(a1, a2)
+        ## Split anchors
+        gi <- .splitAnchors(df = df,
+                            a1Coords = seq(1,3),
+                            a2Coords = seq(4,6),
+                            starts.in.df.are.0based =
+                                starts.in.df.are.0based)
 
-    ## Add in metadata columns
-    if (keep.extra.columns & ncol(df) > 6) {
-        mcols(gi) <- df[seq(7, ncol(df))]
+        ## Add in metadata columns
+        if (keep.extra.columns & ncol(df) > 6) {
+            mcols(gi) <- df[seq(7, ncol(df))]
+        }
     }
 
-    ## Return
+    if (identical(bedpeFormat, 'bedpe10')) {
+
+        ## Split anchors
+        gi <- .splitAnchors(df = df,
+                            a1Coords = seq(1,3),
+                            a2Coords = seq(6,8),
+                            starts.in.df.are.0based =
+                                starts.in.df.are.0based)
+
+        ## Add in metadata columns
+        if (keep.extra.columns & ncol(df) > 10) {
+            mcols(gi) <- df[seq(11, ncol(df))]
+        }
+    }
+
+    ## Return GInteractions object
     return(gi)
 
 }
