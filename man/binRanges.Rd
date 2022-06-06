@@ -43,11 +43,11 @@ gr1 <- GRanges(seqnames = "chr1",
 gr2 <- gr1 |> promoters(upstream = 2000, downstream = 200)
 
 ## Binning the results
-binRanges(gr1, 'start', 1000)
-binRanges(gr1, 'end', 1000)
-binRanges(gr1, 'center', 1000)
+binRanges(x = gr1, binSize = 1000, pos = 'start')
+binRanges(x = gr1, binSize = 1000, pos = 'end')
+binRanges(x = gr1, binSize = 1000, pos = 'center')
 
 ## Bin after shifting back to TSS
-binRanges(gr2, 2000, 1000)
+binRanges(x = gr2, binSize = 1000, pos = 2000)
 
 }

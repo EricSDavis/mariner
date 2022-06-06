@@ -1,7 +1,7 @@
 #' Internal binPairs function
 #' @inheritParams binPairs
 #' @importFrom data.table data.table
-#' @importFrom S4Vectors DataFrame
+#' @importFrom S4Vectors DataFrame mcols
 #' @importFrom InteractionSet anchors
 #' @noRd
 .binPairs <- function(x, binSize, pos1, pos2) {
@@ -26,8 +26,7 @@
     mcols(gi) <- mcols(x)
 
     ## Return binned object
-    # return(gi)
-    print("hello!")
+    return(gi)
 
 }
 
@@ -55,9 +54,22 @@
 #' @return GInteractions object binned to `binSize`
 #'  by `pos1` and `pos2`.
 #'
+#' @examples
+#' ## Construct GInteractions
+#' library(InteractionSet)
+#' gi1 <-
+#'     data.frame(chr1 = "chr1", x1 = 10000, x2 = 20000,
+#'                chr2 = "chr1", y1 = 30000, y2 = 40000) |>
+#'     as_ginteractions()
+#'
+#' ## Assign each range to 20-kb bins from the start positions
+#' binPairs(x = gi1,
+#'          binSize = 20000,
+#'          pos1 = 'start',
+#'          pos2 = 'start')
+#'
 #' @rdname binPairs
 #' @export
-#'
 setMethod("binPairs",
           signature(x = 'DF_OR_df_OR_dt',
                     binSize = 'numeric',
@@ -65,6 +77,8 @@ setMethod("binPairs",
                     pos2 = 'character_OR_numeric_OR_missing'),
           definition = .binPairs)
 
+#' @rdname binPairs
+#' @export
 setMethod("binPairs",
           signature(x = 'GInteractions',
                     binSize = 'numeric',

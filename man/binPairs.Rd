@@ -3,11 +3,14 @@
 \name{binPairs}
 \alias{binPairs}
 \alias{binPairs,DF_OR_df_OR_dt,numeric,character_OR_numeric_OR_missing,character_OR_numeric_OR_missing-method}
+\alias{binPairs,GInteractions,numeric,character_OR_numeric_OR_missing,character_OR_numeric_OR_missing-method}
 \title{Flexibly bin paired ranges}
 \usage{
 binPairs(x, binSize, pos1 = "center", pos2 = "center", ...)
 
 \S4method{binPairs}{DF_OR_df_OR_dt,numeric,character_OR_numeric_OR_missing,character_OR_numeric_OR_missing}(x, binSize, pos1, pos2)
+
+\S4method{binPairs}{GInteractions,numeric,character_OR_numeric_OR_missing,character_OR_numeric_OR_missing}(x, binSize, pos1, pos2)
 }
 \arguments{
 \item{x}{`GInteractions` or `data.frame`-like
@@ -36,4 +39,19 @@ Paired range objects (like `GInteractions`
 or BEDPE-formatted `data.frame`-like objects)
 can be binned separately for each set of
 ranges.
+}
+\examples{
+## Construct GInteractions
+library(InteractionSet)
+gi1 <-
+    data.frame(chr1 = "chr1", x1 = 10000, x2 = 20000,
+               chr2 = "chr1", y1 = 30000, y2 = 40000) |>
+    as_ginteractions()
+
+## Assign each range to 20-kb bins from the start positions
+binPairs(x = gi1,
+         binSize = 20000,
+         pos1 = 'start',
+         pos2 = 'start')
+
 }

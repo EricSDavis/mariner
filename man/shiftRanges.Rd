@@ -39,18 +39,15 @@ gr1 <- GRanges(seqnames = "chr1",
 gr2 <- gr1 |> promoters(upstream = 2000, downstream = 200)
 
 ## Shifting anchors by keyword
-shiftAnchor(gr1, 'start')
-shiftAnchor(gr1, 'end')
-shiftAnchor(gr1, 'center')
-# shiftAnchor(gr1, 'blah') error
+shiftRanges(gr1, 'start')
+shiftRanges(gr1, 'end')
+shiftRanges(gr1, 'center')
 
 ## Shifting anchors by position
-shiftAnchor(gr1, 100)
-shiftAnchor(gr1, c(100, 200, 300))
-# shiftAnchor(gr1, c(100, 200, 300, 400)) error
-# shiftAnchor(gr1, c(100, 200)) error
+shiftRanges(gr1, 100)
+shiftRanges(gr1, c(100, 200, 300))
 
 ## Shifting back to TSS
-shiftAnchor(gr2, 2000)
+shiftRanges(gr2, 2000)
 
 }
