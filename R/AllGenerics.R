@@ -40,3 +40,13 @@ setGeneric("shiftRanges",
            function(x,
                     pos)
               standardGeneric("shiftRanges"))
+
+#' @rdname mergePairs
+#' @export
+setGeneric("mergePairs",
+           function(x,
+                    binSize = 5000,
+                    column,
+                    distMethod = 'manhattan',
+                    minPts = 2)
+               standardGeneric("mergePairs"))
