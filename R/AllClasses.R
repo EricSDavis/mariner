@@ -12,3 +12,8 @@ setClassUnion("character_OR_missing", c("character", "missing"))
 setClassUnion("logical_OR_missing", c("logical", "missing"))
 #' @noRd
 setClassUnion("numeric_OR_missing", c("numeric", "missing"))
+#' @noRd
+setClassUnion("character_OR_numeric", c("character", "numeric"))
+#' @noRd
+setClassUnion("character_OR_numeric_OR_missing",
+              c("character", "numeric", "missing"))

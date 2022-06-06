@@ -27,7 +27,9 @@ Imports:
     InteractionSet,
     data.table,
     rlang,
-    glue
+    glue,
+    plyranges,
+    magrittr
 biocViews:
     FunctionalGenomics,
     Visualization,

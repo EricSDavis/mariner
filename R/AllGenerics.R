@@ -15,3 +15,28 @@ setGeneric("makeGInteractionsFromDataFrame",
                     starts.in.df.are.0based = FALSE,
                     ...)
                standardGeneric("makeGInteractionsFromDataFrame"))
+
+#' @rdname binPairs
+#' @export
+setGeneric("binPairs",
+           function(x,
+                    binSize,
+                    pos1 = 'center',
+                    pos2 = 'center',
+                    ...)
+               standardGeneric("binPairs"))
+
+#' @rdname binRanges
+#' @export
+setGeneric("binRanges",
+          function(x,
+                   binSize,
+                   pos = 'center')
+              standardGeneric("binRanges"))
+
+#' @rdname shiftRanges
+#' @export
+setGeneric("shiftRanges",
+           function(x,
+                    pos)
+              standardGeneric("shiftRanges"))
