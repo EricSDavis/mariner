@@ -1,58 +1,141 @@
 library(mariner)
 ## Shared objects --------------------------------------------------------------
 
+## Create some in-memory data.frames
+dfs <-
+    list(
+        data.frame(seqnames1="chr1", start1=c(1,10), end1=c(9, 19),
+                   seqnames2="chr1", start2=c(1,10), end2=c(9, 19)),
+        data.frame(seqnames1="chr1", start1=c(5,10), end1=c(15, 19),
+                   seqnames2="chr1", start2=c(5,10), end2=c(15, 19))
+    )
 
-## Test .checkListType() -------------------------------------------------------
+## Reference BEDPE files (loops called with SIP)
+bedpeFiles <-
+    system.file("extdata", package = "mariner") |>
+    list.files(pattern = "Loops.txt", full.names = TRUE)
+
+## Helper function to extract the source column
+extractSource <- \(x) {
+    lapply(x, `[[`, 'source') |>
+        lapply(unique) |>
+        unlist() |>
+        unname()
+}
+
+
+## Test .checkListFormat() -------------------------------------------------------
 
 test_that("Empty lists are not accepted", {
-    .checkListType(list()) |>
+    .checkListFormat(list()) |>
         expect_error("^.*length > 0.")
 })
 
 test_that("Other types types are not accepted", {
 
-    .checkListType(list(NA)) |>
+    .checkListFormat(list(NA)) |>
         expect_error("^.*Your list is type logical.")
 
-    .checkListType(list(NULL)) |>
+    .checkListFormat(list(NULL)) |>
         expect_error("^.*Your list is type NULL.")
 
-    .checkListType(list(NA_character_)) |>
+    .checkListFormat(list(NA_character_)) |>
         expect_error("^.*Your list is type character.")
 
-    .checkListType(list(NA_integer_)) |>
+    .checkListFormat(list(NA_integer_)) |>
         expect_error("^.*Your list is type integer.")
 
-    .checkListType(list(1,2,3)) |>
+    .checkListFormat(list(1,2,3)) |>
         expect_error("^.*Your list is type numeric.")
 })
 
 test_that("List type can return data.frame-like objects", {
 
-    .checkListType(list(data.frame())) |>
-        expect_identical('data.frame')
+    .checkListFormat(list(data.frame())) |>
+        expect_null()
 
-    .checkListType(list(data.table::data.table())) |>
-        expect_identical('data.frame')
+    .checkListFormat(list(data.table::data.table())) |>
+        expect_null()
 
-    .checkListType(list(S4Vectors::DataFrame())) |>
-        expect_identical('data.frame')
+    .checkListFormat(list(S4Vectors::DataFrame())) |>
+        expect_null()
 })
 
 test_that("List type can return GInteractions", {
 
-    .checkListType(list(GInteractions())) |>
-        expect_identical("GInteractions")
+    .checkListFormat(list(GInteractions())) |>
+        expect_null()
 
-    .checkListType(list(GInteractions(), GInteractions())) |>
-        expect_identical("GInteractions")
+    .checkListFormat(list(GInteractions(), GInteractions())) |>
+        expect_null()
 })
 
 test_that("Type mixture is not accepted", {
 
-    .checkListType(list(data.frame(), GInteractions())) |>
+    .checkListFormat(list(data.frame(), GInteractions())) |>
         expect_error("^.*must.*be.*same type.*")
 
-    .checkListType(list(NULL, NA)) |>
+    .checkListFormat(list(NULL, NA)) |>
         expect_error("^.*Your list is type NULL, logical.")
+})
+
+
+## Test .readBedpeFromList() ------------------------------------------
+
+test_that("data.frame lists can be read", {
+
+    .readBedpeFromList(dfs) |>
+        expect_snapshot_output()
+
+})
+
+test_that("data.table lists can be read", {
+
+    library(data.table)
+    lapply(dfs, as.data.table) |>
+        .readBedpeFromList() |>
+        expect_snapshot_output()
+})
+
+test_that("DataFrame lists can be read", {
+
+    library(S4Vectors)
+    lapply(dfs, DataFrame) |>
+        .readBedpeFromList() |>
+        expect_snapshot_output()
+})
+
+test_that("GInteractions list can be read", {
+
+    dfs |>
+        lapply(as_ginteractions) |>
+        .readBedpeFromList() |>
+        expect_snapshot_output()
+
+})
+
+## Test .mergePairs dispatch methods -------------------------------------------
+
+test_that("Source column naming works for .mergePairsList", {
+
+    ## Unnamed list uses indices
+    .mergePairsList(x = dfs) |>
+        extractSource() |>
+        expect_equal(seq_along(dfs))
+
+    ## Named list uses names
+    dfs |>
+        `names<-`(value = c("set1", "set2")) |>
+        .mergePairsList() |>
+        extractSource() |>
+        expect_equal(c('set1', 'set2'))
+})
+
+test_that("Source column naming works for .mergePairsCharacter", {
+
+    ## Unnamed list uses indices
+    .mergePairsCharacter(x = bedpeFiles) |>
+        extractSource() |>
+        expect_equal(basename(bedpeFiles))
+
 })
