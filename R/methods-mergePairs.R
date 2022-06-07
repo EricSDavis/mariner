@@ -2,7 +2,7 @@
 #' @inheritParams mergePairs
 #' @importFrom glue glue
 #' @importFrom rlang abort
-#' @return Character; either "data.frame" or "GInteractions"
+#' @return NULL (if no errors)
 #' @noRd
 .checkListFormat <- function(x) {
 
