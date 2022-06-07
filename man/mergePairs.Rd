@@ -2,20 +2,20 @@
 % Please edit documentation in R/AllGenerics.R, R/methods-mergePairs.R
 \name{mergePairs}
 \alias{mergePairs}
-\alias{mergePairs,list,numeric,character_OR_numeric,character_OR_missing,numeric-method}
-\alias{mergePairs,character,numeric,character_OR_numeric,character_OR_missing,numeric-method}
+\alias{mergePairs,list,numeric_OR_missing,character_OR_numeric,character_OR_missing,numeric_OR_missing-method}
+\alias{mergePairs,character,numeric_OR_missing,character_OR_numeric,character_OR_missing,numeric_OR_missing-method}
 \title{Merge sets of paired interactions}
 \usage{
 mergePairs(x, binSize = 5000, column, distMethod = "manhattan", minPts = 2)
 
-\S4method{mergePairs}{list,numeric,character_OR_numeric,character_OR_missing,numeric}(x, binSize = 5000, column, distMethod = "manhattan", minPts = 2)
+\S4method{mergePairs}{list,numeric_OR_missing,character_OR_numeric,character_OR_missing,numeric_OR_missing}(x, binSize = 5000, column, distMethod = "manhattan", minPts = 2)
 
-\S4method{mergePairs}{character,numeric,character_OR_numeric,character_OR_missing,numeric}(x, binSize = 5000, column, distMethod = "manhattan", minPts = 2)
+\S4method{mergePairs}{character,numeric_OR_missing,character_OR_numeric,character_OR_missing,numeric_OR_missing}(x, binSize = 5000, column, distMethod = "manhattan", minPts = 2)
 }
 \arguments{
-\item{x}{Either a list of `GInteractions` objects
-or a list of file paths of BEDPE-formatted data
-to be merged.}
+\item{x}{Either a list of `GInteractions` objects,
+a list of `data.frame`-like objects, or a list of
+file paths of BEDPE-formatted data to be merged.}
 
 \item{binSize}{Integer (numeric) describing the
 resolution (range widths) of the paired data.
