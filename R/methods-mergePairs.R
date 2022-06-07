@@ -1,8 +1,120 @@
+#' Internal read in paired files
+#' @importFrom data.table fread as.data.table
+#' @importFrom glue glue
+#' @importFrom rlang abort
+#' @noRd
+# .readFiles <- function(x)  {
+#
+#     ## Handle list of BEDPE files
+#     if (is(x, "character")) {
+#         return(lapply(x, fread))
+#     }
+#
+#     ## Handle list of GInterctions objects
+#     if (is(x, "list")) {
+#
+#         if (length(x) == 0) {
+#             abort(glue("List must have length > 0."))
+#         }
+#
+#         ## Are all list elements GInteractions objects?
+#         GInteractionsList <-
+#             lapply(x, \(y) is(y, "GInteractions")) |>
+#             unlist() |>
+#             all()
+#
+#         if (!GInteractionsList) {
+#             msg <- c(glue("All list elements must be ",
+#                           "GInteractions objects."))
+#             abort(msg)
+#         }
+#
+#         return(lapply(x, as.data.table))
+#     }
+# }
+
 #' Internal mergePairs function
 #' @inheritParams mergePairs
 #' @noRd
 .mergePairs <- function(x, binSize, column, distMethod, minPts) {
-    return("hello!")
+
+    ## Read in list of BEDPE
+    bedpe <- .readFiles(x)
+
+    ## Add new column for source
+    bedpe <- Map(cbind, bedpe, source = basename(x))
+}
+
+#' Check list type input for BEDPE and validate
+#' @inheritParams mergePairs
+#' @importFrom glue glue
+#' @importFrom rlang abort
+#' @return Character; either "data.frame" or "GInteractions"
+#' @noRd
+.checkListType <- function(x) {
+
+    ## Ensure the list is not empty
+    if (length(x) == 0) {
+        abort("List must have length > 0.")
+    }
+
+    ## Get class of the list
+    listType <- class(x[[1]])
+
+    ## Ensure all elements of the list
+    ## are the same type.
+    allTypesEqual <-
+        lapply(x, \(u) is(u, listType)) |>
+        unlist() |>
+        all()
+
+    if (!allTypesEqual) {
+        types <-
+            unique(unlist(lapply(x, \(u) class(u)))) |>
+            unlist() |>
+            unique()
+
+        msg <- c("List must contain objects of the same type.",
+                 'x' = glue("Your list contains the ",
+                            "following types: {paste(types, collapse=', ')}"))
+        abort(msg)
+    }
+
+    ## Rename to capture all data.frame-like objects
+    if (is(x[[1]], 'data.frame') | is(x[[1]], 'DFrame')) {
+        listType <- "data.frame"
+    } else if (is(x[[1]], 'GInteractions')) {
+        listType <- "GInteractions"
+    } else {
+        msg <- c("Incorrect list input type.",
+                 'i' = glue("Input must be data.frame-like ",
+                            "object or a GInteractions object."),
+                 'x' = glue("Your list is type '{listType}'."))
+        abort(msg)
+    }
+
+    return(listType)
+
+}
+
+#' Internal mergePairs for list type
+#' @inheritParams mergePairs
+#' @noRd
+.mergePairsList <- function(x, binSize, column,
+                            distMethod, minPts) {
+
+    ## Determine the type of supplied list
+    listType <- .checkListType(x)
+}
+
+#' Internal mergePairs for character type
+#' @inheritParams mergePairs
+#' @noRd
+.mergePairsCharacter <- function(x, binSize, column,
+                                 distMethod, minPts) {
+
+    ## Determine the type of supplied list
+    listType <- .checkListType(x)
 }
 
 #' Merge sets of paired interactions
@@ -19,9 +131,9 @@
 #' object reports the source (which file or list
 #' name/index) of the chosen interaction.
 #'
-#' @param x Either a list of `GInteractions` objects
-#'  or a list of file paths of BEDPE-formatted data
-#'  to be merged.
+#' @param x Either a list of `GInteractions` objects,
+#'  a list of `data.frame`-like objects, or a list of
+#'  file paths of BEDPE-formatted data to be merged.
 #' @param binSize Integer (numeric) describing the
 #'  resolution (range widths) of the paired data.
 #'  Used to determine the epsilon value for `dbscan()`
@@ -45,7 +157,7 @@ setMethod("mergePairs",
                     column = 'character_OR_numeric',
                     distMethod = 'character_OR_missing',
                     minPts = 'numeric'),
-          definition = .mergePairs)
+          definition = .mergePairsList)
 
 #' @rdname mergePairs
 #' @export
@@ -55,4 +167,4 @@ setMethod("mergePairs",
                     column = 'character_OR_numeric',
                     distMethod = 'character_OR_missing',
                     minPts = 'numeric'),
-          definition = .mergePairs)
+          definition = .mergePairsCharacter)
