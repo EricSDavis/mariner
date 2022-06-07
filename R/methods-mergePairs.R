@@ -58,43 +58,60 @@
         abort("List must have length > 0.")
     }
 
-    ## Get class of the list
-    listType <- class(x[[1]])
+    ## Test for each type of list input
+    if (is(x[[1]], 'data.frame')) {
+
+        listType <- 'data.frame'
+        arg <- listType # needed because data.table class is length 2
+
+    } else if (is(x[[1]], 'DFrame')) {
+
+        listType <- 'data.frame'
+        arg <- class(x[[1]])
+
+    } else if (is(x[[1]], 'GInteractions')) {
+
+        listType <- "GInteractions"
+        arg <- listType
+
+    } else {
+
+        listType <-
+            lapply(x, \(u) class(u)) |>
+            unlist() |>
+            unique()
+        msg <- c("Incorrect list input type.",
+                 'i' = glue("Input must be data.frame-like ",
+                            "object or a GInteractions object."),
+                 'x' = glue("Your list is type ",
+                            "{paste(listType, collapse=', ')}."))
+        abort(msg)
+
+    }
 
     ## Ensure all elements of the list
     ## are the same type.
     allTypesEqual <-
-        lapply(x, \(u) is(u, listType)) |>
+        lapply(x, \(u) is(u, arg)) |>
         unlist() |>
         all()
 
+    ## If not equal, find the types and display
+    ## them in an error message.
     if (!allTypesEqual) {
         types <-
             unique(unlist(lapply(x, \(u) class(u)))) |>
             unlist() |>
             unique()
-
-        msg <- c("List must contain objects of the same type.",
-                 'x' = glue("Your list contains the ",
-                            "following types: {paste(types, collapse=', ')}"))
-        abort(msg)
-    }
-
-    ## Rename to capture all data.frame-like objects
-    if (is(x[[1]], 'data.frame') | is(x[[1]], 'DFrame')) {
-        listType <- "data.frame"
-    } else if (is(x[[1]], 'GInteractions')) {
-        listType <- "GInteractions"
-    } else {
         msg <- c("Incorrect list input type.",
-                 'i' = glue("Input must be data.frame-like ",
-                            "object or a GInteractions object."),
-                 'x' = glue("Your list is type '{listType}'."))
+                 'i' = "All objects in the list must be the same type.",
+                 'x' = glue("Your list contains the ",
+                            "following types: ",
+                            "{paste(types, collapse=', ')}"))
         abort(msg)
     }
 
     return(listType)
-
 }
 
 #' Internal mergePairs for list type
