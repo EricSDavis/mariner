@@ -119,14 +119,14 @@ test_that("GInteractions list can be read", {
 test_that("Source column naming works for .mergePairsList", {
 
     ## Unnamed list uses indices
-    .mergePairsList(x = dfs) |>
+    .mergePairsList(x = dfs, binSize = 3) |>
         extractSource() |>
         expect_equal(seq_along(dfs))
 
     ## Named list uses names
     dfs |>
         `names<-`(value = c("set1", "set2")) |>
-        .mergePairsList() |>
+        .mergePairsList(binSize = 3) |>
         extractSource() |>
         expect_equal(c('set1', 'set2'))
 })
@@ -134,7 +134,7 @@ test_that("Source column naming works for .mergePairsList", {
 test_that("Source column naming works for .mergePairsCharacter", {
 
     ## Unnamed list uses indices
-    .mergePairsCharacter(x = bedpeFiles) |>
+    .mergePairsCharacter(x = bedpeFiles, binSize = 3) |>
         extractSource() |>
         expect_equal(basename(bedpeFiles))
 
