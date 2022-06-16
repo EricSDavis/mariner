@@ -2,15 +2,15 @@
 % Please edit documentation in R/AllGenerics.R, R/methods-mergePairs.R
 \name{mergePairs}
 \alias{mergePairs}
-\alias{mergePairs,list,numeric_OR_missing,character_OR_numeric,character_OR_missing,numeric_OR_missing-method}
-\alias{mergePairs,character,numeric_OR_missing,character_OR_numeric,character_OR_missing,numeric_OR_missing-method}
+\alias{mergePairs,list,numeric_OR_missing,numeric_OR_missing,character_OR_missing-method}
+\alias{mergePairs,character,numeric_OR_missing,numeric_OR_missing,character_OR_missing-method}
 \title{Merge sets of paired interactions}
 \usage{
-mergePairs(x, binSize = 5000, column, distMethod = "manhattan", minPts = 2)
+mergePairs(x, binSize = 5000, radius = 2, column)
 
-\S4method{mergePairs}{list,numeric_OR_missing,character_OR_numeric,character_OR_missing,numeric_OR_missing}(x, binSize = 5000, column, distMethod = "manhattan", minPts = 2)
+\S4method{mergePairs}{list,numeric_OR_missing,numeric_OR_missing,character_OR_missing}(x, binSize = 5000, radius = 2, column)
 
-\S4method{mergePairs}{character,numeric_OR_missing,character_OR_numeric,character_OR_missing,numeric_OR_missing}(x, binSize = 5000, column, distMethod = "manhattan", minPts = 2)
+\S4method{mergePairs}{character,numeric_OR_missing,numeric_OR_missing,character_OR_missing}(x, binSize = 5000, radius = 2, column)
 }
 \arguments{
 \item{x}{Either a list of `GInteractions` objects,
@@ -22,16 +22,13 @@ resolution (range widths) of the paired data.
 Used to determine the epsilon value for `dbscan()`
 (i.e. `eps = binSize*2`).}
 
-\item{column}{Integer or character denoting the
-column to be used to select among clustered
-interactions.}
-
-\item{distMethod}{Character - distance measure
+\item{radius}{Character - distance measure
 passed to `dist()`. For available methods see
 `?dist()`.}
 
-\item{minPts}{Numeric (integer) of the minimum
-number of interactions to form a `dbscan` cluster.}
+\item{column}{Integer or character denoting the
+column to be used to select among clustered
+interactions.}
 }
 \value{
 Returns a merged `GInteractions` object.

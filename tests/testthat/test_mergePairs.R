@@ -15,16 +15,8 @@ bedpeFiles <-
     system.file("extdata", package = "mariner") |>
     list.files(pattern = "Loops.txt", full.names = TRUE)
 
-## Helper function to extract the source column
-extractSource <- \(x) {
-    lapply(x, `[[`, 'source') |>
-        lapply(unique) |>
-        unlist() |>
-        unname()
-}
 
-
-## Test .checkListFormat() -------------------------------------------------------
+## Test .checkListFormat() -----------------------------------------------------
 
 test_that("Empty lists are not accepted", {
     .checkListFormat(list()) |>
@@ -80,7 +72,7 @@ test_that("Type mixture is not accepted", {
 })
 
 
-## Test .readBedpeFromList() ------------------------------------------
+## Test .readBedpeFromList() ---------------------------------------------------
 
 test_that("data.frame lists can be read", {
 
@@ -114,28 +106,149 @@ test_that("GInteractions list can be read", {
 
 })
 
-## Test .mergePairs dispatch methods -------------------------------------------
+## Test mergePairs dispatch methods --------------------------------------------
 
-test_that("Source column naming works for .mergePairsList", {
+## Need to write source accessor
+# test_that("Source column naming works for .mergePairsCharacter", {
+#
+#     ## Unnamed list uses indices
+#     .mergePairsCharacter(x = bedpeFiles, binSize = 3, radius = 2) |>
+#         {\(x) unique(x$source)}() |>
+#         suppressWarnings() |>
+#         expect_equal(basename(bedpeFiles))
+#
+#     .mergePairsCharacter(bedpeFiles, 5000, 2) |>
+#         {\(x) unique(x$source)}() |>
+#         expect_equal(basename(bedpeFiles))
+#
+# })
 
-    ## Unnamed list uses indices
-    .mergePairsList(x = dfs, binSize = 3) |>
-        extractSource() |>
-        expect_equal(seq_along(dfs))
+test_that("mergePairs warns about binning", {
 
-    ## Named list uses names
-    dfs |>
-        `names<-`(value = c("set1", "set2")) |>
-        .mergePairsList(binSize = 3) |>
-        extractSource() |>
-        expect_equal(c('set1', 'set2'))
+    .mergePairsCharacter(x = bedpeFiles, binSize = 5e03, radius = 2) |>
+        expect_warning(NA)
+
+    mergePairs(x = bedpeFiles, binSize = 10e03, radius = 2) |>
+        expect_message("^.*not binned to `binSize`.*")
+
+    mergePairs(x = dfs, binSize = 2, radius = 2) |>
+        expect_message("^.*not binned to `binSize`.*")
+
 })
 
-test_that("Source column naming works for .mergePairsCharacter", {
+test_that("Find overlaps by manhattan distance works", {
+    library(InteractionSet)
+    library(GenomicRanges)
+    library(data.table)
 
-    ## Unnamed list uses indices
-    .mergePairsCharacter(x = bedpeFiles, binSize = 3) |>
-        extractSource() |>
-        expect_equal(basename(bedpeFiles))
+    ## Define anchor regions to test distance clustering
+    gr1 <-
+        GRanges(seqnames = "chr1",
+                ranges = IRanges(start = c(30,40,40,70,80),
+                                 end = c(40,50,50,80,90)))
+    gr2 <-
+        GRanges(seqnames = "chr1",
+                ranges = IRanges(start = c(30,30,50,10,30),
+                                 end = c(40,40,60,20,40)))
+
+    ## Form GInteractions and convert to data.table
+    dt <- GInteractions(gr1, gr2) |> as.data.table()
+
+    ## Manhattan distance (radius) of 0
+    .findClusters(x = dt[,c('start1','start2')],
+                  radius = 0,
+                  binSize = 10) |>
+        expect_equal(c(0,0,0,0,0))
+
+    ## Manhattan distance (radius) of 1
+    .findClusters(x = dt[,c('start1','start2')],
+                  radius = 1,
+                  binSize = 10) |>
+        expect_equal(c(1,1,0,0,0))
+
+    ## Manhattan distance (radius) of 2
+    .findClusters(x = dt[,c('start1','start2')],
+                  radius = 2,
+                  binSize = 10) |>
+        expect_equal(c(1,1,1,0,0))
+})
+
+test_that("Find overlaps by group with data.table", {
+    library(InteractionSet)
+    library(GenomicRanges)
+    library(data.table)
+
+    ## Define anchor regions to test distance clustering
+    gr1 <-
+        GRanges(seqnames = "chr1",
+                ranges = IRanges(start = c(30,40,40,70,80),
+                                 end = c(40,50,50,80,90)))
+    gr2 <-
+        GRanges(seqnames = "chr1",
+                ranges = IRanges(start = c(30,30,50,10,30),
+                                 end = c(40,40,60,20,40)))
+
+    ## Form GInteractions and convert to data.table
+    dt <- GInteractions(gr1, gr2) |> as.data.table()
+
+    ## Manhattan distance (radius) of 1
+    dt[,clst := .findClusters(x = .SD[,c('start1','start2')],
+                              radius = 1,
+                              binSize = 10),
+       by = .(seqnames1, seqnames2)]
+    dt$clst |> expect_equal(c(1,1,0,0,0))
+
+    ## Manhattan distance (radius) of 2
+    dt <- GInteractions(gr1, gr2) |> as.data.table()
+    dt[,clst := .findClusters(x = .SD[,c('start1','start2')],
+                              radius = 2,
+                              binSize = 10),
+       by = .(seqnames1, seqnames2)]
+    dt$clst |> expect_equal(c(1,1,1,0,0))
+})
+
+test_that("Handle interchromosomal by group", {
+    library(InteractionSet)
+    library(GenomicRanges)
+    library(data.table)
+
+    ## Define anchor regions to test distance clustering
+    gr1 <-
+        GRanges(seqnames = "chr1",
+                ranges = IRanges(start = c(30,40,40,70,80,30,30),
+                                 end = c(40,50,50,80,90,40,40)))
+    gr2 <-
+        GRanges(seqnames = c(rep("chr1",5),"chr2", "chr2"),
+                ranges = IRanges(start = c(30,30,50,10,30,30,30),
+                                 end = c(40,40,60,20,40,40,40)))
+
+    ## Form GInteractions and convert to data.table
+    dt <- GInteractions(gr1, gr2) |> as.data.table()
+
+    ## Manhattan distance (radius) of 1
+    dt[,clst := .findClusters(x = .SD[,c('start1','start2')],
+                              radius = 1,
+                              binSize = 10),
+       by = .(seqnames1, seqnames2)]
+    dt[,grp := .GRP, by = .(seqnames1, seqnames2)]
+    dt$clst |> expect_equal(c(1,1,0,0,0,1,1))
+    dt$grp |> expect_equal(c(1,1,1,1,1,2,2))
+})
+
+test_that("Removing changed column names works", {
+    .renameCols(c("id_1", "src_1", "grp_1", "clst_1")) |>
+        expect_identical(c("id", "src", "grp", "clst"))
+})
+
+test_that("id, src, grp, and clst column names can be used", {
+
+    ## Add an id column to merged pairs
+    mp <-
+        bedpeFiles |>
+        lapply(fread) |>
+        lapply(\(x) {x$id <- rev(seq_len(nrow(x))); x}) |>
+        mergePairs(binSize = 5000, radius = 0)
+
+    expect_length(mp$id, length(mp))
 
 })

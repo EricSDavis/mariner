@@ -64,22 +64,153 @@
             makeGInteractionsFromDataFrame() |>
             as.data.table()
     })
+
+}
+
+#' Find clusters by manhattan distance with DBSCAN
+#' @param x `data.table` with at least 'start1' and
+#'  'start2' columns. Data should be binned to
+#'  the `binSize` parameter.
+#' @param radius manhattan distance used to define
+#'  a cluster of pairs.
+#' @param binSize Integer (numeric) describing the
+#'  resolution (range widths) of the paired data.
+#'
+#' @importFrom dbscan dbscan
+#' @noRd
+.findClusters <- function(x, radius, binSize) {
+    d <- dist(x/binSize, method = 'manhattan')
+    dbscan(d, eps = radius, minPts = 2)$cluster
+}
+
+#' Calculate new paired ranges with the mean of modes method
+#' @param start1 vector of start1 positions
+#' @param start2 vector of start2 positions
+#' @param binSize Integer (numeric) describing the
+#'  resolution (range widths) of the paired data.
+#' @noRd
+.newPairRanges <- function(start1, start2, binSize) {
+    s1 <- .meanOfModes(start1, binSize)
+    s2 <- .meanOfModes(start2, binSize)
+    list(start1=s1, end1=s1+binSize, start2=s2, end2=s2+binSize)
+}
+
+#' Internal function for renaming mergePairs columns
+#' @returns character vector of column names
+#' @noRd
+.renameCols <- function(x) {
+    x |>
+        gsub("^src_1$", "src", x = _) |>
+        gsub("^id_1$", "id", x = _) |>
+        gsub("^grp_1$", "grp", x = _) |>
+        gsub("^clst_1$", "clst", x = _)
 }
 
 #' Internal mergePairs function
 #' @inheritParams mergePairs
+#' @importFrom rlang inform
+#' @importFrom data.table as.data.table uniqueN `:=`
 #' @noRd
-.mergePairs <- function(x, binSize, column, distMethod, minPts) {
+.mergePairs <- function(x, binSize, radius, column) {
 
-    return(x)
+    ## Concatenate bedpe
+    bedpe <- do.call(rbind, x)
+
+    ## Convert to a GInteractions object for binning
+    bedpe <- makeGInteractionsFromDataFrame(bedpe)
+
+    ## Ensure interactions are binned
+    binned <- .checkBinnedPairs(bedpe, binSize = binSize)
+    if (!binned) {
+        bedpe <- binPairs(x = bedpe,
+                          binSize = binSize)
+        msg <- c("Pairs are not binned to `binSize`.",
+                 'i' = glue("Binning with binSize={binSize}, ",
+                            "pos1='center' and pos2='center'."),
+                 'i' = glue("Use `binPairs()` for different binning."))
+        inform(msg)
+    }
+
+    ## Convert to data.table format
+    dt <- as.data.table(bedpe)
+
+    ## Annotate id & groups (essentially pairs of chromosomes)
+    dt[,id := .I]
+    dt[,grp := .GRP,by = .(seqnames1, seqnames2)]
+
+    ## Initialize progress bar
+    pb <- progress::progress_bar$new(
+        format = "  :step [:bar] :percent elapsed: :elapsedfull",
+        clear = FALSE,
+        total = uniqueN(dt$grp)
+    )
+    pb$tick(0)
+
+    ## Find clusters by manhattan distance with dbscan
+    dt[,clst := {
+        pb$tick(tokens=list(step="Merging pairs"));
+        .findClusters(x = .SD[,c('start1','start2')],
+                      radius = radius,
+                      binSize = binSize)},
+       by = grp]
+
+    if (missing(column)) {
+        ## Fast mean of modes
+        selectionMethod <- "Mean of modes"
+
+        ## Define start & end columns to update
+        columnsToUpdate <- c("start1", "end1", "start2", "end2")
+
+        ## Update with mean of modes for each group and cluster
+        dt[clst != 0,
+           (columnsToUpdate) :=
+               .newPairRanges(start1 = .SD[['start1']],
+                              start2 = .SD[['start2']],
+                              binSize = binSize),
+           by = .(grp, clst)]
+
+        ## Select the first of the duplicated pairs
+        single <- dt[clst == 0]
+        selected <- dt[dt[clst != 0,.I[1], by = .(grp, clst)]$V1]
+        mergedPairs <- rbind(single, selected)
+
+    } else {
+        ## Edit column if it matches src, id, grp, or clst
+        column <- gsub("(^src$|^id$|^grp$|^clst$)", "\\1_1", column)
+
+        ## Fast find by column
+        selectionMethod <- "Select by column"
+        single <- dt[clst == 0]
+        selected <- dt[dt[clst != 0,
+                          .I[which.max(.SD[[column]])],
+                          by=.(grp,clst)]$V1]
+        mergedPairs <- rbind(single, selected)
+    }
+
+    ## Save and remove src, id, grp, and clst
+    ids <- mergedPairs$id
+    mergedPairs <-
+        mergedPairs[,-c("src", "id", "grp", "clst")] |>
+        as_ginteractions()
+
+    ## Return to original column names
+    colnames(mcols(mergedPairs)) <- .renameCols(colnames(mcols(mergedPairs)))
+
+    ## Build MergedGInteractions object
+    obj <-
+        MergedGInteractions(delegate = mergedPairs,
+                            ids = ids,
+                            allPairs = dt,
+                            selectionMethod = selectionMethod)
+
+    return(obj)
 
 }
 
 #' Internal mergePairs for list type
 #' @inheritParams mergePairs
 #' @noRd
-.mergePairsList <- function(x, binSize, column,
-                            distMethod, minPts) {
+.mergePairsList <- function(x, binSize, radius, column) {
 
     ## Check that list is formatted correctly
     .checkListFormat(x)
@@ -87,40 +218,49 @@
     ## Read in Bedpe
     bedpe <- .readBedpeFromList(x)
 
+    ## Rename columns to prevent overwriting
+    newColumnNames <-
+        lapply(bedpe, colnames) |>
+        lapply(\(x) gsub("(^src$|^id$|^grp$|^clst$)", "\\1_1", x))
+    bedpe <- Map(setNames, bedpe, newColumnNames)
+
     ## Add new column for source
     if (!is.null(names(bedpe))) {
-        bedpe <- Map(cbind, bedpe, source = names(bedpe))
+        bedpe <- Map(cbind, bedpe, src = names(bedpe))
     } else {
-        bedpe <- Map(cbind, bedpe, source = seq_along(bedpe))
+        bedpe <- Map(cbind, bedpe, src = seq_along(bedpe))
     }
 
     ## Pass to internal merging function
     .mergePairs(x = bedpe,
                 binSize = binSize,
-                column = column,
-                distMethod = distMethod,
-                minPts = minPts)
+                radius = radius,
+                column = column)
 }
 
 #' Internal mergePairs for character type
 #' @inheritParams mergePairs
 #' @importFrom data.table fread
 #' @noRd
-.mergePairsCharacter <- function(x, binSize, column,
-                                 distMethod, minPts) {
+.mergePairsCharacter <- function(x, binSize, radius, column) {
 
     ## Read in files as list of bedpe
     bedpe <- lapply(x, fread)
 
+    ## Rename columns to prevent overwriting
+    newColumnNames <-
+        lapply(bedpe, colnames) |>
+        lapply(\(x) gsub("(^src$|^id$|^grp$|^clst$)", "\\1_1", x))
+    bedpe <- Map(setNames, bedpe, newColumnNames)
+
     ## Add new column for source
-    bedpe <- Map(cbind, bedpe, source = basename(x))
+    bedpe <- Map(cbind, bedpe, src = basename(x))
 
     ## Pass to internal merging function
     .mergePairs(x = bedpe,
                 binSize = binSize,
-                column = column,
-                distMethod = distMethod,
-                minPts = minPts)
+                radius = radius,
+                column = column)
 }
 
 #' Merge sets of paired interactions
@@ -144,14 +284,12 @@
 #'  resolution (range widths) of the paired data.
 #'  Used to determine the epsilon value for `dbscan()`
 #'  (i.e. `eps = binSize*2`).
+#' @param radius Character - distance measure
+#'  passed to `dist()`. For available methods see
+#'  `?dist()`.
 #' @param column Integer or character denoting the
 #'  column to be used to select among clustered
 #'  interactions.
-#' @param distMethod Character - distance measure
-#'  passed to `dist()`. For available methods see
-#'  `?dist()`.
-#' @param minPts Numeric (integer) of the minimum
-#'  number of interactions to form a `dbscan` cluster.
 #'
 #' @return Returns a merged `GInteractions` object.
 #'
@@ -160,9 +298,8 @@
 setMethod("mergePairs",
           signature(x = 'list',
                     binSize = 'numeric_OR_missing',
-                    column = 'character_OR_numeric',
-                    distMethod = 'character_OR_missing',
-                    minPts = 'numeric_OR_missing'),
+                    radius = 'numeric_OR_missing',
+                    column = 'character_OR_missing'),
           definition = .mergePairsList)
 
 #' @rdname mergePairs
@@ -170,7 +307,6 @@ setMethod("mergePairs",
 setMethod("mergePairs",
           signature(x = 'character',
                     binSize = 'numeric_OR_missing',
-                    column = 'character_OR_numeric',
-                    distMethod = 'character_OR_missing',
-                    minPts = 'numeric_OR_missing'),
+                    radius = 'numeric_OR_missing',
+                    column = 'character_OR_missing'),
           definition = .mergePairsCharacter)

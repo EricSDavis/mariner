@@ -46,7 +46,6 @@ setGeneric("shiftRanges",
 setGeneric("mergePairs",
            function(x,
                     binSize = 5000,
-                    column,
-                    distMethod = 'manhattan',
-                    minPts = 2)
+                    radius = 2,
+                    column)
                standardGeneric("mergePairs"))
