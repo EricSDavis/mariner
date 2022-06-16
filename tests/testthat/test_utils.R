@@ -55,3 +55,16 @@ test_that("Checking for binned pairs works", {
         expect_false()
 
 })
+
+## Test .modes() ---------------------------------------------------------------
+
+test_that(".modes returns correct results", {
+    .modes(c(1,1,2,1)) |>
+        expect_equal(1)
+
+    .modes(c(1,2,2,1,3)) |>
+        expect_equal(c(1,2))
+
+    .modes(c(1)) |>
+        expect_equal(1)
+})

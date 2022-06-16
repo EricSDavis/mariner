@@ -182,3 +182,21 @@ test_that("as_ginteractions supports 10-column format (chrom)", {
     expect_identical(gi2, gi1)
 
 })
+
+test_that("Multiple conversions work", {
+
+    library(data.table)
+    firstRead <-
+        system.file("extdata/WT_5KbLoops.txt",
+                    package = "mariner") |>
+        fread() |>
+        as_ginteractions()
+
+    secondRead <-
+        firstRead |>
+        as.data.table() |>
+        as_ginteractions()
+
+    expect_identical(firstRead, secondRead)
+
+})
