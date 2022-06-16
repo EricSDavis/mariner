@@ -293,6 +293,18 @@
 #'
 #' @return Returns a merged `GInteractions` object.
 #'
+#' @examples
+#' ## Reference BEDPE files (loops called with SIP)
+#' bedpeFiles <-
+#'     system.file("extdata", package = "mariner") |>
+#'     list.files(pattern = "Loops.txt", full.names = TRUE)
+#'
+#' x <- mergePairs(x = bedpeFiles,
+#'                 binSize = 5e03,
+#'                 radius = 2,
+#'                 column = "APScoreAvg")
+#' x
+#'
 #' @rdname mergePairs
 #' @export
 setMethod("mergePairs",

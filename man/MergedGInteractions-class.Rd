@@ -4,9 +4,65 @@
 \name{MergedGInteractions-class}
 \alias{MergedGInteractions-class}
 \alias{MergedGInteractions}
-\title{Merged Class
-MergedGInteractions Class}
+\title{MergedGInteractions Class}
 \description{
-Merged Class
-MergedGInteractions Class
+The `MergedGInteractions` class extends the
+`GInteractions` to contain additional information
+about the pairs being merged.
+}
+\details{
+The `MergedGInteractions` class uses a delegate object
+during initialization to assign its `GInteractions` slots.
+In addition to containing information from all pairs, it
+also behaves as a `GInteractions` object. `mergePairs()`
+builds this object.
+}
+\section{Slots}{
+
+\describe{
+\item{\code{delegate}}{A `GInteractions` object used to initialize
+`GInteractions`-specific slots. This is the mergedPairs
+set of interactions.}
+
+\item{\code{ids}}{An integer vector of ids linking indices in the
+`delegate` slot all pairs (`allPairs` slot). These indices
+are parallel to `delegate`.}
+
+\item{\code{allPairs}}{A `data.table` containing all input pairs
+combined. Also contains all metadata for each pair and
+1) the source of the file, 2) an id, 3) which chromosome
+pair it belongs to (i.e. `grp`), and 4) the assigned
+cluster from `dbscan` (i.e. `clst`).}
+
+\item{\code{selectionMethod}}{Character describing which method
+was used to select the final pair from the cluster of
+merged pairs.}
+
+\item{\code{anchor1}}{`anchorIds(delegate)$first`}
+
+\item{\code{anchor2}}{`anchorIds(delegate)$second`}
+
+\item{\code{regions}}{`regions(delegate)`}
+
+\item{\code{NAMES}}{`names(delegate)`}
+
+\item{\code{elementMetadata}}{`elementMetadata(delegate)`}
+
+\item{\code{metadata}}{`metadata(delegate)`}
+}}
+
+\examples{
+## Reference BEDPE files (loops called with SIP)
+bedpeFiles <-
+    system.file("extdata", package = "mariner") |>
+    list.files(pattern = "Loops.txt", full.names = TRUE)
+
+x <- mergePairs(x = bedpeFiles,
+                binSize = 5e03,
+                radius = 2,
+                column = "APScoreAvg")
+class(x)
+}
+\seealso{
+[InteractionSet::GInteractions]
 }

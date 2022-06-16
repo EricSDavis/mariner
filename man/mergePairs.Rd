@@ -47,3 +47,16 @@ should be chosen to represent the group. The resulting
 object reports the source (which file or list
 name/index) of the chosen interaction.
 }
+\examples{
+## Reference BEDPE files (loops called with SIP)
+bedpeFiles <-
+    system.file("extdata", package = "mariner") |>
+    list.files(pattern = "Loops.txt", full.names = TRUE)
+
+x <- mergePairs(x = bedpeFiles,
+                binSize = 5e03,
+                radius = 2,
+                column = "APScoreAvg")
+x
+
+}
