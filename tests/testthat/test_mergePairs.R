@@ -252,3 +252,8 @@ test_that("id, src, grp, and clst column names can be used", {
     expect_length(mp$id, length(mp))
 
 })
+
+test_that("Bad column name throws error.", {
+    mergePairs(bedpeFiles, column = "foo") |>
+        expect_error("^Column.*does not exist.")
+})

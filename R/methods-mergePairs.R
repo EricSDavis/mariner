@@ -116,6 +116,13 @@
     ## Concatenate bedpe
     bedpe <- do.call(rbind, x)
 
+    ## Check column name exists in bedpe
+    if (!missing(column)) {
+        if (!column %in% colnames(bedpe)) {
+            abort(glue("Column '{column}' does not exist."))
+        }
+    }
+
     ## Convert to a GInteractions object for binning
     bedpe <- makeGInteractionsFromDataFrame(bedpe)
 
@@ -175,11 +182,12 @@
         mergedPairs <- rbind(single, selected)
 
     } else {
+        selectionMethod <- glue("Select by column '{column}'")
+
         ## Edit column if it matches src, id, grp, or clst
         column <- gsub("(^src$|^id$|^grp$|^clst$)", "\\1_1", column)
 
         ## Fast find by column
-        selectionMethod <- "Select by column"
         single <- dt[clst == 0]
         selected <- dt[dt[clst != 0,
                           .I[which.max(.SD[[column]])],
