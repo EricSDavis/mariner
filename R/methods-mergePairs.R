@@ -181,6 +181,9 @@
         selected <- dt[dt[clst != 0,.I[1], by = .(grp, clst)]$V1]
         mergedPairs <- rbind(single, selected)
 
+        ## Remove metadata (since the choice is arbitrary)
+        mergedPairs[,colnames(mcols(bedpe)) := NULL]
+
     } else {
         selectionMethod <- glue("Select by column '{column}'")
 
@@ -193,12 +196,15 @@
                           .I[which.max(.SD[[column]])],
                           by=.(grp,clst)]$V1]
         mergedPairs <- rbind(single, selected)
+
+        ## Remove src
+        mergedPairs[, "src" := NULL]
     }
 
-    ## Save and remove src, id, grp, and clst
+    ## Save and remove id, grp, and clst (src removed above)
     ids <- mergedPairs$id
     mergedPairs <-
-        mergedPairs[,-c("src", "id", "grp", "clst")] |>
+        mergedPairs[,c("id", "grp", "clst") := NULL] |>
         as_ginteractions()
 
     ## Return to original column names

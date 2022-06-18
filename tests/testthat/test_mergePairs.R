@@ -247,7 +247,7 @@ test_that("id, src, grp, and clst column names can be used", {
         bedpeFiles |>
         lapply(fread) |>
         lapply(\(x) {x$id <- rev(seq_len(nrow(x))); x}) |>
-        mergePairs(binSize = 5000, radius = 0)
+        mergePairs(binSize = 5000, radius = 0, column = "APScoreAvg")
 
     expect_length(mp$id, length(mp))
 
@@ -256,4 +256,12 @@ test_that("id, src, grp, and clst column names can be used", {
 test_that("Bad column name throws error.", {
     mergePairs(bedpeFiles, column = "foo") |>
         expect_error("^Column.*does not exist.")
+})
+
+test_that("Remove metadata when using mean of modes but not column.", {
+    x <- mergePairs(bedpeFiles)
+    expect_equal(ncol(mcols(x)), 0)
+
+    x <- mergePairs(bedpeFiles, column = "APScoreAvg")
+    expect_equal(ncol(mcols(x)), 9)
 })
