@@ -49,3 +49,8 @@ setGeneric("mergePairs",
                     radius = 2,
                     column)
                standardGeneric("mergePairs"))
+
+#' @rdname selectionMethod
+#' @export
+setGeneric("selectionMethod", function(x, ...)
+    standardGeneric("selectionMethod"))
