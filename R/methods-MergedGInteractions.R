@@ -1,5 +1,8 @@
 ## Accessors -------------------------------------------------------------------
 
+#' Sources
+#'
+
 #' Internal accessor function for allPairs
 #' @inheritParams allPairs
 #' @importFrom S4Vectors isEmpty
@@ -7,35 +10,32 @@
 #' @importFrom rlang abort
 .allPairs <- function(x, source) {
 
-    ## Pull out all pairs
-    res <- x@allPairs
+    ## Separate solo loops as negative integers
+    ap <- x@allPairs
+    ap[clst == 0, clst := seq(1, length(clst))*-1, by = grp]
 
-    if (!missing(source)) {
+    ## Create a key using ids from merged pairs
+    keys <- ap[id %in% x@ids, .(id, grp, clst)]
 
-        ## Filter by source
-        res <- res[src == source]
+    ## Join keys by group and cluster
+    res <- ap[keys, on = .(grp, clst)]
 
-        ## Catch empty error
-        if (isEmpty(res)) {
-            msg <- c(glue("Source '{source}' not found."),
-                     'i' = glue("Did you mean one of these: ",
-                                "{paste0(x = unique(x@allPairs$src),
-                                         collapse=', ')}?"))
-            abort(msg)
-        }
-    }
+    ## Save the split vector & drop extra columns
+    s <- res$i.id
+    res <- res[, -c("id", "grp", "clst", "i.id")]
 
-    ## Remove other columns
-    res <- res[,-c("src", "id", "grp", "clst")]
+    ## Split and order result by input vector (slowest step)
+    res <-
+        split(res, s)[rank(x@ids)] |>
+        `names<-`(values = names(x))
 
-    return(as_ginteractions(res))
+    return(res)
 }
 
 #' Get all pairs from MergedGInteractions object
 #' @inheritParams selectionMethod
 #' @export
-setMethod("allPairs", signature(x = "MergedGInteractions",
-                                source = "character_OR_numeric_OR_missing"),
+setMethod("allPairs", signature(x = "MergedGInteractions"),
           definition = .allPairs)
 
 #' Get selectionMethod from MergedGInteractions object

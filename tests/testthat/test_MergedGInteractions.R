@@ -30,44 +30,24 @@ test_that("selectionMethod accessor works", {
 
 test_that("allPairs accessor works", {
 
-    ## Merge pairs from files
+    ## Merge pairs and add names
     x <- mergePairs(bedpeFiles)
+    names(x) <- paste0("loop", 1:length(x))
 
-    ## No columns returns all
-    allPairs(x) |>
-        length() |>
-        expect_equal(20661)
+    x[3:1] |>
+        allPairs() |>
+        names() |>
+        expect_identical(paste0("loop", 3:1))
 
-    ## Selected columns
-    allPairs(x, source = "FS_5kbLoops.txt") |>
-        length() |>
-        expect_equal(8566)
+    x[1:3] |>
+        allPairs() |>
+        names() |>
+        expect_identical(paste0("loop", 1:3))
 
-    allPairs(x, source = "WT_5kbLoops.txt") |>
-        length() |>
-        expect_equal(12095)
+    expect_equal(length(allPairs(x)), length(x))
 
-    ## Wrong column throws error
-    allPairs(x, source = "FS_5kbLoops") |>
-        expect_error("Source.*not found.")
 
-    ## Merge pairs from objects
-    x <- mergePairs(dfs, binSize = 5) |>
-        suppressMessages()
-
-    allPairs(x) |>
-        length() |>
-        expect_equal(4)
-
-    allPairs(x, source = 1) |>
-        length() |>
-        expect_equal(2)
-
-    allPairs(x, source = 2) |>
-        length() |>
-        expect_equal(2)
-
-    allPairs(x, source = 3) |>
-        expect_error("Source.*not found.")
-
+    ## Use data.frame input
+    x <- mergePairs(dfs, binSize = 5)
+    expect_equal(length(allPairs(x)), length(x))
 })
