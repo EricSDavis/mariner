@@ -57,6 +57,6 @@ setGeneric("selectionMethod", function(x, ...)
 
 #' @rdname allPairs
 #' @export
-setGeneric("allPairs", function(x, source, ...)
+setGeneric("allPairs", function(x, ...)
     standardGeneric("allPairs"))
 
