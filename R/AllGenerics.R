@@ -54,3 +54,9 @@ setGeneric("mergePairs",
 #' @export
 setGeneric("selectionMethod", function(x, ...)
     standardGeneric("selectionMethod"))
+
+#' @rdname allPairs
+#' @export
+setGeneric("allPairs", function(x, source, ...)
+    standardGeneric("allPairs"))
+

@@ -27,3 +27,47 @@ test_that("selectionMethod accessor works", {
     selectionMethod(x) |>
         expect_identical("Select by column 'APScoreAvg'")
 })
+
+test_that("allPairs accessor works", {
+
+    ## Merge pairs from files
+    x <- mergePairs(bedpeFiles)
+
+    ## No columns returns all
+    allPairs(x) |>
+        length() |>
+        expect_equal(20661)
+
+    ## Selected columns
+    allPairs(x, source = "FS_5kbLoops.txt") |>
+        length() |>
+        expect_equal(8566)
+
+    allPairs(x, source = "WT_5kbLoops.txt") |>
+        length() |>
+        expect_equal(12095)
+
+    ## Wrong column throws error
+    allPairs(x, source = "FS_5kbLoops") |>
+        expect_error("Source.*not found.")
+
+    ## Merge pairs from objects
+    x <- mergePairs(dfs, binSize = 5) |>
+        suppressMessages()
+
+    allPairs(x) |>
+        length() |>
+        expect_equal(4)
+
+    allPairs(x, source = 1) |>
+        length() |>
+        expect_equal(2)
+
+    allPairs(x, source = 2) |>
+        length() |>
+        expect_equal(2)
+
+    allPairs(x, source = 3) |>
+        expect_error("Source.*not found.")
+
+})
