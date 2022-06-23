@@ -60,3 +60,7 @@ setGeneric("selectionMethod", function(x, ...)
 setGeneric("allPairs", function(x, ...)
     standardGeneric("allPairs"))
 
+#' @rdname deNovo
+#' @export
+setGeneric("deNovo", function(x, ...)
+    standardGeneric("deNovo"))
