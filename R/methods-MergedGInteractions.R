@@ -1,14 +1,54 @@
 ## Accessors -------------------------------------------------------------------
 
-#' Sources
-#'
+#' Internal find de novo pairs
+#' @inheritParams selectionMethod
+#' @return A MergedGInteractions object of de novo pairs.
+#' @noRd
+.deNovo <- function(x) {
+
+    ## Separate solo loops as negative integers
+    ap <- x@allPairs
+    ap[clst == 0, clst := seq(1, length(clst))*-1, by = grp]
+
+    ## Find ids of de novo pairs
+    ## All clst < 0 are new
+    single <- ap[clst < 0, .(grp, clst, id, src, nDistinct = 1)]
+
+    ## Only new if from the same source
+    double <- ap[clst > 0,
+                 .(id, src, nDistinct = length(unique(src))),
+                 by = .(grp, clst)]
+
+    ## Combine
+    united <- rbind(single, double)
+
+    ## Extract ids for each source
+    ids <-
+        split(united[nDistinct == 1], by = "src") |>
+        lapply(`[[`, "id")
+
+    ## Select merged pairs that are de novo
+    ## There will be extra ids when using mean of modes.
+    novo <- lapply(ids, \(y) x[x@ids %in% y])
+
+    return(novo)
+}
+
+#' Find de novo pairs
+#' @inheritParams selectionMethod
+#' @rdname deNovo
+#' @export
+setMethod("deNovo", signature(x = "MergedGInteractions"),
+          definition = .deNovo)
+
 
 #' Internal accessor function for allPairs
 #' @inheritParams allPairs
 #' @importFrom S4Vectors isEmpty
 #' @importFrom glue glue
 #' @importFrom rlang abort
-.allPairs <- function(x, source) {
+#' @noRd
+.allPairs <- function(x) {
 
     ## Separate solo loops as negative integers
     ap <- x@allPairs
@@ -33,7 +73,28 @@
 }
 
 #' Get all pairs from MergedGInteractions object
+#'
 #' @inheritParams selectionMethod
+#'
+#' @return  A list of data.tables cooresponding to each pair
+#'  in `x`.
+#'
+#' @examples
+#' ## Reference BEDPE files (loops called with SIP)
+#' bedpeFiles <-
+#'     system.file("extdata", package = "mariner") |>
+#'     list.files(pattern = "Loops.txt", full.names = TRUE)
+#'
+#' x <- mergePairs(x = bedpeFiles,
+#'                 binSize = 5e03,
+#'                 radius = 2,
+#'                 column = "APScoreAvg")
+#' allPairs(x[1:3])
+#' allPairs(x[3:1])
+#' allPairs(x[c(3, 1, 2)])
+#' allPairs(x)
+#'
+#' @rdname allPairs
 #' @export
 setMethod("allPairs", signature(x = "MergedGInteractions"),
           definition = .allPairs)
