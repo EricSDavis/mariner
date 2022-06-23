@@ -37,8 +37,7 @@ setGeneric("binRanges",
 #' @rdname shiftRanges
 #' @export
 setGeneric("shiftRanges",
-           function(x,
-                    pos)
+           function(x, pos)
               standardGeneric("shiftRanges"))
 
 #' @rdname mergePairs
@@ -64,3 +63,9 @@ setGeneric("allPairs", function(x, ...)
 #' @export
 setGeneric("deNovo", function(x, ...)
     standardGeneric("deNovo"))
+
+#' @rdname aggPairMcols
+#' @export
+setGeneric("aggPairMcols",
+           function(x, columns, funs)
+               standardGeneric("aggPairMcols"))

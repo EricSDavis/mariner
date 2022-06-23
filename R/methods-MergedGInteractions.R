@@ -1,5 +1,83 @@
 ## Accessors -------------------------------------------------------------------
 
+#' Internal aggPairMcols function
+#' @inheritParams aggPairMcols
+#' @importFrom purrr pmap
+#' @importFrom glue glue glue_collapse single_quote
+#' @importFrom S4Vectors mcols
+#' @importFrom rlang abort
+#' @return `x` with aggregated metadata columns
+#' @noRd
+.aggPairMcols <- function(x, columns, funs){
+
+    ## Separate solo loops as negative integers
+    ap <- x@allPairs
+    ap[clst == 0, clst := seq(1, length(clst))*-1, by = grp]
+
+    ## Check columns exist
+    if (!any(columns %in% colnames(x@allPairs))) {
+        abort(glue("Column(s) ",
+                   "{glue_collapse(single_quote(columns), sep=',')} ",
+                   "do(es) not exist."))
+    }
+
+    ## Create a key using ids from merged pairs
+    keys <- ap[id %in% x@ids, .(id, grp, clst)]
+
+    ## Join keys by group and cluster
+    res <- ap[keys, on = .(grp, clst)]
+
+    ## Capture functions as a vector
+    funs <- c(funs)
+
+    ## Define column names
+    colNames <-
+        pmap(.l = list(columns, funs, seq_along(funs)),
+             .f = \(col, f, i) {
+                 if (is(f, "function"))
+                     glue("fun{i}.{col}")
+                 else
+                     glue("{f}.{col}")
+             }) |>
+        unlist()
+
+    ## Apply functions to columns
+    aggregatedColumns <-
+        res[, pmap(.l = list(columns, funs),
+                   .f = \(col, f) {
+                       do.call(f, list(.SD[[col]]))
+                   }), by = i.id][, i.id := NULL] |>
+        `colnames<-`(value = c(colNames))
+
+    if (nrow(aggregatedColumns) != length(x)) {
+        msg <- c("Improper aggregation function.",
+                 "i" = "`funs` must return a single value.")
+        abort(msg)
+    }
+
+    ## Add result to x
+    mcols(x) <- cbind(mcols(x), aggregatedColumns)
+
+    return(x)
+}
+
+#' Aggregate the metadata columns of merged pairs
+#'
+#' @param x MergedGInteractions object.
+#' @param columns Character vector of columns to
+#'  aggregate.
+#' @param funs Character vector of functions to apply to
+#'  `columns`.
+#'
+#' @return `x` with aggregated metadata columns
+#'
+#' @rdname aggPairMcols
+#' @export
+setMethod("aggPairMcols", signature(x = "MergedGInteractions",
+                                    columns = "character",
+                                    funs = "character_OR_function_OR_list"),
+          definition = .aggPairMcols)
+
 #' Internal find de novo pairs
 #' @inheritParams selectionMethod
 #' @return A MergedGInteractions object of de novo pairs.

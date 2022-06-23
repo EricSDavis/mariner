@@ -17,6 +17,9 @@ setClassUnion("character_OR_numeric", c("character", "numeric"))
 #' @noRd
 setClassUnion("character_OR_numeric_OR_missing",
               c("character", "numeric", "missing"))
+#' @noRd
+setClassUnion("character_OR_function_OR_list"
+              , c("character", "function", "list"))
 
 #' MergedGInteractions Class
 #'
