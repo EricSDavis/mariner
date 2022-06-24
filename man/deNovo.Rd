@@ -14,6 +14,36 @@ deNovo(x, ...)
 
 \item{...}{Additional arguments.}
 }
+\value{
+A `MergedGInteractions` object of de novo pairs.
+}
 \description{
-Find de novo pairs
+After merging sets of interaction pairs, `deNovo`
+identifies which pairs are specific to each input set.
+If several pairs are clustered together, they are
+considered de novo if they all belong to the same
+source set.
+}
+\examples{
+## Define example anchor regions
+gr1 <-
+    GRanges(seqnames = "chr1",
+            ranges = IRanges(start = c(30,40,40,70,80),
+                             end = c(40,50,50,80,90)))
+gr2 <-
+    GRanges(seqnames = "chr1",
+            ranges = IRanges(start = c(30,30,50,10,30),
+                             end = c(40,40,60,20,40)))
+
+## Form GInteractions and convert to data.table
+dt <- GInteractions(gr1, gr2) |> as.data.table()
+
+## Split into two files
+dts <- split(dt, c(rep(1,3), rep(2, 2)))
+
+## Merge pairs
+x <- mergePairs(dts, binSize = 10, radius = 2)
+
+deNovo(x)
+
 }
