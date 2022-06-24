@@ -6,7 +6,7 @@ library(S4Vectors)
 
 ## Shared objects --------------------------------------------------------------
 
-## Define anchor regions to test distance clustering
+## Define example anchor regions
 gr1 <-
     GRanges(seqnames = "chr1",
             ranges = IRanges(start = c(30,40,40,70,80),
@@ -85,6 +85,8 @@ test_that("Aggregating metadata columns works", {
     x <- mergePairs(x = bedpeFiles,
                     binSize = 5e03,
                     radius = 0)
+
+    aggPairMcols(x, columns = c("APScoreAvg", "avg"), fun = "mean")
 
     ## Testing character vs function input
     aggPairMcols(x, columns = "APScoreAvg", funs = "mean") |>

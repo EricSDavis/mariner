@@ -10,9 +10,8 @@
 #' @noRd
 .aggPairMcols <- function(x, columns, funs){
 
-    ## Separate solo loops as negative integers
+    ## Pull out all pairs
     ap <- x@allPairs
-    ap[clst == 0, clst := seq(1, length(clst))*-1, by = grp]
 
     ## Check columns exist
     if (!any(columns %in% colnames(x@allPairs))) {
@@ -80,13 +79,12 @@ setMethod("aggPairMcols", signature(x = "MergedGInteractions",
 
 #' Internal find de novo pairs
 #' @inheritParams selectionMethod
-#' @return A MergedGInteractions object of de novo pairs.
+#' @return A `MergedGInteractions` object of de novo pairs.
 #' @noRd
 .deNovo <- function(x) {
 
-    ## Separate solo loops as negative integers
+    ## Pull out all pairs
     ap <- x@allPairs
-    ap[clst == 0, clst := seq(1, length(clst))*-1, by = grp]
 
     ## Find ids of de novo pairs
     ## All clst < 0 are new
@@ -113,7 +111,39 @@ setMethod("aggPairMcols", signature(x = "MergedGInteractions",
 }
 
 #' Find de novo pairs
+#'
+#' After merging sets of interaction pairs, `deNovo`
+#' identifies which pairs are specific to each input set.
+#' If several pairs are clustered together, they are
+#' considered de novo if they all belong to the same
+#' source set.
+#'
 #' @inheritParams selectionMethod
+#'
+#' @return A `MergedGInteractions` object of de novo pairs.
+#'
+#' @examples
+#' ## Define example anchor regions
+#' gr1 <-
+#'     GRanges(seqnames = "chr1",
+#'             ranges = IRanges(start = c(30,40,40,70,80),
+#'                              end = c(40,50,50,80,90)))
+#' gr2 <-
+#'     GRanges(seqnames = "chr1",
+#'             ranges = IRanges(start = c(30,30,50,10,30),
+#'                              end = c(40,40,60,20,40)))
+#'
+#' ## Form GInteractions and convert to data.table
+#' dt <- GInteractions(gr1, gr2) |> as.data.table()
+#'
+#' ## Split into two files
+#' dts <- split(dt, c(rep(1,3), rep(2, 2)))
+#'
+#' ## Merge pairs
+#' x <- mergePairs(dts, binSize = 10, radius = 2)
+#'
+#' deNovo(x)
+#'
 #' @rdname deNovo
 #' @export
 setMethod("deNovo", signature(x = "MergedGInteractions"),
@@ -128,9 +158,8 @@ setMethod("deNovo", signature(x = "MergedGInteractions"),
 #' @noRd
 .allPairs <- function(x) {
 
-    ## Separate solo loops as negative integers
+    ## Pull out all pairs
     ap <- x@allPairs
-    ap[clst == 0, clst := seq(1, length(clst))*-1, by = grp]
 
     ## Create a key using ids from merged pairs
     keys <- ap[id %in% x@ids, .(id, grp, clst)]
@@ -151,6 +180,11 @@ setMethod("deNovo", signature(x = "MergedGInteractions"),
 }
 
 #' Get all pairs from MergedGInteractions object
+#'
+#' Returns the clustered pairs associated with each
+#' range in the `MergedGInteractions` object. Order always
+#' follows the indices of the `MergedGInteractions`
+#' object.
 #'
 #' @inheritParams selectionMethod
 #'

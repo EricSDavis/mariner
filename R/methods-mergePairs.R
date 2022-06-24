@@ -161,6 +161,9 @@
                       binSize = binSize)},
        by = grp]
 
+    ## Separate unique pairs by denoting as negative integers
+    dt[clst == 0, clst := seq(1, length(clst))*-1, by = grp]
+
     if (missing(column)) {
         ## Fast mean of modes
         selectionMethod <- "Mean of modes"
@@ -169,7 +172,7 @@
         columnsToUpdate <- c("start1", "end1", "start2", "end2")
 
         ## Update with mean of modes for each group and cluster
-        dt[clst != 0,
+        dt[clst > 0,
            (columnsToUpdate) :=
                .newPairRanges(start1 = .SD[['start1']],
                               start2 = .SD[['start2']],
@@ -177,8 +180,8 @@
            by = .(grp, clst)]
 
         ## Select the first of the duplicated pairs
-        single <- dt[clst == 0]
-        selected <- dt[dt[clst != 0,.I[1], by = .(grp, clst)]$V1]
+        single <- dt[clst < 0]
+        selected <- dt[dt[clst > 0,.I[1], by = .(grp, clst)]$V1]
         mergedPairs <- rbind(single, selected)
 
         ## Remove metadata (since the choice is arbitrary)
@@ -191,8 +194,8 @@
         column <- gsub("(^src$|^id$|^grp$|^clst$)", "\\1_1", column)
 
         ## Fast find by column
-        single <- dt[clst == 0]
-        selected <- dt[dt[clst != 0,
+        single <- dt[clst < 0]
+        selected <- dt[dt[clst > 0,
                           .I[which.max(.SD[[column]])],
                           by=.(grp,clst)]$V1]
         mergedPairs <- rbind(single, selected)

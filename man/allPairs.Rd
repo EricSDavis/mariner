@@ -19,7 +19,10 @@ A list of data.tables cooresponding to each pair
  in `x`.
 }
 \description{
-Get all pairs from MergedGInteractions object
+Returns the clustered pairs associated with each
+range in the `MergedGInteractions` object. Order always
+follows the indices of the `MergedGInteractions`
+object.
 }
 \examples{
 ## Reference BEDPE files (loops called with SIP)
