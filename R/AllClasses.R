@@ -21,6 +21,173 @@ setClassUnion("character_OR_numeric_OR_missing",
 setClassUnion("character_OR_function_OR_list"
               , c("character", "function", "list"))
 
+
+#' Virtual class for delegating GInteractions
+#'
+#' Uses a delegate `GInteractions` object during
+#' initialization to assign its `GInteractions` slots.
+#'
+#' @slot delegate A `GInteractions` object used to initialize
+#'  `GInteractions`-specific slots.
+#' @slot anchor1 `anchorIds(delegate)$first`
+#' @slot anchor2 `anchorIds(delegate)$second`
+#' @slot regions `regions(delegate)`
+#' @slot NAMES `names(delegate)`
+#' @slot elementMetadata `elementMetadata(delegate)`
+#' @slot metadata `metadata(delegate)`
+#'
+#' @seealso [InteractionSet::GInteractions]
+#'
+#' @rdname DelegatingGInteractions-class
+#' @export
+setClass(
+    Class = "DelegatingGInteractions",
+    contains = "VIRTUAL",
+    slots = list(
+        delegate = "GInteractions"
+    )
+)
+
+#' Initialization method for MergedGInteractions
+#' @importFrom InteractionSet anchorIds
+#' @importFrom InteractionSet regions
+#' @importFrom S4Vectors elementMetadata
+#' @importFrom S4Vectors metadata
+setMethod(
+    f = "initialize",
+    signature = "DelegatingGInteractions",
+    definition = function(.Object, ..., delegate = GInteractions()) {
+
+        ## Use GInteractions object to set other attributes
+        .Object@delegate <- delegate
+        .Object@anchor1 <- anchorIds(delegate)$first
+        .Object@anchor2 <- anchorIds(delegate)$second
+        .Object@regions <- regions(delegate)
+        .Object@NAMES <- names(delegate)
+        .Object@elementMetadata <- elementMetadata(delegate)
+        .Object@metadata <- metadata(delegate)
+
+        ## Use default class generator function
+        .Object <- callNextMethod(.Object, ...)
+        .Object
+    })
+
+#' BinnedGInteractions Class
+#'
+#' The `BinnedGInteractions` class extends
+#' `GInteractions` to enforce consistent
+#' range widths.
+#'
+#' @slot delegate A `GInteractions` object used to initialize
+#'  `GInteractions`-specific slots.
+#' @slot firstBinSize Integer describing first pair bin width.
+#' @slot secondBinSize Integer describing second pair bin width.
+#' @slot pairBinsEqual Logical. TRUE if `firstBinSize` ==
+#'  `secondBinSize` and FALSE if `firstBinSize` != `secondBinSize`.
+#'
+#' @seealso [InteractionSet::GInteractions]
+#'
+#' @rdname BinnedGInteractions-class
+#' @export
+setClass(
+    Class = "BinnedGInteractions",
+    contains = c("GInteractions", "DelegatingGInteractions"),
+    slots = list(
+        delegate = "GInteractions",
+        firstBinSize = "integer",
+        secondBinSize = "integer",
+        pairBinsEqual = "logical"
+    )
+)
+
+#' Constructor for BinnedGInteractions Class
+#' @rdname BinnedGInteractions-class
+#' @export
+BinnedGInteractions <- function(delegate) {
+    new("BinnedGInteractions", delegate = delegate)
+}
+
+#' Validate BinnedGInteractions
+setValidity("BinnedGInteractions", function(object) {
+
+    ## TODO: Update object
+
+    ## Get the widths of each pair
+    w <- width(object)
+    fbs <- w$first
+    sbs <- w$second
+
+    ## Check length of first bin
+    if (length(unique(fbs)) == 1) {
+        object@firstBinSize <- fbs[1]
+    } else {
+        msg <- c("First pair of ranges must all have equal widths.",
+                 'i' = glue("Use `binPairs()` to bin paired ranges."))
+        abort(msg)
+    }
+
+    if (length(unique(sbs)) == 1) {
+        object@secondBinSize <- sbs[1]
+    } else {
+        msg <- c("Second pair of ranges must all have equal widths.",
+                 'i' = glue("Use `binPairs()` to bin paired ranges."))
+        abort(msg)
+    }
+
+    if (object@firstBinSize == object@secondBinSize) {
+        object@pairBinsEqual <- TRUE
+    } else {
+        object@pairBinsEqual <- FALSE
+    }
+
+    return(TRUE)
+
+})
+
+#' Initialize BinnedGInteractions
+#' @importFrom rlang abort
+#' @importFrom glue glue glue_collapse
+setMethod(
+    f = "initialize",
+    signature = "BinnedGInteractions",
+    definition = function(.Object, ..., delegate = GInteractions()) {
+
+        ## Get the widths of each pair
+        w <- width(delegate)
+        fbs <- w$first
+        sbs <- w$second
+
+        ## Check length of first bin
+        if (length(unique(fbs)) == 1) {
+            .Object@firstBinSize <- fbs[1]
+        } else {
+            msg <- c("First pair of ranges must all have equal widths.",
+                     'i' = glue("Use `binPairs()` to bin paired ranges."))
+            abort(msg)
+        }
+
+        if (length(unique(sbs)) == 1) {
+            .Object@secondBinSize <- sbs[1]
+        } else {
+            msg <- c("Second pair of ranges must all have equal widths.",
+                     'i' = glue("Use `binPairs()` to bin paired ranges."))
+            abort(msg)
+        }
+
+        if (.Object@firstBinSize == .Object@secondBinSize) {
+            .Object@pairBinsEqual <- TRUE
+        } else {
+            .Object@pairBinsEqual <- FALSE
+        }
+
+        ## Check valididty
+        validObject(object)
+
+        ## Pass GInteractions construction to virtual class
+        .Object <- callNextMethod(.Object, ..., delegate = delegate)
+        .Object
+    })
+
 #' MergedGInteractions Class
 #'
 #' The `MergedGInteractions` class extends the
@@ -47,12 +214,6 @@ setClassUnion("character_OR_function_OR_list"
 #' @slot selectionMethod Character describing which method
 #'  was used to select the final pair from the cluster of
 #'  merged pairs.
-#' @slot anchor1 `anchorIds(delegate)$first`
-#' @slot anchor2 `anchorIds(delegate)$second`
-#' @slot regions `regions(delegate)`
-#' @slot NAMES `names(delegate)`
-#' @slot elementMetadata `elementMetadata(delegate)`
-#' @slot metadata `metadata(delegate)`
 #'
 #' @seealso [InteractionSet::GInteractions]
 #'
@@ -71,7 +232,7 @@ setClassUnion("character_OR_function_OR_list"
 #' @export
 MergedGInteractions <- setClass(
     Class = "MergedGInteractions",
-    contains = "GInteractions",
+    contains = c("GInteractions", "DelegatingGInteractions"),
     slots = list(
         delegate = "GInteractions",
         ids = "integer",
@@ -80,27 +241,14 @@ MergedGInteractions <- setClass(
     )
 )
 
-#' Initialization method for MergedGInteractions
-#' @importFrom InteractionSet anchorIds
-#' @importFrom InteractionSet regions
-#' @importFrom S4Vectors elementMetadata
-#' @importFrom S4Vectors metadata
+#' Initialize MergedGInteractions
 setMethod(
     f = "initialize",
     signature = "MergedGInteractions",
     definition = function(.Object, ..., delegate = GInteractions()) {
 
-        ## Use GInteractions object to set other attributes
-        .Object@delegate <- delegate
-        .Object@anchor1 <- anchorIds(delegate)$first
-        .Object@anchor2 <- anchorIds(delegate)$second
-        .Object@regions <- regions(delegate)
-        .Object@NAMES <- names(delegate)
-        .Object@elementMetadata <- elementMetadata(delegate)
-        .Object@metadata <- metadata(delegate)
-
-        ## Use default class generator function
-        .Object <- callNextMethod(.Object, ...)
+        ## Pass GInteractions construction to virtual class
+        .Object <- callNextMethod(.Object, ..., delegate = delegate)
         .Object
     })
 
