@@ -2,10 +2,10 @@
 % Please edit documentation in R/AllClasses.R
 \name{initialize,MergedGInteractions-method}
 \alias{initialize,MergedGInteractions-method}
-\title{Initialization method for MergedGInteractions}
+\title{Initialize MergedGInteractions}
 \usage{
 \S4method{initialize}{MergedGInteractions}(.Object, ..., delegate = GInteractions())
 }
 \description{
-Initialization method for MergedGInteractions
+Initialize MergedGInteractions
 }

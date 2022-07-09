@@ -37,18 +37,6 @@ cluster from `dbscan` (i.e. `clst`).}
 \item{\code{selectionMethod}}{Character describing which method
 was used to select the final pair from the cluster of
 merged pairs.}
-
-\item{\code{anchor1}}{`anchorIds(delegate)$first`}
-
-\item{\code{anchor2}}{`anchorIds(delegate)$second`}
-
-\item{\code{regions}}{`regions(delegate)`}
-
-\item{\code{NAMES}}{`names(delegate)`}
-
-\item{\code{elementMetadata}}{`elementMetadata(delegate)`}
-
-\item{\code{metadata}}{`metadata(delegate)`}
 }}
 
 \examples{

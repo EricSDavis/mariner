@@ -69,3 +69,25 @@ setGeneric("deNovo", function(x, ...)
 setGeneric("aggPairMcols",
            function(x, columns, funs)
                standardGeneric("aggPairMcols"))
+
+#' @rdname BinnedGInteractions-class
+#' @export
+setGeneric("firstBinSize", function(x) standardGeneric("firstBinSize"))
+
+#' @rdname BinnedGInteractions-class
+#' @export
+setGeneric("secondBinSize", function(x) standardGeneric("secondBinSize"))
+
+#' @rdname BinnedGInteractions-class
+#' @export
+setGeneric("pairBinsEqual", function(x) standardGeneric("pairBinsEqual"))
+
+#' @rdname pullHicPixels
+#' @export
+setGeneric("pullHicPixels",
+           function(x,
+                    hic,
+                    binSize,
+                    norm = "NONE",
+                    ...)
+               standardGeneric("pullHicPixels"))
