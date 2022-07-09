@@ -48,7 +48,7 @@ setClass(
     )
 )
 
-#' Initialization method for MergedGInteractions
+#' Initialization method for DelegatingGInteractions
 #' @importFrom InteractionSet anchorIds
 #' @importFrom InteractionSet regions
 #' @importFrom S4Vectors elementMetadata
@@ -107,46 +107,9 @@ BinnedGInteractions <- function(delegate) {
     new("BinnedGInteractions", delegate = delegate)
 }
 
-#' Validate BinnedGInteractions
-setValidity("BinnedGInteractions", function(object) {
-
-    ## TODO: Update object
-
-    ## Get the widths of each pair
-    w <- width(object)
-    fbs <- w$first
-    sbs <- w$second
-
-    ## Check length of first bin
-    if (length(unique(fbs)) == 1) {
-        object@firstBinSize <- fbs[1]
-    } else {
-        msg <- c("First pair of ranges must all have equal widths.",
-                 'i' = glue("Use `binPairs()` to bin paired ranges."))
-        abort(msg)
-    }
-
-    if (length(unique(sbs)) == 1) {
-        object@secondBinSize <- sbs[1]
-    } else {
-        msg <- c("Second pair of ranges must all have equal widths.",
-                 'i' = glue("Use `binPairs()` to bin paired ranges."))
-        abort(msg)
-    }
-
-    if (object@firstBinSize == object@secondBinSize) {
-        object@pairBinsEqual <- TRUE
-    } else {
-        object@pairBinsEqual <- FALSE
-    }
-
-    return(TRUE)
-
-})
-
 #' Initialize BinnedGInteractions
 #' @importFrom rlang abort
-#' @importFrom glue glue glue_collapse
+#' @importFrom glue glue
 setMethod(
     f = "initialize",
     signature = "BinnedGInteractions",
@@ -157,7 +120,7 @@ setMethod(
         fbs <- w$first
         sbs <- w$second
 
-        ## Check length of first bin
+        ## Check & set length of first bin
         if (length(unique(fbs)) == 1) {
             .Object@firstBinSize <- fbs[1]
         } else {
@@ -166,6 +129,7 @@ setMethod(
             abort(msg)
         }
 
+        ## Check & set length of second bin
         if (length(unique(sbs)) == 1) {
             .Object@secondBinSize <- sbs[1]
         } else {
@@ -174,19 +138,56 @@ setMethod(
             abort(msg)
         }
 
+        ## Set pairBinsEqual flag
         if (.Object@firstBinSize == .Object@secondBinSize) {
             .Object@pairBinsEqual <- TRUE
         } else {
             .Object@pairBinsEqual <- FALSE
         }
 
-        ## Check valididty
-        validObject(object)
-
         ## Pass GInteractions construction to virtual class
         .Object <- callNextMethod(.Object, ..., delegate = delegate)
+        validObject(.Object)
         .Object
     })
+
+#' Validate BinnedGInteractions
+#' @name BinnedGInteractions-class
+setValidity("BinnedGInteractions", function(object) {
+
+    ## Get the widths of each pair
+    w <- width(object)
+    fbs <- w$first
+    sbs <- w$second
+
+    if (length(unique(fbs)) != 1)
+        "Widths of the first anchor are not the same."
+
+    if (length(unique(sbs)) != 1)
+        "Widths of the second anchor are not the same."
+
+    if (fbs[1] != object@firstBinSize)
+        "Incorrect `firstBinSize`."
+
+    if (sbs[1] != object@secondBinSize)
+        "Incorrect `secondBinSize`."
+
+    if (object@pairBinsEqual) {
+        if (object@firstBinSize != object@secondBinSize) {
+            "Incorrect `pairBinsEqual` flag."
+        }
+    }
+
+    if (!object@pairBinsEqual) {
+        if (object@firstBinSize == object@secondBinSize) {
+            "Incorrect `pairBinsEqual` flag."
+        }
+    }
+
+    return(TRUE)
+
+})
+
 
 #' MergedGInteractions Class
 #'
