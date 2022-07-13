@@ -299,11 +299,9 @@
 #'  file paths of BEDPE-formatted data to be merged.
 #' @param binSize Integer (numeric) describing the
 #'  resolution (range widths) of the paired data.
-#'  Used to determine the epsilon value for `dbscan()`
-#'  (i.e. `eps = binSize*2`).
-#' @param radius Character - distance measure
-#'  passed to `dist()`. For available methods see
-#'  `?dist()`.
+#' @param radius manhattan distance used to define
+#'  a cluster of pairs. Used to determine the epsilon
+#'  value for `dbscan()` (i.e. `eps = radius*binSize`).
 #' @param column Integer or character denoting the
 #'  column to be used to select among clustered
 #'  interactions.
