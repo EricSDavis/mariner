@@ -65,7 +65,7 @@ test_that("allPairs accessor works", {
 })
 
 
-test_that("deNovo method works", {
+test_that("deNovo method works (and sources accessor)", {
 
     ## Merge pairs
     x <- mergePairs(dts, binSize = 10, radius = 2)
@@ -75,6 +75,61 @@ test_that("deNovo method works", {
         unname() |>
         unlist() |>
         expect_equal(c(2,1))
+
+
+    ## LIMA loops test (subsample these for faster tests)
+    loopFiles <- list.files("inst/extdata/lima_loops",
+                            full.names = TRUE)
+    x <- mergePairs(loopFiles, binSize = 10e03, radius = 5, column = "APScoreAvg")
+
+    ## Test sources accessor
+    sources(x)
+
+    ## deNovo method dispatch
+    deNovo(x)
+    deNovo(x)[sources(x)[1]]
+    deNovo(x, include = sources(x)[1])
+    deNovo(x, exclude = sources(x)[1])
+
+    ## deNovo(x) produces same result as using include & exclude
+    expect_equal(length(deNovo(x)[[sources(x)[1]]]),
+                 length(deNovo(x,
+                               include = sources(x)[1],
+                               exclude = sources(x)[2:8])))
+
+    ## deNovo(x) == include/exclude for all sources
+    expect_equal(
+        lapply(seq_along(sources(x)), \(i){
+            j <- seq_along(sources(x))[-i]
+            deNovo(x = x, include = sources(x)[i], exclude = sources(x)[j])
+        }) |>
+            lapply(length) |>
+            unlist(),
+        deNovo(x) |> lapply(length) |> unlist() |> unname()
+    )
+
+
+    ## Include/exclude work as expected
+    mgi <- deNovo(x, include = sources(x)[1:2], exclude = sources(x)[3:8])
+    expect_identical(allPairs(mgi) |>
+                         lapply(`[[`, "src") |>
+                         unlist() |>
+                         unique(),
+                     sources(x)[1:2])
+
+
+    ## Smaller test set
+    # gi <-
+    #     c(GInteractions(GRanges("chr1:20-30"), GRanges("chr1:40-50"), name=1),
+    #       GInteractions(GRanges("chr1:20-30"), GRanges("chr1:30-40"), name=2),
+    #       GInteractions(GRanges("chr1:50-60"), GRanges("chr1:60-70"), name=4),
+    #       GInteractions(GRanges("chr1:60-70"), GRanges("chr1:60-70"), name=5),
+    #       GInteractions(GRanges("chr1:80-90"), GRanges("chr1:30-40"), name=6))
+    # gi2 <-
+    #     GInteractions(GRanges("chr1:30-40"), GRanges("chr1:40-50"), name=3)
+    # x <- mergePairs(list(gi, gi2), binSize = 10)
+    # allPairs(x)
+
 
 })
 

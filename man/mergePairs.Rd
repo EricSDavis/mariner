@@ -18,13 +18,11 @@ a list of `data.frame`-like objects, or a list of
 file paths of BEDPE-formatted data to be merged.}
 
 \item{binSize}{Integer (numeric) describing the
-resolution (range widths) of the paired data.
-Used to determine the epsilon value for `dbscan()`
-(i.e. `eps = binSize*2`).}
+resolution (range widths) of the paired data.}
 
-\item{radius}{Character - distance measure
-passed to `dist()`. For available methods see
-`?dist()`.}
+\item{radius}{manhattan distance used to define
+a cluster of pairs. Used to determine the epsilon
+value for `dbscan()` (i.e. `eps = radius*binSize`).}
 
 \item{column}{Integer or character denoting the
 column to be used to select among clustered

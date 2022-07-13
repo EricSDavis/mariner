@@ -77,6 +77,126 @@ setMethod("aggPairMcols", signature(x = "MergedGInteractions",
                                     funs = "character_OR_function_OR_list"),
           definition = .aggPairMcols)
 
+#' Accessor for sources
+#'
+#' Access the names or source files of
+#' a `MergedGInteractions` object.
+#'
+#' @inheritParams deNovo
+#' @examples
+#' loopFiles <- list.files(path = system.file("extdata", package = "mariner"),
+#'                         pattern = "Loops.txt",
+#'                         full.names = TRUE)
+#' x <- mergePairs(x = loopFiles)
+#' sources(x)
+#'
+#' @rdname sources
+#' @export
+setMethod("sources", "MergedGInteractions",
+          function(x) as.character(unique(x@allPairs$src)))
+
+#' Find de novo pairs
+#' @inheritParams deNovo
+#' @importFrom data.table data.table
+#' @return A logical matrix with columns for each source
+#'  and rows for each merged pair indicating that pair's
+#'  presence or abscence from the source (file or object).
+#' @noRd
+.deNovoSrcMatrix <- function(x) {
+
+    ## Pull out all pairs
+    ap <- x@allPairs
+
+    ## Create a key using ids from merged pairs
+    keys <- ap[id %in% x@ids, .(id, grp, clst)]
+
+    ## Join keys by group and cluster
+    res <- ap[keys, on = .(grp, clst)]
+
+    ## Define the available sources
+    srcs <- sources(x)
+
+    ## Create source matrix
+    srcMat <-
+        lapply(srcs, \(x) x == res$src) |>
+        setNames(srcs) |>
+        as.data.table()
+
+    ## Bind identifiers to the source matrix
+    srcMat <- cbind(res, srcMat)
+
+    ## Group by identifiers (x@ids)
+    srcMat <- srcMat[,lapply(.SD, any), by=.(i.id), .SDcols=srcs]
+
+    ## Put them in the correct order
+    stopifnot(all(srcMat[rank(x@ids)]$i.id == x@ids))
+    srcMat <- srcMat[rank(x@ids)]
+
+    ## Drop id column and convert to pure matrix
+    srcMat[, i.id := NULL]
+    m <- as.matrix(srcMat)
+
+    ## Return the source matrix
+    return(m)
+}
+
+#' Find de novo pairs using include and exclude sources
+#' @inheritParams deNovo
+#' @importFrom data.table data.table
+#' @return A `MergedGInteractions` object of de novo pairs.
+#' @noRd
+.deNovoIncludeExclude <- function(x, include, exclude) {
+
+    ## Calculate the src matrix
+    srcMat <- .deNovoSrcMatrix(x)
+
+    ## Include and exclude
+    inBool <- apply(srcMat[,include, drop=FALSE], 1, all)
+    exBool <- apply(!srcMat[,exclude, drop=FALSE], 1, all)
+
+    ## Use intersecting conditions
+    if (any(inBool & exBool)) {
+        x[inBool & exBool]
+    }
+}
+
+#' Find de novo pairs using include sources
+#' @inheritParams deNovo
+#' @return A `MergedGInteractions` object of de novo pairs.
+#' @noRd
+.deNovoInclude <- function(x, include) {
+
+    ## Calculate the src matrix
+    srcMat <- .deNovoSrcMatrix(x)
+
+    ## Include
+    bool <- apply(srcMat[,include, drop=FALSE], 1, all)
+
+    ## Use intersecting conditions
+    if (any(bool)) {
+        x[bool]
+    }
+}
+
+#' Find de novo pairs using exclude sources
+#' @inheritParams deNovo
+#' @importFrom data.table data.table
+#' @return A `MergedGInteractions` object of de novo pairs.
+#' @noRd
+.deNovoExclude <- function(x, exclude) {
+
+    ## Calculate the src matrix
+    srcMat <- .deNovoSrcMatrix(x)
+
+    ## Exclude
+    bool <- apply(!srcMat[,exclude, drop=FALSE], 1, all)
+
+    ## Use intersecting conditions
+    if (any(bool)) {
+        x[bool]
+    }
+}
+
 #' Internal find de novo pairs
 #' @inheritParams selectionMethod
 #' @return A `MergedGInteractions` object of de novo pairs.
@@ -118,7 +238,24 @@ setMethod("aggPairMcols", signature(x = "MergedGInteractions",
 #' considered de novo if they all belong to the same
 #' source set.
 #'
+#' Optional `include` and `exclude` parameters modulate
+#' the behaveior of `deNovo` to return different subsets
+#' of co-existing pairs. For example, `include` requires
+#' that the returned pairs be present in specific sources,
+#' while `exclude` requires that returned pairs be absent
+#' from specific sources. Sources not listed in either
+#' `include` or `exclude` are ingnored (they may or may not)
+#' be present in the returned `MergedGInteractions` object.
+#' `include` and `exclude` can be used indepedently or in
+#' combination to return every possible set.
+#'
 #' @inheritParams selectionMethod
+#' @param include (Optional) A character vector of sources
+#'  in which a pair must be present. For a list of available
+#'  sources use `sources(x)`.
+#' @param exclude (Optional) A character vector of sources
+#'  in which a pair must be absent. For a list of available
+#'  sources use `sources(x)`.
 #'
 #' @return A `MergedGInteractions` object of de novo pairs.
 #'
@@ -146,8 +283,32 @@ setMethod("aggPairMcols", signature(x = "MergedGInteractions",
 #'
 #' @rdname deNovo
 #' @export
-setMethod("deNovo", signature(x = "MergedGInteractions"),
+setMethod("deNovo", signature(x = "MergedGInteractions",
+                              include = "missing",
+                              exclude = "missing"),
           definition = .deNovo)
+
+#' @rdname deNovo
+#' @export
+setMethod("deNovo", signature(x = "MergedGInteractions",
+                              include = "character_OR_missing",
+                              exclude = "missing"),
+          definition = .deNovoInclude)
+
+#' @rdname deNovo
+#' @export
+setMethod("deNovo", signature(x = "MergedGInteractions",
+                              include = "missing",
+                              exclude = "character_OR_missing"),
+          definition = .deNovoExclude)
+
+#' @rdname deNovo
+#' @export
+setMethod("deNovo", signature(x = "MergedGInteractions",
+                              include = "character_OR_missing",
+                              exclude = "character_OR_missing"),
+          definition = .deNovoIncludeExclude)
+
 
 
 #' Internal accessor function for allPairs

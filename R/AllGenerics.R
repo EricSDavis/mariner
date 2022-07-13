@@ -59,9 +59,16 @@ setGeneric("selectionMethod", function(x, ...)
 setGeneric("allPairs", function(x, ...)
     standardGeneric("allPairs"))
 
+#' @rdname sources
+#' @export
+setGeneric("sources", function(x, ...)
+    standardGeneric("sources"))
+
 #' @rdname deNovo
 #' @export
-setGeneric("deNovo", function(x, ...)
+setGeneric("deNovo", function(x,
+                              include,
+                              exclude)
     standardGeneric("deNovo"))
 
 #' @rdname aggPairMcols

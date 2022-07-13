@@ -2,17 +2,32 @@
 % Please edit documentation in R/AllGenerics.R, R/methods-MergedGInteractions.R
 \name{deNovo}
 \alias{deNovo}
-\alias{deNovo,MergedGInteractions-method}
+\alias{deNovo,MergedGInteractions,missing,missing-method}
+\alias{deNovo,MergedGInteractions,character_OR_missing,missing-method}
+\alias{deNovo,MergedGInteractions,missing,character_OR_missing-method}
+\alias{deNovo,MergedGInteractions,character_OR_missing,character_OR_missing-method}
 \title{Find de novo pairs}
 \usage{
-deNovo(x, ...)
+deNovo(x, include, exclude)
 
-\S4method{deNovo}{MergedGInteractions}(x)
+\S4method{deNovo}{MergedGInteractions,missing,missing}(x)
+
+\S4method{deNovo}{MergedGInteractions,character_OR_missing,missing}(x, include)
+
+\S4method{deNovo}{MergedGInteractions,missing,character_OR_missing}(x, exclude)
+
+\S4method{deNovo}{MergedGInteractions,character_OR_missing,character_OR_missing}(x, include, exclude)
 }
 \arguments{
 \item{x}{MergedGInteractions object.}
 
-\item{...}{Additional arguments.}
+\item{include}{(Optional) A character vector of sources
+in which a pair must be present. For a list of available
+sources use `sources(x)`.}
+
+\item{exclude}{(Optional) A character vector of sources
+in which a pair must be absent. For a list of available
+sources use `sources(x)`.}
 }
 \value{
 A `MergedGInteractions` object of de novo pairs.
@@ -23,6 +38,18 @@ identifies which pairs are specific to each input set.
 If several pairs are clustered together, they are
 considered de novo if they all belong to the same
 source set.
+}
+\details{
+Optional `include` and `exclude` parameters modulate
+the behaveior of `deNovo` to return different subsets
+of co-existing pairs. For example, `include` requires
+that the returned pairs be present in specific sources,
+while `exclude` requires that returned pairs be absent
+from specific sources. Sources not listed in either
+`include` or `exclude` are ingnored (they may or may not)
+be present in the returned `MergedGInteractions` object.
+`include` and `exclude` can be used indepedently or in
+combination to return every possible set.
 }
 \examples{
 ## Define example anchor regions
