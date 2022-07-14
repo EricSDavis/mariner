@@ -49,7 +49,9 @@ from specific sources. Sources not listed in either
 `include` or `exclude` are ingnored (they may or may not)
 be present in the returned `MergedGInteractions` object.
 `include` and `exclude` can be used indepedently or in
-combination to return every possible set.
+combination to return every possible set. If any of the
+same sources are used in both `include` and `exclude` the
+function will return a 0-length MergedGInteractions object.
 }
 \examples{
 ## Define example anchor regions

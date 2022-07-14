@@ -140,12 +140,38 @@ setMethod("sources", "MergedGInteractions",
     return(m)
 }
 
+#' Check source names
+#' @inheritParams deNovo
+#' @param vec Input character vector (i.e. include, exclude or both)
+#' @importFrom glue glue glue_collapse double_quote
+#' @importFrom rlang abort
+#' @return Nothing or Error message
+#' @noRd
+.checkSourceNames <- function(x, vec) {
+    src <- sources(x)
+    y <- !(vec %in% src)
+    if (any(y)) {
+        errorVals <-
+            vec[which(y)] |>
+            unique() |>
+            double_quote() |>
+            glue_collapse(sep = ', ')
+        msg <- c(glue("{errorVals} not source option(s) ",
+                      "for parameters `include` or `exclude`."),
+                 "i" = glue("Use `sources(x)` to see available options."))
+        abort(msg)
+    }
+}
+
 #' Find de novo pairs using include and exclude sources
 #' @inheritParams deNovo
 #' @importFrom data.table data.table
 #' @return A `MergedGInteractions` object of de novo pairs.
 #' @noRd
 .deNovoIncludeExclude <- function(x, include, exclude) {
+
+    ## Check source names
+    .checkSourceNames(x, vec = c(include, exclude))
 
     ## Calculate the src matrix
     srcMat <- .deNovoSrcMatrix(x)
@@ -154,9 +180,11 @@ setMethod("sources", "MergedGInteractions",
     inBool <- apply(srcMat[,include, drop=FALSE], 1, all)
     exBool <- apply(!srcMat[,exclude, drop=FALSE], 1, all)
 
-    ## Use intersecting conditions
+    ## Use intersecting conditions to return mergedPairs
     if (any(inBool & exBool)) {
         x[inBool & exBool]
+    } else {
+        x[0]
     }
 }
 
@@ -165,6 +193,9 @@ setMethod("sources", "MergedGInteractions",
 #' @return A `MergedGInteractions` object of de novo pairs.
 #' @noRd
 .deNovoInclude <- function(x, include) {
+
+    ## Check source names
+    .checkSourceNames(x, vec = include)
 
     ## Calculate the src matrix
     srcMat <- .deNovoSrcMatrix(x)
@@ -175,6 +206,8 @@ setMethod("sources", "MergedGInteractions",
     ## Use intersecting conditions
     if (any(bool)) {
         x[bool]
+    } else {
+        x[0]
     }
 }
 
@@ -185,6 +218,9 @@ setMethod("sources", "MergedGInteractions",
 #' @noRd
 .deNovoExclude <- function(x, exclude) {
 
+    ## Check source names
+    .checkSourceNames(x, vec = exclude)
+
     ## Calculate the src matrix
     srcMat <- .deNovoSrcMatrix(x)
 
@@ -194,6 +230,8 @@ setMethod("sources", "MergedGInteractions",
     ## Use intersecting conditions
     if (any(bool)) {
         x[bool]
+    } else {
+        x[0]
     }
 }
 
@@ -247,7 +285,9 @@ setMethod("sources", "MergedGInteractions",
 #' `include` or `exclude` are ingnored (they may or may not)
 #' be present in the returned `MergedGInteractions` object.
 #' `include` and `exclude` can be used indepedently or in
-#' combination to return every possible set.
+#' combination to return every possible set. If any of the
+#' same sources are used in both `include` and `exclude` the
+#' function will return a 0-length MergedGInteractions object.
 #'
 #' @inheritParams selectionMethod
 #' @param include (Optional) A character vector of sources
