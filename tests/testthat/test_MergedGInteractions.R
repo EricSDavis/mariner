@@ -65,7 +65,7 @@ test_that("allPairs accessor works", {
 })
 
 
-test_that("deNovo method works (and sources accessor)", {
+test_that("subsetBySource method works (and sources accessor)", {
 
     ## LIMA loops test
     loopFiles <-
@@ -86,64 +86,70 @@ test_that("deNovo method works (and sources accessor)", {
     ## Test sources accessor
     expect_identical(sources(x), basename(loopFiles))
 
-    ## deNovo method dispatch
-    expect_equal(deNovo(x) |> length(), 8)
-    expect_equal(deNovo(x)[[sources(x)[1]]] |> length(), 776)
-    expect_equal(deNovo(x, include = sources(x)[1]) |> length(), 3907)
-    expect_equal(deNovo(x, exclude = sources(x)[1]) |> length(), 9337)
+    ## subsetBySource method dispatch
+    expect_equal(subsetBySource(x) |> length(), 8)
+    expect_equal(subsetBySource(x)[[sources(x)[1]]] |> length(), 776)
+    expect_equal(subsetBySource(x, include = sources(x)[1]) |> length(), 3907)
+    expect_equal(subsetBySource(x, exclude = sources(x)[1]) |> length(), 9337)
 
     ## Handles cases where none are found
-    deNovo(x,
+    subsetBySource(x,
            include = sources(x)[1],
            exclude = sources(x)[1]) |>
         length() |>
         expect_equal(0)
-    deNovo(x,
+    subsetBySource(x,
            include = sources(x)[1:2],
            exclude = sources(x)[1]) |>
         length() |>
         expect_equal(0)
-    deNovo(x, exclude = sources(x)) |>
+    subsetBySource(x, exclude = sources(x)) |>
         length() |>
         expect_equal(0)
 
     ## Handles improper source name
-    expect_error(deNovo(x, include = "foo"),
+    expect_error(subsetBySource(x, include = "foo"),
                  ".*foo.*not source option")
-    expect_error(deNovo(x, exclude = "foo"),
+    expect_error(subsetBySource(x, exclude = "foo"),
                  ".*foo.*not source option")
-    expect_error(deNovo(x, include = ""),
+    expect_error(subsetBySource(x, include = ""),
                  ".*not source option")
-    expect_error(deNovo(x, exclude = ""),
+    expect_error(subsetBySource(x, exclude = ""),
                  ".*not source option")
-    expect_error(deNovo(x, include = "foo", exclude = "foo"),
+    expect_error(subsetBySource(x, include = "foo", exclude = "foo"),
                  ".*foo.*not source option")
-    expect_error(deNovo(x, include = "foo", exclude = "bar"),
+    expect_error(subsetBySource(x, include = "foo", exclude = "bar"),
                  ".*foo.*bar.*not source option")
-    expect_error(deNovo(x,
+    expect_error(subsetBySource(x,
                         include = c(sources(x)[1], "foo"),
                         exclude = "bar"),
                  ".*foo.*bar.*not source option")
 
-    ## deNovo(x) produces same result as using include & exclude
-    expect_equal(length(deNovo(x)[[sources(x)[1]]]),
-                 length(deNovo(x,
+    ## subsetBySource(x) produces same result as
+    ## using include & exclude
+    expect_equal(length(subsetBySource(x)[[sources(x)[1]]]),
+                 length(subsetBySource(x,
                                include = sources(x)[1],
                                exclude = sources(x)[2:8])))
 
-    ## deNovo(x) produces same result as include/exclude for all sources
+    ## subsetBySource(x) produces same result as
+    ## include/exclude for all sources
     expect_equal(
         lapply(seq_along(sources(x)), \(i){
             j <- seq_along(sources(x))[-i]
-            deNovo(x = x, include = sources(x)[i], exclude = sources(x)[j])
+            subsetBySource(x = x,
+                           include = sources(x)[i],
+                           exclude = sources(x)[j])
         }) |>
             lapply(length) |>
             unlist(),
-        deNovo(x) |> lapply(length) |> unlist() |> unname()
+        subsetBySource(x) |> lapply(length) |> unlist() |> unname()
     )
 
     ## Results track with allPairs(x)
-    mgi <- deNovo(x, include = sources(x)[1:2], exclude = sources(x)[3:8])
+    mgi <- subsetBySource(x,
+                          include = sources(x)[1:2],
+                          exclude = sources(x)[3:8])
     expect_identical(allPairs(mgi) |>
                          lapply(`[[`, "src") |>
                          unlist() |>
