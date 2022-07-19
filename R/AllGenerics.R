@@ -54,10 +54,10 @@ setGeneric("mergePairs",
 setGeneric("selectionMethod", function(x, ...)
     standardGeneric("selectionMethod"))
 
-#' @rdname allPairs
+#' @rdname getPairClusters
 #' @export
-setGeneric("allPairs", function(x, ...)
-    standardGeneric("allPairs"))
+setGeneric("getPairClusters", function(x, ...)
+    standardGeneric("getPairClusters"))
 
 #' @rdname sources
 #' @export

@@ -358,13 +358,13 @@ setMethod("subsetBySource",
 
 
 
-#' Internal accessor function for allPairs
-#' @inheritParams allPairs
+#' Internal accessor function for getPairClusters
+#' @inheritParams getPairClusters
 #' @importFrom S4Vectors isEmpty
 #' @importFrom glue glue
 #' @importFrom rlang abort
 #' @noRd
-.allPairs <- function(x) {
+.getPairClusters <- function(x) {
 
     ## Pull out all pairs
     ap <- x@allPairs
@@ -387,7 +387,7 @@ setMethod("subsetBySource",
     return(res)
 }
 
-#' Get all pairs from MergedGInteractions object
+#' Get clustered pairs from MergedGInteractions object
 #'
 #' Returns the clustered pairs associated with each
 #' range in the `MergedGInteractions` object. Order always
@@ -409,15 +409,15 @@ setMethod("subsetBySource",
 #'                 binSize = 5e03,
 #'                 radius = 2,
 #'                 column = "APScoreAvg")
-#' allPairs(x[1:3])
-#' allPairs(x[3:1])
-#' allPairs(x[c(3, 1, 2)])
-#' allPairs(x)
+#' getPairClusters(x[1:3])
+#' getPairClusters(x[3:1])
+#' getPairClusters(x[c(3, 1, 2)])
+#' getPairClusters(x)
 #'
-#' @rdname allPairs
+#' @rdname getPairClusters
 #' @export
-setMethod("allPairs", signature(x = "MergedGInteractions"),
-          definition = .allPairs)
+setMethod("getPairClusters", signature(x = "MergedGInteractions"),
+          definition = .getPairClusters)
 
 #' Get selectionMethod from MergedGInteractions object
 #'
