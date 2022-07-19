@@ -40,28 +40,28 @@ test_that("selectionMethod accessor works", {
         expect_identical("Select by column 'APScoreAvg'")
 })
 
-test_that("allPairs accessor works", {
+test_that("getPairClusters accessor works", {
 
     ## Merge pairs and add names
     x <- mergePairs(bedpeFiles)
     names(x) <- paste0("loop", 1:length(x))
 
     x[3:1] |>
-        allPairs() |>
+        getPairClusters() |>
         names() |>
         expect_identical(paste0("loop", 3:1))
 
     x[1:3] |>
-        allPairs() |>
+        getPairClusters() |>
         names() |>
         expect_identical(paste0("loop", 1:3))
 
-    expect_equal(length(allPairs(x)), length(x))
+    expect_equal(length(getPairClusters(x)), length(x))
 
 
     ## Use data.table input
     x <- mergePairs(dts, binSize = 5)
-    expect_equal(length(allPairs(x)), length(x))
+    expect_equal(length(getPairClusters(x)), length(x))
 })
 
 
@@ -146,11 +146,11 @@ test_that("subsetBySource method works (and sources accessor)", {
         subsetBySource(x) |> lapply(length) |> unlist() |> unname()
     )
 
-    ## Results track with allPairs(x)
+    ## Results track with getPairClusters(x)
     mgi <- subsetBySource(x,
                           include = sources(x)[1:2],
                           exclude = sources(x)[3:8])
-    expect_identical(allPairs(mgi) |>
+    expect_identical(getPairClusters(mgi) |>
                          lapply(`[[`, "src") |>
                          unlist() |>
                          unique() |>
@@ -184,7 +184,7 @@ test_that("Aggregating metadata columns works", {
     expect_identical(object = aggPairMcols(x[1:10],
                                            columns = "APScoreAvg",
                                            funs = "mean")$mean.APScoreAvg,
-                     expected = allPairs(x[1:10]) |>
+                     expected = getPairClusters(x[1:10]) |>
                          lapply(`[[`, "APScoreAvg") |>
                          lapply(mean) |>
                          unlist())
