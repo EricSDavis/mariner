@@ -82,7 +82,7 @@ setMethod("aggPairMcols", signature(x = "MergedGInteractions",
 #' Access the names or source files of
 #' a `MergedGInteractions` object.
 #'
-#' @inheritParams deNovo
+#' @inheritParams subsetBySource
 #' @examples
 #' loopFiles <- list.files(path = system.file("extdata", package = "mariner"),
 #'                         pattern = "Loops.txt",
@@ -95,14 +95,14 @@ setMethod("aggPairMcols", signature(x = "MergedGInteractions",
 setMethod("sources", "MergedGInteractions",
           function(x) as.character(unique(x@allPairs$src)))
 
-#' Find de novo pairs
-#' @inheritParams deNovo
+#' Create logial matrix of sources for each merged pair
+#' @inheritParams subsetBySource
 #' @importFrom data.table data.table
 #' @return A logical matrix with columns for each source
 #'  and rows for each merged pair indicating that pair's
 #'  presence or abscence from the source (file or object).
 #' @noRd
-.deNovoSrcMatrix <- function(x) {
+.makeSrcMatrix <- function(x) {
 
     ## Pull out all pairs
     ap <- x@allPairs
@@ -141,7 +141,7 @@ setMethod("sources", "MergedGInteractions",
 }
 
 #' Check source names
-#' @inheritParams deNovo
+#' @inheritParams subsetBySource
 #' @param vec Input character vector (i.e. include, exclude or both)
 #' @importFrom glue glue glue_collapse double_quote
 #' @importFrom rlang abort
@@ -163,18 +163,18 @@ setMethod("sources", "MergedGInteractions",
     }
 }
 
-#' Find de novo pairs using include and exclude sources
-#' @inheritParams deNovo
+#' Find subset pairs using include and exclude sources
+#' @inheritParams subsetBySource
 #' @importFrom data.table data.table
-#' @return A `MergedGInteractions` object of de novo pairs.
+#' @return A `MergedGInteractions` object of subset pairs.
 #' @noRd
-.deNovoIncludeExclude <- function(x, include, exclude) {
+.subsetBySourceIncludeExclude <- function(x, include, exclude) {
 
     ## Check source names
     .checkSourceNames(x, vec = c(include, exclude))
 
     ## Calculate the src matrix
-    srcMat <- .deNovoSrcMatrix(x)
+    srcMat <- .makeSrcMatrix(x)
 
     ## Include and exclude
     inBool <- apply(srcMat[,include, drop=FALSE], 1, all)
@@ -188,17 +188,17 @@ setMethod("sources", "MergedGInteractions",
     }
 }
 
-#' Find de novo pairs using include sources
-#' @inheritParams deNovo
-#' @return A `MergedGInteractions` object of de novo pairs.
+#' Find subset pairs using include sources
+#' @inheritParams subsetBySource
+#' @return A `MergedGInteractions` object of subset pairs.
 #' @noRd
-.deNovoInclude <- function(x, include) {
+.subsetBySourceInclude <- function(x, include) {
 
     ## Check source names
     .checkSourceNames(x, vec = include)
 
     ## Calculate the src matrix
-    srcMat <- .deNovoSrcMatrix(x)
+    srcMat <- .makeSrcMatrix(x)
 
     ## Include
     bool <- apply(srcMat[,include, drop=FALSE], 1, all)
@@ -211,18 +211,18 @@ setMethod("sources", "MergedGInteractions",
     }
 }
 
-#' Find de novo pairs using exclude sources
-#' @inheritParams deNovo
+#' Find subset pairs using exclude sources
+#' @inheritParams subsetBySource
 #' @importFrom data.table data.table
-#' @return A `MergedGInteractions` object of de novo pairs.
+#' @return A `MergedGInteractions` object of subset pairs.
 #' @noRd
-.deNovoExclude <- function(x, exclude) {
+.subsetBySourceExclude <- function(x, exclude) {
 
     ## Check source names
     .checkSourceNames(x, vec = exclude)
 
     ## Calculate the src matrix
-    srcMat <- .deNovoSrcMatrix(x)
+    srcMat <- .makeSrcMatrix(x)
 
     ## Exclude
     bool <- apply(!srcMat[,exclude, drop=FALSE], 1, all)
@@ -239,7 +239,7 @@ setMethod("sources", "MergedGInteractions",
 #' @inheritParams selectionMethod
 #' @return A `MergedGInteractions` object of de novo pairs.
 #' @noRd
-.deNovo <- function(x) {
+.subsetBySource <- function(x) {
 
     ## Pull out all pairs
     ap <- x@allPairs
@@ -261,28 +261,29 @@ setMethod("sources", "MergedGInteractions",
         split(united[nDistinct == 1], by = "src") |>
         lapply(`[[`, "id")
 
-    ## Select merged pairs that are de novo
+    ## Select merged pairs that are "de novo"
     ## There will be extra ids when using mean of modes.
     novo <- lapply(ids, \(y) x[x@ids %in% y])
 
     return(novo)
 }
 
-#' Find de novo pairs
+#' Subset MergedGInteractions by source
 #'
-#' After merging sets of interaction pairs, `deNovo`
-#' identifies which pairs are specific to each input set.
-#' If several pairs are clustered together, they are
-#' considered de novo if they all belong to the same
-#' source set.
+#' Returns the subset of MergedGInteractions that belong
+#' to each input source object (see these with `sources(x)`).
+#' If the source pairs all come from the same object, their
+#' corresponding merged pair is returned. However, if at least
+#' one source pair comes from a different object, then that
+#' merged pair is not returned.
 #'
 #' Optional `include` and `exclude` parameters modulate
-#' the behaveior of `deNovo` to return different subsets
-#' of co-existing pairs. For example, `include` requires
+#' the behaveior of `subsetBySource` to return different
+#' subsets of originating pairs. For example, `include` requires
 #' that the returned pairs be present in specific sources,
 #' while `exclude` requires that returned pairs be absent
 #' from specific sources. Sources not listed in either
-#' `include` or `exclude` are ingnored (they may or may not)
+#' `include` or `exclude` are ignored (they may or may not)
 #' be present in the returned `MergedGInteractions` object.
 #' `include` and `exclude` can be used indepedently or in
 #' combination to return every possible set. If any of the
@@ -297,7 +298,9 @@ setMethod("sources", "MergedGInteractions",
 #'  in which a pair must be absent. For a list of available
 #'  sources use `sources(x)`.
 #'
-#' @return A `MergedGInteractions` object of de novo pairs.
+#' @return A list of subsetted `MergedGInteractions` objects
+#'  or a `MergedGInteractions` object (if `include` and/or
+#'  `exclude` are used).
 #'
 #' @examples
 #' ## Define example anchor regions
@@ -319,35 +322,39 @@ setMethod("sources", "MergedGInteractions",
 #' ## Merge pairs
 #' x <- mergePairs(dts, binSize = 10, radius = 2)
 #'
-#' deNovo(x)
+#' subsetBySource(x)
 #'
-#' @rdname deNovo
+#' @rdname subsetBySource
 #' @export
-setMethod("deNovo", signature(x = "MergedGInteractions",
-                              include = "missing",
-                              exclude = "missing"),
-          definition = .deNovo)
+setMethod("subsetBySource",
+          signature(x = "MergedGInteractions",
+                    include = "missing",
+                    exclude = "missing"),
+          definition = .subsetBySource)
 
-#' @rdname deNovo
+#' @rdname subsetBySource
 #' @export
-setMethod("deNovo", signature(x = "MergedGInteractions",
-                              include = "character_OR_missing",
-                              exclude = "missing"),
-          definition = .deNovoInclude)
+setMethod("subsetBySource",
+          signature(x = "MergedGInteractions",
+                    include = "character_OR_missing",
+                    exclude = "missing"),
+          definition = .subsetBySourceInclude)
 
-#' @rdname deNovo
+#' @rdname subsetBySource
 #' @export
-setMethod("deNovo", signature(x = "MergedGInteractions",
-                              include = "missing",
-                              exclude = "character_OR_missing"),
-          definition = .deNovoExclude)
+setMethod("subsetBySource",
+          signature(x = "MergedGInteractions",
+                    include = "missing",
+                    exclude = "character_OR_missing"),
+          definition = .subsetBySourceExclude)
 
-#' @rdname deNovo
+#' @rdname subsetBySource
 #' @export
-setMethod("deNovo", signature(x = "MergedGInteractions",
-                              include = "character_OR_missing",
-                              exclude = "character_OR_missing"),
-          definition = .deNovoIncludeExclude)
+setMethod("subsetBySource",
+          signature(x = "MergedGInteractions",
+                    include = "character_OR_missing",
+                    exclude = "character_OR_missing"),
+          definition = .subsetBySourceIncludeExclude)
 
 
 

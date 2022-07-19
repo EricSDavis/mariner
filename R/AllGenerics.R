@@ -64,12 +64,12 @@ setGeneric("allPairs", function(x, ...)
 setGeneric("sources", function(x, ...)
     standardGeneric("sources"))
 
-#' @rdname deNovo
+#' @rdname subsetBySource
 #' @export
-setGeneric("deNovo", function(x,
-                              include,
-                              exclude)
-    standardGeneric("deNovo"))
+setGeneric("subsetBySource", function(x,
+                                      include,
+                                      exclude)
+    standardGeneric("subsetBySource"))
 
 #' @rdname aggPairMcols
 #' @export
