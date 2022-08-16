@@ -59,8 +59,8 @@
 #' If the mean of modes (`mm`) is between
 #' bins, floor it to `binSize`.
 #' @noRd
-.meanOfModes <- function(x, binSize) {
-    mm <- mean(.modes(x))
-    binSize*floor(mm/binSize)
-}
+# .meanOfModes <- function(x, binSize) {
+#     mm <- mean(.modes(x))
+#     binSize*floor(mm/binSize)
+# }
 

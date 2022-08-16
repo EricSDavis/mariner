@@ -41,16 +41,16 @@ test_that("Other types types are not accepted", {
         expect_error("^.*Your list is type numeric.")
 })
 
-test_that("List type can return data.frame-like objects", {
+test_that("List type can not return data.frame-like objects", {
 
     .checkListFormat(list(data.frame())) |>
-        expect_null()
+        expect_error("^.*Your list is type data.frame.")
 
     .checkListFormat(list(data.table::data.table())) |>
-        expect_null()
+        expect_error("^.*Your list is type data.table, data.frame.")
 
     .checkListFormat(list(S4Vectors::DataFrame())) |>
-        expect_null()
+        expect_error("^.*Your list is type DFrame.")
 })
 
 test_that("List type can return GInteractions", {
@@ -65,46 +65,39 @@ test_that("List type can return GInteractions", {
 test_that("Type mixture is not accepted", {
 
     .checkListFormat(list(data.frame(), GInteractions())) |>
-        expect_error("^.*must.*be.*same type.*")
+        expect_error("^.*Your list is type data.frame, GInteractions.")
 
     .checkListFormat(list(NULL, NA)) |>
         expect_error("^.*Your list is type NULL, logical.")
 })
 
 
-## Test .readBedpeFromList() ---------------------------------------------------
+# Test .readBedpeFromList() ---------------------------------------------------
 
-test_that("data.frame lists can be read", {
-
-    .readBedpeFromList(dfs) |>
-        expect_snapshot_output()
-
-})
-
-test_that("data.table lists can be read", {
-
-    library(data.table)
-    lapply(dfs, as.data.table) |>
-        .readBedpeFromList() |>
-        expect_snapshot_output()
-})
-
-test_that("DataFrame lists can be read", {
-
-    library(S4Vectors)
-    lapply(dfs, DataFrame) |>
-        .readBedpeFromList() |>
-        expect_snapshot_output()
-})
-
-test_that("GInteractions list can be read", {
-
-    dfs |>
-        lapply(as_ginteractions) |>
-        .readBedpeFromList() |>
-        expect_snapshot_output()
-
-})
+# test_that("data.table lists can be read", {
+#
+#     library(data.table)
+#     lapply(dfs, as.data.table) |>
+#         .readBedpeFromList() |>
+#         expect_snapshot_output()
+# })
+#
+# test_that("DataFrame lists can be read", {
+#
+#     library(S4Vectors)
+#     lapply(dfs, DataFrame) |>
+#         .readBedpeFromList() |>
+#         expect_snapshot_output()
+# })
+#
+# test_that("GInteractions list can be read", {
+#
+#     dfs |>
+#         lapply(as_ginteractions) |>
+#         .readBedpeFromList() |>
+#         expect_snapshot_output()
+#
+# })
 
 ## Test mergePairs dispatch methods --------------------------------------------
 
@@ -123,18 +116,18 @@ test_that("GInteractions list can be read", {
 #
 # })
 
-test_that("mergePairs warns about binning", {
-
-    .mergePairsCharacter(x = bedpeFiles, binSize = 5e03, radius = 2) |>
-        expect_warning(NA)
-
-    mergePairs(x = bedpeFiles, binSize = 10e03, radius = 2) |>
-        expect_message("^.*not binned to `binSize`.*")
-
-    mergePairs(x = dfs, binSize = 2, radius = 2) |>
-        expect_message("^.*not binned to `binSize`.*")
-
-})
+# test_that("mergePairs warns about binning", {
+#
+#     .mergePairsCharacter(x = bedpeFiles, binSize = 5e03, radius = 2) |>
+#         expect_warning(NA)
+#
+#     mergePairs(x = bedpeFiles, binSize = 10e03, radius = 2) |>
+#         expect_message("^.*not binned to `binSize`.*")
+#
+#     mergePairs(x = dfs, binSize = 2, radius = 2) |>
+#         expect_message("^.*not binned to `binSize`.*")
+#
+# })
 
 test_that("Find overlaps by manhattan distance works", {
     library(InteractionSet)
@@ -156,8 +149,8 @@ test_that("Find overlaps by manhattan distance works", {
 
     ## Manhattan distance (radius) of 0
     .findClusters(x = dt[,c('start1','start2')],
-                  radius = 0,
-                  binSize = 10) |>
+                  radius = 10,
+                  method = "manhattan") |>
         expect_equal(c(0,0,0,0,0))
 
     ## Manhattan distance (radius) of 1

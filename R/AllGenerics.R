@@ -44,9 +44,10 @@ setGeneric("shiftRanges",
 #' @export
 setGeneric("mergePairs",
            function(x,
-                    binSize = 5000,
-                    radius = 2,
-                    column)
+                    radius,
+                    method = "manhattan",
+                    column,
+                    selectMax = TRUE)
                standardGeneric("mergePairs"))
 
 #' @rdname selectionMethod

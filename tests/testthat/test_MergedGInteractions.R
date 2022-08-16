@@ -27,15 +27,21 @@ bedpeFiles <-
     system.file("extdata", package = "mariner") |>
     list.files(pattern = "Loops.txt", full.names = TRUE)
 
+## Read in bedpeFiles as a list of GInteractions
+giList <-
+    lapply(bedpeFiles, fread) |>
+    lapply(as_ginteractions)
+
 
 ## Test getters and setters ----------------------------------------------------
 
 test_that("selectionMethod accessor works", {
-    x <- mergePairs(bedpeFiles)
+
+    x <- mergePairs(x = giList, radius = 10e03)
     selectionMethod(x) |>
         expect_identical("Mean of modes")
 
-    x <- mergePairs(bedpeFiles, column = "APScoreAvg")
+    x <- mergePairs(x = giList, radius = 10e03, column = "APScoreAvg")
     selectionMethod(x) |>
         expect_identical("Select by column 'APScoreAvg'")
 })
@@ -43,7 +49,7 @@ test_that("selectionMethod accessor works", {
 test_that("getPairClusters accessor works", {
 
     ## Merge pairs and add names
-    x <- mergePairs(bedpeFiles)
+    x <- mergePairs(x = giList, radius = 10e03)
     names(x) <- paste0("loop", 1:length(x))
 
     x[3:1] |>
@@ -58,10 +64,6 @@ test_that("getPairClusters accessor works", {
 
     expect_equal(length(getPairClusters(x)), length(x))
 
-
-    ## Use data.table input
-    x <- mergePairs(dts, binSize = 5)
-    expect_equal(length(getPairClusters(x)), length(x))
 })
 
 
@@ -78,19 +80,20 @@ test_that("subsetBySource method works (and sources accessor)", {
     loops <-
         lapply(loopFiles, fread) |>
         lapply(\(x) x[sample(1:nrow(x), nrow(x)/4, replace = FALSE)]) |>
+        lapply(as_ginteractions) |>
         setNames(basename(loopFiles))
 
     ## Merge loops
-    x <- mergePairs(loops, binSize = 25e03, radius = 5)
+    x <- mergePairs(loops, radius = 25e03*5)
 
     ## Test sources accessor
     expect_identical(sources(x), basename(loopFiles))
 
     ## subsetBySource method dispatch
     expect_equal(subsetBySource(x) |> length(), 8)
-    expect_equal(subsetBySource(x)[[sources(x)[1]]] |> length(), 776)
-    expect_equal(subsetBySource(x, include = sources(x)[1]) |> length(), 3907)
-    expect_equal(subsetBySource(x, exclude = sources(x)[1]) |> length(), 9337)
+    expect_equal(subsetBySource(x)[[sources(x)[1]]] |> length(), 846)
+    expect_equal(subsetBySource(x, include = sources(x)[1]) |> length(), 3982)
+    expect_equal(subsetBySource(x, exclude = sources(x)[1]) |> length(), 9890)
 
     ## Handles cases where none are found
     subsetBySource(x,
@@ -163,9 +166,8 @@ test_that("subsetBySource method works (and sources accessor)", {
 test_that("Aggregating metadata columns works", {
 
     ## Merge pairs
-    x <- mergePairs(x = bedpeFiles,
-                    binSize = 5e03,
-                    radius = 0)
+    x <- mergePairs(x = giList,
+                    radius = 5e03)
 
     aggPairMcols(x, columns = c("APScoreAvg", "avg"), fun = "mean")
 

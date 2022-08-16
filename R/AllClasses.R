@@ -18,8 +18,11 @@ setClassUnion("character_OR_numeric", c("character", "numeric"))
 setClassUnion("character_OR_numeric_OR_missing",
               c("character", "numeric", "missing"))
 #' @noRd
-setClassUnion("character_OR_function_OR_list"
-              , c("character", "function", "list"))
+setClassUnion("character_OR_function_OR_list",
+              c("character", "function", "list"))
+
+#' @noRd
+setClassUnion("list_OR_GInteractions", c("list", "GInteractions"))
 
 
 #' Virtual class for delegating GInteractions
