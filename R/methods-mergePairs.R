@@ -250,10 +250,13 @@
         ## Edit column if it matches src, id, grp, or clst
         column <- gsub("(^src$|^id$|^grp$|^clst$)", "\\1_1", column)
 
+        ## Select max or min
+        fun <- ifelse(selectMax, `which.max`, `which.min`)
+
         ## Fast find by column
         single <- dt[clst < 0]
         selected <- dt[dt[clst > 0,
-                          .I[which.max(.SD[[column]])],
+                          .I[fun(.SD[[column]])],
                           by=.(grp,clst)]$V1]
         mergedPairs <- rbind(single, selected)
 
