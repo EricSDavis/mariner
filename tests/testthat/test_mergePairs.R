@@ -264,3 +264,24 @@ test_that("Remove metadata when using mean of modes but not column.", {
     x <- mergePairs(x = giList, radius = 0, column = "APScoreAvg")
     expect_equal(ncol(mcols(x)), 9)
 })
+
+test_that("selectMax parameter works", {
+
+    gi <-
+        GInteractions(anchor1 = GRanges(seqnames = "chr1",
+                                        ranges = IRanges(start = c(1, 1),
+                                                         end = c(10, 10))),
+                      anchor2 = GRanges(seqnames = "chr1",
+                                        ranges = IRanges(start = c(1, 1),
+                                                         end = c(10, 10))),
+                      value = c(10, 5))
+
+    mergePairs(x=gi, radius = 0,
+               column = "value", selectMax = TRUE)$value |>
+        expect_equal(10)
+
+    mergePairs(x=gi, radius = 0,
+               column = "value", selectMax = FALSE)$value |>
+        expect_equal(5)
+
+})
