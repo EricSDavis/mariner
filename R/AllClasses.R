@@ -21,6 +21,8 @@ setClassUnion("character_OR_numeric_OR_missing",
 setClassUnion("character_OR_function_OR_list",
               c("character", "function", "list"))
 
+#' Class union for GInteractionsList
+#' @importClassesFrom InteractionSet GInteractions
 #' @noRd
 setClassUnion("list_OR_GInteractions", c("list", "GInteractions"))
 

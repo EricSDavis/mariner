@@ -1,4 +1,6 @@
 library(mariner)
+library(data.table)
+
 ## Shared objects --------------------------------------------------------------
 
 ## Create some in-memory data.frames
@@ -15,6 +17,9 @@ bedpeFiles <-
     system.file("extdata", package = "mariner") |>
     list.files(pattern = "Loops.txt", full.names = TRUE)
 
+giList <-
+    lapply(bedpeFiles, fread) |>
+    lapply(as_ginteractions)
 
 ## Test .checkListFormat() -----------------------------------------------------
 
@@ -147,22 +152,22 @@ test_that("Find overlaps by manhattan distance works", {
     ## Form GInteractions and convert to data.table
     dt <- GInteractions(gr1, gr2) |> as.data.table()
 
-    ## Manhattan distance (radius) of 0
+    ## Manhattan distance of 0 and binSize of 10 is radius = 0
     .findClusters(x = dt[,c('start1','start2')],
-                  radius = 10,
+                  radius = 0,
                   method = "manhattan") |>
         expect_equal(c(0,0,0,0,0))
 
-    ## Manhattan distance (radius) of 1
+    ## Manhattan distance of 1 and binSize of 10 is radius = 10
     .findClusters(x = dt[,c('start1','start2')],
-                  radius = 1,
-                  binSize = 10) |>
+                  radius = 10,
+                  method = "manhattan") |>
         expect_equal(c(1,1,0,0,0))
 
-    ## Manhattan distance (radius) of 2
+    ## Manhattan distance of 2 and binSize of 10 is radius = 20
     .findClusters(x = dt[,c('start1','start2')],
-                  radius = 2,
-                  binSize = 10) |>
+                  radius = 20,
+                  method = "manhattan") |>
         expect_equal(c(1,1,1,0,0))
 })
 
@@ -184,18 +189,18 @@ test_that("Find overlaps by group with data.table", {
     ## Form GInteractions and convert to data.table
     dt <- GInteractions(gr1, gr2) |> as.data.table()
 
-    ## Manhattan distance (radius) of 1
+    ## Manhattan distance of 0 and binSize of 10 is radius = 0
     dt[,clst := .findClusters(x = .SD[,c('start1','start2')],
-                              radius = 1,
-                              binSize = 10),
+                              radius = 10,
+                              method = "manhattan"),
        by = .(seqnames1, seqnames2)]
     dt$clst |> expect_equal(c(1,1,0,0,0))
 
-    ## Manhattan distance (radius) of 2
+    ## Manhattan distance of 2 and binSize of 10 is radius = 20
     dt <- GInteractions(gr1, gr2) |> as.data.table()
     dt[,clst := .findClusters(x = .SD[,c('start1','start2')],
-                              radius = 2,
-                              binSize = 10),
+                              radius = 20,
+                              method = "manhattan"),
        by = .(seqnames1, seqnames2)]
     dt$clst |> expect_equal(c(1,1,1,0,0))
 })
@@ -218,10 +223,10 @@ test_that("Handle interchromosomal by group", {
     ## Form GInteractions and convert to data.table
     dt <- GInteractions(gr1, gr2) |> as.data.table()
 
-    ## Manhattan distance (radius) of 1
+    ## Manhattan distance of 1 and binSize of 10 is radius = 10
     dt[,clst := .findClusters(x = .SD[,c('start1','start2')],
-                              radius = 1,
-                              binSize = 10),
+                              radius = 10,
+                              method = 'manhattan'),
        by = .(seqnames1, seqnames2)]
     dt[,grp := .GRP, by = .(seqnames1, seqnames2)]
     dt$clst |> expect_equal(c(1,1,0,0,0,1,1))
@@ -240,21 +245,22 @@ test_that("id, src, grp, and clst column names can be used", {
         bedpeFiles |>
         lapply(fread) |>
         lapply(\(x) {x$id <- rev(seq_len(nrow(x))); x}) |>
-        mergePairs(binSize = 5000, radius = 0, column = "APScoreAvg")
+        lapply(as_ginteractions) |>
+        mergePairs(radius = 0, column = "APScoreAvg")
 
     expect_length(mp$id, length(mp))
 
 })
 
 test_that("Bad column name throws error.", {
-    mergePairs(bedpeFiles, column = "foo") |>
+    mergePairs(x = giList, radius = 0, column = "foo") |>
         expect_error("^Column.*does not exist.")
 })
 
 test_that("Remove metadata when using mean of modes but not column.", {
-    x <- mergePairs(bedpeFiles)
+    x <- mergePairs(x = giList, radius = 0)
     expect_equal(ncol(mcols(x)), 0)
 
-    x <- mergePairs(bedpeFiles, column = "APScoreAvg")
+    x <- mergePairs(x = giList, radius = 0, column = "APScoreAvg")
     expect_equal(ncol(mcols(x)), 9)
 })
