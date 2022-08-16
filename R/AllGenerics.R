@@ -47,7 +47,8 @@ setGeneric("mergePairs",
                     radius,
                     method = "manhattan",
                     column,
-                    selectMax = TRUE)
+                    selectMax = TRUE,
+                    pos = "center")
                standardGeneric("mergePairs"))
 
 #' @rdname selectionMethod

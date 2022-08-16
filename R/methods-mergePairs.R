@@ -93,28 +93,6 @@
     return(dt)
 }
 
-#' Read in Bedpe from list of objects
-#'
-#' Objects in the list can be `data.frame`-like
-#' or GInteractions types.
-#'
-#' @inheritParams mergePairs
-#' @importFrom data.table as.data.table
-#' @return A list of data.tables
-#' @noRd
-# .readBedpeFromList <- function(x) {
-#
-#     ## Transform multiple times to make
-#     ## the structure consistent.
-#     lapply(x, \(u){
-#         u |>
-#             as.data.table() |>
-#             makeGInteractionsFromDataFrame() |>
-#             as.data.table()
-#     })
-#
-# }
-
 #' Find clusters by manhattan distance with DBSCAN
 #' @param x `data.table` with at least 'start1' and
 #'  'start2' columns.
@@ -125,6 +103,79 @@
 .findClusters <- function(x, radius, method) {
     d <- dist(x, method = method)
     dbscan(d, eps = radius, minPts = 2)$cluster
+}
+
+#' Cluster pairs with DBSCAN
+#'
+#' @param x concatenated data.table
+#' @inheritParams mergePairs
+#' @returns Returns data.table with cluster information
+#' @importFrom data.table as.data.table uniqueN `:=`
+#' @noRd
+.clusterPairs <- function(x, radius, method, pos) {
+
+    ## Parse pos parameter
+    pos <- match.arg(pos, choices = c("start", "end", "center"))
+
+    ## Annotate id & groups (essentially pairs of chromosomes)
+    x[,id := .I]
+    x[,grp := .GRP,by = .(seqnames1, seqnames2)]
+
+    ## Initialize progress bar
+    pb <- progress::progress_bar$new(
+        format = "  :step [:bar] :percent elapsed: :elapsedfull",
+        clear = FALSE,
+        total = uniqueN(x$grp)
+    )
+    pb$tick(0)
+
+    ## Find clusters by distance with dbscan
+    if (identical(pos, 'start')) {
+
+        x[,clst := {
+            pb$tick(tokens=list(step="Clustering pairs"));
+            .findClusters(x = .SD[,c('start1','start2')],
+                          radius = radius,
+                          method = method)},
+           by = grp]
+
+    }
+
+    if (identical(pos, 'end')) {
+
+        x[,clst := {
+            pb$tick(tokens=list(step="Clustering pairs"));
+            .findClusters(x = .SD[,c('end1','end2')],
+                          radius = radius,
+                          method = method)},
+           by = grp]
+    }
+
+    if (identical(pos, 'center')) {
+
+        ## Calculate midpoint between starts & ends
+        x$mid1 <- rowMeans(x[,c('start1', 'end1')])
+        x$mid2 <- rowMeans(x[,c('start2', 'end2')])
+
+        ## Cluster
+        x[,clst := {
+            pb$tick(tokens=list(step="Clustering pairs"));
+            .findClusters(x = .SD[,c('mid1','mid2')],
+                          radius = radius,
+                          method = method)},
+          by = grp]
+
+        ## Remove calculated midpoints
+        x[, "mid1" := NULL]
+        x[, "mid2" := NULL]
+    }
+
+    ## Separate unique pairs by denoting as negative integers
+    x[clst == 0, clst := seq(1, length(clst))*-1, by = grp]
+
+    ## Return data.table with cluster information
+    return(x)
+
 }
 
 #' Calculate new paired ranges with the mean of modes method
@@ -157,41 +208,21 @@
 }
 
 
-
 #' Internal mergePairs function
 #' @inheritParams mergePairs
 #' @importFrom rlang inform
 #' @importFrom data.table as.data.table uniqueN `:=`
 #' @noRd
-.mergePairs <- function(x, radius, method, column, selectMax) {
+.mergePairs <- function(x, radius, method, column, selectMax, pos) {
 
     ## Parse list or GInteractions input and return
     ## as a concatenated data.table
     dt <- .readGInteractionsList(x, column)
 
-    ## Annotate id & groups (essentially pairs of chromosomes)
-    dt[,id := .I]
-    dt[,grp := .GRP,by = .(seqnames1, seqnames2)]
+    ## Perform clustering
+    dt <- .clusterPairs(x=dt, radius=radius, method=method, pos=pos)
 
-    ## Initialize progress bar
-    pb <- progress::progress_bar$new(
-        format = "  :step [:bar] :percent elapsed: :elapsedfull",
-        clear = FALSE,
-        total = uniqueN(dt$grp)
-    )
-    pb$tick(0)
-
-    ## Find clusters by manhattan distance with dbscan
-    dt[,clst := {
-        pb$tick(tokens=list(step="Merging pairs"));
-        .findClusters(x = .SD[,c('start1','start2')],
-                      radius = radius,
-                      method = method)},
-       by = grp]
-
-    ## Separate unique pairs by denoting as negative integers
-    dt[clst == 0, clst := seq(1, length(clst))*-1, by = grp]
-
+    ## Perform selection
     if (missing(column)) {
         ## Fast mean of modes
         selectionMethod <- "Mean of modes"
@@ -254,61 +285,6 @@
 
 }
 
-#' Internal mergePairs for list type
-#' @inheritParams mergePairs
-#' @noRd
-# .mergePairsList <- function(x, binSize, radius, column) {
-#
-#     ## Check that list is formatted correctly
-#     .checkListFormat(x)
-#
-#     ## Read in Bedpe
-#     bedpe <- .readBedpeFromList(x)
-#
-#     ## Rename columns to prevent overwriting
-#     newColumnNames <-
-#         lapply(bedpe, colnames) |>
-#         lapply(\(x) gsub("(^src$|^id$|^grp$|^clst$)", "\\1_1", x))
-#     bedpe <- Map(setNames, bedpe, newColumnNames)
-#
-#     ## Add new column for source
-#     if (!is.null(names(bedpe))) {
-#         bedpe <- Map(cbind, bedpe, src = names(bedpe))
-#     } else {
-#         bedpe <- Map(cbind, bedpe, src = seq_along(bedpe))
-#     }
-#
-#     ## Pass to internal merging function
-#     .mergePairs(x = bedpe,
-#                 binSize = binSize,
-#                 radius = radius,
-#                 column = column)
-# }
-
-#' Internal mergePairs for character type
-#' @inheritParams mergePairs
-#' @importFrom data.table fread
-#' @noRd
-# .mergePairsCharacter <- function(x, binSize, radius, column) {
-#
-#     ## Read in files as list of bedpe
-#     bedpe <- lapply(x, fread)
-#
-#     ## Rename columns to prevent overwriting
-#     newColumnNames <-
-#         lapply(bedpe, colnames) |>
-#         lapply(\(x) gsub("(^src$|^id$|^grp$|^clst$)", "\\1_1", x))
-#     bedpe <- Map(setNames, bedpe, newColumnNames)
-#
-#     ## Add new column for source
-#     bedpe <- Map(cbind, bedpe, src = basename(x))
-#
-#     ## Pass to internal merging function
-#     .mergePairs(x = bedpe,
-#                 binSize = binSize,
-#                 radius = radius,
-#                 column = column)
-# }
 
 #' Merge sets of paired interactions
 #'
@@ -343,6 +319,8 @@
 #' @param selectMax Logical. TRUE (default) uses `which.max()`
 #'  to select the interaction pair. FALSE uses `which.min()`.
 #'  Only applicable when `column` is specified.
+#' @param pos Positions used for clustering pairs. Must be
+#'  one of "start", "end" or "center". Default is "center".
 #'
 #' @return Returns a `MergedGInteractions` object.
 #'
@@ -364,5 +342,6 @@ setMethod("mergePairs",
                     radius = 'numeric',
                     method = 'character_OR_missing',
                     column = 'character_OR_missing',
-                    selectMax = 'logical_OR_missing'),
+                    selectMax = 'logical_OR_missing',
+                    pos = "character_OR_missing"),
           definition = .mergePairs)
