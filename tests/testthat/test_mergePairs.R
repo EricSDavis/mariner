@@ -77,62 +77,7 @@ test_that("Type mixture is not accepted", {
 })
 
 
-# Test .readBedpeFromList() ---------------------------------------------------
-
-# test_that("data.table lists can be read", {
-#
-#     library(data.table)
-#     lapply(dfs, as.data.table) |>
-#         .readBedpeFromList() |>
-#         expect_snapshot_output()
-# })
-#
-# test_that("DataFrame lists can be read", {
-#
-#     library(S4Vectors)
-#     lapply(dfs, DataFrame) |>
-#         .readBedpeFromList() |>
-#         expect_snapshot_output()
-# })
-#
-# test_that("GInteractions list can be read", {
-#
-#     dfs |>
-#         lapply(as_ginteractions) |>
-#         .readBedpeFromList() |>
-#         expect_snapshot_output()
-#
-# })
-
 ## Test mergePairs dispatch methods --------------------------------------------
-
-## Need to write source accessor
-# test_that("Source column naming works for .mergePairsCharacter", {
-#
-#     ## Unnamed list uses indices
-#     .mergePairsCharacter(x = bedpeFiles, binSize = 3, radius = 2) |>
-#         {\(x) unique(x$source)}() |>
-#         suppressWarnings() |>
-#         expect_equal(basename(bedpeFiles))
-#
-#     .mergePairsCharacter(bedpeFiles, 5000, 2) |>
-#         {\(x) unique(x$source)}() |>
-#         expect_equal(basename(bedpeFiles))
-#
-# })
-
-# test_that("mergePairs warns about binning", {
-#
-#     .mergePairsCharacter(x = bedpeFiles, binSize = 5e03, radius = 2) |>
-#         expect_warning(NA)
-#
-#     mergePairs(x = bedpeFiles, binSize = 10e03, radius = 2) |>
-#         expect_message("^.*not binned to `binSize`.*")
-#
-#     mergePairs(x = dfs, binSize = 2, radius = 2) |>
-#         expect_message("^.*not binned to `binSize`.*")
-#
-# })
 
 test_that("Find overlaps by manhattan distance works", {
     library(InteractionSet)
