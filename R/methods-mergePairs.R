@@ -153,6 +153,9 @@
 
     if (identical(pos, 'center')) {
 
+        ## Rename "mid1" and "mid2" columns if they exist
+        colnames(x) <- gsub("(^mid1$|^mid2$)", "\\1_1", colnames(x))
+
         ## Calculate midpoint between starts & ends
         x$mid1 <- rowMeans(x[,c('start1', 'end1')])
         x$mid2 <- rowMeans(x[,c('start2', 'end2')])
@@ -168,6 +171,9 @@
         ## Remove calculated midpoints
         x[, "mid1" := NULL]
         x[, "mid2" := NULL]
+
+        ## Restore column names
+        colnames(x) <- gsub("(^(mid1)_1$|^(mid2)_1$)", "\\1", colnames(x))
     }
 
     ## Separate unique pairs by denoting as negative integers
@@ -204,7 +210,9 @@
         gsub("^src_1$", "src", x = _) |>
         gsub("^id_1$", "id", x = _) |>
         gsub("^grp_1$", "grp", x = _) |>
-        gsub("^clst_1$", "clst", x = _)
+        gsub("^clst_1$", "clst", x = _) |>
+        gsub("^mid1_1$", "mid1", x = _) |>
+        gsub("^mid2_1$", "mid2", x = _)
 }
 
 

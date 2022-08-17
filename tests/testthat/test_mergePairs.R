@@ -234,19 +234,30 @@ test_that("Handle interchromosomal by group", {
 })
 
 test_that("Removing changed column names works", {
-    .renameCols(c("id_1", "src_1", "grp_1", "clst_1")) |>
-        expect_identical(c("id", "src", "grp", "clst"))
+    .renameCols(c("id_1", "src_1", "grp_1", "clst_1", "mid1_1", "mid2_1")) |>
+        expect_identical(c("id", "src", "grp", "clst", "mid1", "mid2"))
 })
 
-test_that("id, src, grp, and clst column names can be used", {
+test_that("id, src, grp, clst, mid1, and mid2 column names can be used", {
 
     ## Add an id column to merged pairs
     mp <-
         bedpeFiles |>
         lapply(fread) |>
-        lapply(\(x) {x$id <- rev(seq_len(nrow(x))); x}) |>
+        lapply(\(x) {
+            x$id <- rev(seq_len(nrow(x)))
+            x$src <- "src"
+            x$grp <- "grp"
+            x$clst <- "clst"
+            x$mid1 <- rowMeans(x[,c('x1', 'x2')])
+            x$mid2 <- rowMeans(x[,c('y1', 'y2')])
+            x
+        }) |>
         lapply(as_ginteractions) |>
         mergePairs(radius = 0, column = "APScoreAvg")
+
+    grep("id|src|grp|clst|mid1|mid2", colnames(mcols(mp)), value = TRUE) |>
+        expect_identical(c("id", "src", "grp", "clst", "mid1", "mid2"))
 
     expect_length(mp$id, length(mp))
 
@@ -285,3 +296,5 @@ test_that("selectMax parameter works", {
         expect_equal(5)
 
 })
+
+
