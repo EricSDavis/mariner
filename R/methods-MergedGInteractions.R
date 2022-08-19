@@ -84,10 +84,18 @@ setMethod("aggPairMcols", signature(x = "MergedGInteractions",
 #'
 #' @inheritParams subsetBySource
 #' @examples
-#' loopFiles <- list.files(path = system.file("extdata", package = "mariner"),
-#'                         pattern = "Loops.txt",
-#'                         full.names = TRUE)
-#' x <- mergePairs(x = loopFiles)
+#' loopFiles <-
+#'     list.files(path = system.file("extdata", package = "mariner"),
+#'                pattern = "Loops.txt",
+#'                full.names = TRUE)
+#'
+#' giList <-
+#'     lapply(loopFiles, fread) |>
+#'     lapply(as_ginteractions)
+#'
+#' x <- mergePairs(x = giList,
+#'                 radius = 10e03)
+#'
 #' sources(x)
 #'
 #' @rdname sources
@@ -313,14 +321,12 @@ setMethod("sources", "MergedGInteractions",
 #'             ranges = IRanges(start = c(30,30,50,10,30),
 #'                              end = c(40,40,60,20,40)))
 #'
-#' ## Form GInteractions and convert to data.table
-#' dt <- GInteractions(gr1, gr2) |> as.data.table()
-#'
-#' ## Split into two files
-#' dts <- split(dt, c(rep(1,3), rep(2, 2)))
+#' ## Form GInteractions and split into two files
+#' giList <- split(x = GInteractions(gr1, gr2),
+#'                 f = c(rep(1,3), rep(2,2)))
 #'
 #' ## Merge pairs
-#' x <- mergePairs(dts, binSize = 10, radius = 2)
+#' x <- mergePairs(x = giList, radius = 20)
 #'
 #' subsetBySource(x)
 #'
@@ -405,10 +411,14 @@ setMethod("subsetBySource",
 #'     system.file("extdata", package = "mariner") |>
 #'     list.files(pattern = "Loops.txt", full.names = TRUE)
 #'
-#' x <- mergePairs(x = bedpeFiles,
-#'                 binSize = 5e03,
-#'                 radius = 2,
+#' giList <-
+#'     lapply(bedpeFiles, fread) |>
+#'     lapply(as_ginteractions)
+#'
+#' x <- mergePairs(x = giList,
+#'                 radius = 10e03,
 #'                 column = "APScoreAvg")
+#'
 #' getPairClusters(x[1:3])
 #' getPairClusters(x[3:1])
 #' getPairClusters(x[c(3, 1, 2)])
@@ -433,10 +443,14 @@ setMethod("getPairClusters", signature(x = "MergedGInteractions"),
 #'     system.file("extdata", package = "mariner") |>
 #'     list.files(pattern = "Loops.txt", full.names = TRUE)
 #'
-#' x <- mergePairs(x = bedpeFiles,
-#'                 binSize = 5e03,
-#'                 radius = 2,
+#' giList <-
+#'     lapply(bedpeFiles, fread) |>
+#'     lapply(as_ginteractions)
+#'
+#' x <- mergePairs(x = giList,
+#'                 radius = 10e03,
 #'                 column = "APScoreAvg")
+#'
 #' selectionMethod(x)
 #'
 #' @rdname selectionMethod

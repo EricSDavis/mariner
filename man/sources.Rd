@@ -17,10 +17,18 @@ Access the names or source files of
 a `MergedGInteractions` object.
 }
 \examples{
-loopFiles <- list.files(path = system.file("extdata", package = "mariner"),
-                        pattern = "Loops.txt",
-                        full.names = TRUE)
-x <- mergePairs(x = loopFiles)
+loopFiles <-
+    list.files(path = system.file("extdata", package = "mariner"),
+               pattern = "Loops.txt",
+               full.names = TRUE)
+
+giList <-
+    lapply(loopFiles, fread) |>
+    lapply(as_ginteractions)
+
+x <- mergePairs(x = giList,
+                radius = 10e03)
+
 sources(x)
 
 }

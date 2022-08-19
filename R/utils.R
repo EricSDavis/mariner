@@ -50,17 +50,3 @@
     ux[tab == max(tab)]
 }
 
-#' Find the mean of modes for a vector
-#'
-#' @param x numeric vector
-#' @param binSize Integer (numeric) describing
-#'  the new size of each range.
-#'
-#' If the mean of modes (`mm`) is between
-#' bins, floor it to `binSize`.
-#' @noRd
-.meanOfModes <- function(x, binSize) {
-    mm <- mean(.modes(x))
-    binSize*floor(mm/binSize)
-}
-

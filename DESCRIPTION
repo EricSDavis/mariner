@@ -14,7 +14,7 @@ Description: Tools for manipulating paired ranges and
     from `.hic` files, and visualizing the results. 
     Designed for compatibility with plotgardener for
     visualization.
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Suggests:
     knitr,
     BiocGenerics,

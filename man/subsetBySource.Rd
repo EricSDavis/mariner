@@ -67,14 +67,12 @@ gr2 <-
             ranges = IRanges(start = c(30,30,50,10,30),
                              end = c(40,40,60,20,40)))
 
-## Form GInteractions and convert to data.table
-dt <- GInteractions(gr1, gr2) |> as.data.table()
-
-## Split into two files
-dts <- split(dt, c(rep(1,3), rep(2, 2)))
+## Form GInteractions and split into two files
+giList <- split(x = GInteractions(gr1, gr2),
+                f = c(rep(1,3), rep(2,2)))
 
 ## Merge pairs
-x <- mergePairs(dts, binSize = 10, radius = 2)
+x <- mergePairs(x = giList, radius = 20)
 
 subsetBySource(x)
 
