@@ -2,48 +2,71 @@
 % Please edit documentation in R/AllGenerics.R, R/methods-mergePairs.R
 \name{mergePairs}
 \alias{mergePairs}
-\alias{mergePairs,list,numeric_OR_missing,numeric_OR_missing,character_OR_missing-method}
-\alias{mergePairs,character,numeric_OR_missing,numeric_OR_missing,character_OR_missing-method}
+\alias{mergePairs,list_OR_SimpleList_OR_GInteractions,numeric,character_OR_missing,character_OR_missing,logical_OR_missing,character_OR_missing-method}
 \title{Merge sets of paired interactions}
 \usage{
-mergePairs(x, binSize = 5000, radius = 2, column)
+mergePairs(
+  x,
+  radius,
+  method = "manhattan",
+  column,
+  selectMax = TRUE,
+  pos = "center"
+)
 
-\S4method{mergePairs}{list,numeric_OR_missing,numeric_OR_missing,character_OR_missing}(x, binSize = 5000, radius = 2, column)
-
-\S4method{mergePairs}{character,numeric_OR_missing,numeric_OR_missing,character_OR_missing}(x, binSize = 5000, radius = 2, column)
+\S4method{mergePairs}{list_OR_SimpleList_OR_GInteractions,numeric,character_OR_missing,character_OR_missing,logical_OR_missing,character_OR_missing}(
+  x,
+  radius,
+  method = "manhattan",
+  column,
+  selectMax = TRUE,
+  pos = "center"
+)
 }
 \arguments{
-\item{x}{Either a list of `GInteractions` objects,
-a list of `data.frame`-like objects, or a list of
-file paths of BEDPE-formatted data to be merged.}
+\item{x}{List of `GInteractions` or `data.frame`-like
+objects.}
 
-\item{binSize}{Integer (numeric) describing the
-resolution (range widths) of the paired data.}
+\item{radius}{Numeric describing the distance in base
+pairs used to define a cluster or pairs.}
 
-\item{radius}{manhattan distance used to define
-a cluster of pairs. Used to determine the epsilon
-value for `dbscan()` (i.e. `eps = radius*binSize`).}
+\item{method}{Character describing the distance measure
+to be used. This must be one of "euclidean", "maximum",
+"manhattan", "canberra", "binary" or "minkowski".
+Any unambiguous substring can be given.
+Default is "manhattan".}
 
-\item{column}{Integer or character denoting the
-column to be used to select among clustered
-interactions.}
+\item{column}{Character denoting the column to be used
+to select among clustered interactions.}
+
+\item{selectMax}{Logical. TRUE (default) uses `which.max()`
+to select the interaction pair. FALSE uses `which.min()`.
+Only applicable when `column` is specified.}
+
+\item{pos}{Positions used for clustering pairs. Must be
+one of "start", "end" or "center". Default is "center".}
 }
 \value{
-Returns a merged `GInteractions` object.
+Returns a `MergedGInteractions` object.
 }
 \description{
 Sets of paired range objects (like `GInteractions`
 or BEDPE-formatted `data.frame`-like objects) are
-merged by genomic distance with dbscan.
+first clustered by genomic distance with `dbscan`,
+then a representative interaction is selected for
+each cluster.
 }
 \details{
 Interactions are clustered into groups using the
-`binSize`, `dist_method`, and `minPts` parameters
-passed to `dbscan()`. A column and function provided
-by the user is then used to select which interaction
-should be chosen to represent the group. The resulting
-object reports the source (which file or list
-name/index) of the chosen interaction.
+provided base pair `radius`, and distance `method`
+with `dbscan()`. Representative interactions are
+selected for each group by one of two methods.
+If `column` and `selectMax` arguments are provided,
+the representative interaction with the maximum
+(or minimum) value in `column` is returned for each
+cluster. If these parameters are missing, new ranges
+for each pair are returned by calculating the median
+of modes for each cluster.
 }
 \examples{
 ## Reference BEDPE files (loops called with SIP)
@@ -51,9 +74,12 @@ bedpeFiles <-
     system.file("extdata", package = "mariner") |>
     list.files(pattern = "Loops.txt", full.names = TRUE)
 
-x <- mergePairs(x = bedpeFiles,
-                binSize = 5e03,
-                radius = 2,
+giList <-
+    lapply(bedpeFiles, fread) |>
+    lapply(as_ginteractions)
+
+x <- mergePairs(x = giList,
+                radius = 10e03,
                 column = "APScoreAvg")
 x
 

@@ -26,7 +26,7 @@
     mcols(gi) <- mcols(x)
 
     ## Return binned object
-    return(BinnedGInteractions(gi))
+    return(gi)
 
 }
 
