@@ -18,8 +18,7 @@ test_that("binPairs can expand the resolution (from start)", {
     exp <-
         data.frame(chr1 = "chr1", x1 = 0, x2 = 20000,
                    chr2 = "chr1", y1 = 20000, y2 = 40000) |>
-        as_ginteractions() |>
-        as("BinnedGInteractions")
+        as_ginteractions()
 
     obj <-
         binPairs(x = gi1,
@@ -43,8 +42,7 @@ test_that("Bin to the TSS of one anchor", {
     exp <-
         data.frame(chr1 = "chr1", x1 = 10000, x2 = 11000,
                    chr2 = "chr1", y1 = 30000, y2 = 31000) |>
-        as_ginteractions() |>
-        as("BinnedGInteractions")
+        as_ginteractions()
 
     obj <-
         binPairs(x = gi2,
@@ -63,8 +61,7 @@ test_that("binPairs retains metadata", {
         data.frame(chr1 = "chr1", x1 = 0, x2 = 20000,
                    chr2 = "chr1", y1 = 20000, y2 = 40000,
                    var1 = "var1", var2 = 10) |>
-        as_ginteractions() |>
-        as("BinnedGInteractions")
+        as_ginteractions()
 
     gi1$var1 <- "var1"
     gi1$var2 <- 10
@@ -74,8 +71,6 @@ test_that("binPairs retains metadata", {
                  binSize = 20000,
                  pos1 = 'start',
                  pos2 = 'start')
-
-
 
     expect_identical(obj, exp)
 
