@@ -242,4 +242,35 @@ test_that("selectMax parameter works", {
 
 })
 
+test_that("pos parameter works", {
 
+    gi <-
+        GInteractions(anchor1 = GRanges(seqnames = "chr1",
+                                        ranges = IRanges(start = c(1, 1, 1),
+                                                         end = c(10,
+                                                                 100,
+                                                                 1e03))),
+                      anchor2 = GRanges(seqnames = "chr1",
+                                        ranges = IRanges(start = c(1, 1, 1),
+                                                         end = c(10, 10, 10))))
+    mergePairs(x = gi,
+               radius = 50,
+               method = "manhattan",
+               pos = "start") |>
+        length() |>
+        expect_equal(1)
+
+    mergePairs(x = gi,
+               radius = 50,
+               method = "manhattan",
+               pos = "center") |>
+        length() |>
+        expect_equal(2)
+
+    mergePairs(x = gi,
+               radius = 50,
+               method = "manhattan",
+               pos = "end") |>
+        length() |>
+        expect_equal(3)
+})
