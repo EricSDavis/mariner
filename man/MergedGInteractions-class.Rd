@@ -45,10 +45,14 @@ bedpeFiles <-
     system.file("extdata", package = "mariner") |>
     list.files(pattern = "Loops.txt", full.names = TRUE)
 
-x <- mergePairs(x = bedpeFiles,
-                binSize = 5e03,
-                radius = 2,
+giList <-
+    lapply(bedpeFiles, fread) |>
+    lapply(as_ginteractions)
+
+x <- mergePairs(x = giList,
+                radius = 10e03,
                 column = "APScoreAvg")
+
 class(x)
 }
 \seealso{

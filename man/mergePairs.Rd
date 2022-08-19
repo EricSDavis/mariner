@@ -2,7 +2,7 @@
 % Please edit documentation in R/AllGenerics.R, R/methods-mergePairs.R
 \name{mergePairs}
 \alias{mergePairs}
-\alias{mergePairs,list_OR_GInteractions,numeric,character_OR_missing,character_OR_missing,logical_OR_missing,character_OR_missing-method}
+\alias{mergePairs,list_OR_SimpleList_OR_GInteractions,numeric,character_OR_missing,character_OR_missing,logical_OR_missing,character_OR_missing-method}
 \title{Merge sets of paired interactions}
 \usage{
 mergePairs(
@@ -14,7 +14,7 @@ mergePairs(
   pos = "center"
 )
 
-\S4method{mergePairs}{list_OR_GInteractions,numeric,character_OR_missing,character_OR_missing,logical_OR_missing,character_OR_missing}(
+\S4method{mergePairs}{list_OR_SimpleList_OR_GInteractions,numeric,character_OR_missing,character_OR_missing,logical_OR_missing,character_OR_missing}(
   x,
   radius,
   method = "manhattan",
@@ -74,7 +74,11 @@ bedpeFiles <-
     system.file("extdata", package = "mariner") |>
     list.files(pattern = "Loops.txt", full.names = TRUE)
 
-x <- mergePairs(x = bedpeFiles,
+giList <-
+    lapply(bedpeFiles, fread) |>
+    lapply(as_ginteractions)
+
+x <- mergePairs(x = giList,
                 radius = 10e03,
                 column = "APScoreAvg")
 x

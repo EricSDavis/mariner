@@ -30,10 +30,14 @@ bedpeFiles <-
     system.file("extdata", package = "mariner") |>
     list.files(pattern = "Loops.txt", full.names = TRUE)
 
-x <- mergePairs(x = bedpeFiles,
-                binSize = 5e03,
-                radius = 2,
+giList <-
+    lapply(bedpeFiles, fread) |>
+    lapply(as_ginteractions)
+
+x <- mergePairs(x = giList,
+                radius = 10e03,
                 column = "APScoreAvg")
+
 getPairClusters(x[1:3])
 getPairClusters(x[3:1])
 getPairClusters(x[c(3, 1, 2)])

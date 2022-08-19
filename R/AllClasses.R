@@ -22,9 +22,11 @@ setClassUnion("character_OR_function_OR_list",
               c("character", "function", "list"))
 
 #' Class union for GInteractionsList
+#' @importClassesFrom S4Vectors SimpleList
 #' @importClassesFrom InteractionSet GInteractions
 #' @noRd
-setClassUnion("list_OR_GInteractions", c("list", "GInteractions"))
+setClassUnion("list_OR_SimpleList_OR_GInteractions",
+              c("list", "SimpleList", "GInteractions"))
 
 
 #' Virtual class for delegating GInteractions
@@ -229,10 +231,14 @@ setValidity("BinnedGInteractions", function(object) {
 #'     system.file("extdata", package = "mariner") |>
 #'     list.files(pattern = "Loops.txt", full.names = TRUE)
 #'
-#' x <- mergePairs(x = bedpeFiles,
-#'                 binSize = 5e03,
-#'                 radius = 2,
+#' giList <-
+#'     lapply(bedpeFiles, fread) |>
+#'     lapply(as_ginteractions)
+#'
+#' x <- mergePairs(x = giList,
+#'                 radius = 10e03,
 #'                 column = "APScoreAvg")
+#'
 #' class(x)
 #' @rdname MergedGInteractions-class
 #' @export
