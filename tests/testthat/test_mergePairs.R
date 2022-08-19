@@ -76,6 +76,28 @@ test_that("Type mixture is not accepted", {
         expect_error("^.*Your list is type NULL, logical.")
 })
 
+test_that("S4Vectors List() and SimpleList() types are accepted", {
+
+    ## Build GInteractions object
+    gr1 <-
+        GRanges(seqnames = "chr1",
+                ranges = IRanges(start = c(30,40,40,70,80),
+                                 end = c(40,50,50,80,90)))
+    gr2 <-
+        GRanges(seqnames = "chr1",
+                ranges = IRanges(start = c(30,30,50,10,30),
+                                 end = c(40,40,60,20,40)))
+    gi <- GInteractions(gr1, gr2)
+
+    ## Test List() and SimpleList()
+    gil <- .readGInteractionsList(list(gi, gi))
+    .readGInteractionsList(list(gi, gi)) |>
+        expect_identical(gil)
+    .readGInteractionsList(SimpleList(gi, gi)) |>
+        expect_identical(gil)
+
+})
+
 
 ## Test mergePairs dispatch methods --------------------------------------------
 

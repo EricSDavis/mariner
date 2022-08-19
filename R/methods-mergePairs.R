@@ -59,6 +59,17 @@
         ## Convert to list of data.tables
         bedpe <- lapply(x, as.data.table)
 
+    } else if (is(x, "SimpleList")) {
+
+        ## Convert to "list"
+        x <- as.list(x)
+
+        ## Check that list is formatted correctly
+        .checkListFormat(x)
+
+        ## Convert to list of data.tables
+        bedpe <- lapply(x, as.data.table)
+
     } else {
 
         ## Convert to list of data.tables
@@ -341,7 +352,11 @@
 #'     system.file("extdata", package = "mariner") |>
 #'     list.files(pattern = "Loops.txt", full.names = TRUE)
 #'
-#' x <- mergePairs(x = bedpeFiles,
+#' giList <-
+#'     lapply(bedpeFiles, fread) |>
+#'     lapply(as_ginteractions)
+#'
+#' x <- mergePairs(x = giList,
 #'                 radius = 10e03,
 #'                 column = "APScoreAvg")
 #' x
@@ -349,7 +364,7 @@
 #' @rdname mergePairs
 #' @export
 setMethod("mergePairs",
-          signature(x = 'list_OR_GInteractions',
+          signature(x = 'list_OR_SimpleList_OR_GInteractions',
                     radius = 'numeric',
                     method = 'character_OR_missing',
                     column = 'character_OR_missing',
