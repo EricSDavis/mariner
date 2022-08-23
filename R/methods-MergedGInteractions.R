@@ -40,19 +40,33 @@
              }) |>
         unlist()
 
-    ## Apply functions to columns
-    aggregatedColumns <-
+    ## Apply functions to columns (and retain ids)
+    aggregated <-
         res[, pmap(.l = list(columns, funs),
                    .f = \(col, f) {
                        do.call(f, list(.SD[[col]]))
-                   }), by = i.id][, i.id := NULL] |>
-        `colnames<-`(value = c(colNames))
+                   }), by = i.id]
 
-    if (nrow(aggregatedColumns) != length(x)) {
+    ## Check that aggregation was appropriate
+    if (nrow(aggregated) != length(x)) {
         msg <- c("Improper aggregation function.",
                  "i" = "`funs` must return a single value.")
         abort(msg)
     }
+
+    ## Add id's
+    aggregatedWithIds <-
+        cbind(aggregated, id = res[match(aggregated$i.id, res$i.id)]$id)
+
+    ## Match to ids in x
+    aggregatedColumns <-
+        aggregatedWithIds[match(x@ids, aggregatedWithIds$id)]
+
+    ## Remove excess columns
+    aggregatedColumns[, c("i.id", "id") := NULL]
+
+    ## Name columns
+    colnames(aggregatedColumns) <- colNames
 
     ## Add result to x
     mcols(x) <- cbind(mcols(x), aggregatedColumns)
