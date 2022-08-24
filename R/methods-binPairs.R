@@ -11,6 +11,9 @@
         x <- makeGInteractionsFromDataFrame(x)
     }
 
+    ## Capture mcols
+    metadataColumns <- mcols(x)
+
     ## Extract anchors
     a1 <- anchors(x, type = 'first')
     a2 <- anchors(x, type = 'second')
@@ -22,11 +25,14 @@
     ## Reconstruct binned GInteractions object
     gi <- GInteractions(a1, a2)
 
-    ## Add back metadata
-    mcols(gi) <- mcols(x)
+    ## Update x with new regions
+    x <- .updateGInteractions(x, delegate = gi)
+
+    ## Add back mcols
+    mcols(x) <- metadataColumns
 
     ## Return binned object
-    return(gi)
+    return(x)
 
 }
 
