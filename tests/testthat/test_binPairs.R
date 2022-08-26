@@ -75,3 +75,47 @@ test_that("binPairs retains metadata", {
     expect_identical(obj, exp)
 
 })
+
+test_that("binPairs doesn't modify class", {
+
+    ## Load required packages
+    library(data.table)
+
+    ## Reference BEDPE files (loops called with SIP)
+    bedpeFiles <-
+        system.file("extdata", package = "mariner") |>
+        list.files(pattern = "Loops.txt", full.names = TRUE)
+
+    ## Assemble list of GInteractions
+    giList <-
+        lapply(bedpeFiles, fread) |>
+        lapply(as_ginteractions)
+
+    ## Merge pairs
+    mgi <- mergePairs(x = giList, radius = 10e03)
+
+    ## Add example metadata
+    mgi$metadata1 <- "foo"
+
+    ## Binning
+    bmgi <-
+        binPairs(x = mgi,
+                 binSize = 10e03,
+                 pos1 = 'start',
+                 pos2 = 'end')
+
+    expect_true(is(bmgi, "MergedGInteractions"))
+    expect_equal(ncol(mcols(bmgi)), 1)
+
+
+    ## For non merged data
+    bp <-
+        binPairs(x = giList[[1]],
+                 binSize = 10e03,
+                 pos1 = 'start',
+                 pos2 = 'end')
+
+    expect_true(is(bp, "GInteractions"))
+    expect_equal(ncol(mcols(bp)), 9)
+
+})

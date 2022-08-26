@@ -217,3 +217,67 @@ test_that("Aggregating metadata columns works", {
         expect_error("^Column.*not exist.$")
 
 })
+
+
+test_that("Complex mcol aggregation works", {
+
+    ## TAD cluster example
+
+    ## Load required packages
+    library(data.table)
+    library(mariner)
+    library(InteractionSet)
+    library(plyranges)
+
+    ## List TAD files for each timepoint
+    bedpeFiles <-
+        system.file("extdata/tads", package = "mariner") |>
+        list.files(full.names = TRUE)
+
+    ## Read in data
+    tadList <-
+        bedpeFiles |>
+        lapply(fread, skip=2, select=1:6) |>
+        lapply(as_ginteractions) |>
+        setNames(gsub("[^0-9]+", "", bedpeFiles))
+
+    ## Since the anchors are redundant,
+    ## define the loop at the tip of each
+    ## domain
+    giList <-
+        lapply(tadList, \(x, binSize = 10e03) {
+
+            ## Update the first anchor
+            newAnchor1 <-
+                anchors(x, 'first') |>
+                mutate(end = start + binSize)
+
+            ## Update the second anchor
+            newAnchor2 <-
+                anchors(x, 'second') |>
+                mutate(start = end - binSize)
+
+            ## Form new GInteractions object
+            GInteractions(anchor1 = newAnchor1,
+                          anchor2 = newAnchor2,
+                          name = paste0("TAD_", 1:length(x)))
+
+        })
+
+    ## Cluster and merge pairs
+    mgi <-
+        mergePairs(x = giList,
+                   radius = 10e05,
+                   method = "manhattan")
+
+    ## There should be the same number of listed
+    ## names as clusters
+    obs <-
+        aggPairMcols(mgi, columns = "name", funs = "list")$list.name |>
+        lapply(length)
+
+    exp <- lapply(getPairClusters(mgi), nrow)
+
+    expect_identical(obs, exp)
+
+})
