@@ -22,6 +22,9 @@ A character vector describing which selection
 Get selectionMethod from MergedGInteractions object
 }
 \examples{
+## Load required packages
+library(data.table, include.only="fread")
+
 ## Reference BEDPE files (loops called with SIP)
 bedpeFiles <-
     system.file("extdata", package = "mariner") |>

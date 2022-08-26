@@ -4,6 +4,9 @@
 \name{DelegatingGInteractions-class}
 \alias{DelegatingGInteractions-class}
 \title{Virtual class for delegating GInteractions}
+\value{
+DelegatingGInteractions virtual class
+}
 \description{
 Uses a delegate `GInteractions` object during
 initialization to assign its `GInteractions` slots.
@@ -13,18 +16,6 @@ initialization to assign its `GInteractions` slots.
 \describe{
 \item{\code{delegate}}{A `GInteractions` object used to initialize
 `GInteractions`-specific slots.}
-
-\item{\code{anchor1}}{`anchorIds(delegate)$first`}
-
-\item{\code{anchor2}}{`anchorIds(delegate)$second`}
-
-\item{\code{regions}}{`regions(delegate)`}
-
-\item{\code{NAMES}}{`names(delegate)`}
-
-\item{\code{elementMetadata}}{`elementMetadata(delegate)`}
-
-\item{\code{metadata}}{`metadata(delegate)`}
 }}
 
 \seealso{

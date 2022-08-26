@@ -24,3 +24,45 @@ aggregate.}
 \description{
 Aggregate the metadata columns of merged pairs
 }
+\examples{
+## Load required packages
+library(data.table, include.only = "fread")
+library(purrr, include.only = "pmap")
+
+## Reference BEDPE files
+bedpeFiles <-
+    system.file("extdata", package = "mariner") |>
+    list.files(pattern = "Loops.txt", full.names = TRUE)
+
+## Read in bedpeFiles as a list of GInteractions
+giList <-
+    lapply(bedpeFiles, fread) |>
+    lapply(as_ginteractions) |>
+    setNames(gsub("^.*extdata/(.{2}).*$", "\\\\1", bedpeFiles))
+
+## Add names describing the source and loop
+giList <-
+    pmap(.l = list(giList, names(giList)),
+         .f = \(x, n) {
+             x$name <- paste0(n, "_loop_", seq_len(length(x)))
+             return(x)
+         })
+
+## Merge pairs
+x <- mergePairs(x = giList,
+                radius = 5e03)
+
+## List loop names
+aggPairMcols(x, columns = "name", fun = "list")
+
+## Aggregate values
+aggPairMcols(x, columns = c("APScoreAvg"), fun = "mean")
+aggPairMcols(x, columns = c("APScoreAvg", "avg"), fun = "mean")
+aggPairMcols(x, columns = c("APScoreAvg"), fun = c("mean", "median"))
+
+## Custom functions
+aggPairMcols(x, columns = c("APScoreAvg"), fun = \(x) {
+    ifelse(is.na(sd(x)), 0, sd(x))
+})
+
+}

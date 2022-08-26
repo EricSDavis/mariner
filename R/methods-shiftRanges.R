@@ -3,7 +3,8 @@
 #' @importFrom plyranges mutate
 #' @importFrom GenomicRanges trim resize shift strand
 #' @importFrom magrittr `%<>%` `%>%`
-#' @importFrom rlang arg_match
+#' @importFrom rlang arg_match abort
+#' @return GRanges object shifted by `pos`
 #' @noRd
 .shiftRanges <- function(x, pos) {
 

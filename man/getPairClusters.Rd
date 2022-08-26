@@ -25,6 +25,9 @@ follows the indices of the `MergedGInteractions`
 object.
 }
 \examples{
+## Load required packages
+library(data.table, include.only="fread")
+
 ## Reference BEDPE files (loops called with SIP)
 bedpeFiles <-
     system.file("extdata", package = "mariner") |>

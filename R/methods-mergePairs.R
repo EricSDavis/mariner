@@ -47,6 +47,7 @@
 #' or GInteractions objects.
 #' @inheritParams mergePairs
 #' @importFrom data.table data.table as.data.table
+#' @importClassesFrom S4Vectors SimpleList List
 #' @returns A concatenated data.table from the list
 #' @noRd
 .readGInteractionsList <- function(x, column) {
@@ -108,8 +109,8 @@
 #' @param x `data.table` with at least 'start1' and
 #'  'start2' columns.
 #' @inheritParams mergePairs
-#'
 #' @importFrom dbscan dbscan
+#' @return vector of DBSCAN cluster designation.
 #' @noRd
 .findClusters <- function(x, radius, method) {
     d <- dist(x, method = method)
@@ -117,11 +118,11 @@
 }
 
 #' Cluster pairs with DBSCAN
-#'
 #' @param x concatenated data.table
 #' @inheritParams mergePairs
-#' @returns Returns data.table with cluster information
 #' @importFrom data.table as.data.table uniqueN `:=`
+#' @importFrom progress progress_bar
+#' @returns Returns data.table with cluster information
 #' @noRd
 .clusterPairs <- function(x, radius, method, pos) {
 
@@ -133,7 +134,7 @@
     x[,grp := .GRP,by = .(seqnames1, seqnames2)]
 
     ## Initialize progress bar
-    pb <- progress::progress_bar$new(
+    pb <- progress_bar$new(
         format = "  :step [:bar] :percent elapsed: :elapsedfull",
         clear = FALSE,
         total = uniqueN(x$grp)
@@ -196,15 +197,16 @@
 }
 
 #' Calculate new paired ranges with the mean of modes method
+#'
+#' Calculates the mean of modes. Results are rounded
+#' to the nearest whole number.
+#'
 #' @param start1 vector of start1 positions
 #' @param start2 vector of start2 positions
 #' @param end1 vector of end1 positions
 #' @param end2 vector of end2 positions
 #'
-#' Calculates the mean of modes. Results are rounded
-#' to the nearest whole number.
-#'
-#' @returns list of updated start/end positions
+#' @returns list of updated start/end positions.
 #' @noRd
 .newPairRanges <- function(start1, start2, end1, end2) {
     list(start1=round(mean(.modes(start1))),
@@ -214,6 +216,7 @@
 }
 
 #' Internal function for renaming mergePairs columns
+#' @param x vector of column names
 #' @returns character vector of column names
 #' @noRd
 .renameCols <- function(x) {
@@ -231,6 +234,7 @@
 #' @inheritParams mergePairs
 #' @importFrom rlang inform
 #' @importFrom data.table as.data.table uniqueN `:=`
+#' @importFrom S4Vectors mcols
 #' @noRd
 .mergePairs <- function(x, radius, method, column, selectMax, pos) {
 
@@ -347,6 +351,9 @@
 #' @return Returns a `MergedGInteractions` object.
 #'
 #' @examples
+#' ## Load required packages
+#' library(data.table, include.only="fread")
+#'
 #' ## Reference BEDPE files (loops called with SIP)
 #' bedpeFiles <-
 #'     system.file("extdata", package = "mariner") |>

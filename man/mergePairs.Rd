@@ -69,6 +69,9 @@ for each pair are returned by calculating the median
 of modes for each cluster.
 }
 \examples{
+## Load required packages
+library(data.table, include.only="fread")
+
 ## Reference BEDPE files (loops called with SIP)
 bedpeFiles <-
     system.file("extdata", package = "mariner") |>

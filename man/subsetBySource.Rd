@@ -57,6 +57,10 @@ same sources are used in both `include` and `exclude` the
 function will return a 0-length MergedGInteractions object.
 }
 \examples{
+## Load required packages
+library(GenomicRanges)
+library(InteractionSet)
+
 ## Define example anchor regions
 gr1 <-
     GRanges(seqnames = "chr1",

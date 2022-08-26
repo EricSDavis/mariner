@@ -63,7 +63,7 @@ setGeneric("getPairClusters", function(x, ...)
 
 #' @rdname sources
 #' @export
-setGeneric("sources", function(x, ...)
+setGeneric("sources", function(x)
     standardGeneric("sources"))
 
 #' @rdname subsetBySource
