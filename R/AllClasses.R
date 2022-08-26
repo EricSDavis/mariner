@@ -55,6 +55,19 @@ setClass(
     )
 )
 
+.updateGInteractions <- function(.Object, ..., delegate = GInteractions()) {
+
+    ## Use GInteractions object to set other attributes
+    .Object@anchor1 <- anchorIds(delegate)$first
+    .Object@anchor2 <- anchorIds(delegate)$second
+    .Object@regions <- regions(delegate)
+    .Object@NAMES <- names(delegate)
+    .Object@elementMetadata <- elementMetadata(delegate)
+    .Object@metadata <- metadata(delegate)
+
+    .Object
+}
+
 #' Initialization method for DelegatingGInteractions
 #' @importFrom InteractionSet anchorIds
 #' @importFrom InteractionSet regions
@@ -65,14 +78,12 @@ setMethod(
     signature = "DelegatingGInteractions",
     definition = function(.Object, ..., delegate = GInteractions()) {
 
-        ## Use GInteractions object to set other attributes
+        ## Set delegate (for children of virtual class)
         .Object@delegate <- delegate
-        .Object@anchor1 <- anchorIds(delegate)$first
-        .Object@anchor2 <- anchorIds(delegate)$second
-        .Object@regions <- regions(delegate)
-        .Object@NAMES <- names(delegate)
-        .Object@elementMetadata <- elementMetadata(delegate)
-        .Object@metadata <- metadata(delegate)
+
+        ## Update GInteractions
+        .Object <- .updateGInteractions(.Object = .Object, ...,
+                                        delegate = delegate)
 
         ## Use default class generator function
         .Object <- callNextMethod(.Object, ...)
