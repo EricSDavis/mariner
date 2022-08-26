@@ -5,7 +5,7 @@
 \alias{sources,MergedGInteractions-method}
 \title{Accessor for sources}
 \usage{
-sources(x, ...)
+sources(x)
 
 \S4method{sources}{MergedGInteractions}(x)
 }
@@ -17,6 +17,9 @@ Access the names or source files of
 a `MergedGInteractions` object.
 }
 \examples{
+## Load required packages
+library(data.table, include.only="fread")
+
 loopFiles <-
     list.files(path = system.file("extdata", package = "mariner"),
                pattern = "Loops.txt",

@@ -31,7 +31,7 @@ and from the end position for the '-' strand.}
 \item{...}{Additional arguments.}
 }
 \value{
-GInteractions object binned to `binSize`
+GInteractions-like object binned to `binSize`
  by `pos1` and `pos2`.
 }
 \description{

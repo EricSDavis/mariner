@@ -39,6 +39,10 @@
 #' @param a2Coords vector of indices for the second anchor.
 #' @inheritParams as_ginteractions
 #'
+#' @importFrom GenomicRanges makeGRangesFromDataFrame
+#' @importFrom InteractionSet GInteractions
+#' @importClassesFrom InteractionSet GInteractions
+#'
 #' @return A GInteractions object
 #' @noRd
 .splitAnchors <- function(df,
@@ -66,6 +70,12 @@
 
 #' Internal function for `as_ginteractions` method
 #' @inheritParams as_ginteractions
+#'
+#' @importFrom S4Vectors DataFrame
+#' @importClassesFrom S4Vectors DataFrame
+#' @importFrom glue glue
+#' @importFrom rlang abort
+#'
 #' @noRd
 .as_ginteractions <- function(df,
                               keep.extra.columns,
@@ -170,8 +180,8 @@ setMethod("makeGInteractionsFromDataFrame",
 #'
 #' ## data.table
 #' library(data.table)
-#' df <- data.table(chr1 = "chr1", x1 = 10000, x2 = 20000,
-#'                  chr2 = "chr1", y1 = 30000, y2 = 40000)
+#' df <- data.table::data.table(chr1 = "chr1", x1 = 10000, x2 = 20000,
+#'                              chr2 = "chr1", y1 = 30000, y2 = 40000)
 #' as_ginteractions(df)
 #'
 #' ## DataFrame
@@ -201,10 +211,10 @@ setMethod("makeGInteractionsFromDataFrame",
 #' @importFrom S4Vectors DataFrame `mcols<-`
 #' @importFrom GenomicRanges makeGRangesFromDataFrame
 #' @importFrom InteractionSet GInteractions
+#' @importFrom data.table data.table
 #' @importFrom rlang abort
 #' @importFrom glue glue
 #' @export
-#'
 setMethod("as_ginteractions",
           signature(df = 'DF_OR_df_OR_dt',
                     keep.extra.columns = 'logical_OR_missing',

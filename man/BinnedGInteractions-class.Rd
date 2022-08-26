@@ -11,13 +11,6 @@
 \alias{firstBinSize,BinnedGInteractions-method}
 \alias{secondBinSize,BinnedGInteractions-method}
 \alias{pairBinsEqual,BinnedGInteractions-method}
-\alias{trim,BinnedGInteractions-method}
-\alias{resize,BinnedGInteractions-method}
-\alias{narrow,BinnedGInteractions-method}
-\alias{shift,BinnedGInteractions-method}
-\alias{flank,BinnedGInteractions-method}
-\alias{regions<-,BinnedGInteractions-method}
-\alias{swapAnchors,BinnedGInteractions-method}
 \title{BinnedGInteractions Class}
 \usage{
 BinnedGInteractions(delegate)
@@ -33,27 +26,14 @@ pairBinsEqual(x)
 \S4method{secondBinSize}{BinnedGInteractions}(x)
 
 \S4method{pairBinsEqual}{BinnedGInteractions}(x)
+}
+\arguments{
+\item{delegate}{GInteractions object}
 
-\S4method{trim}{BinnedGInteractions}(x, use.names = TRUE)
-
-\S4method{resize}{BinnedGInteractions}(x, width, fix = "start", use.names = TRUE, ...)
-
-\S4method{narrow}{BinnedGInteractions}(x, start = NA, end = NA, width = NA, use.names = TRUE)
-
-\S4method{shift}{BinnedGInteractions}(x, shift = 0L, use.names = TRUE)
-
-\S4method{flank}{BinnedGInteractions}(
-  x,
-  width,
-  start = TRUE,
-  both = FALSE,
-  use.names = TRUE,
-  ignore.strand = FALSE
-)
-
-\S4method{regions}{BinnedGInteractions}(x) <- value
-
-\S4method{swapAnchors}{BinnedGInteractions}(x, ...)
+\item{x}{BinnedGInteractions object}
+}
+\value{
+BinnedGInteractions object
 }
 \description{
 The `BinnedGInteractions` class extends

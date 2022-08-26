@@ -29,7 +29,10 @@ Imports:
     rlang,
     glue,
     plyranges,
-    magrittr
+    magrittr,
+    dbscan,
+    purrr,
+    progress
 biocViews:
     FunctionalGenomics,
     Visualization,

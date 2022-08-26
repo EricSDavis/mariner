@@ -68,8 +68,8 @@ as_ginteractions(df)
 
 ## data.table
 library(data.table)
-df <- data.table(chr1 = "chr1", x1 = 10000, x2 = 20000,
-                 chr2 = "chr1", y1 = 30000, y2 = 40000)
+df <- data.table::data.table(chr1 = "chr1", x1 = 10000, x2 = 20000,
+                             chr2 = "chr1", y1 = 30000, y2 = 40000)
 as_ginteractions(df)
 
 ## DataFrame

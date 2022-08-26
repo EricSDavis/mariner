@@ -6,6 +6,16 @@
 \usage{
 \S4method{initialize}{MergedGInteractions}(.Object, ..., delegate = GInteractions())
 }
+\arguments{
+\item{.Object}{GInteractions object}
+
+\item{...}{Additional arguments}
+
+\item{delegate}{GInteractions object}
+}
+\value{
+MergedGInteractions
+}
 \description{
 Initialize MergedGInteractions
 }

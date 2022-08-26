@@ -82,6 +82,47 @@
 #' @param funs Character vector of functions to apply to
 #'  `columns`.
 #'
+#' @examples
+#' ## Load required packages
+#' library(data.table, include.only = "fread")
+#' library(purrr, include.only = "pmap")
+#'
+#' ## Reference BEDPE files
+#' bedpeFiles <-
+#'     system.file("extdata", package = "mariner") |>
+#'     list.files(pattern = "Loops.txt", full.names = TRUE)
+#'
+#' ## Read in bedpeFiles as a list of GInteractions
+#' giList <-
+#'     lapply(bedpeFiles, fread) |>
+#'     lapply(as_ginteractions) |>
+#'     setNames(gsub("^.*extdata/(.{2}).*$", "\\1", bedpeFiles))
+#'
+#' ## Add names describing the source and loop
+#' giList <-
+#'     pmap(.l = list(giList, names(giList)),
+#'          .f = \(x, n) {
+#'              x$name <- paste0(n, "_loop_", seq_len(length(x)))
+#'              return(x)
+#'          })
+#'
+#' ## Merge pairs
+#' x <- mergePairs(x = giList,
+#'                 radius = 5e03)
+#'
+#' ## List loop names
+#' aggPairMcols(x, columns = "name", fun = "list")
+#'
+#' ## Aggregate values
+#' aggPairMcols(x, columns = c("APScoreAvg"), fun = "mean")
+#' aggPairMcols(x, columns = c("APScoreAvg", "avg"), fun = "mean")
+#' aggPairMcols(x, columns = c("APScoreAvg"), fun = c("mean", "median"))
+#'
+#' ## Custom functions
+#' aggPairMcols(x, columns = c("APScoreAvg"), fun = \(x) {
+#'     ifelse(is.na(sd(x)), 0, sd(x))
+#' })
+#'
 #' @return `x` with aggregated metadata columns
 #'
 #' @rdname aggPairMcols
@@ -98,6 +139,9 @@ setMethod("aggPairMcols", signature(x = "MergedGInteractions",
 #'
 #' @inheritParams subsetBySource
 #' @examples
+#' ## Load required packages
+#' library(data.table, include.only="fread")
+#'
 #' loopFiles <-
 #'     list.files(path = system.file("extdata", package = "mariner"),
 #'                pattern = "Loops.txt",
@@ -119,7 +163,7 @@ setMethod("sources", "MergedGInteractions",
 
 #' Create logial matrix of sources for each merged pair
 #' @inheritParams subsetBySource
-#' @importFrom data.table data.table
+#' @importFrom data.table data.table as.data.table
 #' @return A logical matrix with columns for each source
 #'  and rows for each merged pair indicating that pair's
 #'  presence or abscence from the source (file or object).
@@ -212,6 +256,7 @@ setMethod("sources", "MergedGInteractions",
 
 #' Find subset pairs using include sources
 #' @inheritParams subsetBySource
+#' @importFrom data.table data.table
 #' @return A `MergedGInteractions` object of subset pairs.
 #' @noRd
 .subsetBySourceInclude <- function(x, include) {
@@ -259,6 +304,7 @@ setMethod("sources", "MergedGInteractions",
 
 #' Internal find de novo pairs
 #' @inheritParams selectionMethod
+#' @importFrom data.table data.table
 #' @return A `MergedGInteractions` object of de novo pairs.
 #' @noRd
 .subsetBySource <- function(x) {
@@ -325,6 +371,10 @@ setMethod("sources", "MergedGInteractions",
 #'  `exclude` are used).
 #'
 #' @examples
+#' ## Load required packages
+#' library(GenomicRanges)
+#' library(InteractionSet)
+#'
 #' ## Define example anchor regions
 #' gr1 <-
 #'     GRanges(seqnames = "chr1",
@@ -380,9 +430,7 @@ setMethod("subsetBySource",
 
 #' Internal accessor function for getPairClusters
 #' @inheritParams getPairClusters
-#' @importFrom S4Vectors isEmpty
-#' @importFrom glue glue
-#' @importFrom rlang abort
+#' @importFrom data.table data.table
 #' @noRd
 .getPairClusters <- function(x) {
 
@@ -420,6 +468,9 @@ setMethod("subsetBySource",
 #'  in `x`.
 #'
 #' @examples
+#' ## Load required packages
+#' library(data.table, include.only="fread")
+#'
 #' ## Reference BEDPE files (loops called with SIP)
 #' bedpeFiles <-
 #'     system.file("extdata", package = "mariner") |>
@@ -452,6 +503,9 @@ setMethod("getPairClusters", signature(x = "MergedGInteractions"),
 #'  method was used for merging.
 #'
 #' @examples
+#' ## Load required packages
+#' library(data.table, include.only="fread")
+#'
 #' ## Reference BEDPE files (loops called with SIP)
 #' bedpeFiles <-
 #'     system.file("extdata", package = "mariner") |>

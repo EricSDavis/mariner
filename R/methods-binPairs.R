@@ -3,6 +3,9 @@
 #' @importFrom data.table data.table
 #' @importFrom S4Vectors DataFrame mcols
 #' @importFrom InteractionSet anchors
+#'
+#' @return Input object that has been binned.
+#'
 #' @noRd
 .binPairs <- function(x, binSize, pos1, pos2) {
 
@@ -57,7 +60,7 @@
 #'  and from the end position for the '-' strand.
 #' @param ... Additional arguments.
 #'
-#' @return GInteractions object binned to `binSize`
+#' @return GInteractions-like object binned to `binSize`
 #'  by `pos1` and `pos2`.
 #'
 #' @examples

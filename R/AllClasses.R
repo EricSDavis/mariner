@@ -36,16 +36,11 @@ setClassUnion("list_OR_SimpleList_OR_GInteractions",
 #'
 #' @slot delegate A `GInteractions` object used to initialize
 #'  `GInteractions`-specific slots.
-#' @slot anchor1 `anchorIds(delegate)$first`
-#' @slot anchor2 `anchorIds(delegate)$second`
-#' @slot regions `regions(delegate)`
-#' @slot NAMES `names(delegate)`
-#' @slot elementMetadata `elementMetadata(delegate)`
-#' @slot metadata `metadata(delegate)`
 #'
 #' @seealso [InteractionSet::GInteractions]
 #'
 #' @rdname DelegatingGInteractions-class
+#' @return DelegatingGInteractions virtual class
 #' @export
 setClass(
     Class = "DelegatingGInteractions",
@@ -55,6 +50,13 @@ setClass(
     )
 )
 
+#' Internal method for updating GInteractions objects
+#' @param .Object GInteractions object
+#' @param ... Additional arguments
+#' @param delegate GInteractins object to use for
+#'  updating slots of `.Object`.
+#' @return An updated GInteractions object.
+#' @noRd
 .updateGInteractions <- function(.Object, ..., delegate = GInteractions()) {
 
     ## Use GInteractions object to set other attributes
@@ -69,10 +71,14 @@ setClass(
 }
 
 #' Initialization method for DelegatingGInteractions
+#' @param .Object GInteractions object
+#' @param ... Additional arguments
+#' @param delegate GInteractions object
 #' @importFrom InteractionSet anchorIds
 #' @importFrom InteractionSet regions
 #' @importFrom S4Vectors elementMetadata
 #' @importFrom S4Vectors metadata
+#' @return DelegatingGInteractions object
 setMethod(
     f = "initialize",
     signature = "DelegatingGInteractions",
@@ -106,7 +112,6 @@ setMethod(
 #' @seealso [InteractionSet::GInteractions]
 #'
 #' @rdname BinnedGInteractions-class
-#' @export
 setClass(
     Class = "BinnedGInteractions",
     contains = c("GInteractions", "DelegatingGInteractions"),
@@ -119,15 +124,20 @@ setClass(
 )
 
 #' Constructor for BinnedGInteractions Class
+#' @param delegate GInteractions object
 #' @rdname BinnedGInteractions-class
-#' @export
+#' @return BinnedGInteractions object
 BinnedGInteractions <- function(delegate) {
     new("BinnedGInteractions", delegate = delegate)
 }
 
 #' Initialize BinnedGInteractions
+#' @param .Object object to initialize
+#' @param ... Additional arguments
+#' @param delegate GInteractions object for initialization
 #' @importFrom rlang abort
 #' @importFrom glue glue
+#' @return BinnedGInteractions object
 setMethod(
     f = "initialize",
     signature = "BinnedGInteractions",
@@ -237,6 +247,9 @@ setValidity("BinnedGInteractions", function(object) {
 #' @seealso [InteractionSet::GInteractions]
 #'
 #' @examples
+#' ## Load required packages
+#' library(data.table, include.only="fread")
+#'
 #' ## Reference BEDPE files (loops called with SIP)
 #' bedpeFiles <-
 #'     system.file("extdata", package = "mariner") |>
@@ -265,6 +278,10 @@ MergedGInteractions <- setClass(
 )
 
 #' Initialize MergedGInteractions
+#' @param .Object GInteractions object
+#' @param ... Additional arguments
+#' @param delegate GInteractions object
+#' @return MergedGInteractions
 setMethod(
     f = "initialize",
     signature = "MergedGInteractions",
@@ -276,7 +293,10 @@ setMethod(
     })
 
 #' Method for parallel slots for MergedGInteractions
+#' @param x See
+#'   \code{? \link[S4Vectors]{parallel_slot_names}}
 #' @importFrom S4Vectors parallel_slot_names
+#' @return MergedGInteractions with parallel slots
 setMethod("parallel_slot_names", "MergedGInteractions", function(x) {
     c("ids", callNextMethod())
 })

@@ -2,6 +2,7 @@
 #' @inheritParams binRanges
 #' @importFrom plyranges mutate
 #' @importFrom GenomicRanges trim
+#' @return GRanges object binned to `binSize` from `pos`
 #' @noRd
 .binRanges <- function(x, binSize, pos) {
 

@@ -6,6 +6,16 @@
 \usage{
 \S4method{initialize}{BinnedGInteractions}(.Object, ..., delegate = GInteractions())
 }
+\arguments{
+\item{.Object}{object to initialize}
+
+\item{...}{Additional arguments}
+
+\item{delegate}{GInteractions object for initialization}
+}
+\value{
+BinnedGInteractions object
+}
 \description{
 Initialize BinnedGInteractions
 }

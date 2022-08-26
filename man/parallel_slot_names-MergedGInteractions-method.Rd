@@ -6,6 +6,13 @@
 \usage{
 \S4method{parallel_slot_names}{MergedGInteractions}(x)
 }
+\arguments{
+\item{x}{See
+\code{? \link[S4Vectors]{parallel_slot_names}}}
+}
+\value{
+MergedGInteractions with parallel slots
+}
 \description{
 Method for parallel slots for MergedGInteractions
 }
