@@ -1,17 +1,48 @@
 ## Accessors -------------------------------------------------------------------
 
+#' Internal function for mapping ids
+#' for merged objects
+#'
+#' Map the ids in allPairs to the ids
+#' used in the MergedGInteractions object.
+#'
+#' @param x MergedGInteractions object.
+#' @return A key mapping ids by group and
+#'  cluster. Contains a "i.id" column with
+#'  the new id grouped by grp and clst.
+#' @noRd
+.mapIds <- function(x) {
+
+    ## Suppress NSE notes in R CMD check
+    id = grp = clst = NULL
+
+    ## Pull out all pairs
+    ap <- x@allPairs
+
+    ## Create a key using ids from merged pairs
+    keys <- ap[id %in% x@ids, .(id, grp, clst)]
+
+    ## Join keys by group and cluster
+    res <- ap[keys, on = .(grp, clst)]
+
+    ## Return mapped result
+    return(res)
+}
+
 #' Internal aggPairMcols function
 #' @inheritParams aggPairMcols
 #' @importFrom purrr pmap
 #' @importFrom glue glue glue_collapse single_quote
 #' @importFrom S4Vectors mcols
 #' @importFrom rlang abort
+#' @rawNamespace import(data.table,
+#'  except = c(between, shift, first, second, indices))
 #' @return `x` with aggregated metadata columns
 #' @noRd
 .aggPairMcols <- function(x, columns, funs){
 
-    ## Pull out all pairs
-    ap <- x@allPairs
+    ## Suppress NSE notes in R CMD check
+    i.id = NULL
 
     ## Check columns exist
     if (!any(columns %in% colnames(x@allPairs))) {
@@ -20,11 +51,8 @@
                    "do(es) not exist."))
     }
 
-    ## Create a key using ids from merged pairs
-    keys <- ap[id %in% x@ids, .(id, grp, clst)]
-
-    ## Join keys by group and cluster
-    res <- ap[keys, on = .(grp, clst)]
+    ## Map ids joined by group and cluster
+    res <- .mapIds(x)
 
     ## Capture functions as a vector
     funs <- c(funs)
@@ -170,14 +198,11 @@ setMethod("sources", "MergedGInteractions",
 #' @noRd
 .makeSrcMatrix <- function(x) {
 
-    ## Pull out all pairs
-    ap <- x@allPairs
+    ## Suppress NSE notes in R CMD check
+    i.id = NULL
 
-    ## Create a key using ids from merged pairs
-    keys <- ap[id %in% x@ids, .(id, grp, clst)]
-
-    ## Join keys by group and cluster
-    res <- ap[keys, on = .(grp, clst)]
+    ## Map ids joined by group and cluster
+    res <- .mapIds(x)
 
     ## Define the available sources
     srcs <- sources(x)
@@ -434,14 +459,11 @@ setMethod("subsetBySource",
 #' @noRd
 .getPairClusters <- function(x) {
 
-    ## Pull out all pairs
-    ap <- x@allPairs
+    ## Suppress NSE notes in R CMD check
+    i.id = NULL
 
-    ## Create a key using ids from merged pairs
-    keys <- ap[id %in% x@ids, .(id, grp, clst)]
-
-    ## Join keys by group and cluster
-    res <- ap[keys, on = .(grp, clst)]
+    ## Map ids joined by group and cluster
+    res <- .mapIds(x)
 
     ## Save the split vector & drop extra columns
     s <- res$i.id

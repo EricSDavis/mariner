@@ -46,6 +46,18 @@ test_that("selectionMethod accessor works", {
         expect_identical("Select by column 'APScoreAvg'")
 })
 
+test_that(".mapIds returns expected output", {
+
+    ## Subset to a few interactions
+    giList2 <- Map(c, lapply(giList, head, n=1), lapply(giList, tail, n=1))
+    giList2 <- c(giList2, giList2)
+
+    ## Merge pairs
+    x <- mergePairs(x = giList2, radius = 10e03)
+
+    expect_snapshot(x = .mapIds(x))
+})
+
 test_that("getPairClusters accessor works", {
 
     ## Merge pairs and add names
