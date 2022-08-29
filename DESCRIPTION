@@ -26,6 +26,7 @@ Imports:
     GenomicRanges,
     InteractionSet,
     data.table,
+    stats,
     rlang,
     glue,
     plyranges,

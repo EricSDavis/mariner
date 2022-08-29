@@ -90,13 +90,3 @@ setGeneric("secondBinSize", function(x) standardGeneric("secondBinSize"))
 #' @rdname BinnedGInteractions-class
 #' @export
 setGeneric("pairBinsEqual", function(x) standardGeneric("pairBinsEqual"))
-
-#' @rdname pullHicPixels
-#' @export
-setGeneric("pullHicPixels",
-           function(x,
-                    hic,
-                    binSize,
-                    norm = "NONE",
-                    ...)
-               standardGeneric("pullHicPixels"))

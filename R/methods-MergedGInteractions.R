@@ -192,6 +192,7 @@ setMethod("sources", "MergedGInteractions",
 #' Create logial matrix of sources for each merged pair
 #' @inheritParams subsetBySource
 #' @importFrom data.table data.table as.data.table
+#' @importFrom stats setNames
 #' @return A logical matrix with columns for each source
 #'  and rows for each merged pair indicating that pair's
 #'  presence or abscence from the source (file or object).
@@ -334,6 +335,9 @@ setMethod("sources", "MergedGInteractions",
 #' @noRd
 .subsetBySource <- function(x) {
 
+    ## Suppress NSE notes in R CMD check
+    id = grp = clst = src = nDistinct = NULL
+
     ## Pull out all pairs
     ap <- x@allPairs
 
@@ -472,7 +476,7 @@ setMethod("subsetBySource",
     ## Split and order result by input vector (slowest step)
     res <-
         split(res, s)[rank(x@ids)] |>
-        `names<-`(values = names(x))
+        `names<-`(value = names(x))
 
     return(res)
 }
