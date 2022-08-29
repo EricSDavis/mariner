@@ -128,7 +128,7 @@
 .clusterPairs <- function(x, radius, method, pos) {
 
     ## Suppress NSE notes in R CMD check
-    id = grp = clst = NULL
+    id = grp = clst = seqnames1 = seqnames2 = NULL
 
     ## Parse pos parameter
     pos <- match.arg(pos, choices = c("start", "end", "center"))
@@ -241,6 +241,9 @@
 #' @importFrom S4Vectors mcols
 #' @noRd
 .mergePairs <- function(x, radius, method, column, selectMax, pos) {
+
+    ## Suppress NSE notes in R CMD check
+    clst = grp = NULL
 
     ## Parse list or GInteractions input and return
     ## as a concatenated data.table
