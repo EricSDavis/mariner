@@ -110,6 +110,7 @@
 #'  'start2' columns.
 #' @inheritParams mergePairs
 #' @importFrom dbscan dbscan
+#' @importFrom stats dist
 #' @return vector of DBSCAN cluster designation.
 #' @noRd
 .findClusters <- function(x, radius, method) {
@@ -125,6 +126,9 @@
 #' @returns Returns data.table with cluster information
 #' @noRd
 .clusterPairs <- function(x, radius, method, pos) {
+
+    ## Suppress NSE notes in R CMD check
+    id = grp = clst = NULL
 
     ## Parse pos parameter
     pos <- match.arg(pos, choices = c("start", "end", "center"))
