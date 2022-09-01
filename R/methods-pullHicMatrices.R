@@ -24,8 +24,42 @@
     return(x)
 }
 
+#' Check
+#'
+#' @inheritParams pullHicMatrices
+#' @importFrom GenomeInfoDb seqinfo seqnames
+#' @importFrom strawr readHicChroms
+#' @importFrom rlang abort
+#' @importFrom glue glue
+#' @returns Error if there is a chromosome issue
+#' @noRd
+.checkHicChroms <- function(x, file) {
 
-#' Convert GInteractions to Extra short format
+    ## Extract chromosomes from x and file
+    chromsInX <- seqnames(seqinfo(x))
+    chromsInFile <- readHicChroms(file)$name
+
+    ## Ensure all chromosomes in x are in file
+    if (!all(chromsInX %in% chromsInFile)) {
+        abort(c(
+            "There's some chr-chr-craziness going on.",
+            'x' = glue("seqnames in `x` are not correctly ",
+                       "formatted or do not exist in `file`."),
+            "Try the following steps:",
+            '>' = "Check `x` with `GenomeInfoDb::seqinfo(x)`.",
+            '>' = "Check `file` with `strawr::readHicChroms(file)`.",
+            '>' = "Edit seqnames in `x` to match chromosomes in `file`.",
+            "Hint:",
+            '>' = glue("`GenomeInfoDb::seqlevelsStyle(x)",
+                       " <- 'UCSC'` for 'chr' prefix."),
+            '>' = glue("`GenomeInfoDb::seqlevelsStyle(x)",
+                       " <- 'ENSEMBL'` without 'chr' prefix.")
+        ))
+    }
+}
+
+
+#' Convert GInteractions to sorted short format
 #'
 #' Extra short format is the minimal information
 #' needed to extract Hi-C contacts with `strawr`.
@@ -40,7 +74,8 @@
 #' file's internal chromosome map index).
 #'
 #' @inheritParams pullHicMatrices
-#' @importFrom data.table as.data.table
+#' @importFrom data.table as.data.table `:=`
+#' @importFrom strawr readHicChroms
 #' @return `data.table` with columns:
 #'  "chr1", "start1", "chr2", "start2".
 #' @noRd
@@ -53,32 +88,49 @@
         `colnames<-`(c("seqnames1", "pos1",
                        "seqnames2", "pos2"))
 
-    return(x)
-
     ## Get strawr chromosome map index
+    chrMap <- readHicChroms(file)
 
+    ## Get indices for correct ordering in .hic file
+    x$chromIndex1 <- chrMap$index[match(x$seqnames1, chrMap$name)]
+    x$chromIndex2 <- chrMap$index[match(x$seqnames2, chrMap$name)]
 
     ## Interchromosomal: Flip column order
-    ## so that chr1 < chr2
+    ## so that seqnames1 < seqnames2
+    x[chromIndex1 > chromIndex2,
+      `:=`(chromIndex1=chromIndex2,
+           chromIndex2=chromIndex1,
+           seqnames1=seqnames2, pos1=pos2,
+           seqnames2=seqnames1, pos2=pos1)]
 
     ## Intrachromosmal: Flip column order
-    ## so that start1 < start2
-    # x[seqnames1 == seqnames2 & start1 > start2,
-    #   `:=`(start1=start2, start2=start1)]
+    ## so that pos1 < pos2
+    x[chromIndex1 == chromIndex2 & pos1 > pos2,
+      `:=`(pos1=pos2, pos2=pos1)]
 
+    ## Remove indices from data.table
+    x[,c("chromIndex1", "chromIndex2") := NULL]
+
+    return(x)
 }
 
 #' Internal pullHicMatrices
 #' @inheritParams pullHicMatrices
 #' @return Array of Hi-C submatrices.
 #' @noRd
-.pullHicMatrices <- function(x, binSize) {
+.pullHicMatrices <- function(x, binSize, file) {
 
     ## Bin GInteractions if necessary
     x <- .handleBinning(x, binSize)
 
-    ## Convert to short format (seqnames1, pos1, seqnames2, pos2)
-    x <- .GInteractionsToShortFormat(x)
+    ## Ensure seqnames are properly formatted
+    .checkHicChroms(x, file)
+
+    ## Convert to short format and sort interactions
+    x <- .GInteractionsToShortFormat(x, file)
+
+    ## TODO: Develop method for generating clusters
+    ## interactions to extract from file.
 
 
 

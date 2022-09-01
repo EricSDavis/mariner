@@ -1,5 +1,11 @@
 library(mariner)
 library(data.table, include.only = "fread")
+library(InteractionSet, include.only = "regions")
+library(glue, include.only = "glue")
+library(strawr, include.only = c("straw", "readHicChroms"))
+library(dplyr, include.only = "arrange")
+library(GenomeInfoDb)
+library(GenomeInfoDb)
 
 ## Shared objects --------------------------------------------------------------
 
@@ -17,6 +23,21 @@ bedpeFiles <-
 giList <-
     lapply(bedpeFiles, fread) |>
     lapply(as_ginteractions)
+
+## Create out-of-ordered, interchromosomal ranges
+## (for testing)
+giList <-
+    lapply(giList, \(x) {
+        ## Create a sample of regions to permute
+        set.seed(123)
+        s <- sample(x = seq_len(length(regions(x))),
+                    size = length(regions(x)),
+                    replace = FALSE)
+
+        ## Scramble regions
+        regions(x) <- regions(x)[s]
+        x
+    })
 
 ## Merge pairs
 mgi <- mergePairs(x = giList,
@@ -50,17 +71,14 @@ test_that("pullHicMatrices checks for binning", {
         expect_message(".*Binning with binSize=10000.*")
 
     ## Works for pullHicMatrices
-    .pullHicMatrices(x = mgi, binSize = 50e03) |>
+    x <- mgi
+    seqlevelsStyle(x) <- "ENSEMBL"
+    .pullHicMatrices(x = x, binSize = 50e03, file = hicFiles[1]) |>
         expect_message("Pairs are not binned.*")
 
 })
 
 test_that("straw returns data in expected order", {
-
-    ## Load libraries
-    library(glue, include.only = "glue")
-    library(strawr, include.only = c("straw", "readHicChroms"))
-    library(dplyr, include.only = "arrange")
 
     ## Define chromosome map & arrange by index
     chrMap <-
@@ -74,13 +92,13 @@ test_that("straw returns data in expected order", {
             chr1loc <- glue('{chrMap[i, "name"]}:0:0')
             chr2loc <- chrMap[j, "name"]
             sparseMat <-
-                straw(norm = "NONE",
-                      fname = hicFiles[1],
-                      chr1loc = chr1loc,
-                      chr2loc = chr2loc,
-                      unit = "BP",
-                      binsize = 2500000,
-                      matrix = "observed")
+                strawr::straw(norm = "NONE",
+                              fname = hicFiles[1],
+                              chr1loc = chr1loc,
+                              chr2loc = chr2loc,
+                              unit = "BP",
+                              binsize = 2500000,
+                              matrix = "observed")
 
             ## All values in column "x" should be 0
             if (nrow(sparseMat) != 0) {
@@ -94,11 +112,24 @@ test_that("straw returns data in expected order", {
             }
         }
     }
+})
+
+test_that("Check chromosomes in .hic file", {
+
+    ## Seqnames mismatch throws error
+    .checkHicChroms(bgi, hicFiles[1]) |>
+        expect_error("There's.*craziness.*")
+
+    ## Corrected seqnames don't throw error
+    seqlevelsStyle(bgi) <- "ENSEMBL"
+    .checkHicChroms(bgi, hicFiles[1]) |>
+        expect_null()
 
 })
 
+
 test_that("develop the function", {
 
-    .pullHicMatrices(x = mgi, binSize = 50e03)
+
 
 })

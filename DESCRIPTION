@@ -33,7 +33,9 @@ Imports:
     magrittr,
     dbscan,
     purrr,
-    progress
+    progress,
+    GenomeInfoDb,
+    strawr
 biocViews:
     FunctionalGenomics,
     Visualization,
