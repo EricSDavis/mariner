@@ -40,6 +40,13 @@ setGeneric("shiftRanges",
            function(x, pos)
               standardGeneric("shiftRanges"))
 
+#' @rdname snapToBins
+#' @export
+setGeneric("snapToBins",
+           function(x,
+                    binSize)
+               standardGeneric("snapToBins"))
+
 #' @rdname mergePairs
 #' @export
 setGeneric("mergePairs",

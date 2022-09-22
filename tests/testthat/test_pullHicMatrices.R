@@ -1,11 +1,11 @@
 library(mariner)
 library(data.table, include.only = "fread")
-library(InteractionSet, include.only = "regions")
+library(InteractionSet, include.only = c("regions", "GInteractions"))
 library(glue, include.only = "glue")
 library(strawr, include.only = c("straw", "readHicChroms"))
 library(dplyr, include.only = "arrange")
 library(GenomeInfoDb)
-library(GenomeInfoDb)
+library(GenomicRanges)
 
 ## Shared objects --------------------------------------------------------------
 
@@ -70,12 +70,6 @@ test_that("pullHicMatrices checks for binning", {
                    binSize = 10e03) |>
         expect_message(".*Binning with binSize=10000.*")
 
-    ## Works for pullHicMatrices
-    x <- mgi
-    seqlevelsStyle(x) <- "ENSEMBL"
-    .pullHicMatrices(x = x, binSize = 50e03, file = hicFiles[1]) |>
-        expect_message("Pairs are not binned.*")
-
 })
 
 test_that("straw returns data in expected order", {
@@ -116,19 +110,46 @@ test_that("straw returns data in expected order", {
 
 test_that("Check chromosomes in .hic file", {
 
+    ## Assign to x (to avoid modifying in place)
+    x <- bgi
+
     ## Seqnames mismatch throws error
-    .checkHicChroms(bgi, hicFiles[1]) |>
+    .checkHicChroms(x, hicFiles[1]) |>
         expect_error("There's.*craziness.*")
 
     ## Corrected seqnames don't throw error
-    seqlevelsStyle(bgi) <- "ENSEMBL"
-    .checkHicChroms(bgi, hicFiles[1]) |>
+    seqlevelsStyle(x) <- "ENSEMBL"
+    .checkHicChroms(x, hicFiles[1]) |>
         expect_null()
 
 })
 
 
 test_that("develop the function", {
+
+    ## Assign to x (to avoid modifying in place)
+    x <- bgi
+    seqlevelsStyle(x) <- "ENSEMBL"
+    binSize = 50e03
+    file = hicFiles[1]
+
+    ## Bin GInteractions if necessary
+    x <- .handleBinning(x, binSize)
+
+    ## Ensure seqnames are properly formatted
+    .checkHicChroms(x, file)
+
+    ## Convert to short format and sort interactions
+    x <- .GInteractionsToShortFormat(x, file)
+
+
+
+    ## Don't need to cluster - use grids
+    # .clusterPairs(x=x,
+    #               radius = binSize,
+    #               method = 'manhattan',
+    #               pos = 'center')
+
 
 
 

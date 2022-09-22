@@ -120,6 +120,12 @@
 #' @noRd
 .pullHicMatrices <- function(x, binSize, file) {
 
+    ## TODO: Check that binSize is contained in
+    ## file
+
+    ## TODO: Change this to "snapToHicBins"
+    ## to enforce the starts and ends of ranges
+    ## going to acceptable binSizes in the file
     ## Bin GInteractions if necessary
     x <- .handleBinning(x, binSize)
 
@@ -131,6 +137,10 @@
 
     ## TODO: Develop method for generating clusters
     ## interactions to extract from file.
+    .clusterPairs(x=x,
+                  radius = binSize,
+                  method = 'manhattan',
+                  pos = 'center')
 
 
 
