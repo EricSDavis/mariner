@@ -119,3 +119,8 @@ test_that("binPairs doesn't modify class", {
     expect_equal(ncol(mcols(bp)), 9)
 
 })
+
+test_that("Binning checks for appropriate binSize", {
+    binPairs(gi1, binSize = 0) |>
+        expect_error("`binSize` must be > 0")
+})
