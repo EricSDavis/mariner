@@ -1,3 +1,68 @@
+#' Internal snap to correct bin
+#'
+#' Internal helper function to return
+#' the starts & ends of ranges snapped
+#' to the correct `binSize`
+#'
+#' @param start Integer < `end`
+#' @param end Integer > `start`
+#' @param binSize Integer for size of bins.
+#'
+#' @noRd
+.snap <- function(start, end, binSize) {
+
+    ## Get the starts and ends in terms of binSize
+    s <- start/binSize
+    e <- end/binSize
+
+    ## Determine if they cross a bin boundary
+    if (floor(e) - floor(s) > 0) {
+
+        ## Span multiple bins if both
+        ## cross the bin midpoints
+        if (s %% 1 <= 0.5 & e %% 1 >= 0.5) {
+            newStart <- floor(s)*binSize
+            newEnd <- ceiling(e)*binSize
+            return(c(newStart, newEnd))
+        }
+
+        ## Calculate the bin fraction covered
+        ## by start and end
+        sf <- 1 - s %% 1
+        ef <- e %% 1
+
+        ## Check that they are nearly equal
+        if (isTRUE(all.equal(sf, ef))) {
+            newStart <- floor(s)*binSize
+            newEnd <- floor(e)*binSize
+            return(c(newStart, newEnd))
+        }
+
+        ## Check which has a higher fraction of the bin
+        ## Assign to lower bin
+        if (sf > ef) {
+            newStart <- floor(s)*binSize
+            newEnd <- floor(e)*binSize
+            return(c(newStart, newEnd))
+        }
+
+        ## Assign to higher bin
+        if (sf < ef) {
+            newStart <- ceiling(s)*binSize
+            newEnd <- ceiling(e)*binSize
+            return(c(newStart, newEnd))
+        }
+
+        ## Expand to the whole bin
+    } else {
+        newStart <- floor(s)*binSize
+        newEnd <- ceiling(e)*binSize
+        return(c(newStart, newEnd))
+    }
+}
+
+.snapVec <- Vectorize(.snap, vectorize.args = c("start", "end"))
+
 #' Internal snapRangesToBins function
 #' @inheritParams snapRangesToBins
 #' @importFrom plyranges mutate
@@ -14,16 +79,11 @@
 
     ## Snap ranges to nearest bin
     x |>
-        mutate(start = round(start/binSize)*binSize,
-               end = round(end/binSize)*binSize) |>
-        mutate(start = ifelse(width <= binSize,
-                              floor(start/binSize)*binSize,
-                              start),
-               end = ifelse(width <= binSize,
-                            ceiling(end/binSize)*binSize,
-                            end)) |>
+        mutate(start = .snapVec(start, end, binSize)[1,],
+               end = .snapVec(start, end, binSize)[2,]) |>
         trim() |>
         suppressWarnings()
+
 
 }
 
