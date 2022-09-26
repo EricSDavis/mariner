@@ -128,10 +128,13 @@ test_that("Check chromosomes in .hic file", {
 test_that("develop the function", {
 
     ## Assign to x (to avoid modifying in place)
-    x <- bgi
+    x <- mgi
     seqlevelsStyle(x) <- "ENSEMBL"
     binSize = 50e03
     file = hicFiles[1]
+
+
+    snapToBins(x, binSize = binSize)
 
     ## Bin GInteractions if necessary
     x <- .handleBinning(x, binSize)
