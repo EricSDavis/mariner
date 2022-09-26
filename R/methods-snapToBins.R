@@ -2,66 +2,73 @@
 #'
 #' Internal helper function to return
 #' the starts & ends of ranges snapped
-#' to the correct `binSize`
+#' to the correct `binSize`.
 #'
 #' @param start Integer < `end`
 #' @param end Integer > `start`
 #' @param binSize Integer for size of bins.
+#' @importFrom data.table data.table `:=`
+#'
+#' @returns List of snapped starts and ends.
 #'
 #' @noRd
-.snap <- function(start, end, binSize) {
+.snap <- function(start, end, binSize, tolerance = 1e-08) {
 
     ## Get the starts and ends in terms of binSize
     s <- start/binSize
     e <- end/binSize
 
-    ## Determine if they cross a bin boundary
-    if (floor(e) - floor(s) > 0) {
+    ## Calculate the fraction covered by start and end
+    sf <- 1 - s %% 1
+    ef <- e %% 1
 
-        ## Span multiple bins if both
-        ## cross the bin midpoints
-        if (s %% 1 <= 0.5 & e %% 1 >= 0.5) {
-            newStart <- floor(s)*binSize
-            newEnd <- ceiling(e)*binSize
-            return(c(newStart, newEnd))
-        }
+    ## Calculate
+    binsCovered <- floor(e)-floor(s)
 
-        ## Calculate the bin fraction covered
-        ## by start and end
-        sf <- 1 - s %% 1
-        ef <- e %% 1
+    ## Perform comparisons
+    dt <-
+        data.table(s = s,
+                   e = e,
+                   coversBins = binsCovered > 0,
+                   coversOneBin = binsCovered == 1,
+                   crossMid = s %% 1 <= 0.5 & e %% 1 >= 0.5,
+                   equalSides = abs(sf - ef) <= tolerance,
+                   leftSide = sf > ef,
+                   rightSide = sf < ef)
 
-        ## Check that they are nearly equal
-        if (isTRUE(all.equal(sf, ef))) {
-            newStart <- floor(s)*binSize
-            newEnd <- floor(e)*binSize
-            return(c(newStart, newEnd))
-        }
+    ## Update values
+    ## Expand to the whole bin if
+    ## the range doesn't cross a bin boundary
+    dt[(!coversBins),
+       c("s", "e") := .(floor(s), ceiling(e))]
 
-        ## Check which has a higher fraction of the bin
-        ## Assign to lower bin
-        if (sf > ef) {
-            newStart <- floor(s)*binSize
-            newEnd <- floor(e)*binSize
-            return(c(newStart, newEnd))
-        }
+    ## Span multiple bins if range
+    ## crosses the bin midpoints
+    dt[(coversBins & crossMid),
+       c("s", "e") := .(floor(s), ceiling(e))]
 
-        ## Assign to higher bin
-        if (sf < ef) {
-            newStart <- ceiling(s)*binSize
-            newEnd <- ceiling(e)*binSize
-            return(c(newStart, newEnd))
-        }
+    ## If range covers one bin nearly equally
+    ## then push to lower bin
+    dt[(coversOneBin & !crossMid & equalSides),
+       c("s", "e") := .(floor(s), floor(e))]
 
-        ## Expand to the whole bin
-    } else {
-        newStart <- floor(s)*binSize
-        newEnd <- ceiling(e)*binSize
-        return(c(newStart, newEnd))
-    }
+    ## If range covers many bins nearly equally
+    ## then round to nearest bin
+    dt[(coversBins & !crossMid & equalSides),
+       c("s", "e") := .(round(s), round(e))]
+
+    ## If range is left-sided, push to lower bin
+    dt[(coversBins & !crossMid & !equalSides & leftSide),
+       c("s", "e") := .(floor(s), floor(e))]
+
+    ## If range is right-sided, push to upper bin
+    dt[(coversBins & !crossMid & !equalSides & !leftSide & rightSide),
+       c("s", "e") := .(ceiling(s), ceiling(e))]
+
+    ## Expand back to bin coordinates
+    list(start = dt$s*binSize, end = dt$e*binSize)
+
 }
-
-.snapVec <- Vectorize(.snap, vectorize.args = c("start", "end"))
 
 #' Internal snapRangesToBins function
 #' @inheritParams snapRangesToBins
@@ -78,13 +85,14 @@
     if (binSize == 0) abort("`binSize` must be > 0")
 
     ## Snap ranges to nearest bin
+    snapped <- .snap(start(x), end(x), binSize)
+
+    ## Update object and trim excess
     x |>
-        mutate(start = .snapVec(start, end, binSize)[1,],
-               end = .snapVec(start, end, binSize)[2,]) |>
+        mutate(start = snapped$start,
+               end = snapped$end) |>
         trim() |>
         suppressWarnings()
-
-
 }
 
 #' Snap GRanges or GInteractions to nearest bins
