@@ -46,6 +46,9 @@ mgi <- mergePairs(x = giList,
 ## Bin MergedGInteractions
 bgi <- binPairs(x = mgi, binSize = 50e03)
 
+## Bin with snapping
+sgi <- snapToBins(x = mgi, binSize = 50e03)
+
 ## Test pullHicMatrices --------------------------------------------------------
 
 ## TODO: Change .pullHicMatrices to pullHicMatrices
@@ -65,10 +68,15 @@ test_that("pullHicMatrices checks for binning", {
                    binSize = 50e03) |>
         expect_s4_class("MergedGInteractions")
 
-    ## Throws warning when using a different binSize
+    ## Throws message when using a non-divisible binSize
     .handleBinning(x = bgi,
+                   binSize = 250e03) |>
+        expect_message(".*Snapping to binSize=250000.*")
+
+    ## No message for divisible binSizes
+    .handleBinning(x = sgi,
                    binSize = 10e03) |>
-        expect_message(".*Binning with binSize=10000.*")
+        expect_message(NA)
 
 })
 
@@ -133,10 +141,7 @@ test_that("develop the function", {
     binSize = 50e03
     file = hicFiles[1]
 
-
-    snapToBins(x, binSize = binSize)
-
-    ## Bin GInteractions if necessary
+    ## Assign GInteractions to bins
     x <- .handleBinning(x, binSize)
 
     ## Ensure seqnames are properly formatted
@@ -145,7 +150,7 @@ test_that("develop the function", {
     ## Convert to short format and sort interactions
     x <- .GInteractionsToShortFormat(x, file)
 
-
+    x
 
     ## Don't need to cluster - use grids
     # .clusterPairs(x=x,

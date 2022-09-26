@@ -8,15 +8,15 @@
 .handleBinning <- function(x, binSize) {
 
     ## Check for binned GInteractions
-    binned <- .checkBinnedPairs(x, binSize)
+    binned <- .checkSnappedPairs(x, binSize)
 
-    ## Inform user and bin GInteractions
+    ## Inform user and snap GInteractions to bins
     if (!binned) {
-        x <- binPairs(x, binSize)
+        x <- snapToBins(x, binSize)
         msg <- c("Pairs are not binned to `binSize`.",
-                 'i' = glue("Binning with binSize={binSize}, ",
-                            "pos1='center' and pos2='center'."),
-                 'i' = glue("Use `binPairs()` for different binning."))
+                 'i' = glue("Snapping to binSize={binSize}, "),
+                 'i' = glue("Use `binPairs()` or `snapToBins()` ",
+                            "for more binning options."))
         inform(msg)
     }
 
