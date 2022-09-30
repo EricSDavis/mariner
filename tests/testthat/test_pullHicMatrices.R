@@ -132,6 +132,58 @@ test_that("Check chromosomes in .hic file", {
 
 })
 
+test_that("Blocking works for individual ranges", {
+
+    .blockRanges(start = c(0, 40, 45, 50, 110, 120, 0),
+                 end = c(10, 50, 55, 60, 120, 130, 25),
+                 blockSize = 50) |>
+        expect_identical(
+            list(
+                start = c(0, 25, 25, 50, 100, 100, 0),
+                end = c(50, 75, 75, 100, 150, 150, 50)
+            )
+        )
+
+    .blockRanges(start = 0, end = 100, blockSize = 50) |>
+        expect_error(".*blockSize/2.*")
+
+    .blockRanges(start = 0, end = 50, blockSize = 50) |>
+        expect_error(".*blockSize/2.*")
+
+    .blockRanges(start = 0, end = 26, blockSize = 50) |>
+        expect_error(".*blockSize/2.*")
+
+})
+
+test_that("GInteractions correclty map to blocks", {
+
+    x <-
+        GInteractions(
+            GRanges(seqnames = "chr1",
+                    ranges = IRanges(start = c(0, 30, 10, 0, 0),
+                                     end = c(20, 50, 30, 20, 20))),
+            GRanges(seqnames = c(rep("chr1", 4), "chr2"),
+                    ranges = IRanges(start = c(0, 30, 40, 10, 10),
+                                     end = c(20, 50, 60, 30, 30)))
+        )
+
+    exp <-
+        GInteractions(
+            GRanges(seqnames = "chr1",
+                    ranges = IRanges(start = c(0, 25, 0, 0),
+                                     end = c(50, 75, 50, 50))),
+            GRanges(seqnames = c(rep("chr1", 3), "chr2"),
+                    ranges = IRanges(start = c(0, 25, 25, 0),
+                                     end = c(50, 75, 75, 50)))
+        )
+    exp$block <- seq(1L,4L)
+    exp$xIndex <- list(c(1L,4L), 2L, 3L, 5L)
+
+    .mapToBlocks(x, 50) |>
+        expect_identical(exp)
+
+})
+
 
 test_that("develop the function", {
 
@@ -147,17 +199,11 @@ test_that("develop the function", {
     ## Ensure seqnames are properly formatted
     .checkHicChroms(x, file)
 
+    ## Define function to assign ranges to blocks
+    blocks <- .mapToBlocks(x, blockSize = 100e06)
+
     ## Convert to short format and sort interactions
     x <- .GInteractionsToShortFormat(x, file)
-
-    x
-
-    ## Don't need to cluster - use grids
-    # .clusterPairs(x=x,
-    #               radius = binSize,
-    #               method = 'manhattan',
-    #               pos = 'center')
-
 
 
 
