@@ -114,6 +114,151 @@
     return(x)
 }
 
+#' Replacement for "GInteractionsToShortFormat"
+#' @noRd
+.orderInteractions <- function(x, file) {
+
+    ## Convert to data.table format
+    x <-
+        as.data.table(x)[, c("seqnames1", "start1", "end1",
+                             "seqnames2", "start2", "end2")]
+
+    ## Get strawr chromosome map index
+    chrMap <- readHicChroms(file)
+
+    ## Get indices for correct ordering in .hic file
+    x$chromIndex1 <- chrMap$index[match(x$seqnames1, chrMap$name)]
+    x$chromIndex2 <- chrMap$index[match(x$seqnames2, chrMap$name)]
+
+    ## Interchromosomal: Flip column order
+    ## so that seqnames1 < seqnames2
+    x[chromIndex1 > chromIndex2,
+      `:=`(chromIndex1=chromIndex2,
+           chromIndex2=chromIndex1,
+           seqnames1=seqnames2, start1=start2, end1=end2,
+           seqnames2=seqnames1, start2=start1, end2=end1)]
+
+    ## Intrachromosmal: Flip column order
+    ## so that start1 < start2
+    x[chromIndex1 == chromIndex2 & start1 > start2,
+      `:=`(start1=start2, start2=start1,
+           end1=end2, end2=end1)]
+
+    ## Remove indices from data.table
+    x[,c("chromIndex1", "chromIndex2") := NULL]
+
+    return(x)
+}
+
+#' Put ranges into blocks
+#'
+#' This is different than binning ranges because
+#' it modifies the blocks to fit the ranges, rather
+#' than modifiying the ranges to fit "bins".
+#'
+#' @param start Integer vector of start positions.
+#' @param end Integer vector of end positions.
+#' @param blockSize Numeric size of blocks.
+#'
+#' @importFrom rlang abort
+#'
+#' @returns List of blocked start and end vectors
+#'
+#' @noRd
+.blockRanges <- function(start, end, blockSize) {
+
+    ## Get regions in terms of blockSize
+    s <- start / blockSize
+    e <- end / blockSize
+
+    ## Throw error if any ranges are greater than
+    ## blockSize/2
+    widthsFail <- end-start > blockSize/2
+    if (any(widthsFail)) {
+        abort(c(
+            glue("Each `end` - `start` must be ",
+                 "less than `blockSize/2`"),
+            "i" = glue("The following indices do not ",
+                       "meet this criteria: ",
+                       glue_collapse(which(widthsFail), ", "))
+        ))
+    }
+
+    ## Calculate bins covered for each anchor
+    bc <- floor(e) - floor(s)
+
+    ## Shift ranges that intersect a boundary by
+    ## half a blockSize
+    s[bc == 1] <- floor(s[bc == 1])*blockSize + blockSize/2
+    e[bc == 1] <- floor(e[bc == 1])*blockSize + blockSize/2
+
+    ## Ranges that fall within blocks are
+    ## expanded to blockSize
+    s[bc == 0] <- floor(s[bc == 0])*blockSize
+    e[bc == 0] <- (floor(e[bc == 0])+1)*blockSize
+
+    return(list(start = s, end = e))
+}
+
+#' Create 2D-blocks and map paired ranges to them
+#'
+#' Creates a unique set of two-dimenional blocks
+#' of width `blockSize` and maps GInteractions
+#' pairs to each block.
+#'
+#' @param x GInteractions object.
+#' @param blockSize Numeric size of blocks.
+#'
+#' @importFrom rlang warn
+#' @importFrom InteractionSet regions anchors
+#' @importFrom GenomicRanges width
+#' @importFrom glue glue
+#' @importFrom data.table data.table .I .GRP
+#'
+#' @returns GInteractions object describing
+#'  blocks of data with a column, `xIndex`
+#'  connecting them to the input ranges, `x`.
+#'
+#' @noRd
+.mapToBlocks <- function(x, blockSize = 10e06) {
+
+    ## Ensure that the chosen blockSize is
+    ## twice the size of largest range
+    maxRangeWidth <- max(width(regions(x)))
+    if (maxRangeWidth > blockSize/2) {
+        blockSize <- maxRangeWidth*2
+        warn(c(
+            "x" = glue("`blockSize` must be twice the ",
+                       "longest range."),
+            'i' = glue("Setting `blockSize` = {blockSize}.")
+        ))
+    }
+
+    ## Extract anchors
+    a1 <- anchors(x, 'first')
+    a2 <- anchors(x, 'second')
+
+    ## Assign ranges to blocks
+    r1 <- .blockRanges(start(a1), end(a1), blockSize)
+    r2 <- .blockRanges(start(a2), end(a2), blockSize)
+
+    ## Assemble into data.table
+    dt <-
+        data.table(seqnames1 = as.character(seqnames(a1)),
+                   blockStart1 = r1$start,
+                   blockEnd1 = r1$end,
+                   seqnames2 = as.character(seqnames(a2)),
+                   blockStart2 = r2$start,
+                   blockEnd2 = r2$end)
+
+    ## Define unique set of blocks
+    blocks <-
+        dt[, .(block=.GRP, xIndex=.(.I)), by=names(dt)] |>
+        as_ginteractions()
+
+    return(blocks)
+}
+
 #' Internal pullHicMatrices
 #' @inheritParams pullHicMatrices
 #' @return Array of Hi-C submatrices.
