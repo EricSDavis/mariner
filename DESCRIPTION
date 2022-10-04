@@ -35,7 +35,9 @@ Imports:
     purrr,
     progress,
     GenomeInfoDb,
-    strawr
+    strawr,
+    DelayedArray,
+    HDF5Array
 biocViews:
     FunctionalGenomics,
     Visualization,

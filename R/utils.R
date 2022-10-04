@@ -85,3 +85,22 @@
     ux[tab == max(tab)]
 }
 
+#' Check for length-1 vectors
+#' @param param List of named parameters
+#' @importFrom rlang abort
+#' @importFrom glue glue
+#' @returns NULL or an error message for
+#'  vectors with length > 1.
+#' @noRd
+.checkVectorLengths <- function(args){
+    for(i in seq_along(args)) {
+        if (length(args[[i]]) != 1L) {
+            abort(c(
+                glue("Vectorization of '{names(args)[i]}' \\
+                       is not currently supported."),
+                "i"=glue("Rerun with one value for \\
+                         '{names(args)[i]}'.")
+            ))
+        }
+    }
+}
