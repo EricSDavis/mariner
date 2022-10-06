@@ -97,3 +97,18 @@ setGeneric("secondBinSize", function(x) standardGeneric("secondBinSize"))
 #' @rdname BinnedGInteractions-class
 #' @export
 setGeneric("pairBinsEqual", function(x) standardGeneric("pairBinsEqual"))
+
+#' @rdname pullHicMatrices
+#' @export
+setGeneric("pullHicMatrices",
+           function(x,
+                    binSize,
+                    files,
+                    ...,
+                    norm = 'NONE',
+                    matrix = 'observed',
+                    blockSize = 248956422,
+                    onDisk = TRUE,
+                    compressionLevel = 0,
+                    chunkSize = 1)
+               standardGeneric("pullHicMatrices"))

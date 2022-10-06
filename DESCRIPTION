@@ -29,6 +29,7 @@ Imports:
     stats,
     rlang,
     glue,
+    assertthat,
     plyranges,
     magrittr,
     dbscan,

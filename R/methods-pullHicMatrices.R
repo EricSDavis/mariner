@@ -5,10 +5,10 @@
 #' @importFrom rlang abort arg_match
 #' @importFrom glue glue
 #' @noRd
-.checkStrawArgs <- function(file, norm, binSize, matrix) {
+.checkStrawArgs <- function(files, norm, binSize, matrix) {
 
     ## Check norm and binSize against each file
-    for(f in file) {
+    for(f in files) {
         arg_match(norm, readHicNormTypes(f))
         if (!binSize %in% as.integer(readHicBpResolutions(f))) {
             abort(c(
@@ -51,7 +51,7 @@
     return(x)
 }
 
-#' Check that chromosome maps in file
+#' Check that chromosome maps in files
 #'
 #' Ensure they are identical for all files
 #' and all chromosomes in `x` are contained
@@ -64,16 +64,16 @@
 #' @importFrom glue glue
 #' @returns Error if there is a chromosome issue
 #' @noRd
-.checkHicChroms <- function(x, file) {
+.checkHicChroms <- function(x, files) {
 
     ## Ensure all chromosome maps are identical
     ## if this fails, user will have to run
     ## the function in separate calls
-    chrMaps <- lapply(file, \(f) readHicChroms(f))
+    chrMaps <- lapply(files, \(f) readHicChroms(f))
     if (!all(sapply(chrMaps, identical, chrMaps[[1]]))) {
         abort(c(
-            "Chromosome maps in `file` are not identical",
-            "i"="Check this with `strawr::readHicChroms(file[1])`",
+            "Chromosome maps in `files` are not identical",
+            "i"="Check this with `strawr::readHicChroms(files[1])`",
             "*"=glue("This is essential to ensure interactions ",
                      "are ordered correctly."),
             "*"=glue("Call this function multiple times ",
@@ -82,7 +82,7 @@
         ))
     }
 
-    ## Extract chromosomes from x and file
+    ## Extract chromosomes from x and files
     chromsInX <- seqnames(seqinfo(x))
     chromsInFile <- chrMaps[[1]]$name
 
@@ -91,11 +91,11 @@
         abort(c(
             "There's some chr-chr-craziness going on.",
             'x' = glue("seqnames in `x` are not correctly ",
-                       "formatted or do not exist in `file`."),
+                       "formatted or do not exist in `files`."),
             "Try the following steps:",
             '>' = "Check `x` with `GenomeInfoDb::seqinfo(x)`.",
-            '>' = "Check `file` with `strawr::readHicChroms(file)`.",
-            '>' = "Edit seqnames in `x` to match chromosomes in `file`.",
+            '>' = "Check `file` with `strawr::readHicChroms(files)`.",
+            '>' = "Edit seqnames in `x` to match chromosomes in `files`.",
             "Hint:",
             '>' = glue("`GenomeInfoDb::seqlevelsStyle(x)",
                        " <- 'UCSC'` for 'chr' prefix."),
@@ -126,7 +126,7 @@
 #' @return `data.table` with columns:
 #'  "chr1", "start1", "chr2", "start2".
 #' @noRd
-.GInteractionsToShortFormat <- function(x, file) {
+.GInteractionsToShortFormat <- function(x, files) {
 
     ## Convert to data.table format
     x <-
@@ -136,9 +136,9 @@
                        "seqnames2", "pos2"))
 
     ## Get strawr chromosome map index
-    chrMap <- readHicChroms(file)
+    chrMap <- readHicChroms(files)
 
-    ## Get indices for correct ordering in .hic file
+    ## Get indices for correct ordering in .hic files
     x$chromIndex1 <- chrMap$index[match(x$seqnames1, chrMap$name)]
     x$chromIndex2 <- chrMap$index[match(x$seqnames2, chrMap$name)]
 
@@ -326,12 +326,12 @@
 #'  extracted data.
 #'
 #' @noRd
-.pullArray <- function(x, binSize, file, norm, matrix,
+.pullArray <- function(x, binSize, files, norm, matrix,
                        blockSize, onDisk, compressionLevel,
                        chunkSize, mDim, blocks) {
     ## Determine dimensions for dataset
     ## Dim order is nInteractions, nFiles, matrix dims
-    dims <- c(length(x), length(file), mDim, mDim)
+    dims <- c(length(x), length(files), mDim, mDim)
 
     if (onDisk) {
         ## Create hdf5 for storage
@@ -379,23 +379,23 @@
     ## Start progress bar
     pb <- progress_bar$new(
         format = "  :step [:bar] :percent elapsed: :elapsedfull",
-        clear = F, total = nrow(blocks)*length(file)+1)
+        clear = FALSE, total = nrow(blocks)*length(files)+1)
     pb$tick(0)
 
     ## Begin extraction for each file and block
-    for(j in seq_len(length(file))) {
+    for(j in seq_len(length(files))) {
         for(i in seq_len(nrow(blocks))) {
 
             ## Update progress
             pb$tick(tokens=list(step=sprintf(
                 'Pulling block %s of %s from file %s of %s',
-                i, nrow(blocks), j, length(file)
+                i, nrow(blocks), j, length(files)
             )))
 
             ## Extract block data from file
             sparseMat <-
                 straw(norm = norm,
-                      fname = file[j],
+                      fname = files[j],
                       chr1loc = blocks$chr1loc[i],
                       chr2loc = blocks$chr2loc[i],
                       unit = "BP",
@@ -514,30 +514,38 @@
 
 #' Internal pullHicMatrices
 #' @inheritParams pullHicMatrices
+#' @importFrom data.table as.data.table
+#' @importFrom InteractionSet regions
+#' @importFrom S4Vectors width
 #' @return Array of Hi-C submatrices.
 #' @noRd
-.pullHicMatrices <- function(x, binSize, file, norm, matrix,
+.pullHicMatrices <- function(x, binSize, files, norm, matrix,
                              blockSize, onDisk, compressionLevel,
                              chunkSize) {
 
-    ## Check for length-1 arguments
-    .checkVectorLengths(list(
-        binSize=binSize, blockSize=blockSize, norm=norm,
-        matrix=matrix, onDisk=onDisk, compressionLevel=compressionLevel
+    ## Check input types
+    .checkTypes(c(
+        binSize="number",
+        norm="string",
+        matrix="string",
+        blockSize="number",
+        onDisk="boolean",
+        compressionLevel="number",
+        chunkSize="number"
     ))
 
     ## Parse straw parameters
-    .checkStrawArgs(file, norm, binSize, matrix)
+    .checkStrawArgs(files, norm, binSize, matrix)
 
     ## Ensure seqnames are properly formatted
-    .checkHicChroms(x, file)
+    .checkHicChroms(x, files)
 
     ## Assign GInteractions to bins
     x <- .handleBinning(x, binSize)
 
     ## Order interactions according to chroms
     ## (ensures blocks will be ordered too)
-    x <- .orderInteractions(x, file[1])
+    x <- .orderInteractions(x, files[1])
 
     ## Assign x to blocks
     blocks <- as.data.table(.mapToBlocks(x, blockSize))
@@ -561,7 +569,7 @@
         iset <-
             .pullArray(x = x,
                        binSize = binSize,
-                       file = file,
+                       files = files,
                        norm = norm,
                        matrix = matrix,
                        blockSize = blockSize,
@@ -577,21 +585,28 @@
         stop("Variable dimension matrices not currently supported.")
     }
 
-
 }
 
-#' Pull matrices from a `.hic` file
+#' Pull matrices from `.hic` files
 #'
 #' @param x GInteractions object.
 #' @param binSize Integer (numeric) describing the
 #'  resolution (range widths) of the paired data.
-#' @param file Character file path to `.hic` file.
-#' @return Array of Hi-C submatrices.
-#' @noRd
-# #' @rdname pullHicMatrices
-# #' @export
-# setMethod("pullHicMatrices",
-#           signature(x = 'GInteractions',
-#                     binSize = 'numeric',
-#                     file = 'character'),
-#           definition = .pullHicMatrices)
+#' @param files Character file paths to `.hic` files.
+#' @param norm norm
+#' @param matrix matrix
+#' @param blockSize blockSize
+#' @param onDisk onDisk
+#' @param compressionLevel compressionLevel
+#' @param chunkSize chunkSize
+#'
+#' @returns Array of Hi-C submatrices.
+#'
+#' @rdname pullHicMatrices
+#' @export
+setMethod("pullHicMatrices",
+          signature(x = 'GInteractions',
+                    binSize = 'numeric',
+                    files = 'character'),
+          definition = .pullHicMatrices)
+

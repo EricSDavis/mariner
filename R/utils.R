@@ -85,22 +85,46 @@
     ux[tab == max(tab)]
 }
 
-#' Check for length-1 vectors
-#' @param param List of named parameters
+#' Check input types
+#'
+#' Derived types:
+#' string - length one character vector
+#' number - length one numeric vector
+#' boolean - a length one logical vector that is not NA
+#'
+#' @param types Named vector or list of arguments and their types
 #' @importFrom rlang abort
 #' @importFrom glue glue
-#' @returns NULL or an error message for
-#'  vectors with length > 1.
+#' @importFrom assertthat is.string is.number is.flag
+#' @returns NULL or an error message incorrect types.
 #' @noRd
-.checkVectorLengths <- function(args){
-    for(i in seq_along(args)) {
-        if (length(args[[i]]) != 1L) {
-            abort(c(
-                glue("Vectorization of '{names(args)[i]}' \\
-                       is not currently supported."),
-                "i"=glue("Rerun with one value for \\
-                         '{names(args)[i]}'.")
-            ))
+.checkTypes <- function(types, env=parent.frame()) {
+    args <- names(types)
+    for(i in seq_along(types)) {
+        if (types[i] == "string") {
+            if(any(!is.string(get(args[i], envir=env)))) {
+                abort(glue(
+                    "{args[i]} is not a string \\
+                        (a length one character vector)."
+                ))
+            }
+        }
+        if (types[i] == "number") {
+            if(any(!is.number(get(args[i], envir=env)))) {
+                abort(glue(
+                    "{args[i]} is not a number \\
+                        (a length one numeric vector)."
+                ))
+            }
+        }
+        if (types[i] == "boolean") {
+            arg <- get(args[i], envir=env)
+            if(any(!is.flag(arg) | is.na(arg))) {
+                abort(glue(
+                    "{args[i]} is not a boolean \\
+                        (a length one logical vector that is not NA)."
+                ))
+            }
         }
     }
 }
