@@ -223,15 +223,6 @@ test_that("develop the function (matrix cases)", {
     ## Assign to x (to avoid modifying in place)
     x <- bgi
     seqlevelsStyle(x) <- "ENSEMBL"
-    # binSize = 5e03#1e06
-    # blockSize = 248956422#100e06
-    # files = hicFiles
-    # norm = "NONE"
-    # matrix = "observed"
-    # onDisk = FALSE
-    # compressionLevel = 0
-    # # chunkSize = length(x)
-    # rm(chunkSize)
 
 
     iset <-
@@ -239,80 +230,12 @@ test_that("develop the function (matrix cases)", {
                         binSize = 2.5e06,
                         files = hicFiles[1],
                         onDisk=TRUE)
-    hictoolsr::calcApa(x |> as.data.table() |> as_ginteractions(),
-                       hicFiles[1], res = 2.5e06, buffer = 2)
 
     assay(iset) |>
-        aperm(c(3,4, 1,2)) |>
+        aperm(c(3,4,1,2)) |>
         {\(x) apply(x[,,,1], c(1,2), sum)}()
 
-    pullHicMatrices(x = x[1:10],
-                    binSize = 2.5e06,
-                    files = hicFiles)
-
-    .pullHicMatrices(x = x[1:10],
-                     binSize = 2.5e06,
-                     files = hicFiles,
-                     norm = "KR",
-                     matrix = "observed",
-                     blockSize = 248956422,
-                     onDisk = TRUE,
-                     compressionLevel = 0,
-                     chunkSize = 1)
-
-    interactions(iset)
-    aperm(assay(iset), c(3,4,1,2)) |>
-        {\(x) apply(x[,,,1], c(1,2), sum)}()
-
-    assay(iset) <- as(assay(iset), "HDF5Array")
-    tmp
-    path(assay(iset, "counts"))
-
-    iset
     ## TODO: make custom print method for arrays
-    library(SummarizedExperiment)
-    tmp <-
-        assay(iset[1:3]) |>
-        aperm(c(3,4,1,2))
-
-    tmp
-
-    # hictoolsr::calcApa(x, files[1], res = 250e03, buffer = 50)
-
-    ## Get result out
-    # tmp <-
-    #     h5read(h5, "counts", index = list(xIndices, 1, 1:2, 1:2)) |>
-    #     aperm(c(3,4,1,2)) |>
-    #     {\(x) x[,,1,1]}()
-    tmp <-
-        h5read(h5, "counts", index = list(xIndices[9:10], 1, 1:2, 1:2)) |>
-        aperm(c(3,4,1,2)) # rearrange to form matrix
-    rownames(tmp) <-
-        h5read(h5,
-               "rownames",
-               index=list(xIndices[9:10],1,1:2))[,,1:2]
-    colnames(tmp) <-
-        h5read(h5,
-               "colnames",
-               index=list(xIndices[9:10],1,1:2))[,,1:2]
-
-
-
-    ## Example select one matrix
-    # b <- a[,,10,1]
-    # rownames(b) <- unlist(aInfo$rowNames[10])
-    # colnames(b) <- unlist(aInfo$colNames[10])
-    # b
-
-
-    ## Slower way and doesn't store correct row/colnames
-    # system.time({
-    #     tmp <-
-    #         lapply(unique(longMat$groupRow), \(i){
-    #             reshape2::acast(longMat[groupRow==i], x~y, value.var = "counts")
-    #         }) |>
-    #         simplify2array()
-    # })
 
 
 })

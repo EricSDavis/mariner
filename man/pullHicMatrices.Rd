@@ -3,7 +3,7 @@
 \name{pullHicMatrices}
 \alias{pullHicMatrices}
 \alias{pullHicMatrices,GInteractions,numeric,character-method}
-\title{Pull matrices from `.hic` files}
+\title{Pull submatrices from `.hic` files}
 \usage{
 pullHicMatrices(
   x,
@@ -38,21 +38,50 @@ resolution (range widths) of the paired data.}
 
 \item{files}{Character file paths to `.hic` files.}
 
-\item{norm}{norm}
+\item{...}{Additional arguments.}
 
-\item{matrix}{matrix}
+\item{norm}{String (length one character vector)
+describing the Hi-C normalization to apply. Use
+`strawr::readHicNormTypes()` to see accepted values
+for each file in `files`.}
 
-\item{blockSize}{blockSize}
+\item{matrix}{String (length one character vector)
+Type of matrix to extract. Must be one of "observed",
+"oe", or "expected". "observed" is observed counts,
+"oe" is observed/expected counts, "expected" is
+expected counts.}
 
-\item{onDisk}{onDisk}
+\item{blockSize}{Number (length one numeric vector)
+describing the size in base-pairs to pull from each
+`.hic` file. Default is 248956422 (the length of the
+longest chromosome in the human hg38 genome). For
+large `.hic` files `blockSize` can be reduced to
+conserve the amount of data read in at a time. Larger
+`blockSize` values speed up performance, but use more
+memory.}
 
-\item{compressionLevel}{compressionLevel}
+\item{onDisk}{Boolean (length one logical vector that
+is not NA) indicating whether extracted data should
+be stored on disk in an HDF5 file. Default is TRUE.}
 
-\item{chunkSize}{chunkSize}
+\item{compressionLevel}{Number (length one numeric vector)
+between 0 (Default) and 9 indicating the compression
+level used on HDF5 file.}
+
+\item{chunkSize}{Number (length one numeric vector)
+indicating how many values of `x` to chunk for each
+write to HDF5 stored data. This has downstream
+implications for accessing subsets later. For small
+`compressionLevel` values use smaller `chunkSize`
+values and for large `compressionLevel` values use large
+(i.e. `length(x)`) values to improve performance.}
 }
 \value{
-Array of Hi-C submatrices.
+InteractionSet object with a 4-dimensional array
+ of Hi-C submatrices, rownames, and colnames. Array is
+ stored with the following dimensions: Interactions in `x`,
+ Hi-C `files`, rows of submatrix, columns of submatrix.
 }
 \description{
-Pull matrices from `.hic` files
+Pull submatrices from `.hic` files
 }
