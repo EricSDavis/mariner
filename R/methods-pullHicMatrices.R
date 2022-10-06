@@ -587,20 +587,48 @@
 
 }
 
-#' Pull matrices from `.hic` files
+#' Pull submatrices from `.hic` files
 #'
 #' @param x GInteractions object.
+#' @param files Character file paths to `.hic` files.
 #' @param binSize Integer (numeric) describing the
 #'  resolution (range widths) of the paired data.
-#' @param files Character file paths to `.hic` files.
-#' @param norm norm
-#' @param matrix matrix
-#' @param blockSize blockSize
-#' @param onDisk onDisk
-#' @param compressionLevel compressionLevel
-#' @param chunkSize chunkSize
+#' @param ... Additional arguments.
+#' @param norm String (length one character vector)
+#'  describing the Hi-C normalization to apply. Use
+#'  `strawr::readHicNormTypes()` to see accepted values
+#'  for each file in `files`.
+#' @param matrix String (length one character vector)
+#'  Type of matrix to extract. Must be one of "observed",
+#'  "oe", or "expected". "observed" is observed counts,
+#'  "oe" is observed/expected counts, "expected" is
+#'  expected counts.
+#' @param blockSize Number (length one numeric vector)
+#'  describing the size in base-pairs to pull from each
+#'  `.hic` file. Default is 248956422 (the length of the
+#'  longest chromosome in the human hg38 genome). For
+#'  large `.hic` files `blockSize` can be reduced to
+#'  conserve the amount of data read in at a time. Larger
+#'  `blockSize` values speed up performance, but use more
+#'  memory.
+#' @param onDisk Boolean (length one logical vector that
+#'  is not NA) indicating whether extracted data should
+#'  be stored on disk in an HDF5 file. Default is TRUE.
+#' @param compressionLevel Number (length one numeric vector)
+#'  between 0 (Default) and 9 indicating the compression
+#'  level used on HDF5 file.
+#' @param chunkSize Number (length one numeric vector)
+#'  indicating how many values of `x` to chunk for each
+#'  write to HDF5 stored data. This has downstream
+#'  implications for accessing subsets later. For small
+#'  `compressionLevel` values use smaller `chunkSize`
+#'  values and for large `compressionLevel` values use large
+#'  (i.e. `length(x)`) values to improve performance.
 #'
-#' @returns Array of Hi-C submatrices.
+#' @returns InteractionSet object with a 4-dimensional array
+#'  of Hi-C submatrices, rownames, and colnames. Array is
+#'  stored with the following dimensions: Interactions in `x`,
+#'  Hi-C `files`, rows of submatrix, columns of submatrix.
 #'
 #' @rdname pullHicMatrices
 #' @export
