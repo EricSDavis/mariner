@@ -40,34 +40,34 @@
     return(x)
 }
 
-#'  Expand pixels to submatrices
+#' Expand pixels to submatrices
 #'
-#'  Pixels are defined as paired-ranges with
-#'  starts & ends equal to their `binSize`.
-#'  This function takes GInteractions fitting
-#'  this description and expands the ranges
-#'  such that there is a `buffer` of pixels
-#'  around each range.
+#' Pixels are defined as paired-ranges with
+#' starts & ends equal to their `binSize`.
+#' This function takes GInteractions fitting
+#' this description and expands the ranges
+#' such that there is a `buffer` of pixels
+#' around each range.
 #'
-#'  For example, a buffer of 3 would return a
-#'  GInteractions object with 3 pixels surrounding
-#'  the original pixel ranges.
+#' For example, a buffer of 3 would return a
+#' GInteractions object with 3 pixels surrounding
+#' the original pixel ranges.
 #'
-#'  After using `pullHicMatrices()`, the result will
-#'  return a matrix of row and column dimensions of
-#'  buffer*2+1.
+#' After using `pullHicMatrices()`, the result will
+#' return a matrix of row and column dimensions of
+#' buffer*2+1.
 #'
-#'  Note, this function does not handle out-of-bound
-#'  ranges.
+#' Note, this function does not handle out-of-bound
+#' ranges.
 #'
-#'  @param x GInteractions object.
-#'  @param buffer Number (length one numeric vector)
-#'   of pixels around the pixels in `x`.
+#' @param x GInteractions object.
+#' @param buffer Number (length one numeric vector)
+#'  of pixels around the pixels in `x`.
 #'
-#'  @returns `x` with updated ranges.
+#' @returns `x` with updated ranges.
 #'
-#'  @rdname pixelsToMatrices
-#'  @export
+#' @rdname pixelsToMatrices
+#' @export
 setMethod("pixelsToMatrices",
           signature(x = 'GInteractions',
                     buffer = 'numeric'),
