@@ -112,3 +112,8 @@ setGeneric("pullHicMatrices",
                     compressionLevel = 0,
                     chunkSize = 1)
                standardGeneric("pullHicMatrices"))
+
+#' @rdname pixelsToMatrices
+#' @export
+setGeneric("pixelsToMatrices", function(x, buffer)
+    standardGeneric("pixelsToMatrices"))
