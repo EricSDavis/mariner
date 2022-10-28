@@ -24,12 +24,12 @@
     ## Resize each anchor
     a1 <-
         anchors(x, 'first') |>
-        mutate(end = start + binSize*buffer,
+        mutate(end = start + binSize*(buffer+1),
                start = start - binSize*buffer)
 
     a2 <-
         anchors(x, 'second') |>
-        mutate(end = start + binSize*buffer,
+        mutate(end = start + binSize*(buffer+1),
                start = start - binSize*buffer,)
 
     ## Update x with new ranges

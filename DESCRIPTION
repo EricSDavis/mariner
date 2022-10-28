@@ -38,7 +38,9 @@ Imports:
     GenomeInfoDb,
     strawr,
     DelayedArray,
-    HDF5Array
+    HDF5Array,
+    abind,
+    BiocParallel
 biocViews:
     FunctionalGenomics,
     Visualization,
