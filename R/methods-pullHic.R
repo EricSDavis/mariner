@@ -408,16 +408,12 @@
             g <- as.data.table(x[xIndices])
 
             ## Generate bins for rows and columns
-            bins <- g[,.(x = seq(start1, end1, binSize),
-                         y = seq(start2, end2, binSize),
+            ## Since strawr uses starts to pull pixels,
+            ## remove the extra bin at the end (end-binSize).
+            bins <- g[,.(x = seq(start1, end1-binSize, binSize),
+                         y = seq(start2, end2-binSize, binSize),
                          counts = 0),
                       by = .(groupRow = 1:nrow(g))]
-
-            ## For pullHicPixels
-            # bins <- g[,.(x = start1,
-            #              y = start2,
-            #              counts = 0),
-            #           by = .(groupRow = 1:nrow(g))]
 
             ## Expand bins to long format (fast cross-join)
             longMat <- bins[, do.call(CJ, c(.SD, sorted = F)),
@@ -485,43 +481,59 @@
     pb$tick(tokens = list(step = "Done!"))
     if(pb$finished) pb$terminate()
 
-    ## Construct InteractionSet object
+    ## Build colData and metadata
+    colData <- DataFrame(files=files, fileNames=basename(files))
+    metadata <- list(
+        binSize=binSize,
+        norm=norm,
+        matrix=matrix
+    )
+
+    ## Construct InteractionArray object
     if (onDisk) {
         iset <-
-            InteractionSet(
+            InteractionArray(
                 interactions = x,
                 assays = list(
                     counts = DelayedArray(HDF5Array(h5,"counts")),
                     rownames = DelayedArray(HDF5Array(h5,"rownames")),
                     colnames = DelayedArray(HDF5Array(h5,"colnames"))
-                )
+                ),
+                colData = colData,
+                metadata = metadata
             )
-        return(iset)
-
     } else {
         iset <-
-            InteractionSet(
+            InteractionArray(
                 interactions = x,
                 assays = list(
                     counts = DelayedArray(counts),
                     rownames = DelayedArray(rownames),
                     colnames = DelayedArray(colnames)
-                )
+                ),
+                colData = colData,
+                metadata = metadata
             )
-        return(iset)
     }
+
+    ## Assign dimnames to files (default is basename(files))
+    if (is.null(names(files))) {
+        dimnames(iset)[2] <- list(iset$fileNames)
+    } else {
+        dimnames(iset)[2] <- list(names(files))
+    }
+
+    return(iset)
 }
 
-#' Internal pullHicMatrices
+#' Preprocessing before pulling Hi-C data
 #' @inheritParams pullHicMatrices
-#' @importFrom data.table as.data.table
-#' @importFrom InteractionSet regions
-#' @importFrom S4Vectors width
-#' @return Array of Hi-C submatrices.
+#' @returns Updated `x` and `blocks` describing
+#'  ranges to pull.
 #' @noRd
-.pullHicMatrices <- function(x, binSize, files, norm, matrix,
-                             blockSize, onDisk, compressionLevel,
-                             chunkSize) {
+.prepareInputs <- function(x, binSize, files, norm, matrix,
+                           blockSize, onDisk, compressionLevel,
+                           chunkSize) {
 
     ## Check input types
     .checkTypes(c(
@@ -556,6 +568,26 @@
                   chr2loc = paste(seqnames2, start2, end2, sep=":"),
                   block, xIndex)]
 
+    ## Return x and blocks
+    return(list(x=x, blocks=blocks))
+}
+
+#' Internal pullHicMatrices
+#' @inheritParams pullHicMatrices
+#' @importFrom data.table as.data.table
+#' @importFrom InteractionSet regions
+#' @importFrom S4Vectors width
+#' @return Array of Hi-C submatrices.
+#' @noRd
+.pullHicMatrices <- function(x, binSize, files, norm, matrix,
+                             blockSize, onDisk, compressionLevel,
+                             chunkSize) {
+
+    ## Prepare inputs for Hi-C processing
+    dat <- .prepareInputs(x, binSize, files, norm, matrix,
+                          blockSize, onDisk, compressionLevel,
+                          chunkSize)
+
     ## TODO: Code will differ here depending on input cases
     ## Use region widths to dispatch code for
     ## extracting equal or variable dimension slices
@@ -563,21 +595,13 @@
     if (length(widths) == 1L) {
 
         ## Set matrix dimensions
-        mDim <- (widths/binSize) + 1
+        ## (round up to binSize if widths < binSize)
+        mDim <- ceiling(widths/binSize)
 
         ## Dispatch .pullArray for equal dimensions
-        iset <-
-            .pullArray(x = x,
-                       binSize = binSize,
-                       files = files,
-                       norm = norm,
-                       matrix = matrix,
-                       blockSize = blockSize,
-                       onDisk = onDisk,
-                       compressionLevel = compressionLevel,
-                       chunkSize = chunkSize,
-                       mDim = mDim,
-                       blocks = blocks)
+        iset <- .pullArray(dat$x, binSize, files, norm, matrix,
+                           blockSize, onDisk, compressionLevel,
+                           chunkSize, mDim, dat$blocks)
         return(iset)
 
     } else {
@@ -638,3 +662,253 @@ setMethod("pullHicMatrices",
                     files = 'character'),
           definition = .pullHicMatrices)
 
+
+#' Pull data from files and return as
+#' InteractionSet with DelayedArrays
+#'
+#' @inheritParams pullHicMatrices
+#' @param mDim integer - dimensions for matrices (equal)
+#' @param blocks
+#'
+#' @importFrom rhdf5 h5createFile h5createDataset h5write
+#' @importFrom progress progress_bar
+#' @importFrom strawr straw
+#' @importFrom data.table as.data.table setkeyv CJ
+#' @importFrom InteractionSet InteractionSet
+#' @importFrom DelayedArray DelayedArray
+#' @importFrom HDF5Array HDF5Array
+#'
+#' @returns Interaction set with DelayedArrays of
+#'  extracted data.
+#'
+#' @noRd
+.pullMatrix <- function(x, binSize, files, norm, matrix,
+                       blockSize, onDisk, compressionLevel,
+                       chunkSize, blocks) {
+    ## Determine dimensions for dataset
+    ## Dim order is nInteractions, nFiles, matrix dims
+    dims <- c(length(x), length(files))
+
+    if (onDisk) {
+        ## Create hdf5 for storage
+        h5 <- tempfile(fileext = ".h5")
+        h5createFile(h5)
+
+        ## Set default chunkSize
+        if (missing(chunkSize)) {
+            if (compressionLevel >= 5) {
+                chunkSize <- 1
+            } else {
+                chunkSize <- length(x)
+            }
+        }
+
+        ## Create dataset for holding array of counts
+        ## and row/colnames
+        h5createDataset(file = h5,
+                        dataset = "counts",
+                        dims = dims,
+                        chunk = c(chunkSize, 1),
+                        storage.mode = "double",
+                        fillValue = NA_real_,
+                        level = compressionLevel)
+
+    } else {
+        counts <- array(data=NA, dim = dims)
+    }
+
+    ## Start progress bar
+    pb <- progress_bar$new(
+        format = "  :step [:bar] :percent elapsed: :elapsedfull",
+        clear = FALSE, total = nrow(blocks)*length(files)+1)
+    pb$tick(0)
+
+    ## Begin extraction for each file and block
+    for(j in seq_len(length(files))) {
+        for(i in seq_len(nrow(blocks))) {
+
+            ## Update progress
+            pb$tick(tokens=list(step=sprintf(
+                'Pulling block %s of %s from file %s of %s',
+                i, nrow(blocks), j, length(files)
+            )))
+
+            ## Extract block data from file
+            sparseMat <-
+                straw(norm = norm,
+                      fname = files[j],
+                      chr1loc = blocks$chr1loc[i],
+                      chr2loc = blocks$chr2loc[i],
+                      unit = "BP",
+                      binsize = binSize,
+                      matrix = matrix) |>
+                as.data.table()
+
+            ## Select interactions belonging to block
+            xIndices <- blocks$xIndex[[i]]
+            g <- as.data.table(x[xIndices])
+
+            ## Generate bins for rows and columns
+            bins <- g[,.(x = start1,
+                         y = start2,
+                         counts = 0),
+                      by = .(groupRow = 1:nrow(g))]
+
+            ## Expand bins to long format (fast cross-join)
+            longMat <- bins[, do.call(CJ, c(.SD, sorted = F)),
+                            .SDcols = c('x', 'y'), by = groupRow]
+            longMat$counts <- 0
+
+            ## Rename columns and rearrange
+            longMat <- longMat[,.(x, y, counts, groupRow)]
+
+            ## Set keys
+            setkeyv(sparseMat, c('x', 'y'))
+
+            ## Get counts by key
+            longMat$counts <- sparseMat[longMat]$counts
+
+            ## Set unmatched counts (NA) to 0
+            longMat[is.na(counts), counts := 0]
+
+            ## Fill array by col, row, interactions, file
+            ## then rearrange for storage: interactions, file, rows, cols
+            a <- array(data=longMat$counts,
+                       dim=c(length(xIndices), 1))
+
+            if (onDisk) {
+                # Write data to hdf5 file
+                h5write(a, h5, "counts", index = list(xIndices, j))
+            } else {
+                counts[xIndices, j] <- a
+            }
+
+        }
+    }
+
+    ## Close progress bar
+    pb$tick(tokens = list(step = "Done!"))
+    if(pb$finished) pb$terminate()
+
+    ## Build colData and metadata
+    colData <- DataFrame(files=files, fileNames=basename(files))
+    metadata <- list(
+        binSize=binSize,
+        norm=norm,
+        matrix=matrix
+    )
+
+    ## Construct InteractionMatrix object
+    if (onDisk) {
+        iset <-
+            InteractionMatrix(
+                interactions = x,
+                assays = list(
+                    counts = DelayedArray(HDF5Array(h5,"counts"))
+                ),
+                colData = colData,
+                metadata = metadata
+            )
+    } else {
+        iset <-
+            InteractionMatrix(
+                interactions = x,
+                assays = list(
+                    counts = DelayedArray(counts)
+                ),
+                colData = colData,
+                metadata = metadata
+            )
+    }
+
+    ## Assign dimnames to files (default is basename(files))
+    if (is.null(names(files))) {
+        dimnames(iset)[2] <- list(iset$fileNames)
+    } else {
+        dimnames(iset)[2] <- list(names(files))
+    }
+
+    return(iset)
+}
+
+
+#' Internal pullHicPixels
+#' @inheritParams pullHicPixels
+#' @importFrom glue glue
+#' @return Matrix of Hi-C submatrices.
+#' @noRd
+.pullHicPixels <- function(x, binSize, files, norm, matrix,
+                           blockSize, onDisk, compressionLevel,
+                           chunkSize) {
+
+    ## Prepare inputs for Hi-C processing
+    dat <- .prepareInputs(x, binSize, files, norm, matrix,
+                          blockSize, onDisk, compressionLevel,
+                          chunkSize)
+
+    ## Ensure widths are equal to binSize
+    if (!.checkBinnedPairs(x, binSize)) {
+        abort(c("`x` are not binned to `binSize`.",
+                'i' = glue("All ranges in `x` must be equal \\
+                           widths for `pullHicPixels()`."),
+                'i' = glue("Use `binPairs()` to bin or use \\
+                           `pullHicMatrices()` instead.")))
+    }
+
+    ## Dispatch pulling pixels
+    iset <- .pullMatrix(dat$x, binSize, files, norm, matrix, blockSize,
+                        onDisk, compressionLevel, chunkSize, dat$blocks)
+
+    return(iset)
+
+}
+
+
+#' Pull contact frequency from `.hic` files
+#'
+#' @param x GInteractions object.
+#' @param files Character file paths to `.hic` files.
+#' @param binSize Integer (numeric) describing the
+#'  resolution (range widths) of the paired data.
+#' @param ... Additional arguments.
+#' @param norm String (length one character vector)
+#'  describing the Hi-C normalization to apply. Use
+#'  `strawr::readHicNormTypes()` to see accepted values
+#'  for each file in `files`.
+#' @param matrix String (length one character vector)
+#'  Type of matrix to extract. Must be one of "observed",
+#'  "oe", or "expected". "observed" is observed counts,
+#'  "oe" is observed/expected counts, "expected" is
+#'  expected counts.
+#' @param blockSize Number (length one numeric vector)
+#'  describing the size in base-pairs to pull from each
+#'  `.hic` file. Default is 248956422 (the length of the
+#'  longest chromosome in the human hg38 genome). For
+#'  large `.hic` files `blockSize` can be reduced to
+#'  conserve the amount of data read in at a time. Larger
+#'  `blockSize` values speed up performance, but use more
+#'  memory.
+#' @param onDisk Boolean (length one logical vector that
+#'  is not NA) indicating whether extracted data should
+#'  be stored on disk in an HDF5 file. Default is TRUE.
+#' @param compressionLevel Number (length one numeric vector)
+#'  between 0 (Default) and 9 indicating the compression
+#'  level used on HDF5 file.
+#' @param chunkSize Number (length one numeric vector)
+#'  indicating how many values of `x` to chunk for each
+#'  write to HDF5 stored data. This has downstream
+#'  implications for accessing subsets later. For small
+#'  `compressionLevel` values use smaller `chunkSize`
+#'  values and for large `compressionLevel` values use large
+#'  (i.e. `length(x)`) values to improve performance.
+#'
+#' @returns InteractionSet object with a 2-dimensional array
+#'  of Hi-C interactions (rows) and Hi-C sample (columns).
+#'
+#' @rdname pullHicPixels
+#' @export
+setMethod("pullHicPixels",
+          signature(x = 'GInteractions',
+                    binSize = 'numeric',
+                    files = 'character'),
+          definition = .pullHicPixels)

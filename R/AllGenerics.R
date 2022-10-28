@@ -113,7 +113,55 @@ setGeneric("pullHicMatrices",
                     chunkSize = 1)
                standardGeneric("pullHicMatrices"))
 
+#' @rdname pullHicPixels
+#' @export
+setGeneric("pullHicPixels",
+           function(x,
+                    binSize,
+                    files,
+                    ...,
+                    norm = 'NONE',
+                    matrix = 'observed',
+                    blockSize = 248956422,
+                    onDisk = TRUE,
+                    compressionLevel = 0,
+                    chunkSize = 1)
+               standardGeneric("pullHicPixels"))
+
 #' @rdname pixelsToMatrices
 #' @export
 setGeneric("pixelsToMatrices", function(x, buffer)
     standardGeneric("pixelsToMatrices"))
+
+#' @rdname InteractionArray
+#' @export
+setGeneric("InteractionArray", function(assays, interactions, ...)
+    standardGeneric("InteractionArray"))
+
+#' @rdname InteractionArray
+#' @export
+setGeneric("counts", function(x, ...)
+    standardGeneric("counts"))
+
+
+#' @rdname InteractionMatrix
+#' @export
+setGeneric("InteractionMatrix", function(assays, interactions, ...)
+    standardGeneric("InteractionMatrix"))
+
+#' @rdname hdf5BlockApply
+#' @export
+setGeneric("hdf5BlockApply", function(x, FUN, sink, grid, sink_grid,
+                                      verbose=TRUE)
+    standardGeneric("hdf5BlockApply"))
+
+#' @rdname aggHicMatrices
+#' @export
+setGeneric("aggHicMatrices", function(x,
+                                      by=NULL,
+                                      FUN=sum,
+                                      nBlocks=5,
+                                      verbose=TRUE,
+                                      BPPARAM=bpparam(),
+                                      compressionLevel=0)
+    standardGeneric("aggHicMatrices"))

@@ -26,18 +26,18 @@ giList <-
 
 ## Create out-of-ordered, interchromosomal ranges
 ## (for testing)
-# giList <-
-#     lapply(giList, \(x) {
-#         ## Create a sample of regions to permute
-#         set.seed(123)
-#         s <- sample(x = seq_len(length(regions(x))),
-#                     size = length(regions(x)),
-#                     replace = FALSE)
-#
-#         ## Scramble regions
-#         regions(x) <- regions(x)[s]
-#         x
-#     })
+giList <-
+    lapply(giList, \(x) {
+        ## Create a sample of regions to permute
+        set.seed(123)
+        s <- sample(x = seq_len(length(regions(x))),
+                    size = length(regions(x)),
+                    replace = FALSE)
+
+        ## Scramble regions
+        regions(x) <- regions(x)[s]
+        x
+    })
 
 ## Merge pairs
 mgi <- mergePairs(x = giList,
@@ -218,24 +218,34 @@ test_that("Straw args are checked correctly", {
         expect_error()
 })
 
-test_that("develop the function (matrix cases)", {
+test_that("pullHicPixels", {
 
     ## Assign to x (to avoid modifying in place)
     x <- bgi
     seqlevelsStyle(x) <- "ENSEMBL"
 
+    ## Give names to hicFiles
+    namedHicFiles <- hicFiles
+    names(namedHicFiles) <- c("Mut", "WT")
 
-    iset <-
-        pullHicMatrices(x = x,
-                        binSize = 2.5e06,
-                        files = hicFiles[1],
-                        onDisk=TRUE)
+    ## Pull pixels
+    imat <-
+        x |>
+        binPairs(binSize = 2.5e06) |>
+        pullHicPixels(binSize = 2.5e06,
+                      files = namedHicFiles,
+                      matrix = "expected")
+})
 
-    assay(iset) |>
-        aperm(c(3,4,1,2)) |>
-        {\(x) apply(x[,,,1], c(1,2), sum)}()
+test_that("pullHicMatrices for regular arrays", {
 
-    ## TODO: make custom print method for arrays
+    ## Assign to x (to avoid modifying in place)
+    x <- bgi
+    seqlevelsStyle(x) <- "ENSEMBL"
 
+    ## Give names to hicFiles
+    namedHicFiles <- hicFiles
+    names(namedHicFiles) <- c("Mut", "WT")
 
 })
+
