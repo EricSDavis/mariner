@@ -17,7 +17,6 @@ paired ranges have equal dimensions.
 }
 \examples{
 InteractionArray()
-Interaction
 
 }
 \seealso{

@@ -325,7 +325,6 @@ setMethod("parallel_slot_names", "MergedGInteractions", function(x) {
 #'
 #' @examples
 #' InteractionArray()
-#' Interaction
 #'
 #' @rdname InteractionArray-class
 #' @export

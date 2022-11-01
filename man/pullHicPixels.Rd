@@ -9,6 +9,7 @@ pullHicPixels(
   x,
   binSize,
   files,
+  h5File = tempfile(fileext = ".h5"),
   ...,
   norm = "NONE",
   matrix = "observed",
@@ -22,6 +23,7 @@ pullHicPixels(
   x,
   binSize,
   files,
+  h5File,
   norm,
   matrix,
   blockSize,
@@ -37,6 +39,8 @@ pullHicPixels(
 resolution (range widths) of the paired data.}
 
 \item{files}{Character file paths to `.hic` files.}
+
+\item{h5File}{Character file path to save `.h5` file.}
 
 \item{...}{Additional arguments.}
 

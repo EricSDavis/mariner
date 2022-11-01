@@ -4,7 +4,7 @@
 \alias{counts,InteractionArray-method}
 \title{Method}
 \usage{
-\S4method{counts}{InteractionArray}(x)
+\S4method{counts}{InteractionArray}(x, showDimnames)
 }
 \description{
 Method

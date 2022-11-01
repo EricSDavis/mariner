@@ -119,6 +119,7 @@ setGeneric("pullHicPixels",
            function(x,
                     binSize,
                     files,
+                    h5File = tempfile(fileext = ".h5"),
                     ...,
                     norm = 'NONE',
                     matrix = 'observed',
@@ -140,7 +141,7 @@ setGeneric("InteractionArray", function(assays, interactions, ...)
 
 #' @rdname InteractionArray
 #' @export
-setGeneric("counts", function(x, ...)
+setGeneric("counts", function(x, showDimnames=TRUE, ...)
     standardGeneric("counts"))
 
 
