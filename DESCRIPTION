@@ -41,6 +41,8 @@ Imports:
     HDF5Array,
     abind,
     BiocParallel
+Remotes:
+    EricSDavis/straw/R
 biocViews:
     FunctionalGenomics,
     Visualization,

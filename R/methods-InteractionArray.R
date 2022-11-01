@@ -92,6 +92,7 @@ setMethod("counts",
           definition = .counts)
 
 #' Show
+#' @noRd
 .showInteractionArray <- function(object) {
     output <- utils::capture.output(callNextMethod(object))
     if (length(assays(object)) == 0) {
