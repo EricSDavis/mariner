@@ -328,10 +328,10 @@
 #' @noRd
 .pullArray <- function(x, binSize, files, norm, matrix,
                        blockSize, onDisk, compressionLevel,
-                       chunkSize, mDim, blocks) {
+                       chunkSize, mDim1, mDim2, blocks) {
     ## Determine dimensions for dataset
     ## Dim order is nInteractions, nFiles, matrix dims
-    dims <- c(length(x), length(files), mDim, mDim)
+    dims <- c(length(x), length(files), mDim1, mDim2)
 
     if (onDisk) {
         ## Create hdf5 for storage
@@ -407,35 +407,27 @@
             xIndices <- blocks$xIndex[[i]]
             g <- as.data.table(x[xIndices])
 
-            ## Generate bins for rows and columns
-            ## Since strawr uses starts to pull pixels,
-            ## remove the extra bin at the end (end-binSize).
-            bins <- g[,.(x = seq(start1, end1-binSize, binSize),
-                         y = seq(start2, end2-binSize, binSize),
-                         counts = 0),
-                      by = .(groupRow = 1:nrow(g))]
+            ## Create submatrix bins for each range
+            ## with a fast cross-join
+            longMat <- g[,{
+                x=seq(start1, end1-binSize, binSize);
+                y=seq(start2, end2-binSize, binSize);
+                CJ(x, y, sorted=FALSE)
+            },
+            by=.(grp=seq_len(nrow(g)))]
 
-            ## Expand bins to long format (fast cross-join)
-            longMat <- bins[, do.call(CJ, c(.SD, sorted = F)),
-                            .SDcols = c('x', 'y'), by = groupRow]
-            longMat$counts <- 0
-
-            ## Rename columns and rearrange
-            longMat <- longMat[,.(x, y, counts, groupRow)]
-
-            ## Set keys
+            ## Add counts by binary searching bins
             setkeyv(sparseMat, c('x', 'y'))
+            longMat$counts <- sparseMat[longMat,counts,on=c('x','y')]
 
-            ## Get counts by key
-            longMat$counts <- sparseMat[longMat]$counts
-
-            ## Set unmatched counts (NA) to 0
+            ## Set unmatched counts to 0 and lower tri to NA
             longMat[is.na(counts), counts := 0]
+            longMat[x > y, counts := NA]
 
             ## Collect row/colname info
             aInfo <- longMat[,.(rowNames = .(unique(x)),
                                 colNames = .(unique(y))),
-                             by=groupRow]
+                             by=grp]
 
             ## Fill array by col, row, interactions, file
             ## then rearrange for storage: interactions, file, rows, cols
@@ -446,10 +438,10 @@
             ## Fill row/colnames by row/col, interactions, file
             ## then rearrange for storage: interactions, file, row/col
             rn <- array(unlist(aInfo$rowNames),
-                        dim=c(mDim, length(xIndices), 1)) |>
+                        dim=c(dims[3], length(xIndices), 1)) |>
                 aperm(c(2,1,3))
             cn <- array(unlist(aInfo$colNames),
-                        dim=c(mDim, length(xIndices), 1)) |>
+                        dim=c(dims[4], length(xIndices), 1)) |>
                 aperm(c(2,1,3))
 
             if (onDisk) {
@@ -591,17 +583,19 @@
     ## TODO: Code will differ here depending on input cases
     ## Use region widths to dispatch code for
     ## extracting equal or variable dimension slices
-    widths <- unique(width(regions(x))) - 1
-    if (length(widths) == 1L) {
+    firstWidths <- unique(width(first(x))) - 1
+    secondWidths <- unique(width(second(x))) - 1
+    if (length(firstWidths) == 1L & length(secondWidths) == 1L) {
 
         ## Set matrix dimensions
         ## (round up to binSize if widths < binSize)
-        mDim <- ceiling(widths/binSize)
+        mDim1 <- ceiling(firstWidths/binSize)
+        mDim2 <- ceiling(secondWidths/binSize)
 
         ## Dispatch .pullArray for equal dimensions
         iset <- .pullArray(dat$x, binSize, files, norm, matrix,
                            blockSize, onDisk, compressionLevel,
-                           chunkSize, mDim, dat$blocks)
+                           chunkSize, mDim1, mDim2, dat$blocks)
         return(iset)
 
     } else {
@@ -682,7 +676,7 @@ setMethod("pullHicMatrices",
 #'  extracted data.
 #'
 #' @noRd
-.pullMatrix <- function(x, binSize, files, norm, matrix,
+.pullMatrix <- function(x, binSize, files, h5File, norm, matrix,
                        blockSize, onDisk, compressionLevel,
                        chunkSize, blocks) {
     ## Determine dimensions for dataset
@@ -691,7 +685,7 @@ setMethod("pullHicMatrices",
 
     if (onDisk) {
         ## Create hdf5 for storage
-        h5 <- tempfile(fileext = ".h5")
+        h5 <- h5File #tempfile(fileext = ".h5")
         h5createFile(h5)
 
         ## Set default chunkSize
@@ -748,28 +742,22 @@ setMethod("pullHicMatrices",
             xIndices <- blocks$xIndex[[i]]
             g <- as.data.table(x[xIndices])
 
-            ## Generate bins for rows and columns
-            bins <- g[,.(x = start1,
-                         y = start2,
-                         counts = 0),
-                      by = .(groupRow = 1:nrow(g))]
+            ## Create submatrix bins for each range
+            ## with a fast cross-join (rename)
+            longMat <- g[,{x=start1; y=start2; CJ(x, y, sorted=FALSE)},
+                         by=.(grp=seq_len(nrow(g)))]
 
-            ## Expand bins to long format (fast cross-join)
-            longMat <- bins[, do.call(CJ, c(.SD, sorted = F)),
-                            .SDcols = c('x', 'y'), by = groupRow]
-            longMat$counts <- 0
-
-            ## Rename columns and rearrange
-            longMat <- longMat[,.(x, y, counts, groupRow)]
-
-            ## Set keys
+            ## Add counts by binary searching bins
             setkeyv(sparseMat, c('x', 'y'))
+            longMat$counts <- sparseMat[longMat,counts,on=c('x','y')]
 
-            ## Get counts by key
-            longMat$counts <- sparseMat[longMat]$counts
-
-            ## Set unmatched counts (NA) to 0
+            ## Set unmatched counts to 0
             longMat[is.na(counts), counts := 0]
+
+            ## Collect row/colname info
+            aInfo <- longMat[,.(rowNames = .(unique(x)),
+                                colNames = .(unique(y))),
+                             by=grp]
 
             ## Fill array by col, row, interactions, file
             ## then rearrange for storage: interactions, file, rows, cols
@@ -837,7 +825,7 @@ setMethod("pullHicMatrices",
 #' @importFrom glue glue
 #' @return Matrix of Hi-C submatrices.
 #' @noRd
-.pullHicPixels <- function(x, binSize, files, norm, matrix,
+.pullHicPixels <- function(x, binSize, files, h5File, norm, matrix,
                            blockSize, onDisk, compressionLevel,
                            chunkSize) {
 
@@ -856,7 +844,7 @@ setMethod("pullHicMatrices",
     }
 
     ## Dispatch pulling pixels
-    iset <- .pullMatrix(dat$x, binSize, files, norm, matrix, blockSize,
+    iset <- .pullMatrix(dat$x, binSize, files, h5File, norm, matrix, blockSize,
                         onDisk, compressionLevel, chunkSize, dat$blocks)
 
     return(iset)
@@ -870,6 +858,7 @@ setMethod("pullHicMatrices",
 #' @param files Character file paths to `.hic` files.
 #' @param binSize Integer (numeric) describing the
 #'  resolution (range widths) of the paired data.
+#' @param h5File Character file path to save `.h5` file.
 #' @param ... Additional arguments.
 #' @param norm String (length one character vector)
 #'  describing the Hi-C normalization to apply. Use
@@ -908,7 +897,7 @@ setMethod("pullHicMatrices",
 #' @rdname pullHicPixels
 #' @export
 setMethod("pullHicPixels",
-          signature(x = 'GInteractions',
-                    binSize = 'numeric',
-                    files = 'character'),
-          definition = .pullHicPixels)
+          signature(x='GInteractions',
+                    binSize='numeric',
+                    files='character'),
+          definition=.pullHicPixels)
