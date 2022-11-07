@@ -9,25 +9,39 @@
     new("InteractionArray", iset)
 }
 
-#' Method
+#' Constructor
+#' @rdname InteractionArray-class
+#' @export
 setMethod("InteractionArray", c("ANY", "GInteractions"),
           function(assays, interactions, ...) {
               .newInteractionArray(assays, interactions, ...)
           })
 
-#' Method
+#' Constructor
+#' @param assays,interactions See
+#'   \code{?\link[InteractionSet]{InteractionSet}}
+#' @rdname InteractionArray-class
+#' @export
 setMethod("InteractionArray", c("missing", "missing"),
           function(assays, interactions, ...) {
               .newInteractionArray(list(), GInteractions(), ...)
           })
 
-#' Accessors
-#' @param x InteractionArray
+## Accessors -------------------------------------------------------------------
+
+#' Internal accessor for count matrices
+#' from InteractionArray object
+#' @inheritParams counts
+#' @importFrom SummarizedExperiment assays
 #' @importFrom DelayedArray DelayedArray
+#' @importFrom rlang abort
 #' @noRd
 .counts <- function(x, showDimnames) {
 
     ## Get the full object
+    if (length(assays(x)) == 0) {
+        abort("`x` has no count matrices.")
+    }
     cnts <- aperm(assay(x, 'counts'), c(3,4,1,2))
 
     if (showDimnames) {
@@ -86,12 +100,47 @@ setMethod("InteractionArray", c("missing", "missing"),
 }
 
 
-#' Method
+#' Access count matrices from InteractionArray
+#'
+#' @param x InteractionArray object.
+#' @param showDimnames Logical vector of length-one
+#'  indicating whether to show dimensions of
+#'  count matrices (default TRUE).
+#'
+#' @returns 4-dimensional DelayedArray of Hi-C submatrices.
+#'  Array is returned with the following dimensions:
+#'  rows of count matrix, columns of count matrix,
+#'  Interactions in `x`, Hi-C `files`.
+#'
+#' @examples
+#' ## Read .hic file paths
+#' hicFiles <-
+#'     system.file("extdata/test_hic", package="mariner") |>
+#'     list.files(pattern=".hic", full.names=TRUE)
+#'
+#' ## Create example interactions
+#' x <- read.table(text="
+#'         9 14435000 14490000 9 14740000 14795000
+#'         9 89540000 89595000 9 89785000 89840000
+#'         9 23700000 23755000 9 23760000 23815000")
+#' x <- as_ginteractions(x)
+#'
+#' ## Extract 3, 11x11 count matrices from 2 hic files
+#' iarr <- pullHicMatrices(x, 5e03, hicFiles)
+#'
+#' ## Access count matrices
+#' counts(iarr)
+#' counts(iarr, FALSE)
+#'
+#' @rdname counts
+#' @export
 setMethod("counts",
           signature(x="InteractionArray"),
-          definition = .counts)
+          definition=.counts)
 
-#' Show
+## Show ------------------------------------------------------------------------
+
+#' Internal show method
 #' @noRd
 .showInteractionArray <- function(object) {
     output <- utils::capture.output(callNextMethod(object))
@@ -105,7 +154,89 @@ setMethod("counts",
     cat(output, sep = "\n")
 }
 
-#' Show
+#' show for InteractionArray
+#' @rdname InteractionArray-class
+#' @export
 setMethod("show",
           signature(object="InteractionArray"),
-          definition = .showInteractionArray)
+          definition=.showInteractionArray)
+
+
+## Concatenation ---------------------------------------------------------------
+
+## TODO: Write method for combining
+## HDF5 data into a single file in blocks
+
+#' Check that a list of objects contains
+#' the same data in a slot.
+#' @param x List of objects.
+#' @param FUN Slot accessor function.
+#' @returns Logical that all objects contain the same
+#'  data or not.
+#' @noRd
+.checkEqualSlot <- function(x, FUN) {
+    d <- lapply(x, FUN)
+    all(vapply(seq_along(d), \(i) identical(d[[1L]], d[[i]]), logical(1L)))
+}
+
+#' Internal rbind method for InteractionArray
+#' @importFrom S4Vectors metadata `metadata<-`
+#' @importFrom SummarizedExperiment colData `colData<-`
+#' @importFrom rlang abort
+#' @importFrom glue glue
+#' @noRd
+.rbindInteractionArray <- function(..., deparse.level=1) {
+    args <- unname(list(...))
+
+    ## Check equivalent metadata before binding
+    if (!.checkEqualSlot(args, metadata)) {
+        abort(glue("Can't rbind InteractionArray \\
+                    objects with different metadata."))
+    }
+
+    ## Check equivalent colData before binding
+    if (!.checkEqualSlot(args, colData)) {
+        abort(glue("Can't rbind InteractionArray \\
+                    objects with different colData."))
+    }
+
+    ans <- new("InteractionArray", callNextMethod())
+    metadata(ans) <- metadata(args[[1L]])
+    colData(ans) <- colData(args[[1L]])
+    ans
+}
+
+#' rbind InteractionArray
+#' @rdname InteractionArray-class
+#' @export
+setMethod("rbind", "InteractionArray", .rbindInteractionArray)
+
+#' Internal cbind method for InteractionArray
+#' @importFrom S4Vectors metadata `metadata<-`
+#' @importFrom rlang abort
+#' @importFrom glue glue
+#' @noRd
+.cbindInteractionArray <- function(..., deparse.level=1) {
+    args <- unname(list(...))
+
+    ## Check equivalent metadata before binding
+    if (!.checkEqualSlot(args, metadata)) {
+        abort(glue("Can't rbind InteractionArray \\
+                    objects with different metadata."))
+    }
+
+    tryCatch({
+        ans <- new("InteractionArray", callNextMethod())
+    }, error=\(e) {
+        abort(e$message, call=parent.frame(4L))
+    })
+
+    metadata(ans) <- metadata(args[[1L]])
+    ans
+}
+
+#' cbind InteractionArray
+#' @rdname InteractionArray-class
+#' @export
+setMethod("cbind", "InteractionArray", .cbindInteractionArray)
+

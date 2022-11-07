@@ -134,18 +134,21 @@ setGeneric("pullHicPixels",
 setGeneric("pixelsToMatrices", function(x, buffer)
     standardGeneric("pixelsToMatrices"))
 
-#' @rdname InteractionArray
+#' @rdname InteractionArray-class
 #' @export
 setGeneric("InteractionArray", function(assays, interactions, ...)
     standardGeneric("InteractionArray"))
 
-#' @rdname InteractionArray
+#' @rdname counts
 #' @export
 setGeneric("counts", function(x, showDimnames=TRUE, ...)
     standardGeneric("counts"))
 
+setGeneric("rbind", package="BiocGenerics")
+setGeneric("cbind", package="BiocGenerics")
 
-#' @rdname InteractionMatrix
+
+#' @rdname InteractionMatrix-class
 #' @export
 setGeneric("InteractionMatrix", function(assays, interactions, ...)
     standardGeneric("InteractionMatrix"))
