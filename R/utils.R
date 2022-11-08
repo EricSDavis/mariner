@@ -128,3 +128,71 @@
         }
     }
 }
+
+## TODO: Write method for combining
+## HDF5 data into a single file in blocks
+
+#' Check that a list of objects contains
+#' the same data in a slot.
+#' @param x List of objects.
+#' @param FUN Slot accessor function.
+#' @returns Logical that all objects contain the same
+#'  data or not.
+#' @noRd
+.checkEqualSlot <- function(x, FUN) {
+    d <- lapply(x, FUN)
+    all(vapply(seq_along(d), \(i) identical(d[[1L]], d[[i]]), logical(1L)))
+}
+
+#' Internal rbind method for InteractionMatrix
+#' @importFrom S4Vectors metadata `metadata<-`
+#' @importFrom SummarizedExperiment colData `colData<-`
+#' @importFrom rlang abort
+#' @importFrom glue glue
+#' @noRd
+.rbindIsetDerived <- function(..., deparse.level=1) {
+    args <- unname(list(...))
+    type <- class(args[[1L]]) # get class name
+
+    ## Check equivalent metadata before binding
+    if (!.checkEqualSlot(args, metadata)) {
+        abort(glue("Can't rbind {type} \\
+                    objects with different metadata."))
+    }
+
+    ## Check equivalent colData before binding
+    if (!.checkEqualSlot(args, colData)) {
+        abort(glue("Can't rbind {type} \\
+                    objects with different colData."))
+    }
+
+    ans <- new(type, callNextMethod())
+    metadata(ans) <- metadata(args[[1L]])
+    colData(ans) <- colData(args[[1L]])
+    ans
+}
+
+#' Internal cbind method for InteractionMatrix
+#' @importFrom S4Vectors metadata `metadata<-`
+#' @importFrom rlang abort
+#' @importFrom glue glue
+#' @noRd
+.cbindIsetDerived <- function(..., deparse.level=1) {
+    args <- unname(list(...))
+    type <- class(args[[1L]]) # get class name
+
+    ## Check equivalent metadata before binding
+    if (!.checkEqualSlot(args, metadata)) {
+        abort(glue("Can't cbind {type} \\
+                    objects with different metadata."))
+    }
+
+    tryCatch({
+        ans <- new(type, callNextMethod())
+    }, error=\(e) {
+        abort(e$message, call=parent.frame(4L))
+    })
+
+    metadata(ans) <- metadata(args[[1L]])
+    ans
+}
