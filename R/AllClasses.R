@@ -30,6 +30,12 @@ setClassUnion("character_OR_function_OR_list",
 setClassUnion("list_OR_SimpleList_OR_GInteractions",
               c("list", "SimpleList", "GInteractions"))
 
+#' Class union for GInteractions or InteractionSet
+#' @importClassesFrom InteractionSet InteractionSet GInteractions
+#' @noRd
+setClassUnion("GInteractions_OR_InteractionSet",
+              c("GInteractions", "InteractionSet"))
+
 
 ## DelegatingGInteractions class -----------------------------------------------
 

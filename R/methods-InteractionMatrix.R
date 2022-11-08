@@ -33,9 +33,12 @@ setMethod("InteractionMatrix", c("missing", "missing"),
 #' @importFrom SummarizedExperiment assays
 #' @noRd
 .counts <- function(x) {
-    ## Get the full object
+    ## Check for valid count data
     if (length(assays(x)) == 0) {
         abort("`x` has no counts.")
+    }
+    if (length(colData(x)) == 0) {
+        abort("`x` has no Hi-C files.")
     }
     assay(x, 'counts')
 }
