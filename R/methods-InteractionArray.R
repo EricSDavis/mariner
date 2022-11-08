@@ -38,10 +38,15 @@ setMethod("InteractionArray", c("missing", "missing"),
 #' @noRd
 .counts <- function(x, showDimnames) {
 
-    ## Get the full object
+    ## Check for valid count data
     if (length(assays(x)) == 0) {
         abort("`x` has no count matrices.")
     }
+    if (length(colData(x)) == 0) {
+        abort("`x` has no Hi-C files.")
+    }
+
+    ## Get the full object
     cnts <- aperm(assay(x, 'counts'), c(3,4,1,2))
 
     if (showDimnames) {

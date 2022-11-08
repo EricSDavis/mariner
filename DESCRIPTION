@@ -55,6 +55,7 @@ Collate:
     'AllClasses.R'
     'AllGenerics.R'
     'methods-BinnedGInteractions.R'
+    'methods-GInteractions.R'
     'utils.R'
     'methods-InteractionArray.R'
     'methods-InteractionMatrix.R'

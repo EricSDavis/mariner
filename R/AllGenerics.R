@@ -169,3 +169,27 @@ setGeneric("aggHicMatrices", function(x,
                                       BPPARAM=bpparam(),
                                       compressionLevel=0)
     standardGeneric("aggHicMatrices"))
+
+#' @rdname GInteractions-accessors
+#' @export
+setGeneric("seqnames1", function(x, ...) standardGeneric("seqnames1"))
+
+#' @rdname GInteractions-accessors
+#' @export
+setGeneric("seqnames2", function(x, ...) standardGeneric("seqnames2"))
+
+#' @rdname GInteractions-accessors
+#' @export
+setGeneric("start1", function(x, ...) standardGeneric("start1"))
+
+#' @rdname GInteractions-accessors
+#' @export
+setGeneric("end1", function(x, ...) standardGeneric("end1"))
+
+#' @rdname GInteractions-accessors
+#' @export
+setGeneric("start2", function(x, ...) standardGeneric("start2"))
+
+#' @rdname GInteractions-accessors
+#' @export
+setGeneric("end2", function(x, ...) standardGeneric("end2"))
