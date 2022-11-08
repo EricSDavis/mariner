@@ -237,7 +237,7 @@ test_that("pullHicPixels", {
                       matrix = "expected")
 })
 
-test_that("pullHicMatrices for regular arrays", {
+test_that("pullHicMatrices for square, regular arrays", {
 
     ## Assign to x (to avoid modifying in place)
     x <- bgi
@@ -246,6 +246,18 @@ test_that("pullHicMatrices for regular arrays", {
     ## Give names to hicFiles
     namedHicFiles <- hicFiles
     names(namedHicFiles) <- c("Mut", "WT")
+
+})
+
+test_that("pullHicMatrices for rectangular, regular arrays", {
+
+    ## Example pulling rectangular submatrices
+    tmp <-
+        GInteractions(
+            first(pixelsToMatrices(loops, 10)),
+            second(pixelsToMatrices(loops, 5))
+        ) |>
+        pullHicMatrices(5e03, hicFiles)
 
 })
 

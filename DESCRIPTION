@@ -51,3 +51,23 @@ VignetteBuilder: knitr
 License: GPL-3
 Encoding: UTF-8
 Config/testthat/edition: 3
+Collate: 
+    'AllClasses.R'
+    'AllGenerics.R'
+    'methods-BinnedGInteractions.R'
+    'utils.R'
+    'methods-InteractionArray.R'
+    'methods-InteractionMatrix.R'
+    'methods-MergedGInteractions.R'
+    'methods-aggHicMatrices.R'
+    'methods-as_ginteractions.R'
+    'methods-binPairs.R'
+    'methods-binRanges.R'
+    'methods-enhancePixels.R'
+    'methods-hdf5BlockApply.R'
+    'methods-mergePairs.R'
+    'methods-pixelsToMatrices.R'
+    'methods-pullHic.R'
+    'methods-shiftRanges.R'
+    'methods-snapToBins.R'
+    'zzz.R'

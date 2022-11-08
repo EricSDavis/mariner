@@ -5,7 +5,8 @@
 \alias{counts}
 \alias{counts,InteractionArray-method}
 \alias{counts,InteractionMatrix-method}
-\title{Access count matrices from InteractionArray}
+\title{Access count matrices from
+InteractionArray or InteractionMatrix}
 \usage{
 counts(x, showDimnames = TRUE, ...)
 
@@ -14,27 +15,37 @@ counts(x, showDimnames = TRUE, ...)
 \S4method{counts}{InteractionMatrix}(x)
 }
 \arguments{
-\item{x}{InteractionMatrix object.}
+\item{x}{InteractionArray or InteractionMatrix object.}
 
 \item{showDimnames}{Logical vector of length-one
 indicating whether to show dimensions of
-count matrices (default TRUE).}
+count matrices (default TRUE). Only applicable for
+InteractionArray objects.}
 }
 \value{
-4-dimensional DelayedArray of Hi-C submatrices.
- Array is returned with the following dimensions:
- rows of count matrix, columns of count matrix,
- Interactions in `x`, Hi-C `files`.
+For InteractionArray, a 4-dimensional
+ DelayedArray of Hi-C submatrices is returned with
+ the following dimensions: rows of count matrix,
+ columns of count matrix, Interactions in `x`,
+ Hi-C `files`.
 
-2-dimensional DelayedMatrix where rows
- are interactions and columns are Hi-C files.
+For InteractionMatrix, a 2-dimensional
+ DelayedArray is returned with rows representing
+ interactions in `x` and columns for each Hi-C
+ file in `files`.
 }
 \description{
-Access count matrices from InteractionArray
+Access count matrices from
+InteractionArray or InteractionMatrix
 
-Access count matrices from InteractionMatrix
+Access count matrices from
+InteractionArray or InteractionMatrix
 }
 \examples{
+######################################
+## Accessing Hi-C count submatrices ##
+######################################
+
 ## Read .hic file paths
 hicFiles <-
     system.file("extdata/test_hic", package="mariner") |>
@@ -54,6 +65,10 @@ iarr <- pullHicMatrices(x, 5e03, hicFiles)
 counts(iarr)
 counts(iarr, FALSE)
 
+#################################
+## Accessing Hi-C count matrix ##
+#################################
+
 ## Read .hic file paths
 hicFiles <-
     system.file("extdata/test_hic", package="mariner") |>
@@ -66,10 +81,10 @@ x <- read.table(text="
         9 23500000 24000000 9 23500000 24000000")
 x <- as_ginteractions(x)
 
-## Extract 3, 11x11 count matrices from 2 hic files
+## Extract 3 pixels from 2 hic files
 iarr <- pullHicPixels(x, 500e03, hicFiles)
 
-## Access count matrices
+## Access count matrix
 counts(iarr)
 
 }

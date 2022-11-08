@@ -67,17 +67,19 @@ test_that("Concatenating InteractionArray objects", {
                         files=hicFiles[1])
 
     ## rbind
+    expect_s4_class(rbind(iarr, iarr), "InteractionArray")
     expect_equal(dim(rbind(iarr, iarr)), c(20, 2))
     expect_error(rbind(iarr, iarr2),
-                 "Can't rbind.*with different metadata.$")
+                 "Can't rbind.*Array.*with different metadata.$")
     expect_error(rbind(iarr, iarr3),
                  "Can't rbind.*with different colData.$")
 
     ## cbind
+    expect_s4_class(cbind(iarr, iarr), "InteractionArray")
     expect_equal(dim(cbind(iarr, iarr)), c(10, 4))
     expect_equal(dim(cbind(iarr, iarr3)), c(10, 3))
     expect_error(cbind(iarr, iarr2),
-                 "Can't rbind.*with different metadata.$")
+                 "Can't cbind.*Array.*with different metadata.$")
     expect_error(cbind(iarr[1], iarr[2]),
                  "interactions must be identical in 'cbind'$")
 

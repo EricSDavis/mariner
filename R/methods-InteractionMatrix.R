@@ -40,12 +40,20 @@ setMethod("InteractionMatrix", c("missing", "missing"),
     assay(x, 'counts')
 }
 
-#' Access count matrices from InteractionMatrix
-#' @param x InteractionMatrix object.
-#' @returns 2-dimensional DelayedMatrix where rows
-#'  are interactions and columns are Hi-C files.
+#' Access count matrices from
+#' InteractionArray or InteractionMatrix
+#'
+#' @param x InteractionArray or InteractionMatrix object.
+#' @returns For InteractionMatrix, a 2-dimensional
+#'  DelayedArray is returned with rows representing
+#'  interactions in `x` and columns for each Hi-C
+#'  file in `files`.
 #'
 #' @examples
+#' #################################
+#' ## Accessing Hi-C count matrix ##
+#' #################################
+#'
 #' ## Read .hic file paths
 #' hicFiles <-
 #'     system.file("extdata/test_hic", package="mariner") |>
@@ -58,10 +66,10 @@ setMethod("InteractionMatrix", c("missing", "missing"),
 #'         9 23500000 24000000 9 23500000 24000000")
 #' x <- as_ginteractions(x)
 #'
-#' ## Extract 3, 11x11 count matrices from 2 hic files
+#' ## Extract 3 pixels from 2 hic files
 #' iarr <- pullHicPixels(x, 500e03, hicFiles)
 #'
-#' ## Access count matrices
+#' ## Access count matrix
 #' counts(iarr)
 #'
 #' @rdname counts
@@ -92,3 +100,17 @@ setMethod("counts",
 setMethod("show",
           signature(object="InteractionMatrix"),
           definition = .showInteractionMatrix)
+
+## Concatenation ---------------------------------------------------------------
+
+#' rbind InteractionMatrix
+#' @include utils.R
+#' @rdname InteractionMatrix-class
+#' @export
+setMethod("rbind", "InteractionMatrix", .rbindIsetDerived)
+
+#' cbind InteractionMatrix
+#' @include utils.R
+#' @rdname InteractionMatrix-class
+#' @export
+setMethod("cbind", "InteractionMatrix", .cbindIsetDerived)

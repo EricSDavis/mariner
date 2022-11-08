@@ -7,6 +7,8 @@
 \alias{InteractionMatrix}
 \alias{InteractionMatrix,ANY,GInteractions-method}
 \alias{InteractionMatrix,missing,missing-method}
+\alias{rbind,InteractionMatrix-method}
+\alias{cbind,InteractionMatrix-method}
 \title{InteractionMatrix Class}
 \usage{
 InteractionMatrix(assays, interactions, ...)
@@ -14,6 +16,10 @@ InteractionMatrix(assays, interactions, ...)
 \S4method{InteractionMatrix}{ANY,GInteractions}(assays, interactions, ...)
 
 \S4method{InteractionMatrix}{missing,missing}(assays, interactions, ...)
+
+\S4method{rbind}{InteractionMatrix}(..., deparse.level = 1)
+
+\S4method{cbind}{InteractionMatrix}(..., deparse.level = 1)
 }
 \arguments{
 \item{assays, interactions}{See
