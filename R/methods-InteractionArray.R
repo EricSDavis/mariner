@@ -111,7 +111,7 @@ setMethod("InteractionArray", c("missing", "missing"),
 #' @param x InteractionArray or InteractionMatrix object.
 #' @param showDimnames Logical vector of length-one
 #'  indicating whether to show dimensions of
-#'  count matrices (default TRUE). Only applicable for
+#'  count matrices (default FALSE). Only applicable for
 #'  InteractionArray objects.
 #'
 #' @returns For InteractionArray, a 4-dimensional

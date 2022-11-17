@@ -10,6 +10,8 @@ pullHicMatrices(
   binSize,
   files,
   ...,
+  half = "both",
+  h5File = tempfile(fileext = ".h5"),
   norm = "NONE",
   matrix = "observed",
   blockSize = 248956422,
@@ -22,6 +24,8 @@ pullHicMatrices(
   x,
   binSize,
   files,
+  half,
+  h5File,
   norm,
   matrix,
   blockSize,
@@ -39,6 +43,20 @@ resolution (range widths) of the paired data.}
 \item{files}{Character file paths to `.hic` files.}
 
 \item{...}{Additional arguments.}
+
+\item{half}{String (character vector of length one)
+indicating whether to keep values for the upper
+triangular (`half="upper"`) where `start1 < start2`,
+lower triangular (`half="lower"`) where
+`start1 > start2`, or both (`half="both"`, default).
+When `half="upper"` all lower triangular values are `NA`.
+When `half="lower"` all upper triangular values are `NA`.
+When `half="both"` there are no `NA` values.
+For interchromosomal interactions there is no inherent
+directionality between chromosomes, so data is returned
+regardless of specified order.}
+
+\item{h5File}{Character file path to save `.h5` file.}
 
 \item{norm}{String (length one character vector)
 describing the Hi-C normalization to apply. Use
@@ -81,6 +99,8 @@ InteractionSet object with a 4-dimensional array
  of Hi-C submatrices, rownames, and colnames. Array is
  stored with the following dimensions: Interactions in `x`,
  Hi-C `files`, rows of submatrix, columns of submatrix.
+ The submatrices returned have rows cooresponding to anchor1
+ of `x` and columns correspond to anchor2 of `x`.
 }
 \description{
 Pull submatrices from `.hic` files

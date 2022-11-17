@@ -16,8 +16,9 @@ binPairs(x, binSize, pos1 = "center", pos2 = "center", ...)
 \item{x}{`GInteractions` or `data.frame`-like
 object with paired interactions.}
 
-\item{binSize}{Integer (numeric) describing
-the new size of each range.}
+\item{binSize}{Integer (numeric) vector describing
+the new size of each pair of ranges. Accepts up to
+2 values for adjusting each pair.}
 
 \item{pos1, pos2}{Position within anchors
 to resize the bin. Can be a character or

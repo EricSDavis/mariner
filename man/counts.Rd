@@ -8,7 +8,7 @@
 \title{Access count matrices from
 InteractionArray or InteractionMatrix}
 \usage{
-counts(x, showDimnames = TRUE, ...)
+counts(x, showDimnames = FALSE, ...)
 
 \S4method{counts}{InteractionArray}(x, showDimnames)
 
@@ -19,7 +19,7 @@ counts(x, showDimnames = TRUE, ...)
 
 \item{showDimnames}{Logical vector of length-one
 indicating whether to show dimensions of
-count matrices (default TRUE). Only applicable for
+count matrices (default FALSE). Only applicable for
 InteractionArray objects.}
 }
 \value{
