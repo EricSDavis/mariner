@@ -44,8 +44,7 @@ mgi <- mergePairs(x = giList,
                   radius = 50e03)
 
 ## Bin MergedGInteractions
-# bgi <- binPairs(x = mgi, binSize = 50e03)
-bgi <- binPairs(x = mgi, binSize = 250e03)
+bgi <- binPairs(x = mgi, binSize = 50e03)
 
 ## Bin with snapping
 sgi <- snapToBins(x = mgi, binSize = 50e03)
@@ -188,40 +187,52 @@ test_that("GInteractions correctly map to blocks", {
 test_that("Straw args are checked correctly", {
 
     .checkStrawArgs(files = hicFiles,
+                    half="both",
                     norm = "KR",
                     binSize = 10e03,
                     matrix = "oe") |>
         expect_null()
 
     .checkStrawArgs(files = hicFiles,
+                    half="neither",
+                    norm = "KR",
+                    binSize = 10e03,
+                    matrix = "oe") |>
+        expect_error()
+
+    .checkStrawArgs(files = hicFiles,
+                    half="both",
                     norm = "SCALE",
                     binSize = 10e03,
                     matrix = "oe") |>
         expect_error()
 
     .checkStrawArgs(files = hicFiles,
+                    half="both",
                     norm = "none",
                     binSize = 10e03,
                     matrix = "oe") |>
         expect_error()
 
     .checkStrawArgs(files = hicFiles,
+                    half="both",
                     norm = "KR",
                     binSize = 101e03,
                     matrix = "oe") |>
         expect_error()
 
     .checkStrawArgs(files = hicFiles,
+                    half="both",
                     norm = "KR",
                     binSize = 10e03,
                     matrix = "obs") |>
         expect_error()
 })
 
-test_that("pullHicPixels", {
+test_that("pullHicPixels pulls correct counts", {
 
     ## Assign to x (to avoid modifying in place)
-    x <- bgi
+    x <- binPairs(bgi[1:10], 2.5e06)
     seqlevelsStyle(x) <- "ENSEMBL"
 
     ## Give names to hicFiles
@@ -230,34 +241,381 @@ test_that("pullHicPixels", {
 
     ## Pull pixels
     imat <-
-        x |>
-        binPairs(binSize = 2.5e06) |>
-        pullHicPixels(binSize = 2.5e06,
-                      files = namedHicFiles,
-                      matrix = "expected")
+        pullHicPixels(x=x,
+                      binSize=2.5e06,
+                      files=namedHicFiles,
+                      matrix="observed",
+                      norm="NONE",
+                      half="both")
+
+    ## Get reference counts with straw directly
+    chr1loc <- paste(seqnames1(x), start1(x), start1(x), sep=":")
+    chr2loc <- paste(seqnames2(x), start2(x), start2(x), sep=":")
+    pullCounts <- \(fname,i) {
+        straw(norm="NONE",
+              fname=fname,
+              chr1loc=chr1loc[i],
+              chr2loc=chr2loc[i],
+              unit="BP",
+              binsize=2.5e06,
+              matrix="observed")$counts
+    }
+    Mut <-
+        lapply(seq_along(chr1loc), \(i) {
+            cnts <- pullCounts(namedHicFiles["Mut"],i)
+            if (length(cnts)==0) cnts <- 0
+            cnts
+        }) |>
+        do.call(rbind, args=_)
+
+    WT <-
+        lapply(seq_along(chr1loc), \(i) {
+            cnts <- pullCounts(namedHicFiles["WT"],i)
+            if (length(cnts)==0) cnts <- 0
+            cnts
+        }) |>
+        do.call(rbind, args=_)
+
+    ## Test
+    expect_identical(as.matrix(counts(imat)),
+                     as.matrix(data.frame(Mut, WT)))
 })
 
 test_that("pullHicMatrices for square, regular arrays", {
 
-    ## Assign to x (to avoid modifying in place)
-    x <- bgi
-    seqlevelsStyle(x) <- "ENSEMBL"
+    ## Intrachromosomal
+    ## On-diagonal square
+    gi <- read.table(text="
+            1 51500000 52000000 1 51500000 52000000
+            1 150000000 150500000 1 150000000 150500000") |>
+        as_ginteractions()
+    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="upper")
 
-    ## Give names to hicFiles
-    namedHicFiles <- hicFiles
-    names(namedHicFiles) <- c("Mut", "WT")
+    ## half="both"
+    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="both")
+    exp <- array(data=c(67, 22, 13, 9, 8, 22, 59, 20, 10, 7,
+                        13, 20, 51, 15, 6, 9, 10, 15, 49, 23,
+                        8, 7, 6, 23, 66, 63, 25, 15, 4, 2, 25,
+                        68, 28, 7, 3, 15, 28, 87, 45, 11, 4, 7,
+                        45, 100, 26, 2, 3, 11, 26, 86),
+                 dim=c(5,5,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## half="upper"
+    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="upper")
+    exp <- array(data=c(67, NA, NA, NA, NA, 22, 59, NA, NA, NA,
+                        13, 20, 51, NA, NA, 9, 10, 15, 49, NA,
+                        8, 7, 6, 23, 66, 63, NA, NA, NA, NA, 25,
+                        68, NA, NA, NA, 15, 28, 87, NA, NA, 4, 7,
+                        45, 100, NA, 2, 3, 11, 26, 86),
+                 dim=c(5,5,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## half="lower"
+    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="lower")
+    exp <- array(data=c(67, 22, 13, 9, 8, NA, 59, 20, 10, 7, NA,
+                        NA, 51, 15, 6, NA, NA, NA, 49, 23, NA,
+                        NA, NA, NA, 66, 63, 25, 15, 4, 2, NA, 68,
+                        28, 7, 3, NA, NA, 87, 45, 11, NA, NA, NA,
+                        100, 26, NA, NA, NA, NA, 86),
+                 dim=c(5,5,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+
+    ## Intrachromosomal
+    ## Off-diagonal
+    ## Define square where start1 < start2
+    ## (i.e. upper triangular)
+    gi <- read.table(text="
+            1 51500000 51700000 1 51800000 52000000
+            1 150000000 150200000 1 150300000 150500000") |>
+        as_ginteractions()
+    expect_true(all(start1(gi) < start2(gi)))
+
+    ## half="both"
+    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="both")
+    exp <- array(data=c(9, 10, 8, 7, 4, 7, 2, 3),
+                 dim=c(2,2,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## half="upper"
+    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="upper")
+    exp <- array(data=c(9, 10, 8, 7, 4, 7, 2, 3),
+                 dim=c(2,2,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## half="lower"
+    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="lower")
+    exp <- array(data=NA_real_, dim=c(2,2,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+
+    ## Intrachromosomal
+    ## Off-diagonal
+    ## Define square where start1 > start2
+    ## (i.e. lower triangular)
+    gi <- read.table(text="
+            1 51800000 52000000 1 51500000 51700000
+            1 150300000 150500000 1 150000000 150200000") |>
+        as_ginteractions()
+    expect_true(all(start1(gi) > start2(gi)))
+
+    ## half="both"
+    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="both")
+    exp <- array(data=c(9, 8, 10, 7, 4, 2, 7, 3),
+                 dim=c(2,2,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## half="upper"
+    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="upper")
+    exp <- array(data=NA_real_, dim=c(2,2,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## half="lower"
+    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="lower")
+    exp <- array(data=c(9, 8, 10, 7, 4, 2, 7, 3),
+                 dim=c(2,2,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+
+    ## Interchromosomal
+    ## Define square where seqnames1 < seqnames2
+    gi <- read.table(text="
+            1 50000000 55000000 2 55000000 60000000
+            1 150000000 155000000 2 155000000 160000000") |>
+        as_ginteractions() |>
+        suppressWarnings()
+    expect_true(all(seqnames1(gi) < seqnames2(gi)))
+
+    ## half="both"
+    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="both")
+    exp <- array(data=c(1, 1, 1, 0, 0, 1, 0, 0),
+                 dim=c(2,2,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## half="upper"
+    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="upper")
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## half="lower"
+    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="lower")
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## Interchromosomal
+    ## Define square where seqnames1 > seqnames2
+    gi <- read.table(text="
+            2 50000000 55000000 1 55000000 60000000
+            2 150000000 155000000 1 155000000 160000000") |>
+        as_ginteractions() |>
+        suppressWarnings()
+    expect_true(all(seqnames1(gi) > seqnames2(gi)))
+
+    ## half="both"
+    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="both")
+    exp <- array(data=c(0, 0, 1, 1, 2, 1, 2, 0),
+                 dim=c(2,2,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## half="upper"
+    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="upper")
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## half="lower"
+    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="lower")
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
 
 })
 
 test_that("pullHicMatrices for rectangular, regular arrays", {
 
-    ## Example pulling rectangular submatrices
-    tmp <-
-        GInteractions(
-            first(pixelsToMatrices(loops, 10)),
-            second(pixelsToMatrices(loops, 5))
-        ) |>
-        pullHicMatrices(5e03, hicFiles)
+    ## Intrachromosomal
+    ## On-diagonal rectangle
+    gi <- read.table(text="
+            1 51000000 51300000 1 51000000 51500000
+            1 150000000 150300000 1 150000000 150500000") |>
+        as_ginteractions()
+
+    ## half="both"
+    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="both")
+    exp <- array(data=c(53, 15, 5, 15, 68, 19, 5, 19, 69, 1,
+                        8, 12, 4, 5, 2, 63, 25, 15, 25, 68, 28,
+                        15, 28, 87, 4, 7, 45, 2, 3, 11),
+                 dim=c(3,5,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## half="upper"
+    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="upper")
+    exp <- array(data=c(53, NA, NA, 15, 68, NA, 5, 19, 69, 1,
+                        8, 12, 4, 5, 2, 63, NA, NA, 25, 68, NA,
+                        15, 28, 87, 4, 7, 45, 2, 3, 11),
+                 dim=c(3,5,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## half="lower"
+    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="lower")
+    exp <- array(data=c(53, 15, 5, NA, 68, 19, NA, NA, 69, NA,
+                        NA, NA, NA, NA, NA, 63, 25, 15, NA, 68,
+                        28, NA, NA, 87, NA, NA, NA, NA, NA, NA),
+                 dim=c(3,5,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+
+    ## Intrachromosomal
+    ## Off-diagonal
+    ## Define rectangle where start1 < start2
+    ## (i.e. upper triangular)
+    gi <- read.table(text="
+            1 51000000 51300000 1 51300000 51800000
+            1 150000000 150300000 1 150300000 150800000") |>
+        as_ginteractions()
+    expect_true(all(start1(gi) < start2(gi)))
+
+    ## half="both"
+    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="both")
+    exp <- array(data=c(1, 8, 12, 4, 5, 2, 1, 5, 2, 2, 3, 8,
+                        1, 4, 2, 4, 7, 45, 2, 3, 11, 6, 7, 5,
+                        3, 3, 3, 6, 2, 3),
+                 dim=c(3,5,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## half="upper"
+    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="upper")
+    exp <- array(data=c(1, 8, 12, 4, 5, 2, 1, 5, 2, 2, 3, 8,
+                        1, 4, 2, 4, 7, 45, 2, 3, 11, 6, 7, 5,
+                        3, 3, 3, 6, 2, 3),
+                 dim=c(3,5,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## half="lower"
+    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="lower")
+    exp <- array(data=NA_real_, dim=c(3,5,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+
+    ## Intrachromosomal
+    ## Off-diagonal
+    ## Define rectangle where start1 > start2
+    ## (i.e. lower triangular)
+    gi <- read.table(text="
+            1 51300000 51800000 1 51000000 51300000
+            1 150300000 150800000 1 150000000 150300000") |>
+        as_ginteractions()
+    expect_true(all(start1(gi) > start2(gi)))
+
+    ## half="both"
+    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="both")
+    exp <- array(data=c(1, 4, 1, 2, 1, 8, 5, 5, 3, 4, 12, 2, 2,
+                        8, 2, 4, 2, 6, 3, 6, 7, 3, 7, 3, 2, 45,
+                        11, 5, 3, 3),
+                 dim=c(5,3,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## half="upper"
+    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="upper")
+    exp <- array(data=NA_real_, dim=c(5,3,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## half="lower"
+    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="lower")
+    exp <- array(data=c(1, 4, 1, 2, 1, 8, 5, 5, 3, 4, 12, 2, 2,
+                        8, 2, 4, 2, 6, 3, 6, 7, 3, 7, 3, 2, 45,
+                        11, 5, 3, 3),
+                 dim=c(5,3,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+
+    ## Interchromosomal
+    ## Pull rectangle where seqnames1 < seqnames2
+    gi <- read.table(text="
+            1 50000000 57500000 2 50000000 62500000
+            1 150000000 157500000 2 150000000 162500000") |>
+        as_ginteractions() |>
+        suppressWarnings()
+    expect_true(all(seqnames1(gi) < seqnames2(gi)))
+
+    ## half="both"
+    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="both")
+    exp <- array(data=c(1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1,
+                        0, 3, 2, 0, 2, 0, 2, 1, 0, 1, 0, 0, 0,
+                        2, 1, 1, 0),
+                 dim=c(3,5,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## half="upper"
+    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="upper")
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## half="lower"
+    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="lower")
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+
+    ## Interchromosomal
+    ## Pull rectangle where seqnames1 > seqnames2
+    gi <- read.table(text="
+            2 50000000 57500000 1 50000000 62500000
+            2 150000000 157500000 1 150000000 162500000") |>
+        as_ginteractions() |>
+        suppressWarnings()
+    expect_true(all(seqnames1(gi) > seqnames2(gi)))
+
+    ## half="both"
+    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="both")
+    exp <- array(data=c(1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0,
+                        2, 0, 2, 0, 0, 0, 2, 1, 2, 1, 0, 2, 0,
+                        1, 1, 1, 1),
+                 dim=c(3,5,2,1))
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## half="upper"
+    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="upper")
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
+
+    ## half="lower"
+    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="lower")
+    expect_identical(interactions(res), gi)
+    expect_identical(unname(as.array(counts(res))), exp)
 
 })
 
+
+test_that("Error when trying to pull irregular arrays", {
+
+    gi <- read.table(text="
+            1 51000000 51300000 1 51000000 51500000
+            1 150000000 150500000 1 150000000 150300000") |>
+        as_ginteractions()
+
+    pullHicMatrices(gi, 100e03, hicFiles[1], half="both") |>
+        expect_error("Variable sized anchors.*")
+
+})

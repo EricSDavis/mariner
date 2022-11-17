@@ -34,12 +34,12 @@ test_that("counts accessor for InteractionArray", {
 
     expect_identical(counts(iarr, FALSE), ref)
     expect_snapshot(counts(iarr, TRUE))
-    expect_snapshot(counts(iarr[1:3, 1:2]))
-    expect_snapshot(counts(iarr[3:4, 1]))
-    expect_snapshot(counts(iarr[1:7,1:2]))
-    expect_snapshot(counts(iarr[1:7,1]))
-    expect_snapshot(counts(iarr[1,1:2]))
-    expect_snapshot(counts(iarr[1,1]))
+    expect_snapshot(counts(iarr[1:3, 1:2]), TRUE)
+    expect_snapshot(counts(iarr[3:4, 1]), TRUE)
+    expect_snapshot(counts(iarr[1:7,1:2]), TRUE)
+    expect_snapshot(counts(iarr[1:7,1]), TRUE)
+    expect_snapshot(counts(iarr[1,1:2]), TRUE)
+    expect_snapshot(counts(iarr[1,1]), TRUE)
 
     expect_error(counts(InteractionArray()),
                  ".*has no count matrices.$")

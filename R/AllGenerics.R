@@ -105,6 +105,8 @@ setGeneric("pullHicMatrices",
                     binSize,
                     files,
                     ...,
+                    half="both",
+                    h5File = tempfile(fileext = ".h5"),
                     norm = 'NONE',
                     matrix = 'observed',
                     blockSize = 248956422,
@@ -119,8 +121,9 @@ setGeneric("pullHicPixels",
            function(x,
                     binSize,
                     files,
-                    h5File = tempfile(fileext = ".h5"),
                     ...,
+                    half="both",
+                    h5File = tempfile(fileext = ".h5"),
                     norm = 'NONE',
                     matrix = 'observed',
                     blockSize = 248956422,
@@ -141,7 +144,7 @@ setGeneric("InteractionArray", function(assays, interactions, ...)
 
 #' @rdname counts
 #' @export
-setGeneric("counts", function(x, showDimnames=TRUE, ...)
+setGeneric("counts", function(x, showDimnames=FALSE, ...)
     standardGeneric("counts"))
 
 setGeneric("rbind", package="BiocGenerics")

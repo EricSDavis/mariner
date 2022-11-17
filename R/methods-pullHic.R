@@ -5,7 +5,7 @@
 #' @importFrom rlang abort arg_match
 #' @importFrom glue glue
 #' @noRd
-.checkStrawArgs <- function(files, norm, binSize, matrix) {
+.checkStrawArgs <- function(files, half, norm, binSize, matrix) {
 
     ## Check norm and binSize against each file
     for(f in files) {
@@ -19,7 +19,8 @@
         }
     }
 
-    ## Check matrix argument
+    ## Check half and matrix arguments
+    arg_match(half, c("both", "upper", "lower"))
     arg_match(matrix, c("observed", "expected", "oe"))
     return(NULL)
 }
@@ -106,19 +107,19 @@
 }
 
 
-#' Convert GInteractions to sorted short format
+#' Order interactions for pulling with strawr
 #'
-#' Extra short format is the minimal information
-#' needed to extract Hi-C contacts with `strawr`.
-#' See the description for this format here:
-#' https://github.com/aidenlab/juicer/wiki/Pre#extra-short-format-dev.
-#'
-#' It also orders the interactions and chromosomes
+#' This function orders the interactions and chromosomes
 #' appropriately. For intrachromosomal interactions, the
 #' anchors should be flipped such that start1 < start2.
 #' For interchromosomal interactions, columns should be
 #' flipped so that chr1 < chr2 (according to the .hic
 #' file's internal chromosome map index).
+#'
+#' Extra short format is the minimal information
+#' needed to extract Hi-C contacts with `strawr`.
+#' See the description for this format here:
+#' https://github.com/aidenlab/juicer/wiki/Pre#extra-short-format-dev.
 #'
 #' @inheritParams pullHicMatrices
 #' @importFrom data.table as.data.table `:=`
@@ -126,49 +127,11 @@
 #' @return `data.table` with columns:
 #'  "chr1", "start1", "chr2", "start2".
 #' @noRd
-.GInteractionsToShortFormat <- function(x, files) {
-
-    ## Convert to data.table format
-    x <-
-        as.data.table(x)[, c("seqnames1", "start1",
-                             "seqnames2", "start2")] |>
-        `colnames<-`(c("seqnames1", "pos1",
-                       "seqnames2", "pos2"))
-
-    ## Get strawr chromosome map index
-    chrMap <- readHicChroms(files)
-
-    ## Get indices for correct ordering in .hic files
-    x$chromIndex1 <- chrMap$index[match(x$seqnames1, chrMap$name)]
-    x$chromIndex2 <- chrMap$index[match(x$seqnames2, chrMap$name)]
-
-    ## Interchromosomal: Flip column order
-    ## so that seqnames1 < seqnames2
-    x[chromIndex1 > chromIndex2,
-      `:=`(chromIndex1=chromIndex2,
-           chromIndex2=chromIndex1,
-           seqnames1=seqnames2, pos1=pos2,
-           seqnames2=seqnames1, pos2=pos1)]
-
-    ## Intrachromosmal: Flip column order
-    ## so that pos1 < pos2
-    x[chromIndex1 == chromIndex2 & pos1 > pos2,
-      `:=`(pos1=pos2, pos2=pos1)]
-
-    ## Remove indices from data.table
-    x[,c("chromIndex1", "chromIndex2") := NULL]
-
-    return(x)
-}
-
-#' Replacement for "GInteractionsToShortFormat"
-#' @noRd
 .orderInteractions <- function(x, file) {
 
     ## Convert to data.table format
-    x <-
-        as.data.table(x)[, c("seqnames1", "start1", "end1",
-                             "seqnames2", "start2", "end2")]
+    x <- as.data.table(x)[, c("seqnames1", "start1", "end1",
+                              "seqnames2", "start2", "end2")]
 
     ## Get strawr chromosome map index
     chrMap <- readHicChroms(file)
@@ -179,6 +142,7 @@
 
     ## Interchromosomal: Flip column order
     ## so that seqnames1 < seqnames2
+    chrSwapped <- x[chromIndex1>chromIndex2, which=TRUE]
     x[chromIndex1 > chromIndex2,
       `:=`(chromIndex1=chromIndex2,
            chromIndex2=chromIndex1,
@@ -194,8 +158,10 @@
     ## Remove indices from data.table
     x[,c("chromIndex1", "chromIndex2") := NULL]
 
-    ## Return as GInteractions
-    return(as_ginteractions(x))
+    ## Return as GInteractions and
+    ## indices of swapped chroms & anchors
+    return(list(x=as_ginteractions(x),
+                chrSwapped=chrSwapped))
 }
 
 #' Put ranges into blocks
@@ -282,29 +248,76 @@
         ))
     }
 
-    ## Extract anchors
-    a1 <- anchors(x, 'first')
-    a2 <- anchors(x, 'second')
-
     ## Assign ranges to blocks
-    r1 <- .blockRanges(start(a1), end(a1), blockSize)
-    r2 <- .blockRanges(start(a2), end(a2), blockSize)
+    r1 <- .blockRanges(start1(x), end1(x), blockSize)
+    r2 <- .blockRanges(start2(x), end2(x), blockSize)
 
     ## Assemble into data.table
     dt <-
-        data.table(seqnames1 = as.character(seqnames(a1)),
+        data.table(seqnames1 = seqnames1(x),
                    blockStart1 = r1$start,
                    blockEnd1 = r1$end,
-                   seqnames2 = as.character(seqnames(a2)),
+                   seqnames2 = seqnames2(x),
                    blockStart2 = r2$start,
                    blockEnd2 = r2$end)
 
     ## Define unique set of blocks
     blocks <-
         dt[, .(block=.GRP, xIndex=.(.I)), by=names(dt)] |>
-        as_ginteractions()
+        as_ginteractions() |>
+        suppressWarnings() # expected for interchromosomal
 
     return(blocks)
+}
+
+#' Assign counts to short format data.table
+#' and flip interactions as requested to add
+#' counts to each block data.
+#' @param g data.table with group of interactions.
+#' @param longMat long-format interactions in block.
+#' @param sparseMat straw output for full block region.
+#' @param chrSwapped which groups were previously swapped.
+#' @param half Which half (both, upper or lower) to return.
+#' @noRd
+.assignCounts <- function(g, longMat, sparseMat, chrSwapped, half) {
+
+    ## Set intrachromosomal flag
+    intra <- identical(g$seqnames1, g$seqnames2)
+
+    ## Swap where x > y for intrachromosomal (and keep track)
+    if (intra)  {
+        swapInd <- longMat[x > y, which=TRUE]
+        longMat[swapInd, `:=`(x=y, y=x)]
+    }
+    if (!intra) {
+        longMat[grp %in% chrSwapped, `:=`(x=y, y=x)]
+    }
+
+    ## Add counts by binary searching bins
+    setkeyv(sparseMat, c('x', 'y'))
+    longMat$counts <- sparseMat[longMat,counts,on=c('x','y')]
+
+    ## Set unmatched counts to 0 and lower tri to NA
+    longMat[is.na(counts), counts := 0]
+
+    ## Swap back to original order &
+    ## return requested half
+    if (intra) {
+        longMat[swapInd, `:=`(x=y,y=x)]
+        if (identical(half, "upper")) {
+            longMat[x > y, counts := NA_real_]
+        }
+        if (identical(half, "lower")) {
+            longMat[x < y, counts := NA_real_]
+        }
+    }
+
+    ## Swap back interactions for interchromosomal
+    if (!intra) {
+        longMat[grp %in% chrSwapped, `:=`(x=y, y=x)]
+    }
+
+    return(longMat)
 }
 
 #' Pull data from files and return as
@@ -326,17 +339,16 @@
 #'  extracted data.
 #'
 #' @noRd
-.pullArray <- function(x, binSize, files, norm, matrix,
-                       blockSize, onDisk, compressionLevel,
-                       chunkSize, mDim1, mDim2, blocks) {
+.pullArray <- function(x, binSize, files, half, h5File, norm,
+                       matrix, blockSize, onDisk, compressionLevel,
+                       chunkSize, mDim1, mDim2, blocks, chrSwapped) {
     ## Determine dimensions for dataset
     ## Dim order is nInteractions, nFiles, matrix dims
     dims <- c(length(x), length(files), mDim1, mDim2)
 
     if (onDisk) {
         ## Create hdf5 for storage
-        h5 <- tempfile(fileext = ".h5")
-        h5createFile(h5)
+        h5createFile(h5File)
 
         ## Set default chunkSize
         if (missing(chunkSize)) {
@@ -349,21 +361,21 @@
 
         ## Create dataset for holding array of counts
         ## and row/colnames
-        h5createDataset(file = h5,
+        h5createDataset(file = h5File,
                         dataset = "counts",
                         dims = dims,
                         chunk = c(chunkSize, 1, dims[c(3,4)]),
                         storage.mode = "double",
                         fillValue = NA_real_,
                         level = compressionLevel)
-        h5createDataset(file = h5,
+        h5createDataset(file = h5File,
                         dataset = "rownames",
                         dims = dims[c(1,2,3)],
                         chunk = c(chunkSize, 1, dims[3]),
                         storage.mode = "integer",
                         fillValue = NA_integer_,
                         level = compressionLevel)
-        h5createDataset(file = h5,
+        h5createDataset(file = h5File,
                         dataset = "colnames",
                         dims = dims[c(1,2,4)],
                         chunk = c(chunkSize, 1, dims[4]),
@@ -406,23 +418,60 @@
             ## Select interactions belonging to block
             xIndices <- blocks$xIndex[[i]]
             g <- as.data.table(x[xIndices])
+            g$xIndices <- xIndices
+
+            ## Set intrachromosomal flag
+            # intra <- identical(g$seqnames1, g$seqnames2)
 
             ## Create submatrix bins for each range
             ## with a fast cross-join
             longMat <- g[,{
                 x=seq(start1, end1-binSize, binSize);
                 y=seq(start2, end2-binSize, binSize);
+                x=as.integer(x) #seq sometimes returns double
+                y=as.integer(y)
                 CJ(x, y, sorted=FALSE)
             },
-            by=.(grp=seq_len(nrow(g)))]
+            by=.(grp=xIndices)]
 
-            ## Add counts by binary searching bins
-            setkeyv(sparseMat, c('x', 'y'))
-            longMat$counts <- sparseMat[longMat,counts,on=c('x','y')]
+            ## Assign counts
+            longMat <- .assignCounts(g, longMat,
+                                     sparseMat,
+                                     chrSwapped,
+                                     half)
 
-            ## Set unmatched counts to 0 and lower tri to NA
-            longMat[is.na(counts), counts := 0]
-            longMat[x > y, counts := NA]
+            # ## Swap where x > y for intrachromosomal (and keep track)
+            # if (intra)  {
+            #     swapInd <- longMat[x > y, which=TRUE]
+            #     longMat[swapInd, `:=`(x=y, y=x)]
+            # }
+            # if (!intra) {
+            #     longMat[grp %in% chrSwapped, `:=`(x=y, y=x)]
+            # }
+            #
+            # ## Add counts by binary searching bins
+            # setkeyv(sparseMat, c('x', 'y'))
+            # longMat$counts <- sparseMat[longMat,counts,on=c('x','y')]
+            #
+            # ## Set unmatched counts to 0 and lower tri to NA
+            # longMat[is.na(counts), counts := 0]
+            #
+            # ## Swap back to original order &
+            # ## return requested half
+            # if (intra) {
+            #     longMat[swapInd, `:=`(x=y,y=x)]
+            #     if (identical(half, "upper")) {
+            #         longMat[x > y, counts := NA]
+            #     }
+            #     if (identical(half, "lower")) {
+            #         longMat[x < y, counts := NA]
+            #     }
+            # }
+            #
+            # ## Swap back interactions for interchromosomal
+            # if (!intra) {
+            #     longMat[grp %in% chrSwapped, `:=`(x=y, y=x)]
+            # }
 
             ## Collect row/colname info
             aInfo <- longMat[,.(rowNames = .(unique(x)),
@@ -447,17 +496,17 @@
             if (onDisk) {
                 # Write data to hdf5 file
                 h5write(obj = a,
-                        file = h5,
+                        file = h5File,
                         name = "counts",
                         index=list(xIndices, j,
                                    seq_len(dims[3]),
                                    seq_len(dims[4])))
                 h5write(obj = rn,
-                        file = h5,
+                        file = h5File,
                         name = "rownames",
                         index=list(xIndices, j, seq_len(dims[3])))
                 h5write(obj = cn,
-                        file = h5,
+                        file = h5File,
                         name = "colnames",
                         index=list(xIndices, j, seq_len(dims[4])))
             } else {
@@ -487,9 +536,9 @@
             InteractionArray(
                 interactions = x,
                 assays = list(
-                    counts = DelayedArray(HDF5Array(h5,"counts")),
-                    rownames = DelayedArray(HDF5Array(h5,"rownames")),
-                    colnames = DelayedArray(HDF5Array(h5,"colnames"))
+                    counts = DelayedArray(HDF5Array(h5File,"counts")),
+                    rownames = DelayedArray(HDF5Array(h5File,"rownames")),
+                    colnames = DelayedArray(HDF5Array(h5File,"colnames"))
                 ),
                 colData = colData,
                 metadata = metadata
@@ -523,13 +572,15 @@
 #' @returns Updated `x` and `blocks` describing
 #'  ranges to pull.
 #' @noRd
-.prepareInputs <- function(x, binSize, files, norm, matrix,
-                           blockSize, onDisk, compressionLevel,
+.prepareInputs <- function(x, binSize, files, half, h5File, norm,
+                           matrix, blockSize, onDisk, compressionLevel,
                            chunkSize) {
 
     ## Check input types
     .checkTypes(c(
         binSize="number",
+        half="string",
+        h5File="string",
         norm="string",
         matrix="string",
         blockSize="number",
@@ -539,7 +590,7 @@
     ))
 
     ## Parse straw parameters
-    .checkStrawArgs(files, norm, binSize, matrix)
+    .checkStrawArgs(files, half, norm, binSize, matrix)
 
     ## Ensure seqnames are properly formatted
     .checkHicChroms(x, files)
@@ -547,12 +598,12 @@
     ## Assign GInteractions to bins
     x <- .handleBinning(x, binSize)
 
-    ## Order interactions according to chroms
-    ## (ensures blocks will be ordered too)
-    x <- .orderInteractions(x, files[1])
+    ## Order interactions so blocks are
+    ## formatted for straw
+    oi <- .orderInteractions(x, files[1])
 
     ## Assign x to blocks
-    blocks <- as.data.table(.mapToBlocks(x, blockSize))
+    blocks <- as.data.table(.mapToBlocks(oi$x, blockSize))
 
     ## Paste ranges to get chr1 and chr2 locs
     blocks <-
@@ -560,8 +611,10 @@
                   chr2loc = paste(seqnames2, start2, end2, sep=":"),
                   block, xIndex)]
 
-    ## Return x and blocks
-    return(list(x=x, blocks=blocks))
+    ## Return x, blocks, and indices
+    ## for swapped chroms & positions
+    return(list(x=x, blocks=blocks,
+                chrSwapped=oi$chrSwapped))
 }
 
 #' Internal pullHicMatrices
@@ -569,18 +622,19 @@
 #' @importFrom data.table as.data.table
 #' @importFrom InteractionSet regions
 #' @importFrom S4Vectors width
+#' @importFrom rlang abort
+#' @importFrom glue glue
 #' @return Array of Hi-C submatrices.
 #' @noRd
-.pullHicMatrices <- function(x, binSize, files, norm, matrix,
-                             blockSize, onDisk, compressionLevel,
+.pullHicMatrices <- function(x, binSize, files, half, h5File, norm,
+                             matrix, blockSize, onDisk, compressionLevel,
                              chunkSize) {
 
     ## Prepare inputs for Hi-C processing
-    dat <- .prepareInputs(x, binSize, files, norm, matrix,
-                          blockSize, onDisk, compressionLevel,
+    dat <- .prepareInputs(x, binSize, files, half, h5File, norm,
+                          matrix, blockSize, onDisk, compressionLevel,
                           chunkSize)
 
-    ## TODO: Code will differ here depending on input cases
     ## Use region widths to dispatch code for
     ## extracting equal or variable dimension slices
     firstWidths <- unique(width(first(x))) - 1
@@ -593,14 +647,17 @@
         mDim2 <- ceiling(secondWidths/binSize)
 
         ## Dispatch .pullArray for equal dimensions
-        iset <- .pullArray(dat$x, binSize, files, norm, matrix,
-                           blockSize, onDisk, compressionLevel,
-                           chunkSize, mDim1, mDim2, dat$blocks)
+        iset <- .pullArray(dat$x, binSize, files, half, h5File, norm,
+                           matrix, blockSize, onDisk, compressionLevel,
+                           chunkSize, mDim1, mDim2, dat$blocks,
+                           dat$chrSwapped)
         return(iset)
 
     } else {
-        ## TODO: Dispatch pullHicMatrices (varible dimensions)
-        stop("Variable dimension matrices not currently supported.")
+        abort(c(glue("Variable sized anchors \\
+                      are not currently supported.") ,
+                "i"=glue("Check this with `width(first(x))` \\
+                          and `width(second(x))`.")))
     }
 
 }
@@ -612,6 +669,18 @@
 #' @param binSize Integer (numeric) describing the
 #'  resolution (range widths) of the paired data.
 #' @param ... Additional arguments.
+#' @param half String (character vector of length one)
+#'  indicating whether to keep values for the upper
+#'  triangular (`half="upper"`) where `start1 < start2`,
+#'  lower triangular (`half="lower"`) where
+#'  `start1 > start2`, or both (`half="both"`, default).
+#'  When `half="upper"` all lower triangular values are `NA`.
+#'  When `half="lower"` all upper triangular values are `NA`.
+#'  When `half="both"` there are no `NA` values.
+#'  For interchromosomal interactions there is no inherent
+#'  directionality between chromosomes, so data is returned
+#'  regardless of specified order.
+#' @param h5File Character file path to save `.h5` file.
 #' @param norm String (length one character vector)
 #'  describing the Hi-C normalization to apply. Use
 #'  `strawr::readHicNormTypes()` to see accepted values
@@ -647,6 +716,8 @@
 #'  of Hi-C submatrices, rownames, and colnames. Array is
 #'  stored with the following dimensions: Interactions in `x`,
 #'  Hi-C `files`, rows of submatrix, columns of submatrix.
+#'  The submatrices returned have rows cooresponding to anchor1
+#'  of `x` and columns correspond to anchor2 of `x`.
 #'
 #' @rdname pullHicMatrices
 #' @export
@@ -676,17 +747,16 @@ setMethod("pullHicMatrices",
 #'  extracted data.
 #'
 #' @noRd
-.pullMatrix <- function(x, binSize, files, h5File, norm, matrix,
+.pullMatrix <- function(x, binSize, files, half, h5File, norm, matrix,
                        blockSize, onDisk, compressionLevel,
-                       chunkSize, blocks) {
+                       chunkSize, blocks, chrSwapped) {
     ## Determine dimensions for dataset
     ## Dim order is nInteractions, nFiles, matrix dims
     dims <- c(length(x), length(files))
 
     if (onDisk) {
         ## Create hdf5 for storage
-        h5 <- h5File #tempfile(fileext = ".h5")
-        h5createFile(h5)
+        h5createFile(h5File)
 
         ## Set default chunkSize
         if (missing(chunkSize)) {
@@ -699,7 +769,7 @@ setMethod("pullHicMatrices",
 
         ## Create dataset for holding array of counts
         ## and row/colnames
-        h5createDataset(file = h5,
+        h5createDataset(file = h5File,
                         dataset = "counts",
                         dims = dims,
                         chunk = c(chunkSize, 1),
@@ -741,23 +811,18 @@ setMethod("pullHicMatrices",
             ## Select interactions belonging to block
             xIndices <- blocks$xIndex[[i]]
             g <- as.data.table(x[xIndices])
+            g$xIndices <- xIndices
 
             ## Create submatrix bins for each range
             ## with a fast cross-join (rename)
             longMat <- g[,{x=start1; y=start2; CJ(x, y, sorted=FALSE)},
-                         by=.(grp=seq_len(nrow(g)))]
+                         by=.(grp=xIndices)]
 
-            ## Add counts by binary searching bins
-            setkeyv(sparseMat, c('x', 'y'))
-            longMat$counts <- sparseMat[longMat,counts,on=c('x','y')]
-
-            ## Set unmatched counts to 0
-            longMat[is.na(counts), counts := 0]
-
-            ## Collect row/colname info
-            aInfo <- longMat[,.(rowNames = .(unique(x)),
-                                colNames = .(unique(y))),
-                             by=grp]
+            ## Assign counts
+            longMat <- .assignCounts(g, longMat,
+                                     sparseMat,
+                                     chrSwapped,
+                                     half)
 
             ## Fill array by col, row, interactions, file
             ## then rearrange for storage: interactions, file, rows, cols
@@ -766,7 +831,7 @@ setMethod("pullHicMatrices",
 
             if (onDisk) {
                 # Write data to hdf5 file
-                h5write(a, h5, "counts", index = list(xIndices, j))
+                h5write(a, h5File, "counts", index = list(xIndices, j))
             } else {
                 counts[xIndices, j] <- a
             }
@@ -792,7 +857,7 @@ setMethod("pullHicMatrices",
             InteractionMatrix(
                 interactions = x,
                 assays = list(
-                    counts = DelayedArray(HDF5Array(h5,"counts"))
+                    counts = DelayedArray(HDF5Array(h5File,"counts"))
                 ),
                 colData = colData,
                 metadata = metadata
@@ -825,12 +890,12 @@ setMethod("pullHicMatrices",
 #' @importFrom glue glue
 #' @return Matrix of Hi-C submatrices.
 #' @noRd
-.pullHicPixels <- function(x, binSize, files, h5File, norm, matrix,
+.pullHicPixels <- function(x, binSize, files, half, h5File, norm, matrix,
                            blockSize, onDisk, compressionLevel,
                            chunkSize) {
 
     ## Prepare inputs for Hi-C processing
-    dat <- .prepareInputs(x, binSize, files, norm, matrix,
+    dat <- .prepareInputs(x, binSize, files, half, h5File, norm, matrix,
                           blockSize, onDisk, compressionLevel,
                           chunkSize)
 
@@ -844,8 +909,10 @@ setMethod("pullHicMatrices",
     }
 
     ## Dispatch pulling pixels
-    iset <- .pullMatrix(dat$x, binSize, files, h5File, norm, matrix, blockSize,
-                        onDisk, compressionLevel, chunkSize, dat$blocks)
+    iset <- .pullMatrix(dat$x, binSize, files, half, h5File,
+                        norm, matrix, blockSize, onDisk,
+                        compressionLevel, chunkSize,
+                        dat$blocks, dat$chrSwapped)
 
     return(iset)
 
@@ -858,8 +925,19 @@ setMethod("pullHicMatrices",
 #' @param files Character file paths to `.hic` files.
 #' @param binSize Integer (numeric) describing the
 #'  resolution (range widths) of the paired data.
-#' @param h5File Character file path to save `.h5` file.
 #' @param ... Additional arguments.
+#' @param half String (character vector of length one)
+#'  indicating whether to keep values for the upper
+#'  triangular (`half="upper"`) where `start1 < start2`,
+#'  lower triangular (`half="lower"`) where
+#'  `start1 > start2`, or both (`half="both"`, default).
+#'  When `half="upper"` all lower triangular values are `NA`.
+#'  When `half="lower"` all upper triangular values are `NA`.
+#'  When `half="both"` there are no `NA` values.
+#'  For interchromosomal interactions there is no inherent
+#'  directionality between chromosomes, so data is returned
+#'  regardless of specified order.
+#' @param h5File Character file path to save `.h5` file.
 #' @param norm String (length one character vector)
 #'  describing the Hi-C normalization to apply. Use
 #'  `strawr::readHicNormTypes()` to see accepted values

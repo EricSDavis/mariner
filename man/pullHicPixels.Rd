@@ -9,8 +9,9 @@ pullHicPixels(
   x,
   binSize,
   files,
-  h5File = tempfile(fileext = ".h5"),
   ...,
+  half = "both",
+  h5File = tempfile(fileext = ".h5"),
   norm = "NONE",
   matrix = "observed",
   blockSize = 248956422,
@@ -23,6 +24,7 @@ pullHicPixels(
   x,
   binSize,
   files,
+  half,
   h5File,
   norm,
   matrix,
@@ -40,9 +42,21 @@ resolution (range widths) of the paired data.}
 
 \item{files}{Character file paths to `.hic` files.}
 
-\item{h5File}{Character file path to save `.h5` file.}
-
 \item{...}{Additional arguments.}
+
+\item{half}{String (character vector of length one)
+indicating whether to keep values for the upper
+triangular (`half="upper"`) where `start1 < start2`,
+lower triangular (`half="lower"`) where
+`start1 > start2`, or both (`half="both"`, default).
+When `half="upper"` all lower triangular values are `NA`.
+When `half="lower"` all upper triangular values are `NA`.
+When `half="both"` there are no `NA` values.
+For interchromosomal interactions there is no inherent
+directionality between chromosomes, so data is returned
+regardless of specified order.}
+
+\item{h5File}{Character file path to save `.h5` file.}
 
 \item{norm}{String (length one character vector)
 describing the Hi-C normalization to apply. Use
