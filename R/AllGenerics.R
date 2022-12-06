@@ -173,6 +173,27 @@ setGeneric("aggHicMatrices", function(x,
                                       compressionLevel=0)
     standardGeneric("aggHicMatrices"))
 
+#' @rdname selectPixel
+#' @export
+setGeneric("selectPixel", function(x,
+                                   aggFUN=sum,
+                                   selectFUN="which.max",
+                                   nBlocks=5,
+                                   verbose=TRUE)
+    standardGeneric("selectPixel"))
+
+#' @rdname changePixelRes
+#' @export
+setGeneric("changePixelRes", function(x, files, from, to,
+                                      aggFUN=sum,
+                                      selectFUN="which.max",
+                                      nBlocks=5,
+                                      verbose=TRUE,
+                                      norm="KR",
+                                      half="upper",
+                                      ...)
+    standardGeneric("changePixelRes"))
+
 #' @rdname GInteractions-accessors
 #' @export
 setGeneric("seqnames1", function(x, ...) standardGeneric("seqnames1"))
@@ -196,3 +217,14 @@ setGeneric("start2", function(x, ...) standardGeneric("start2"))
 #' @rdname GInteractions-accessors
 #' @export
 setGeneric("end2", function(x, ...) standardGeneric("end2"))
+
+#' @rdname calcLoopEnrichment
+#' @export
+setGeneric("calcLoopEnrichment",
+           function(x, files,
+                    mhDist=c(4,5,6),
+                    nBlocks=5,
+                    verbose=TRUE,
+                    BPPARAM=bpparam(),
+                    ...)
+    standardGeneric("calcLoopEnrichment"))
