@@ -132,6 +132,7 @@
 
     ## Parse shared arguments
     .checkTypes(c(nBlocks="number", verbose="boolean"))
+    if (nBlocks <= 0) abort("`nBlocks` must be > 0.")
     FUN <- match.fun(FUN)
     if (nBlocks > length(x)) {
         nBlocks <- length(x)

@@ -65,7 +65,7 @@ Collate:
     'methods-binPairs.R'
     'methods-binRanges.R'
     'methods-calcLoopEnrichment.R'
-    'methods-enhancePixels.R'
+    'methods-changePixelRes.R'
     'methods-hdf5BlockApply.R'
     'methods-mergePairs.R'
     'methods-pixelsToMatrices.R'
