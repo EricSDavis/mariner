@@ -145,7 +145,7 @@ setMethod("selectPixel",
                             half="upper",
                             ...) {
     ## Basic type checking
-    .checkTypes(from="number", to="number")
+    .checkTypes(types=list(from="number", to="number"))
 
     ## Execute steps
     x |>
