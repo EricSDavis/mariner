@@ -40,7 +40,10 @@ Imports:
     DelayedArray,
     HDF5Array,
     abind,
-    BiocParallel
+    BiocParallel,
+    IRanges,
+    SummarizedExperiment,
+    rhdf5
 Remotes:
     EricSDavis/straw/R
 biocViews:
