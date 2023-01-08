@@ -2,6 +2,8 @@
 ## Classes and their derivatives
 
 #' Access each portion of a GInteractions-like object
+#' @param x GInteractions object.
+#' @param ... Additional arguments.
 #' @importFrom S4Vectors first
 #' @importFrom GenomicRanges seqnames
 #' @returns A vector of values corresponding to the
@@ -10,6 +12,7 @@
 #'  character vector.
 #'
 #' @examples
+#' library(InteractionSet)
 #' ## Create example reference interactions objects
 #' gi <- read.table(text="
 #'     chr1 10 20 chr1 50 60

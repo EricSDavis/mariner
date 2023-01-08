@@ -29,6 +29,7 @@ Snap GRanges or GInteractions to nearest bins
 Snap paired-objects to nearest bins
 }
 \examples{
+library(GenomicRanges)
 ## Example GRanges object
 x <- GRanges(seqnames = c("chr1"),
              ranges = IRanges(start = c(1, 1, 25, 19, 21),
@@ -38,6 +39,7 @@ snapToBins(x, binSize = 5)
 snapToBins(x, binSize = 10)
 snapToBins(x, binSize = 20)
 
+library(InteractionSet)
 ## Sample GInteractions object
 x <- GInteractions(anchor1 = c(GRanges("chr1:1-15"),
                                GRanges("chr1:1-11")),

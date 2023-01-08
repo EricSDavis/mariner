@@ -142,11 +142,7 @@ setGeneric("pixelsToMatrices", function(x, buffer)
 setGeneric("InteractionArray", function(assays, interactions, ...)
     standardGeneric("InteractionArray"))
 
-#' @rdname counts
-#' @export
-setGeneric("counts", function(x, showDimnames=FALSE, ...)
-    standardGeneric("counts"))
-
+setGeneric("counts", package="BiocGenerics")
 setGeneric("rbind", package="BiocGenerics")
 setGeneric("cbind", package="BiocGenerics")
 

@@ -7,6 +7,7 @@
 \alias{InteractionMatrix}
 \alias{InteractionMatrix,ANY,GInteractions-method}
 \alias{InteractionMatrix,missing,missing-method}
+\alias{show,InteractionMatrix-method}
 \alias{rbind,InteractionMatrix-method}
 \alias{cbind,InteractionMatrix-method}
 \title{InteractionMatrix Class}
@@ -17,6 +18,8 @@ InteractionMatrix(assays, interactions, ...)
 
 \S4method{InteractionMatrix}{missing,missing}(assays, interactions, ...)
 
+\S4method{show}{InteractionMatrix}(object)
+
 \S4method{rbind}{InteractionMatrix}(..., deparse.level = 1)
 
 \S4method{cbind}{InteractionMatrix}(..., deparse.level = 1)
@@ -24,6 +27,14 @@ InteractionMatrix(assays, interactions, ...)
 \arguments{
 \item{assays, interactions}{See
 \code{?\link[InteractionSet]{InteractionSet}}}
+
+\item{...}{InteractionMatrix objects to be combined column-wise.
+All objects must be the same class.}
+
+\item{object}{InteractionMatrix object.}
+
+\item{deparse.level}{An integer scalar; see `?base::cbind` for
+a description of this argument.}
 }
 \description{
 The `InteractionMatrix` class extends the
@@ -37,7 +48,8 @@ This class is constructed with the
 paired ranges define a single pixel.
 }
 \examples{
-TODO
+InteractionMatrix()
+
 }
 \seealso{
 [InteractionSet::InteractionSet]

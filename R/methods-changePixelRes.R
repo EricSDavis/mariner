@@ -169,7 +169,13 @@ setMethod("selectPixel",
 #' datasets, increase `nBlocks` to allow for smaller
 #' blocks of data to be processed in memory.
 #'
-#' @param x GInteractions object
+#' @param x GInteractions object.
+#' @param files Character file paths to `.hic` files.
+#' @param from Number (length one numeric vector) describing
+#'  the resolution of `x`. Data will be binned to this
+#'  value if it is not already binned.
+#' @param to Number (length one numeric vector) describing
+#'  the new resolution for the pixels.
 #' @param aggFUN Function to use for aggregating
 #'  across Hi-C files. Must be passable to
 #'  `which.max` or `which.min`. Default is "sum".

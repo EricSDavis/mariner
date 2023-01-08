@@ -98,3 +98,4 @@ test_that("show method for InteractionArray", {
     expect_snapshot(show(iarr[,2]))
 
 })
+

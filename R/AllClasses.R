@@ -356,7 +356,8 @@ setClass(
 #' @seealso [InteractionSet::InteractionSet]
 #'
 #' @examples
-#' TODO
+#' InteractionMatrix()
+#'
 #' @rdname InteractionMatrix-class
 #' @export
 setClass(
