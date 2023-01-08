@@ -35,7 +35,16 @@ changePixelRes(
 )
 }
 \arguments{
-\item{x}{GInteractions object}
+\item{x}{GInteractions object.}
+
+\item{files}{Character file paths to `.hic` files.}
+
+\item{from}{Number (length one numeric vector) describing
+the resolution of `x`. Data will be binned to this
+value if it is not already binned.}
+
+\item{to}{Number (length one numeric vector) describing
+the new resolution for the pixels.}
 
 \item{aggFUN}{Function to use for aggregating
 across Hi-C files. Must be passable to

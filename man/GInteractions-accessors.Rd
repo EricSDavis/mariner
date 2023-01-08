@@ -39,6 +39,11 @@ end2(x, ...)
 
 \S4method{end2}{GInteractions_OR_InteractionSet}(x)
 }
+\arguments{
+\item{x}{GInteractions object.}
+
+\item{...}{Additional arguments.}
+}
 \value{
 A vector of values corresponding to the
  requested component of a GInteractions-like object.
@@ -49,6 +54,7 @@ A vector of values corresponding to the
 Access each portion of a GInteractions-like object
 }
 \examples{
+library(InteractionSet)
 ## Create example reference interactions objects
 gi <- read.table(text="
     chr1 10 20 chr1 50 60

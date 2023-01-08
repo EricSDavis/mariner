@@ -32,24 +32,27 @@ setMethod("InteractionMatrix", c("missing", "missing"),
 #' @inheritParams counts
 #' @importFrom SummarizedExperiment assays
 #' @noRd
-.counts <- function(x) {
+.counts <- function(object) {
     ## Check for valid count data
-    if (length(assays(x)) == 0) {
-        abort("`x` has no counts.")
+    if (length(assays(object)) == 0) {
+        abort("`object` has no counts.")
     }
-    if (length(colData(x)) == 0) {
-        abort("`x` has no Hi-C files.")
+    if (length(colData(object)) == 0) {
+        abort("`object` has no Hi-C files.")
     }
-    assay(x, 'counts')
+    assay(object, 'counts')
 }
 
 #' Access count matrices from
 #' InteractionArray or InteractionMatrix
 #'
-#' @param x InteractionArray or InteractionMatrix object.
+#' @param object InteractionArray or InteractionMatrix object.
+#'
+#' @importFrom BiocGenerics counts
+#'
 #' @returns For InteractionMatrix, a 2-dimensional
 #'  DelayedArray is returned with rows representing
-#'  interactions in `x` and columns for each Hi-C
+#'  interactions in `object` and columns for each Hi-C
 #'  file in `files`.
 #'
 #' @examples
@@ -78,7 +81,7 @@ setMethod("InteractionMatrix", c("missing", "missing"),
 #' @rdname counts
 #' @export
 setMethod("counts",
-          signature(x="InteractionMatrix"),
+          signature(object="InteractionMatrix"),
           definition = .counts)
 
 ## Show ------------------------------------------------------------------------
@@ -97,8 +100,9 @@ setMethod("counts",
     cat(output, sep = "\n")
 }
 
-#' show for InteractionArray
-#' @rdname InteractionArray-class
+#' show for InteractionMatrix
+#' @param object InteractionMatrix object.
+#' @rdname InteractionMatrix-class
 #' @export
 setMethod("show",
           signature(object="InteractionMatrix"),
@@ -107,12 +111,22 @@ setMethod("show",
 ## Concatenation ---------------------------------------------------------------
 
 #' rbind InteractionMatrix
+#' @param ... InteractionMatrix objects to be combined row-wise.
+#'  All objects must be the same class.
+#' @param deparse.level An integer scalar; see `?base::rbind` for
+#'  a description of this argument.
+#' @importFrom BiocGenerics rbind
 #' @include utils.R
 #' @rdname InteractionMatrix-class
 #' @export
 setMethod("rbind", "InteractionMatrix", .rbindIsetDerived)
 
 #' cbind InteractionMatrix
+#' @param ... InteractionMatrix objects to be combined column-wise.
+#'  All objects must be the same class.
+#' @param deparse.level An integer scalar; see `?base::cbind` for
+#'  a description of this argument.
+#' @importFrom BiocGenerics cbind
 #' @include utils.R
 #' @rdname InteractionMatrix-class
 #' @export

@@ -14,6 +14,10 @@
 #' @noRd
 .snap <- function(start, end, binSize, tolerance = 1e-08) {
 
+    ## Suppress NSE notes in R CMD check
+    coversBins = coversOneBin = crossMid =
+        equalSides = leftSide = rightSide = NULL
+
     ## Get the starts and ends in terms of binSize
     s <- start/binSize
     e <- end/binSize
@@ -103,6 +107,7 @@
 #'
 #' @return GRanges object snapped to the nearest `binSize`.
 #' @examples
+#' library(GenomicRanges)
 #' ## Example GRanges object
 #' x <- GRanges(seqnames = c("chr1"),
 #'              ranges = IRanges(start = c(1, 1, 25, 19, 21),
@@ -168,6 +173,7 @@ setMethod("snapToBins",
 #'
 #' @return Input object snapped to the nearest `binSize`.
 #' @examples
+#' library(InteractionSet)
 #' ## Sample GInteractions object
 #' x <- GInteractions(anchor1 = c(GRanges("chr1:1-15"),
 #'                                GRanges("chr1:1-11")),

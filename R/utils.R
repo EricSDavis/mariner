@@ -144,7 +144,11 @@
     all(vapply(seq_along(d), \(i) identical(d[[1L]], d[[i]]), logical(1L)))
 }
 
-#' Internal rbind method for InteractionMatrix
+#' Internal rbind method for InteractionMatrix/InteractionArray
+#' @param ... InteractionMatrix objects to be combined row-wise.
+#'  All objects must be the same class.
+#' @param deparse.level An integer scalar; see `?base::rbind` for
+#'  a description of this argument.
 #' @importFrom S4Vectors metadata `metadata<-`
 #' @importFrom SummarizedExperiment colData `colData<-`
 #' @importFrom rlang abort
@@ -172,7 +176,11 @@
     ans
 }
 
-#' Internal cbind method for InteractionMatrix
+#' Internal cbind method for InteractionMatrix/InteractionArray
+#' @param ... InteractionMatrix objects to be combined column-wise.
+#'  All objects must be the same class.
+#' @param deparse.level An integer scalar; see `?base::cbind` for
+#'  a description of this argument.
 #' @importFrom S4Vectors metadata `metadata<-`
 #' @importFrom rlang abort
 #' @importFrom glue glue

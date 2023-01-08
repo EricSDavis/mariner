@@ -18,11 +18,13 @@ RoxygenNote: 7.2.1
 Suggests:
     knitr,
     plotgardener,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    dplyr,
+    utils
 Imports:
     methods,
-    BiocGenerics,
     S4Vectors,
+    BiocGenerics,
     GenomicRanges,
     InteractionSet,
     data.table,
@@ -67,6 +69,7 @@ Collate:
     'methods-as_ginteractions.R'
     'methods-binPairs.R'
     'methods-binRanges.R'
+    'methods-calcLoopEnrichment.R'
     'methods-changePixelRes.R'
     'methods-hdf5BlockApply.R'
     'methods-mergePairs.R'
