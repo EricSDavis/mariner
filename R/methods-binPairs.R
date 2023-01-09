@@ -22,8 +22,10 @@
     a2 <- anchors(x, type = 'second')
 
     ## Bin anchors
-    a1 <- binRanges(x = a1, binSize = binSize, pos = pos1)
-    a2 <- binRanges(x = a2, binSize = binSize, pos = pos2)
+    if (length(binSize) > 2) abort("`length(binSize)` must be 1 or 2.")
+    if (length(binSize) == 1L) binSize <- rep(binSize, 2)
+    a1 <- binRanges(x = a1, binSize = binSize[1], pos = pos1)
+    a2 <- binRanges(x = a2, binSize = binSize[2], pos = pos2)
 
     ## Reconstruct binned GInteractions object
     gi <- GInteractions(a1, a2)
@@ -48,8 +50,9 @@
 #'
 #' @param x `GInteractions` or `data.frame`-like
 #'  object with paired interactions.
-#' @param binSize Integer (numeric) describing
-#'  the new size of each range.
+#' @param binSize Integer (numeric) vector describing
+#'  the new size of each pair of ranges. Accepts up to
+#'  2 values for adjusting each pair.
 #' @param pos1,pos2 Position within anchors
 #'  to resize the bin. Can be a character or
 #'  integer vector of length 1 or `length(x)`

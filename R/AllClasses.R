@@ -1,3 +1,5 @@
+## Generic class unions --------------------------------------------------------
+
 #' Class union for "DataFrame-like" objects
 #' @importClassesFrom data.table data.table
 #' @importClassesFrom S4Vectors DFrame
@@ -28,6 +30,14 @@ setClassUnion("character_OR_function_OR_list",
 setClassUnion("list_OR_SimpleList_OR_GInteractions",
               c("list", "SimpleList", "GInteractions"))
 
+#' Class union for GInteractions or InteractionSet
+#' @importClassesFrom InteractionSet InteractionSet GInteractions
+#' @noRd
+setClassUnion("GInteractions_OR_InteractionSet",
+              c("GInteractions", "InteractionSet"))
+
+
+## DelegatingGInteractions class -----------------------------------------------
 
 #' Virtual class for delegating GInteractions
 #'
@@ -95,6 +105,8 @@ setMethod(
         .Object <- callNextMethod(.Object, ...)
         .Object
     })
+
+## BinnedGInteractions Class ---------------------------------------------------
 
 #' BinnedGInteractions Class
 #'
@@ -216,6 +228,7 @@ setValidity("BinnedGInteractions", function(object) {
 
 })
 
+## MergedGInteractions Class ---------------------------------------------------
 
 #' MergedGInteractions Class
 #'
@@ -300,3 +313,54 @@ setMethod(
 setMethod("parallel_slot_names", "MergedGInteractions", function(x) {
     c("ids", callNextMethod())
 })
+
+## InteractionArray Class ------------------------------------------------------
+
+#' InteractionArray Class
+#'
+#' The `InteractionArray` class extends
+#' `InteractionSet` to provide an interface
+#' for accessing submatrices pulled from
+#' Hi-C data.
+#'
+#' This class is constructed with the
+#' `pullHicMatrices()` function when all
+#' paired ranges have equal dimensions.
+#'
+#' @seealso [InteractionSet::InteractionSet]
+#'
+#' @examples
+#' InteractionArray()
+#'
+#' @rdname InteractionArray-class
+#' @export
+setClass(
+    Class = "InteractionArray",
+    contains = "InteractionSet"
+)
+
+## InteractionMatrix Class -----------------------------------------------------
+
+#' InteractionMatrix Class
+#'
+#' The `InteractionMatrix` class extends the
+#' `InteractionSet` to provide an interface
+#' for accessing the count matrix pulled from
+#' Hi-C data.
+#'
+#' This class is constructed with the
+#' `pullHicPixels()` function when all
+#' paired ranges define a single pixel.
+#'
+#'
+#' @seealso [InteractionSet::InteractionSet]
+#'
+#' @examples
+#' InteractionMatrix()
+#'
+#' @rdname InteractionMatrix-class
+#' @export
+setClass(
+    Class = "InteractionMatrix",
+    contains = "InteractionSet"
+)

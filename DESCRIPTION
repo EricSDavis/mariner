@@ -1,7 +1,7 @@
 Package: mariner
 Type: Package
-Title: Mariner: Explore the Hi-C's
-Version: 0.1.0
+Title: Mariner: Explore the Hi-Cs
+Version: 0.2.0
 Authors@R: c(
     person("Eric", "Davis", role = c("aut", "cre"),
       email = "ericscottdavis@outlook.com",
@@ -17,23 +17,37 @@ Description: Tools for manipulating paired ranges and
 RoxygenNote: 7.2.1
 Suggests:
     knitr,
-    BiocGenerics,
     plotgardener,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    dplyr,
+    utils
 Imports:
     methods,
     S4Vectors,
+    BiocGenerics,
     GenomicRanges,
     InteractionSet,
     data.table,
     stats,
     rlang,
     glue,
+    assertthat,
     plyranges,
     magrittr,
     dbscan,
     purrr,
-    progress
+    progress,
+    GenomeInfoDb,
+    strawr,
+    DelayedArray,
+    HDF5Array,
+    abind,
+    BiocParallel,
+    IRanges,
+    SummarizedExperiment,
+    rhdf5
+Remotes:
+    EricSDavis/straw/R
 biocViews:
     FunctionalGenomics,
     Visualization,
@@ -42,3 +56,25 @@ VignetteBuilder: knitr
 License: GPL-3
 Encoding: UTF-8
 Config/testthat/edition: 3
+Collate: 
+    'AllClasses.R'
+    'AllGenerics.R'
+    'methods-BinnedGInteractions.R'
+    'methods-GInteractions.R'
+    'utils.R'
+    'methods-InteractionArray.R'
+    'methods-InteractionMatrix.R'
+    'methods-MergedGInteractions.R'
+    'methods-aggHicMatrices.R'
+    'methods-as_ginteractions.R'
+    'methods-binPairs.R'
+    'methods-binRanges.R'
+    'methods-calcLoopEnrichment.R'
+    'methods-changePixelRes.R'
+    'methods-hdf5BlockApply.R'
+    'methods-mergePairs.R'
+    'methods-pixelsToMatrices.R'
+    'methods-pullHic.R'
+    'methods-shiftRanges.R'
+    'methods-snapToBins.R'
+    'zzz.R'

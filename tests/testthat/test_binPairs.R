@@ -119,3 +119,14 @@ test_that("binPairs doesn't modify class", {
     expect_equal(ncol(mcols(bp)), 9)
 
 })
+
+test_that("Binning checks for appropriate binSize", {
+    binPairs(gi1, binSize = 0) |>
+        expect_error("`binSize` must be > 0")
+})
+
+test_that("Anchors can be binned independently", {
+    bgi <- binPairs(gi1, binSize=c(5e03, 1e03))
+    expect_equal(unique(width(regions(bgi)))-1,
+                 c(5e03, 1e03))
+})
