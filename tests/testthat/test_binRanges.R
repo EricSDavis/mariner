@@ -53,3 +53,12 @@ test_that("Binning to transcription start site", {
     obj <- binRanges(gr2, 2000, 1000)
     expect_identical(obj, exp)
 })
+
+test_that("Binning checks for appropriate binSize", {
+    x <- GRanges(seqnames = "chr1",
+                 ranges = IRanges(start = c(4000, 6000, 4000),
+                                  end = c(6000, 8000, 6000)),
+                 strand = c('+', '-', '*'))
+    binRanges(x, binSize = 0) |>
+        expect_error("`binSize` must be > 0")
+})

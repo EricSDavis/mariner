@@ -1,4 +1,6 @@
-# Mariner: Explore the Hi-C's <img src="man/figures/mariner.png" id="mariner_logo" align="right" width="150"/>
+# Mariner: Explore the Hi-Cs <img src="man/figures/mariner.png" id="mariner_logo" align="right" width="150"/>
+
+[![DOI](https://zenodo.org/badge/475953890.svg)](https://zenodo.org/badge/latestdoi/475953890)
 
 `mariner` is an R package with a collection of useful tools for performing Hi-C data analysis. The tools fall into the following broad categories:
 

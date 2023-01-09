@@ -9,6 +9,9 @@
     ## Suppress R CMD CHECK NOTE
     start <- NULL
 
+    ## Check binSize
+    if (binSize == 0) abort("`binSize` must be > 0")
+
     ## Shift, bin, and trim ranges
     x |>
         shiftRanges(pos) |>
