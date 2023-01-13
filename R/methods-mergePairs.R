@@ -95,7 +95,7 @@
     dt <- do.call(rbind, bedpe)
 
     ## Check column name exists in bedpe
-    if (!missing(column)) {
+    if (!is.null(column)) {
         if (!column %in% colnames(dt)) {
             abort(glue("Column '{column}' does not exist."))
         }
@@ -237,13 +237,21 @@
 #' Internal mergePairs function
 #' @inheritParams mergePairs
 #' @importFrom rlang inform
-#' @importFrom data.table as.data.table uniqueN `:=`
+#' @importFrom data.table as.data.table uniqueN `:=` copy
 #' @importFrom S4Vectors mcols
 #' @noRd
 .mergePairs <- function(x, radius, method, column, selectMax, pos) {
 
     ## Suppress NSE notes in R CMD check
     clst = grp = NULL
+
+    ## Check argument types
+    ## column is checked later (can be string or NULL)
+    .checkTypes(c(
+        method="string",
+        selectMax="boolean",
+        pos="string"
+    ))
 
     ## Parse list or GInteractions input and return
     ## as a concatenated data.table
@@ -253,15 +261,18 @@
     dt <- .clusterPairs(x=dt, radius=radius, method=method, pos=pos)
 
     ## Perform selection
-    if (missing(column)) {
+    if (is.null(column)) {
         ## Fast mean of modes
         selectionMethod <- "Mean of modes"
 
         ## Define start & end columns to update
         columnsToUpdate <- c("start1", "end1", "start2", "end2")
 
+        ## Make copy of pairs to retain original ranges
+        dt2 <- copy(dt)
+
         ## Update with mean of modes for each group and cluster
-        dt[clst > 0,
+        dt2[clst > 0,
            (columnsToUpdate) :=
                .newPairRanges(start1 = .SD[['start1']],
                               start2 = .SD[['start2']],
@@ -270,8 +281,8 @@
            by = .(grp, clst)]
 
         ## Select the first of the duplicated pairs
-        single <- dt[clst < 0]
-        selected <- dt[dt[clst > 0,.I[1], by = .(grp, clst)]$V1]
+        single <- dt2[clst < 0]
+        selected <- dt2[dt2[clst > 0,.I[1], by = .(grp, clst)]$V1]
         mergedPairs <- rbind(single, selected)
 
     } else {
@@ -305,7 +316,7 @@
 
     ## Remove metadata if using mean of modes
     ## since the choice is arbitrary.
-    if (missing(column)) mcols(mergedPairs) <- NULL
+    if (is.null(column)) mcols(mergedPairs) <- NULL
 
     ## Build MergedGInteractions object
     obj <-
@@ -379,9 +390,5 @@
 #' @export
 setMethod("mergePairs",
           signature(x = 'list_OR_SimpleList_OR_GInteractions',
-                    radius = 'numeric',
-                    method = 'character_OR_missing',
-                    column = 'character_OR_missing',
-                    selectMax = 'logical_OR_missing',
-                    pos = "character_OR_missing"),
+                    radius = 'numeric'),
           definition = .mergePairs)
