@@ -53,7 +53,7 @@ setGeneric("mergePairs",
            function(x,
                     radius,
                     method = "manhattan",
-                    column,
+                    column = NULL,
                     selectMax = TRUE,
                     pos = "center")
                standardGeneric("mergePairs"))

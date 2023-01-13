@@ -2,23 +2,23 @@
 % Please edit documentation in R/AllGenerics.R, R/methods-mergePairs.R
 \name{mergePairs}
 \alias{mergePairs}
-\alias{mergePairs,list_OR_SimpleList_OR_GInteractions,numeric,character_OR_missing,character_OR_missing,logical_OR_missing,character_OR_missing-method}
+\alias{mergePairs,list_OR_SimpleList_OR_GInteractions,numeric-method}
 \title{Merge sets of paired interactions}
 \usage{
 mergePairs(
   x,
   radius,
   method = "manhattan",
-  column,
+  column = NULL,
   selectMax = TRUE,
   pos = "center"
 )
 
-\S4method{mergePairs}{list_OR_SimpleList_OR_GInteractions,numeric,character_OR_missing,character_OR_missing,logical_OR_missing,character_OR_missing}(
+\S4method{mergePairs}{list_OR_SimpleList_OR_GInteractions,numeric}(
   x,
   radius,
   method = "manhattan",
-  column,
+  column = NULL,
   selectMax = TRUE,
   pos = "center"
 )
