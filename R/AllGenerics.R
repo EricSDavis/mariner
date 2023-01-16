@@ -143,6 +143,7 @@ setGeneric("InteractionArray", function(assays, interactions, ...)
     standardGeneric("InteractionArray"))
 
 setGeneric("counts", package="BiocGenerics")
+setGeneric("counts<-", package="BiocGenerics")
 setGeneric("rbind", package="BiocGenerics")
 setGeneric("cbind", package="BiocGenerics")
 

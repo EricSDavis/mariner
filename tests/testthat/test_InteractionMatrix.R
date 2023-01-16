@@ -26,6 +26,13 @@ test_that("counts accessor for InteractionMatrix", {
                  ".*has no counts.$")
 })
 
+test_that("counts<- replace method for InteractionMatrix", {
+
+    imat <- pullHicPixels(x, 500e3, hicFiles)
+    counts(imat) <- as.matrix(counts(imat))
+    expect_equal(class(counts(imat)), c("matrix", "array"))
+
+})
 
 test_that("Concatenating InteractionMatrix objects", {
 

@@ -84,6 +84,48 @@ setMethod("counts",
           signature(object="InteractionMatrix"),
           definition = .counts)
 
+#' Replace method for counts
+#' @param object InteractionMatrix object
+#' @param value Value for replacement
+#' @importFrom BiocGenerics "counts<-"
+#' @importFrom SummarizedExperiment "assays<-"
+#' @returns For InteractionMatrix, the replace matrix
+#'  replaces the counts assay with matrix-like
+#'  objects supplied in `value`.
+#' @examples
+#' #################################
+#' ## Replacing Hi-C count matrix ##
+#' #################################
+#'
+#' ## Read .hic file paths
+#' hicFiles <-
+#'     system.file("extdata/test_hic", package="mariner") |>
+#'     list.files(pattern=".hic", full.names=TRUE)
+#'
+#' ## Create example interactions
+#' x <- read.table(text="
+#'         9 14000000 14500000 9 14500000 15000000
+#'         9 89500000 90000000 9 89500000 90000000
+#'         9 23500000 24000000 9 23500000 24000000")
+#' x <- as_ginteractions(x)
+#'
+#' ## Extract 3 pixels from 2 hic files
+#' imat <- pullHicPixels(x, 500e03, hicFiles)
+#'
+#' ## Realize as in-memory matrix
+#' counts(imat) <- as.matrix(counts(iarr))
+#' counts(imat)
+#' imat
+#'
+#' @rdname counts
+#' @export
+setMethod("counts<-",
+          signature(object="InteractionMatrix"),
+          definition = function(object, value) {
+              assays(object)$counts <- value
+              object
+          })
+
 ## Show ------------------------------------------------------------------------
 
 #' Internal show method

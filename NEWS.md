@@ -10,6 +10,10 @@ S4 method dispatch on all arguments to just `x` and
 during mean of mode transformation. Now original pairs
 are preserved when accessed with `getPairClusters()`.
 
+* Set replace method for `counts<-` accessor for
+`InteractionMatrix` objects. Helpful for converting
+`DelayedMatrix` to `matrix`.
+
 
 # mariner 0.2.0
 
