@@ -14,6 +14,9 @@ are preserved when accessed with `getPairClusters()`.
 `InteractionMatrix` objects. Helpful for converting
 `DelayedMatrix` to `matrix`.
 
+* Update `pixelsToMatrix` to preserve metadata columns
+and include some additional tests.
+
 
 # mariner 0.2.0
 

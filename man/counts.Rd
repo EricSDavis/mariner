@@ -36,7 +36,8 @@ For InteractionMatrix, a 2-dimensional
  interactions in `object` and columns for each Hi-C
  file in `files`.
 
-Replaces the counts assay with matrix-like
+For InteractionMatrix, the replace matrix
+ replaces the counts assay with matrix-like
  objects supplied in `value`.
 }
 \description{
@@ -111,9 +112,11 @@ x <- read.table(text="
 x <- as_ginteractions(x)
 
 ## Extract 3 pixels from 2 hic files
-iarr <- pullHicPixels(x, 500e03, hicFiles)
+imat <- pullHicPixels(x, 500e03, hicFiles)
 
-## Access count matrix
-counts(iarr)
-counts(iarr) <- as.matrix(counts(iarr))
+## Realize as in-memory matrix
+counts(imat) <- as.matrix(counts(iarr))
+counts(imat)
+imat
+
 }
