@@ -17,6 +17,11 @@ are preserved when accessed with `getPairClusters()`.
 * Update `pixelsToMatrix` to preserve metadata columns
 and include some additional tests.
 
+* Add `plotMatrix()` function for plotting matrix data
+as a heatmap. Useful for visualizing `DelayedMatrices`
+from `pullHicMatrices()` and `aggHicMatrices()`.
+Compatible with `plotgardener` package.
+
 
 # mariner 0.2.0
 
