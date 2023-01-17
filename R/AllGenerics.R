@@ -225,3 +225,19 @@ setGeneric("calcLoopEnrichment",
                     BPPARAM=bpparam(),
                     ...)
     standardGeneric("calcLoopEnrichment"))
+
+#' @rdname plotMatrix
+#' @export
+setGeneric("plotMatrix",
+           function(data,
+                    params=NULL,
+                    x=NULL,
+                    y=NULL,
+                    width=NULL,
+                    height=NULL,
+                    just=c("left", "top"),
+                    default.units="inches",
+                    draw=TRUE,
+                    palette=colorRampPalette(brewer.pal(9, 'YlGnBu')),
+                    zrange=NULL)
+               standardGeneric("plotMatrix"))

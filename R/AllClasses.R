@@ -23,6 +23,12 @@ setClassUnion("character_OR_numeric_OR_missing",
 setClassUnion("character_OR_function_OR_list",
               c("character", "function", "list"))
 
+#' Class union for DelayedMatrix and matrix
+#' @importClassesFrom DelayedArray DelayedMatrix
+#' @noRd
+setClassUnion("DelayedMatrix_OR_matrix",
+              c("DelayedMatrix", "matrix"))
+
 #' Class union for GInteractionsList
 #' @importClassesFrom S4Vectors SimpleList
 #' @importClassesFrom InteractionSet GInteractions
