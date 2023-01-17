@@ -1,7 +1,7 @@
 #' Internal pixelsToMatrices
 #' @inheritParams pixelsToMatrices
 #' @importFrom InteractionSet regions anchors GInteractions
-#' @importFrom S4Vectors width
+#' @importFrom S4Vectors width mcols "mcols<-"
 #' @importFrom rlang abort
 #' @importFrom plyranges mutate
 #' @noRd
@@ -30,10 +30,13 @@
     a2 <-
         anchors(x, 'second') |>
         mutate(end = start + binSize*(buffer+1),
-               start = start - binSize*buffer,)
+               start = start - binSize*buffer)
+
+    ## Form delegate object & preserve mcols
+    gi <- GInteractions(a1, a2)
+    mcols(gi) <- mcols(x)
 
     ## Update x with new ranges
-    gi <- GInteractions(a1, a2)
     x <- .updateGInteractions(.Object = x, delegate = gi)
 
     ## Return resized ranges
