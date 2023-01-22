@@ -17,7 +17,6 @@ Description: Tools for manipulating paired ranges and
 RoxygenNote: 7.2.1
 Suggests:
     knitr,
-    plotgardener,
     testthat (>= 3.0.0),
     dplyr,
     utils
@@ -45,7 +44,9 @@ Imports:
     BiocParallel,
     IRanges,
     SummarizedExperiment,
-    rhdf5
+    rhdf5,
+    plotgardener,
+    RColorBrewer
 Remotes:
     EricSDavis/straw/R
 biocViews:

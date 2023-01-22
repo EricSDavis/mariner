@@ -238,6 +238,9 @@ setGeneric("plotMatrix",
                     just=c("left", "top"),
                     default.units="inches",
                     draw=TRUE,
-                    palette=colorRampPalette(brewer.pal(9, 'YlGnBu')),
-                    zrange=NULL)
-               standardGeneric("plotMatrix"))
+                    palette=colorRampPalette(
+                        RColorBrewer::brewer.pal(9, 'YlGnBu')
+                    ),
+                    zrange=NULL,
+                    na.color="grey")
+           standardGeneric("plotMatrix"))

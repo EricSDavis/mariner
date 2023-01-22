@@ -15,8 +15,9 @@ plotMatrix(
   just = c("left", "top"),
   default.units = "inches",
   draw = TRUE,
-  palette = colorRampPalette(brewer.pal(9, "YlGnBu")),
-  zrange = NULL
+  palette = colorRampPalette(RColorBrewer::brewer.pal(9, "YlGnBu")),
+  zrange = NULL,
+  na.color = "grey"
 )
 
 \S4method{plotMatrix}{DelayedMatrix_OR_matrix}(
@@ -29,8 +30,9 @@ plotMatrix(
   just = c("left", "top"),
   default.units = "inches",
   draw = TRUE,
-  palette = colorRampPalette(brewer.pal(9, "YlGnBu")),
-  zrange = NULL
+  palette = colorRampPalette(RColorBrewer::brewer.pal(9, "YlGnBu")),
+  zrange = NULL,
+  na.color = "grey"
 )
 }
 \arguments{
@@ -68,6 +70,9 @@ to use for mapping values to colors.}
 
 \item{zrange}{Vector of length 2;
 max and min values to set color scale}
+
+\item{na.color}{String indicating the color
+to use for mapping NA values.}
 }
 \value{
 Function will draw a color-mapped matrix
@@ -80,6 +85,7 @@ such as aggregate peak analysis.
 \examples{
 
 library(plotgardener)
+library(RColorBrewer)
 
 ## Create divergent matrix ####
 m <- matrix(data=rnorm(n=21*21, mean=0, sd=2), nrow=21, ncol=21)
@@ -108,7 +114,7 @@ annoHeatmapLegend(plot=plot,
 
 
 ## Create sequential matrix
-m <- matrix(data=sample(0:100, 21*21, replace=T), nrow=21, ncol=21)
+m <- matrix(data=sample(0:100, 21*21, replace=TRUE), nrow=21, ncol=21)
 
 ## Define parameters
 p <- pgParams(width=3, height=3, default.units="inches")

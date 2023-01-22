@@ -1,4 +1,3 @@
-
 #' Parameter parsing function
 #'
 #' Place this function inside the parent function
@@ -11,6 +10,7 @@
 #'  override all others
 #'
 #' @importFrom rlang abort
+#' @importFrom stats na.omit
 #'
 #' @returns Final set of overridden arguments
 #' @noRd
@@ -100,7 +100,7 @@
     if (is.null(x$zrange)) {
 
         ## Set matrix counts variable for convenience
-        cnts <- as.vector(x$data)
+        cnts <- na.omit(as.vector(x$data))
 
         ## Only one value
         if (length(unique(cnts)) == 1) {
@@ -142,9 +142,11 @@
 #' @importFrom grid viewport unit grid.newpage gTree grid.ls rasterGrob
 #'  addGrob grid.draw
 #' @importFrom rlang inform
+#' @importFrom grDevices colorRampPalette
 #' @noRd
 .plotMatrix <- function(data, params, x, y, width, height,
-                        just, default.units, draw, palette, zrange) {
+                        just, default.units, draw, palette, zrange,
+                        na.color) {
 
     ## Parse parameters & Create Object ------
 
@@ -197,6 +199,9 @@
     colv <- mapColors(vector=as.vector(matrixPlot$data),
                       palette=matrixPlot$color_palette,
                       range=matrixPlot$zrange)
+
+    ## Replace NA with na.color
+    colv[is.na(colv)] <- na.color
 
     ## Format color vector back to matrix
     m <- matrix(data=colv,
@@ -317,6 +322,8 @@
 #'  to use for mapping values to colors.
 #' @param zrange Vector of length 2;
 #'  max and min values to set color scale
+#' @param na.color String indicating the color
+#'  to use for mapping NA values.
 #'
 #' @return Function will draw a color-mapped matrix
 #'  and return an S3 object of class `MatrixPlot`.
@@ -324,6 +331,7 @@
 #' @examples
 #'
 #' library(plotgardener)
+#' library(RColorBrewer)
 #'
 #' ## Create divergent matrix ####
 #' m <- matrix(data=rnorm(n=21*21, mean=0, sd=2), nrow=21, ncol=21)
@@ -352,7 +360,7 @@
 #'
 #'
 #' ## Create sequential matrix
-#' m <- matrix(data=sample(0:100, 21*21, replace=T), nrow=21, ncol=21)
+#' m <- matrix(data=sample(0:100, 21*21, replace=TRUE), nrow=21, ncol=21)
 #'
 #' ## Define parameters
 #' p <- pgParams(width=3, height=3, default.units="inches")

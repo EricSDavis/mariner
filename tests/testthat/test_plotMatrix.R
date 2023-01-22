@@ -94,8 +94,16 @@ test_that("plotMatrix", {
     expect_s3_class(p, "MatrixPlot")
 
     ## Accepts non-square data
-    p <- plotMatrix(data=matrix(1:24, 3, 8))
+    p <- plotMatrix(data=matrix(1:24, 3, 8), draw=FALSE)
     expect_s3_class(p, "MatrixPlot")
 
 })
 
+test_that("plotMatrix accepts matrices with NA values", {
+
+    m <- matrix(1:25, 5, 5)
+    m[1,] <- NA
+    p <- plotMatrix(data=m, na.color="grey", draw=FALSE)
+    expect_identical(p$na.color, "grey")
+
+})
