@@ -28,15 +28,3 @@ test_that("throws error when ranges are not binned", {
         pixelsToMatrices(buffer=3) |>
         expect_error(".*must be the same width.*")
 })
-
-test_that("", {
-    ## Bin, expand, and extract submatrices
-    # iarr <-
-    #     x |>
-    #     binPairs(binSize = 10e03) |>
-    #     pixelsToMatrices(buffer=5) |>
-    #     pullHicMatrices(binSize = 10e03,
-    #                     files = namedHicFiles,
-    #                     matrix="oe",
-    #                     norm="KR")
-})
