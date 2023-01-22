@@ -347,3 +347,28 @@ test_that("Mean of modes option doesn't alter original ranges", {
     )
 
 })
+
+test_that("radius and method columns don't cause issues", {
+
+    ## Create example giList
+    giList <- list(
+        read.table(text="chr1 10 20 chr1 50 60") |>
+            as_ginteractions(),
+        read.table(text="chr1 5 15 chr1 45 55") |>
+            as_ginteractions()
+    )
+
+    ## Add "radius" column to a giList
+    giList[[1]]$radius <- 1
+    giList[[2]]$radius <- 2
+    giList[[1]]$method <- 2
+    giList[[2]]$method <- 1
+    mgi <- mergePairs(x=giList, radius=10, column="radius")
+    expect_identical(mgi$radius, 2)
+    expect_identical(mgi$method, 1)
+
+    mgi <- mergePairs(x=giList, radius=10, column="method")
+    expect_identical(mgi$radius, 1)
+    expect_identical(mgi$method, 2)
+
+})

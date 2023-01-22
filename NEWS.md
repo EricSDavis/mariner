@@ -22,6 +22,11 @@ as a heatmap. Useful for visualizing `DelayedMatrices`
 from `pullHicMatrices()` and `aggHicMatrices()`.
 Compatible with `plotgardener` package.
 
+    * Allow `plotMatrix()` to accept `na.color`
+
+* Bug fix in `mergePairs()` that allows columns
+named "radius" and/or "method".
+
 
 # mariner 0.2.0
 

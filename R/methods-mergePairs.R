@@ -137,6 +137,9 @@
     x[,id := .I]
     x[,grp := .GRP,by = .(seqnames1, seqnames2)]
 
+    ## Rename "radius" and "method" columns if they exist
+    colnames(x) <- gsub("(^radius$|^method$)", "\\1_1", colnames(x))
+
     ## Initialize progress bar
     pb <- progress_bar$new(
         format = "  :step [:bar] :percent elapsed: :elapsedfull",
@@ -192,6 +195,9 @@
         colnames(x) <- gsub("(^(mid1)_1$|^(mid2)_1$)", "\\1", colnames(x))
     }
 
+    ## Restore column names
+    colnames(x) <- gsub("(^(radius)_1$|^(method)_1$)", "\\1", colnames(x))
+
     ## Separate unique pairs by denoting as negative integers
     x[clst == 0, clst := seq(1, length(clst))*-1, by = grp]
 
@@ -230,7 +236,9 @@
         gsub("^grp_1$", "grp", x = _) |>
         gsub("^clst_1$", "clst", x = _) |>
         gsub("^mid1_1$", "mid1", x = _) |>
-        gsub("^mid2_1$", "mid2", x = _)
+        gsub("^mid2_1$", "mid2", x = _) |>
+        gsub("^radius_1$", "radius", x = _) |>
+        gsub("^method_1$", "method", x = _)
 }
 
 
@@ -289,7 +297,8 @@
         selectionMethod <- glue("Select by column '{column}'")
 
         ## Edit column if it matches src, id, grp, or clst
-        column <- gsub("(^src$|^id$|^grp$|^clst$)", "\\1_1", column)
+        pattern <- "(^src$|^id$|^grp$|^clst$|^radius$|^method$)"
+        column <- gsub(pattern, "\\1_1", column)
 
         ## Select max or min
         fun <- ifelse(selectMax, `which.max`, `which.min`)
