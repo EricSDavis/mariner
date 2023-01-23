@@ -346,7 +346,7 @@
 
     ## Pull count matrices
     ## Use nBlocks to set blockSize if not provided?
-    iarr <- pullHicMatrices(mr, binSize, files, ...)
+    iarr <- pullHicMatrices(mr, files, binSize, ...)
     cnts <- counts(iarr)
 
     ## Subset the center pixel of matrix

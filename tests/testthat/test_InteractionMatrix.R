@@ -18,7 +18,7 @@ x <- as_ginteractions(x)
 test_that("counts accessor for InteractionMatrix", {
 
     ## Extract 3 pixels from 2 hic files
-    imat <- pullHicPixels(x, 500e03, hicFiles)
+    imat <- pullHicPixels(x, hicFiles, 500e03)
     ref <- assay(imat, 'counts')
 
     expect_identical(counts(imat), ref)
@@ -28,7 +28,7 @@ test_that("counts accessor for InteractionMatrix", {
 
 test_that("counts<- replace method for InteractionMatrix", {
 
-    imat <- pullHicPixels(x, 500e3, hicFiles)
+    imat <- pullHicPixels(x, hicFiles, 500e3)
     counts(imat) <- as.matrix(counts(imat))
     expect_equal(class(counts(imat)), c("matrix", "array"))
 
@@ -37,13 +37,13 @@ test_that("counts<- replace method for InteractionMatrix", {
 test_that("Concatenating InteractionMatrix objects", {
 
     ## Reference
-    imat <- pullHicPixels(x, 500e03, hicFiles)
+    imat <- pullHicPixels(x, hicFiles, 500e03)
 
     ## Different metadata
-    imat2 <- pullHicPixels(x, 500e03, hicFiles, norm="KR")
+    imat2 <- pullHicPixels(x, hicFiles, 500e03, norm="KR")
 
     ## Different colData
-    imat3 <- pullHicPixels(x, 500e03, hicFiles[1])
+    imat3 <- pullHicPixels(x, hicFiles[1], 500e03)
 
     ## rbind
     expect_s4_class(rbind(imat, imat), class(imat))
@@ -67,7 +67,7 @@ test_that("Concatenating InteractionMatrix objects", {
 test_that("show method for InteractionArray", {
 
     ## Extract 3 pixels from 2 hic files
-    imat <- pullHicPixels(x, 500e03, hicFiles)
+    imat <- pullHicPixels(x, hicFiles, 500e03)
 
     expect_snapshot(show(imat))
     expect_snapshot(show(imat[1:2,]))

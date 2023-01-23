@@ -345,7 +345,7 @@
 #'  extracted data.
 #'
 #' @noRd
-.pullArray <- function(x, binSize, files, half, h5File, norm,
+.pullArray <- function(x, files, binSize, h5File, half, norm,
                        matrix, blockSize, onDisk, compressionLevel,
                        chunkSize, mDim1, mDim2, blocks, chrSwapped) {
 
@@ -549,7 +549,7 @@
 #' @returns Updated `x` and `blocks` describing
 #'  ranges to pull.
 #' @noRd
-.prepareInputs <- function(x, binSize, files, half, h5File, norm,
+.prepareInputs <- function(x, files, binSize, h5File, half, norm,
                            matrix, blockSize, onDisk, compressionLevel,
                            chunkSize) {
 
@@ -606,12 +606,12 @@
 #' @importFrom glue glue
 #' @return Array of Hi-C submatrices.
 #' @noRd
-.pullHicMatrices <- function(x, binSize, files, half, h5File, norm,
+.pullHicMatrices <- function(x, files, binSize, h5File, half, norm,
                              matrix, blockSize, onDisk, compressionLevel,
                              chunkSize) {
 
     ## Prepare inputs for Hi-C processing
-    dat <- .prepareInputs(x, binSize, files, half, h5File, norm,
+    dat <- .prepareInputs(x, files, binSize, h5File, half, norm,
                           matrix, blockSize, onDisk, compressionLevel,
                           chunkSize)
 
@@ -627,7 +627,7 @@
         mDim2 <- ceiling(secondWidths/binSize)
 
         ## Dispatch .pullArray for equal dimensions
-        iset <- .pullArray(dat$x, binSize, files, half, h5File, norm,
+        iset <- .pullArray(dat$x, files, binSize, h5File, half, norm,
                            matrix, blockSize, onDisk, compressionLevel,
                            chunkSize, mDim1, mDim2, dat$blocks,
                            dat$chrSwapped)
@@ -649,6 +649,7 @@
 #' @param binSize Integer (numeric) describing the
 #'  resolution (range widths) of the paired data.
 #' @param ... Additional arguments.
+#' @param h5File Character file path to save `.h5` file.
 #' @param half String (character vector of length one)
 #'  indicating whether to keep values for the upper
 #'  triangular (`half="upper"`) where `start1 < start2`,
@@ -660,7 +661,6 @@
 #'  For interchromosomal interactions there is no inherent
 #'  directionality between chromosomes, so data is returned
 #'  regardless of specified order.
-#' @param h5File Character file path to save `.h5` file.
 #' @param norm String (length one character vector)
 #'  describing the Hi-C normalization to apply. Use
 #'  `strawr::readHicNormTypes()` to see accepted values
@@ -702,10 +702,10 @@
 #' @rdname pullHicMatrices
 #' @export
 setMethod("pullHicMatrices",
-          signature(x = 'GInteractions',
-                    binSize = 'numeric',
-                    files = 'character'),
-          definition = .pullHicMatrices)
+          signature(x='GInteractions',
+                    files='character',
+                    binSize='numeric'),
+          definition=.pullHicMatrices)
 
 
 #' Pull data from files and return as
@@ -727,7 +727,7 @@ setMethod("pullHicMatrices",
 #'  extracted data.
 #'
 #' @noRd
-.pullMatrix <- function(x, binSize, files, half, h5File, norm, matrix,
+.pullMatrix <- function(x, files, binSize, h5File, half, norm, matrix,
                        blockSize, onDisk, compressionLevel,
                        chunkSize, blocks, chrSwapped) {
     ## Determine dimensions for dataset
@@ -870,12 +870,12 @@ setMethod("pullHicMatrices",
 #' @importFrom glue glue
 #' @return Matrix of Hi-C submatrices.
 #' @noRd
-.pullHicPixels <- function(x, binSize, files, half, h5File, norm, matrix,
+.pullHicPixels <- function(x, files, binSize, h5File, half, norm, matrix,
                            blockSize, onDisk, compressionLevel,
                            chunkSize) {
 
     ## Prepare inputs for Hi-C processing
-    dat <- .prepareInputs(x, binSize, files, half, h5File, norm, matrix,
+    dat <- .prepareInputs(x, files, binSize, h5File, half, norm, matrix,
                           blockSize, onDisk, compressionLevel,
                           chunkSize)
 
@@ -889,7 +889,7 @@ setMethod("pullHicMatrices",
     }
 
     ## Dispatch pulling pixels
-    iset <- .pullMatrix(dat$x, binSize, files, half, h5File,
+    iset <- .pullMatrix(dat$x, files, binSize, h5File, half,
                         norm, matrix, blockSize, onDisk,
                         compressionLevel, chunkSize,
                         dat$blocks, dat$chrSwapped)
@@ -906,6 +906,7 @@ setMethod("pullHicMatrices",
 #' @param binSize Integer (numeric) describing the
 #'  resolution (range widths) of the paired data.
 #' @param ... Additional arguments.
+#' @param h5File Character file path to save `.h5` file.
 #' @param half String (character vector of length one)
 #'  indicating whether to keep values for the upper
 #'  triangular (`half="upper"`) where `start1 < start2`,
@@ -917,7 +918,6 @@ setMethod("pullHicMatrices",
 #'  For interchromosomal interactions there is no inherent
 #'  directionality between chromosomes, so data is returned
 #'  regardless of specified order.
-#' @param h5File Character file path to save `.h5` file.
 #' @param norm String (length one character vector)
 #'  describing the Hi-C normalization to apply. Use
 #'  `strawr::readHicNormTypes()` to see accepted values
@@ -956,6 +956,6 @@ setMethod("pullHicMatrices",
 #' @export
 setMethod("pullHicPixels",
           signature(x='GInteractions',
-                    binSize='numeric',
-                    files='character'),
+                    files='character',
+                    binSize='numeric'),
           definition=.pullHicPixels)

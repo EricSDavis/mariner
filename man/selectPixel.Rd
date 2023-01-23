@@ -73,8 +73,8 @@ loops <- binPairs(x=loops, binSize=2.5e06)
 
 ## Pull 5x5 matrices
 iarr <- pullHicMatrices(x=loops[1:5],
-                        binSize=500e3,
                         files=hicFiles,
+                        binSize=500e3,
                         norm="KR",
                         half='upper')
 
