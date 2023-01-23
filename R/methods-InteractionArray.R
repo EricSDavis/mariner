@@ -142,7 +142,7 @@ setMethod("InteractionArray", c("missing", "missing"),
 #' x <- as_ginteractions(x)
 #'
 #' ## Extract 3, 11x11 count matrices from 2 hic files
-#' iarr <- pullHicMatrices(x, 5e03, hicFiles)
+#' iarr <- pullHicMatrices(x, hicFiles, 5e03)
 #'
 #' ## Access count matrices
 #' counts(iarr)

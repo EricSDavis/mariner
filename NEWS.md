@@ -27,6 +27,9 @@ Compatible with `plotgardener` package.
 * Bug fix in `mergePairs()` that allows columns
 named "radius" and/or "method".
 
+* Swap "binSize" and "files" argument order
+in `pullHicPixels` and `pullHicMatrices`
+
 
 # mariner 0.2.0
 

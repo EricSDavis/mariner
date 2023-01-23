@@ -67,7 +67,7 @@ x <- read.table(text="
 x <- as_ginteractions(x)
 
 ## Extract 3, 11x11 count matrices from 2 hic files
-iarr <- pullHicMatrices(x, 5e03, hicFiles)
+iarr <- pullHicMatrices(x, hicFiles, 5e03)
 
 ## Access count matrices
 counts(iarr)
@@ -90,7 +90,7 @@ x <- read.table(text="
 x <- as_ginteractions(x)
 
 ## Extract 3 pixels from 2 hic files
-iarr <- pullHicPixels(x, 500e03, hicFiles)
+iarr <- pullHicPixels(x, hicFiles, 500e03)
 
 ## Access count matrix
 counts(iarr)
@@ -112,7 +112,7 @@ x <- read.table(text="
 x <- as_ginteractions(x)
 
 ## Extract 3 pixels from 2 hic files
-imat <- pullHicPixels(x, 500e03, hicFiles)
+imat <- pullHicPixels(x, hicFiles, 500e03)
 
 ## Realize as in-memory matrix
 counts(imat) <- as.matrix(counts(iarr))
