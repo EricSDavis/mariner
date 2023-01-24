@@ -30,6 +30,13 @@ named "radius" and/or "method".
 * Swap "binSize" and "files" argument order
 in `pullHicPixels` and `pullHicMatrices`
 
+* Allow `pullHicPixels` to overwrite existing
+HDF5 files.
+
+* Validity checks and functions to access/update
+the HDF5 paths for `InteractionMatrix` objects,
+even when those paths have been broken.
+
 
 # mariner 0.2.0
 
