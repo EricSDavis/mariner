@@ -370,3 +370,28 @@ setClass(
     Class = "InteractionMatrix",
     contains = "InteractionSet"
 )
+
+#' Set validity for InteractionMatrix class
+#' @name InteractionMatrix-class
+#' @export
+setValidity("InteractionMatrix", function(object) {
+
+    ## If there are assays...
+    if (length(object@assays) == 0) {
+        return(TRUE)
+    }
+
+    ## And they are HDF5...
+    if (!is(object@assays@data@listData$counts, "HDF5Array")) {
+        return(TRUE)
+    }
+
+    ## Check for .h5 file
+    h5File <- object@assays@data@listData$counts@seed@filepath
+    if (!file.exists(h5File)) {
+        return(".h5 file doesn't exist. Update path to .h5 file.")
+    }
+
+    return(TRUE)
+
+})

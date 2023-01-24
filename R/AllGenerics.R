@@ -146,6 +146,8 @@ setGeneric("counts", package="BiocGenerics")
 setGeneric("counts<-", package="BiocGenerics")
 setGeneric("rbind", package="BiocGenerics")
 setGeneric("cbind", package="BiocGenerics")
+setGeneric("path", package="BiocGenerics")
+setGeneric("path<-", package="BiocGenerics")
 
 
 #' @rdname InteractionMatrix-class
