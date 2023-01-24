@@ -735,17 +735,14 @@ setMethod("pullHicMatrices",
     dims <- c(length(x), length(files))
 
     if (onDisk) {
+
+        ## Overwrite existing file
+        if (file.exists(h5File)) {
+            file.remove(h5File)
+        }
+
         ## Create hdf5 for storage
         h5createFile(h5File)
-
-        ## Set default chunkSize
-        if (missing(chunkSize)) {
-            if (compressionLevel >= 5) {
-                chunkSize <- 1
-            } else {
-                chunkSize <- length(x)
-            }
-        }
 
         ## Create dataset for holding array of counts
         ## and row/colnames
