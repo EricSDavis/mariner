@@ -373,7 +373,6 @@ setClass(
 
 #' Set validity for InteractionMatrix class
 #' @name InteractionMatrix-class
-#' @export
 setValidity("InteractionMatrix", function(object) {
 
     ## If there are assays...
