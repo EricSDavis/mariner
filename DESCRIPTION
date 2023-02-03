@@ -46,7 +46,8 @@ Imports:
     SummarizedExperiment,
     rhdf5,
     plotgardener,
-    RColorBrewer
+    RColorBrewer,
+    colourvalues
 Remotes:
     EricSDavis/straw/R
 biocViews:
