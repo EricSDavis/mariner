@@ -37,6 +37,8 @@ HDF5 files.
 the HDF5 paths for `InteractionMatrix` objects,
 even when those paths have been broken.
 
+* Add temporary `plotBullseye` function.
+
 
 # mariner 0.2.0
 
