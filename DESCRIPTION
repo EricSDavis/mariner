@@ -76,6 +76,7 @@ Collate:
     'methods-hdf5BlockApply.R'
     'methods-mergePairs.R'
     'methods-pixelsToMatrices.R'
+    'methods-plotBullseye.R'
     'methods-plotMatrix.R'
     'methods-pullHic.R'
     'methods-shiftRanges.R'
