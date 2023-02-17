@@ -10,7 +10,7 @@
 #' @examples
 #' plotBullseye(x = matrix(1:(21*21), 21, 21), title="test")
 #' @noRd
-plotBullseye <- function(x = "data/output/nup_wt_apa/10000/gw/APA.txt",
+plotBullseye <- function(x,
                          title = "My plot",
                          nl = 1,
                          zrange=NULL,
