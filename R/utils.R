@@ -204,3 +204,30 @@
     metadata(ans) <- metadata(args[[1L]])
     ans
 }
+
+#' Stop if buffer is not the same
+#' @param b1 buffer (numeric) from first object
+#' @param b2 buffer (numeric) from second object
+#' @importFrom rlang abort
+#' @return NULL or error message if not the same.
+#' @noRd
+.checkBuffer <- function(b1, b2) {
+    if (b1 != b2) {
+        abort("`buffer` must be the same for both selections.")
+    }
+}
+
+#' Get binSize or throw error
+#' @param x GInteractions object.
+#' @importFrom S4Vectors first second
+#' @importFrom IRanges width
+#' @importFrom rlang abort
+#' @noRd
+.getBinSize <- function(x) {
+    widths <- unique(width(regions(x))) - 1
+    if (length(widths) != 1L) {
+        abort(c("All ranges in `x` must be equal widths.",
+                "i"="Use `binPairs()` to bin into equal widths."))
+    }
+    return(widths)
+}

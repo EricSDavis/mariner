@@ -159,3 +159,13 @@ test_that("Checking types of function arguments.", {
     .checkTypes(c(arg1="string", arg2="boolean", arg3="number")) |>
         expect_error("arg3 is not a number.*")
 })
+
+test_that("Getting binSize", {
+
+    .getBinSize(x=loops) |>
+        expect_identical(5000)
+
+    .getBinSize(x=binPairs(loops, 10e03)) |>
+        expect_identical(10000)
+
+})

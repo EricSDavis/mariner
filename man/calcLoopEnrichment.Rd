@@ -8,7 +8,10 @@
 calcLoopEnrichment(
   x,
   files,
-  mhDist = c(4, 5, 6),
+  buffer = 5,
+  fg = selectCenterPixel(mhDist = 1, buffer = 5),
+  bg = selectTopLeft(buffer = 5, n = 4) + selectBottomRight(buffer = 5, n = 4),
+  FUN = function(fg, bg) median(fg + 1)/median(bg + 1),
   nBlocks = 5,
   verbose = TRUE,
   BPPARAM = bpparam(),
@@ -18,7 +21,10 @@ calcLoopEnrichment(
 \S4method{calcLoopEnrichment}{GInteractions,character}(
   x,
   files,
-  mhDist = c(4, 5, 6),
+  buffer = 5,
+  fg = selectCenterPixel(mhDist = 1, buffer = 5),
+  bg = selectTopLeft(buffer = 5, n = 4) + selectBottomRight(buffer = 5, n = 4),
+  FUN = function(fg, bg) median(fg + 1)/median(bg + 1),
   nBlocks = 5,
   verbose = TRUE,
   BPPARAM = bpparam(),
@@ -30,7 +36,13 @@ calcLoopEnrichment(
 
 \item{files}{Character file paths to `.hic` files.}
 
-\item{mhDist}{Which manhattan distances to select}
+\item{fg}{Integer vector of matrix indices for the foreground.}
+
+\item{bg}{Integer vector of matrix indices for the background.}
+
+\item{FUN}{Function taking two parameters (i.e., `fg`, `bg`)
+defining how enrichment should be calculated. Must produce
+a single value (numeric of length one).}
 
 \item{nBlocks}{Number of blocks for block-processing
 arrays. Default is 5. Increase this for large

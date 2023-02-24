@@ -217,17 +217,6 @@ setGeneric("start2", function(x, ...) standardGeneric("start2"))
 #' @export
 setGeneric("end2", function(x, ...) standardGeneric("end2"))
 
-#' @rdname calcLoopEnrichment
-#' @export
-setGeneric("calcLoopEnrichment",
-           function(x, files,
-                    mhDist=c(4,5,6),
-                    nBlocks=5,
-                    verbose=TRUE,
-                    BPPARAM=bpparam(),
-                    ...)
-    standardGeneric("calcLoopEnrichment"))
-
 #' @rdname plotMatrix
 #' @export
 setGeneric("plotMatrix",
@@ -246,3 +235,99 @@ setGeneric("plotMatrix",
                     zrange=NULL,
                     na.color="grey")
            standardGeneric("plotMatrix"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectRadius", function(x, buffer, invert=FALSE)
+    standardGeneric("selectRadius"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectCenterPixel", function(mhDist, buffer, invert=FALSE)
+    standardGeneric("selectCenterPixel"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectSubmatrix", function(m, invert=FALSE)
+    standardGeneric("selectSubmatrix"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectCoordinates",
+           function(rowInd, colInd, buffer, invert=FALSE)
+    standardGeneric("selectCoordinates"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectBlock",
+           function(rowInd, colInd, buffer, invert=FALSE)
+               standardGeneric("selectBlock"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectTopLeft",
+           function(n, buffer, inset=0, invert=FALSE)
+               standardGeneric("selectTopLeft"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectTopRight",
+           function(n, buffer, inset=0, invert=FALSE)
+               standardGeneric("selectTopRight"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectBottomRight",
+           function(n, buffer, inset=0, invert=FALSE)
+               standardGeneric("selectBottomRight"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectBottomLeft",
+           function(n, buffer, inset=0, invert=FALSE)
+               standardGeneric("selectBottomLeft"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectCorners",
+           function(n, buffer, inset=0, invert=FALSE)
+               standardGeneric("selectCorners"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectRows",
+           function(rows, buffer, invert=FALSE)
+               standardGeneric("selectRows"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectCols",
+           function(cols, buffer, invert=FALSE)
+               standardGeneric("selectCols"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectInner",
+           function(n, buffer, invert=FALSE)
+               standardGeneric("selectInner"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectOuter",
+           function(n, buffer, invert=FALSE)
+               standardGeneric("selectOuter"))
+
+#' @rdname calcLoopEnrichment
+#' @export
+setGeneric("calcLoopEnrichment",
+           function(x, files,
+                    buffer=5,
+                    fg=selectCenterPixel(mhDist=1, buffer=5),
+                    bg=selectTopLeft(buffer=5, n=4) +
+                        selectBottomRight(buffer=5, n=4),
+                    FUN=\(fg, bg) median(fg+1) / median(bg+1),
+                    nBlocks=5,
+                    verbose=TRUE,
+                    BPPARAM=bpparam(),
+                    ...)
+               standardGeneric("calcLoopEnrichment"))

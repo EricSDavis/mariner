@@ -39,6 +39,29 @@ even when those paths have been broken.
 
 * Add temporary `plotBullseye` function.
 
+* Selection functions for selecting indices of a
+matrix:
+    
+    * `selectCenterPixel`
+    * `selectRadius`
+    * `selectSubmatrix`
+    * `selectCoordinates`
+    * `selectBlock`
+    * `selectTopLeft`
+    * `selectTopRight`
+    * `selectBottomRight`
+    * `selectBottomLeft`
+    * `selectCorners`
+    * `selectRows`
+    * `selectCols`
+    * `selectInner`
+    * `selectOuter`
+    
+* `calcLoopEnrichment` function for flexibly
+calculating enrichment of interactions compared
+to their local background.
+
+
 
 # mariner 0.2.0
 
