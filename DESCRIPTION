@@ -66,6 +66,7 @@ Collate:
     'utils.R'
     'methods-InteractionArray.R'
     'methods-InteractionMatrix.R'
+    'methods-MatrixSelection.R'
     'methods-MergedGInteractions.R'
     'methods-aggHicMatrices.R'
     'methods-as_ginteractions.R'

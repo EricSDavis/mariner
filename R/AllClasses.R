@@ -15,6 +15,8 @@ setClassUnion("logical_OR_missing", c("logical", "missing"))
 #' @noRd
 setClassUnion("numeric_OR_missing", c("numeric", "missing"))
 #' @noRd
+setClassUnion("integer_OR_NULL", c("integer", "NULL"))
+#' @noRd
 setClassUnion("character_OR_numeric", c("character", "numeric"))
 #' @noRd
 setClassUnion("character_OR_numeric_OR_missing",
@@ -394,3 +396,30 @@ setValidity("InteractionMatrix", function(object) {
     return(TRUE)
 
 })
+
+## MatrixSelection Class -------------------------------------------------------
+
+#' MatrixSelection Class
+#'
+#' An object containing the selected indices
+#' of a matrix.
+#'
+#' @slot x Vector of selected indices from
+#'  a matrix of `dim = buffer*2+1`.
+#' @slot buffer Integer indicating the
+#'  buffer size, or number of pixels
+#'  around a matrix.
+#'
+#' @examples
+#' selectCenterPixel(0, 5)
+#'
+#' @rdname MatrixSelection-class
+#' @export
+MatrixSelection <- setClass(
+    Class = "MatrixSelection",
+    slots = list(
+        x = "numeric",
+        buffer = "numeric"
+    )
+)
+
