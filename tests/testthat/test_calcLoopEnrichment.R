@@ -1,4 +1,4 @@
-# library(mariner)
+library(mariner)
 
 ## Shared objects --------------------------------------------------------------
 ## Read .hic file paths
