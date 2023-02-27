@@ -331,3 +331,15 @@ setGeneric("calcLoopEnrichment",
                     BPPARAM=bpparam(),
                     ...)
                standardGeneric("calcLoopEnrichment"))
+
+#' @rdname adjustEnrichment
+#' @export
+setGeneric("plotEnrichment",
+           function(scores, interactions, k=25, nknots=10, plot=TRUE)
+               standardGeneric("plotEnrichment"))
+
+#' @rdname adjustEnrichment
+#' @export
+setGeneric("adjustEnrichment",
+           function(x, interactions, k=25, nknots=10)
+               standardGeneric("adjustEnrichment"))

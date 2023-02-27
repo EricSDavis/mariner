@@ -61,6 +61,10 @@ matrix:
 calculating enrichment of interactions compared
 to their local background.
 
+* `adjustEnrichment` and `plotEnrichment` for
+adjusting the loop enrichment to remove the
+effect of loop size on enrichment and visualize
+this correction across chosen parameters.
 
 
 # mariner 0.2.0

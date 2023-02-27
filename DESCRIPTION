@@ -68,6 +68,7 @@ Collate:
     'methods-InteractionMatrix.R'
     'methods-MatrixSelection.R'
     'methods-MergedGInteractions.R'
+    'methods-adjustEnrichment.R'
     'methods-aggHicMatrices.R'
     'methods-as_ginteractions.R'
     'methods-binPairs.R'

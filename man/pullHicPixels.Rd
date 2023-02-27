@@ -35,7 +35,8 @@ pullHicPixels(
 )
 }
 \arguments{
-\item{x}{GInteractions object.}
+\item{x}{GInteractions object containing interactions
+to extract from Hi-C files.}
 
 \item{files}{Character file paths to `.hic` files.}
 
