@@ -30,7 +30,7 @@
 \alias{selectCols,numeric-method}
 \alias{selectInner,numeric-method}
 \alias{selectOuter,numeric-method}
-\title{Visualize selection for a MatrixSelecetion object}
+\title{Visualize selection for a MatrixSelection object}
 \usage{
 selectRadius(x, buffer, invert = FALSE)
 

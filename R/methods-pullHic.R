@@ -644,7 +644,8 @@
 
 #' Pull submatrices from `.hic` files
 #'
-#' @param x GInteractions object.
+#' @param x GInteractions object containing interactions
+#'  to extract from Hi-C files.
 #' @param files Character file paths to `.hic` files.
 #' @param binSize Integer (numeric) describing the
 #'  resolution (range widths) of the paired data.
@@ -898,7 +899,8 @@ setMethod("pullHicMatrices",
 
 #' Pull contact frequency from `.hic` files
 #'
-#' @param x GInteractions object.
+#' @param x GInteractions object containing interactions
+#'  to extract from Hi-C files.
 #' @param files Character file paths to `.hic` files.
 #' @param binSize Integer (numeric) describing the
 #'  resolution (range widths) of the paired data.

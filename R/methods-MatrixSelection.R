@@ -116,7 +116,7 @@ setMethod("[[", "MatrixSelection", function(x, i) {
     ifelse(is.character(i), slot(x,i), slot(x, slotNames(x)[i]))
 })
 
-#' Visualize selection for a MatrixSelecetion object
+#' Visualize selection for a MatrixSelection object
 #'
 #' Note: that buffer must be the same
 #' as the selection functions to work appropriately
@@ -171,7 +171,7 @@ setMethod("[[", "MatrixSelection", function(x, i) {
     }
 }
 
-#' Visualize selection for a MatrixSelecetion object
+#' Visualize selection for a MatrixSelection object
 #'
 #' Note: that buffer must be the same
 #' as the selection functions to work appropriately
@@ -292,7 +292,7 @@ setMethod("selectSubmatrix", "matrix", function(m, invert) {
     ans <- .selectSubmatrix(m, invert)
     dims <- dim(m)
     m <- matrix(data="- ", nrow=dims[1], ncol=dims[2])
-    m[ans] <- "X "
+    m[ans] <- "0 "
     prm <- capture.output(prmatrix(x=m,
                                    rowlab=rep("",nrow(m)),
                                    collab=rep("",ncol(m)),
