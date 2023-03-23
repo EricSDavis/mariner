@@ -4,20 +4,25 @@
 \name{counts,InteractionArray-method}
 \alias{counts,InteractionArray-method}
 \alias{counts,InteractionMatrix-method}
+\alias{counts<-,InteractionMatrix-method}
 \title{Access count matrices from
 InteractionArray or InteractionMatrix}
 \usage{
 \S4method{counts}{InteractionArray}(object, showDimnames = FALSE)
 
 \S4method{counts}{InteractionMatrix}(object)
+
+\S4method{counts}{InteractionMatrix}(object) <- value
 }
 \arguments{
-\item{object}{InteractionArray or InteractionMatrix object.}
+\item{object}{InteractionMatrix object}
 
 \item{showDimnames}{Logical vector of length-one
 indicating whether to show dimensions of
 count matrices (default FALSE). Only applicable for
 InteractionArray objects.}
+
+\item{value}{Value for replacement}
 }
 \value{
 For InteractionArray, a 4-dimensional
@@ -30,6 +35,10 @@ For InteractionMatrix, a 2-dimensional
  DelayedArray is returned with rows representing
  interactions in `object` and columns for each Hi-C
  file in `files`.
+
+For InteractionMatrix, the replace matrix
+ replaces the counts assay with matrix-like
+ objects supplied in `value`.
 }
 \description{
 Access count matrices from
@@ -37,6 +46,8 @@ InteractionArray or InteractionMatrix
 
 Access count matrices from
 InteractionArray or InteractionMatrix
+
+Replace method for counts
 }
 \examples{
 ######################################
@@ -56,7 +67,7 @@ x <- read.table(text="
 x <- as_ginteractions(x)
 
 ## Extract 3, 11x11 count matrices from 2 hic files
-iarr <- pullHicMatrices(x, 5e03, hicFiles)
+iarr <- pullHicMatrices(x, hicFiles, 5e03)
 
 ## Access count matrices
 counts(iarr)
@@ -79,9 +90,33 @@ x <- read.table(text="
 x <- as_ginteractions(x)
 
 ## Extract 3 pixels from 2 hic files
-iarr <- pullHicPixels(x, 500e03, hicFiles)
+iarr <- pullHicPixels(x, hicFiles, 500e03)
 
 ## Access count matrix
 counts(iarr)
+
+#################################
+## Replacing Hi-C count matrix ##
+#################################
+
+## Read .hic file paths
+hicFiles <-
+    system.file("extdata/test_hic", package="mariner") |>
+    list.files(pattern=".hic", full.names=TRUE)
+
+## Create example interactions
+x <- read.table(text="
+        9 14000000 14500000 9 14500000 15000000
+        9 89500000 90000000 9 89500000 90000000
+        9 23500000 24000000 9 23500000 24000000")
+x <- as_ginteractions(x)
+
+## Extract 3 pixels from 2 hic files
+imat <- pullHicPixels(x, hicFiles, 500e03)
+
+## Realize as in-memory matrix
+counts(imat) <- as.matrix(counts(iarr))
+counts(imat)
+imat
 
 }

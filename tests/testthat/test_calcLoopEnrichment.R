@@ -1,4 +1,4 @@
-# library(mariner)
+library(mariner)
 
 ## Shared objects --------------------------------------------------------------
 ## Read .hic file paths
@@ -17,16 +17,6 @@ loops <-
 ## with the preprocessed hic files
 GenomeInfoDb::seqlevelsStyle(loops) <- 'ENSEMBL'
 
-
-test_that("Getting binSize", {
-
-    .getBinSize(x=loops) |>
-        expect_identical(5000)
-
-    .getBinSize(x=binPairs(loops, 10e03)) |>
-        expect_identical(10000)
-
-})
 
 test_that("Able to make manhattan distance matrix", {
 
@@ -116,15 +106,50 @@ test_that("angle works", {
 })
 
 
-test_that(".selection helper functions work", {
+test_that("selection helper functions work", {
 
+    ## Select radius (manhattan distance) --------------------------------------
+
+    exp <- c(6L, 16L, 18L, 26L, 28L, 30L, 36L, 38L, 40L, 42L, 46L, 48L,
+             50L, 52L, 54L, 56L, 58L, 60L, 62L, 64L, 66L, 68L, 70L, 72L, 74L,
+             76L, 80L, 82L, 84L, 86L, 92L, 94L, 96L, 104L, 106L, 116L)
+    .selectRadius(c(1,3,5), buffer=5, invert=FALSE) |>
+        expect_identical(exp)
+    selectRadius(c(1,3,5), buffer=5)$x |>
+        expect_identical(exp)
+    exp <- c(1L, 2L, 3L, 4L, 5L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L,
+             17L, 19L, 20L, 21L, 22L, 23L, 24L, 25L, 27L, 29L, 31L, 32L, 33L,
+             34L, 35L, 37L, 39L, 41L, 43L, 44L, 45L, 47L, 49L, 51L, 53L, 55L,
+             57L, 59L, 61L, 63L, 65L, 67L, 69L, 71L, 73L, 75L, 77L, 78L, 79L,
+             81L, 83L, 85L, 87L, 88L, 89L, 90L, 91L, 93L, 95L, 97L, 98L, 99L,
+             100L, 101L, 102L, 103L, 105L, 107L, 108L, 109L, 110L, 111L, 112L,
+             113L, 114L, 115L, 117L, 118L, 119L, 120L, 121L)
+    selectRadius(c(1,3,5), buffer=5, invert=TRUE)$x |>
+        expect_identical(exp)
+
+    ## Select center pixel -----------------------------------------------------
+
+    exp <- c(39L, 49L, 50L, 51L, 59L, 60L, 61L, 62L, 63L, 71L, 72L, 73L, 83L)
+    selectCenterPixel(1:2, 5)$x |>
+        expect_identical(exp)
+    .selectCenterPixel(0, 5, FALSE) |>
+        expect_identical(61L)
+    selectCenterPixel(0, 5)$x |>
+        expect_identical(61L)
+
+    ## Select submatrix --------------------------------------------------------
+
+    exp <- c(1L, 3L, 4L, 6L, 7L, 9L)
     .selectSubmatrix(m = matrix(rep(c(1,0,1), 3), nrow=3, ncol=3),
                      invert=FALSE) |>
-        .showSelection(buffer = 1)
-    .selectSubmatrix(m = matrix(rep(c(1,0,1), 3), nrow=3, ncol=3),
-                     invert=TRUE) |>
-        .showSelection(buffer = 1)
-    img <- read.table(text="
+        expect_identical(exp)
+    selectSubmatrix(m = matrix(rep(c(1,0,1), 3), nrow=3, ncol=3)) |>
+        expect_identical(exp)
+    exp <- c(2L, 5L, 8L)
+    selectSubmatrix(m = matrix(rep(c(1,0,1), 3), nrow=3, ncol=3),
+                    invert=TRUE) |>
+        expect_identical(exp)
+    img <- as.matrix(read.table(text="
                    0 0 0 0 0 0 0 0 0
                    0 0 0 0 0 0 0 0 0
                    0 1 0 1 0 1 1 1 0
@@ -134,111 +159,368 @@ test_that(".selection helper functions work", {
                    0 1 0 1 0 1 1 1 0
                    0 0 0 0 0 0 0 0 0
                    0 0 0 0 0 0 0 0 0
-                   ")
-    .selectSubmatrix(m=img, invert = FALSE) |>
-        .showSelection(buffer= 4)
-    .selectSubmatrix(m=img, invert = TRUE) |>
-        .showSelection(buffer= 4)
+                   "))
+    exp <- c(12L, 13L, 14L, 15L, 16L, 23L, 30L, 31L, 32L, 33L, 34L, 48L,
+             52L, 57L, 58L, 59L, 60L, 61L, 66L, 70L)
+    selectSubmatrix(m=img) |> expect_identical(exp)
+    exp <- c(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 17L, 18L, 19L,
+             20L, 21L, 22L, 24L, 25L, 26L, 27L, 28L, 29L, 35L, 36L, 37L, 38L,
+             39L, 40L, 41L, 42L, 43L, 44L, 45L, 46L, 47L, 49L, 50L, 51L, 53L,
+             54L, 55L, 56L, 62L, 63L, 64L, 65L, 67L, 68L, 69L, 71L, 72L, 73L,
+             74L, 75L, 76L, 77L, 78L, 79L, 80L, 81L)
+    selectSubmatrix(m=img, invert=TRUE) |>
+        expect_identical(exp)
 
+    ## Select coordinates ------------------------------------------------------
+
+    exp <- c(1L, 13L, 25L)
     .selectCoordinates(buffer=5, rowInd=1:3, colInd=1:3, invert=FALSE) |>
-        .showSelection(buffer=5)
-    .selectCoordinates(buffer=5, rowInd=1:3, colInd=1:3, invert=TRUE) |>
-        .showSelection(buffer=5)
+        expect_identical(exp)
+    selectCoordinates(buffer=5, rowInd=1:3, colInd=1:3)$x |>
+        expect_identical(exp)
 
-    .selectCoordinates(buffer=5,
-                       rowInd=c(6, 4), colInd=c(8, 5), invert=FALSE) |>
-        .showSelection(buffer=5)
-    .selectCoordinates(buffer=5,
-                       rowInd=c(6, 4), colInd=c(8, 5), invert=TRUE) |>
-        .showSelection(buffer=5)
+    exp <- c(2L, 3L, 4L, 6L, 7L, 8L)
+    .selectCoordinates(buffer=1, rowInd=1:3, colInd=1:3, invert=TRUE) |>
+        expect_identical(exp)
+    selectCoordinates(buffer=1, rowInd=1:3, colInd=1:3, invert=TRUE)$x |>
+        expect_identical(exp)
 
-    .selectBlock(buffer=5, rowInd=3:6, colInd=4:7, invert=FALSE) |>
-        .showSelection(buffer=5)
-    .selectBlock(buffer=5, rowInd=3:6, colInd=4:7, invert=TRUE) |>
-        .showSelection(buffer=5)
+    exp <- c(8L)
+    .selectCoordinates(buffer=1, rowInd=2, colInd=3, invert=FALSE) |>
+        expect_identical(exp)
+    selectCoordinates(buffer=1, rowInd=2, colInd=3)$x |>
+        expect_identical(exp)
 
-    .selectBlock(buffer=5, rowInd=100, colInd=1:3, invert=FALSE) |>
-        .showSelection(buffer=5) |>
+    ## Select block ------------------------------------------------------------
+
+    exp <- c(1L, 2L, 3L, 6L, 7L, 8L, 11L, 12L, 13L)
+    .selectBlock(buffer=2, rowInd=1:3, colInd=1:3, invert=FALSE) |>
+        expect_identical(exp)
+    selectBlock(buffer=2, rowInd=1:3, colInd=1:3)$x |>
+        expect_identical(exp)
+
+    exp <- c(5L, 10L, 15L, 20L, 21L, 22L, 23L, 24L, 25L)
+    .selectBlock(buffer=2, rowInd=1:4, colInd=1:4, invert=TRUE) |>
+        expect_identical(exp)
+    selectBlock(buffer=2, rowInd=1:4, colInd=1:4, invert=TRUE)$x |>
+        expect_identical(exp)
+
+    exp <- c(12L, 13L, 17L, 18L, 22L, 23L)
+    .selectBlock(buffer=2, rowInd=2:3, colInd=3:5, invert=FALSE) |>
+        expect_identical(exp)
+    selectBlock(buffer=2, rowInd=2:3, colInd=3:5)$x |>
+        expect_identical(exp)
+
+    exp <- c(1L, 2L, 3L, 4L, 5L, 6L, 10L, 11L, 15L, 16L, 20L, 21L, 25L)
+    .selectBlock(buffer=2, rowInd=2:4, colInd=2:5, invert=TRUE) |>
+        expect_identical(exp)
+    selectBlock(buffer=2, rowInd=2:4, colInd=2:5, invert=TRUE)$x |>
+        expect_identical(exp)
+
+    selectBlock(buffer=5, rowInd=100, colInd=1:3) |>
         expect_error(".*subscript out of bounds")
 
 
-    .selectTopLeft(buffer=5, n=3, invert=FALSE) |>
-        .showSelection(buffer=5)
-    .selectTopLeft(buffer=5, n=3, invert=TRUE) |>
-        .showSelection(buffer=5)
+    ## Select TopLeft ----------------------------------------------------------
 
-    .selectTopRight(buffer=5, n=3, invert=FALSE) |>
-        .showSelection(buffer=5)
-    .selectTopRight(buffer=5, n=3, invert=TRUE) |>
-        .showSelection(buffer=5)
+    exp <- c(1L, 2L, 3L, 12L, 13L, 14L, 23L, 24L, 25L)
+    .selectTopLeft(buffer=5, n=3, inset=0, invert=FALSE) |>
+        expect_identical(exp)
+    selectTopLeft(buffer=5, n=3)$x |>
+        expect_identical(exp)
 
-    .selectBottomRight(buffer=5, n=3, invert=FALSE) |>
-        .showSelection(buffer=5)
-    .selectBottomRight(buffer=5, n=3, invert=TRUE) |>
-        .showSelection(buffer=5)
+    exp <- c(13L, 14L, 15L, 24L, 25L, 26L, 35L, 36L, 37L)
+    .selectTopLeft(buffer=5, n=3, inset=1, invert=FALSE) |>
+        expect_identical(exp)
+    selectTopLeft(buffer=5, n=3, inset=1)$x |>
+        expect_identical(exp)
 
-    .selectBottomLeft(buffer=5, n=3, invert=FALSE) |>
-        .showSelection(buffer=5)
-    .selectBottomLeft(buffer=5, n=3, invert=TRUE) |>
-        .showSelection(buffer=5)
+    exp <- c(1L, 2L, 12L, 13L)
+    .selectTopLeft(buffer=5, n=3, inset=-1, invert=FALSE) |>
+        expect_identical(exp)
+    selectTopLeft(buffer=5, n=3, inset=-1)$x |>
+        expect_identical(exp)
+
+    exp <- c(5L, 10L, 15L, 20L, 21L, 22L, 23L, 24L, 25L)
+    .selectTopLeft(buffer=2, n=4, inset=0, invert=TRUE) |>
+        expect_identical(exp)
+    selectTopLeft(buffer=2, n=4, invert=TRUE)$x |>
+        expect_identical(exp)
+
+    exp <- c(1L, 2L, 3L, 4L, 5L, 6L, 11L, 16L, 21L)
+    .selectTopLeft(buffer=2, n=4, inset=1, invert=TRUE) |>
+        expect_identical(exp)
+    selectTopLeft(buffer=2, n=4, inset=1, invert=TRUE)$x |>
+        expect_identical(exp)
+
+    selectTopLeft(buffer=5, n=3, inset=100) |>
+        expect_error(".*subscript out of bounds")
+
+    ## Select TopRight ---------------------------------------------------------
+
+    exp <- c(89L, 90L, 91L, 100L, 101L, 102L, 111L, 112L, 113L)
+    .selectTopRight(buffer=5, n=3, inset=0, invert=FALSE) |>
+        expect_identical(exp)
+    selectTopRight(buffer=5, n=3)$x |>
+        expect_identical(exp)
+
+    exp <- c(79L, 80L, 81L, 90L, 91L, 92L, 101L, 102L, 103L)
+    .selectTopRight(buffer=5, n=3, inset=1, invert=FALSE) |>
+        expect_identical(exp)
+    selectTopRight(buffer=5, n=3, inset=1)$x |>
+        expect_identical(exp)
+
+    exp <- c(1L, 2L, 3L, 4L, 5L, 10L, 15L, 20L, 25L)
+    .selectTopRight(buffer=2, n=4, inset=0, invert=TRUE) |>
+        expect_identical(exp)
+    selectTopRight(buffer=2, n=4, invert=TRUE)$x |>
+        expect_identical(exp)
+
+    exp <- c(1L, 6L, 11L, 16L, 21L, 22L, 23L, 24L, 25L)
+    .selectTopRight(buffer=2, n=4, inset=1, invert=TRUE) |>
+        expect_identical(exp)
+    selectTopRight(buffer=2, n=4, inset=1, invert=TRUE)$x |>
+        expect_identical(exp)
+
+    selectTopRight(buffer=5, n=3, inset=100) |>
+        expect_error(".*subscript out of bounds")
+
+    ## Select BottomRight ------------------------------------------------------
+
+    exp <- c(97L, 98L, 99L, 108L, 109L, 110L, 119L, 120L, 121L)
+    .selectBottomRight(buffer=5, n=3, inset=0, invert=FALSE) |>
+        expect_identical(exp)
+    selectBottomRight(buffer=5, n=3)$x |>
+        expect_identical(exp)
+
+    exp <- c(85L, 86L, 87L, 96L, 97L, 98L, 107L, 108L, 109L)
+    .selectBottomRight(buffer=5, n=3, inset=1, invert=FALSE) |>
+        expect_identical(exp)
+    selectBottomRight(buffer=5, n=3, inset=1)$x |>
+        expect_identical(exp)
+
+    exp <- c(1L, 2L, 3L, 4L, 5L, 6L, 11L, 16L, 21L)
+    .selectBottomRight(buffer=2, n=4, inset=0, invert=TRUE) |>
+        expect_identical(exp)
+    selectBottomRight(buffer=2, n=4, invert=TRUE)$x |>
+        expect_identical(exp)
+
+    exp <- c(5L, 10L, 15L, 20L, 21L, 22L, 23L, 24L, 25L)
+    .selectBottomRight(buffer=2, n=4, inset=1, invert=TRUE) |>
+        expect_identical(exp)
+    selectBottomRight(buffer=2, n=4, inset=1, invert=TRUE)$x |>
+        expect_identical(exp)
+
+    selectBottomRight(buffer=5, n=3, inset=-1) |>
+        expect_error(".*subscript out of bounds")
+
+    ## Select BottomLeft -------------------------------------------------------
+
+    exp <- c(9L, 10L, 11L, 20L, 21L, 22L, 31L, 32L, 33L)
+    .selectBottomLeft(buffer=5, n=3, inset=0, invert=FALSE) |>
+        expect_identical(exp)
+    selectBottomLeft(buffer=5, n=3)$x |>
+        expect_identical(exp)
+
+    exp <- c(19L, 20L, 21L, 30L, 31L, 32L, 41L, 42L, 43L)
+    .selectBottomLeft(buffer=5, n=3, inset=1, invert=FALSE) |>
+        expect_identical(exp)
+    selectBottomLeft(buffer=5, n=3, inset=1)$x |>
+        expect_identical(exp)
+
+    exp <- c(1L, 6L, 11L, 16L, 21L, 22L, 23L, 24L, 25L)
+    .selectBottomLeft(buffer=2, n=4, inset=0, invert=TRUE) |>
+        expect_identical(exp)
+    selectBottomLeft(buffer=2, n=4, invert=TRUE)$x |>
+        expect_identical(exp)
+
+    exp <- c(1L, 2L, 3L, 4L, 5L, 10L, 15L, 20L, 25L)
+    .selectBottomLeft(buffer=2, n=4, inset=1, invert=TRUE) |>
+        expect_identical(exp)
+    selectBottomLeft(buffer=2, n=4, inset=1, invert=TRUE)$x |>
+        expect_identical(exp)
+
+    selectBottomLeft(buffer=5, n=3, inset=-1) |>
+        expect_error(".*subscript out of bounds")
+    selectBottomLeft(buffer=5, n=3, inset=100) |>
+        expect_error(".*subscript out of bounds")
 
 
-    .selectCorners(buffer=5, n=3, invert=FALSE) |>
-        .showSelection(buffer=5)
-    .selectCorners(buffer=5, n=3, invert=TRUE) |>
-        .showSelection(buffer=5)
+    ## Select corners ----------------------------------------------------------
+
+    exp <- c(1L, 2L, 3L, 12L, 13L, 14L, 23L, 24L, 25L, 89L, 90L, 91L, 100L,
+             101L, 102L, 111L, 112L, 113L, 97L, 98L, 99L, 108L, 109L, 110L,
+             119L, 120L, 121L, 9L, 10L, 11L, 20L, 21L, 22L, 31L, 32L, 33L)
+    .selectCorners(buffer=5, n=3, inset=0, invert=FALSE) |>
+        expect_identical(exp)
+    selectCorners(buffer=5, n=3)$x |>
+        expect_identical(exp)
+
+    exp <- c(13L, 14L, 15L, 24L, 25L, 26L, 35L, 36L, 37L, 79L, 80L, 81L,
+             90L, 91L, 92L, 101L, 102L, 103L, 85L, 86L, 87L, 96L, 97L, 98L,
+             107L, 108L, 109L, 19L, 20L, 21L, 30L, 31L, 32L, 41L, 42L, 43L)
+    .selectCorners(buffer=5, n=3, inset=1, invert=FALSE) |>
+        expect_identical(exp)
+    selectCorners(buffer=5, n=3, inset=1)$x |>
+        expect_identical(exp)
+
+    exp <- c(3L, 8L, 11L, 12L, 13L, 14L, 15L, 18L, 23L)
+    .selectCorners(buffer=2, n=2, inset=0, invert=TRUE) |>
+        expect_identical(exp)
+    selectCorners(buffer=2, n=2, invert=TRUE)$x |>
+        expect_identical(exp)
+
+    exp <- c(1L, 2L, 3L, 4L, 5L, 6L, 10L, 11L, 15L, 16L, 20L, 21L, 22L,
+             23L, 24L, 25L)
+    .selectCorners(buffer=2, n=2, inset=1, invert=TRUE) |>
+        expect_identical(exp)
+    selectCorners(buffer=2, n=2, inset=1, invert=TRUE)$x |>
+        expect_identical(exp)
+
+    selectCorners(buffer=5, n=3, inset=-1) |>
+        expect_error(".*subscript out of bounds")
+    selectCorners(buffer=5, n=3, inset=100) |>
+        expect_error(".*subscript out of bounds")
+
+    ## Select rows -------------------------------------------------------------
+
+    exp <- c(1L, 6L, 11L, 16L, 21L)
+    .selectRows(buffer=2, rows=1, invert=FALSE) |>
+        expect_identical(exp)
+    selectRows(buffer=2, rows=1)$x |>
+        expect_identical(exp)
+
+    exp <- c(1L, 3L, 6L, 8L, 11L, 13L, 16L, 18L, 21L, 23L)
+    .selectRows(buffer=2, rows=c(1,3), invert=FALSE) |>
+        expect_identical(exp)
+    selectRows(buffer=2, rows=c(1,3))$x |>
+        expect_identical(exp)
+
+    exp <- c(1L, 2L, 3L, 6L, 7L, 8L, 11L, 12L, 13L, 16L, 17L, 18L, 21L,
+             22L, 23L)
+    .selectRows(buffer=2, rows=c(1:3), invert=FALSE) |>
+        expect_identical(exp)
+    selectRows(buffer=2, rows=c(1:3))$x |>
+        expect_identical(exp)
+
+    exp <- c(2L, 3L, 4L, 5L, 7L, 8L, 9L, 10L, 12L, 13L, 14L, 15L, 17L, 18L,
+             19L, 20L, 22L, 23L, 24L, 25L)
+    .selectRows(buffer=2, rows=1, invert=TRUE) |>
+        expect_identical(exp)
+    selectRows(buffer=2, rows=1, invert=TRUE)$x |>
+        expect_identical(exp)
+
+    exp <- c(2L, 4L, 5L, 7L, 9L, 10L, 12L, 14L, 15L, 17L, 19L, 20L, 22L,
+             24L, 25L)
+    .selectRows(buffer=2, rows=c(1,3), invert=TRUE) |>
+        expect_identical(exp)
+    selectRows(buffer=2, rows=c(1,3), invert=TRUE)$x |>
+        expect_identical(exp)
+
+    exp <- c(4L, 5L, 9L, 10L, 14L, 15L, 19L, 20L, 24L, 25L)
+    .selectRows(buffer=2, rows=c(1:3), invert=TRUE) |>
+        expect_identical(exp)
+    selectRows(buffer=2, rows=c(1:3), invert=TRUE)$x |>
+        expect_identical(exp)
 
 
+    ## Select cols -------------------------------------------------------------
 
-    .selectInner(buffer=5, n=3, invert=FALSE) |>
-        .showSelection(buffer=5)
+    exp <- 1:5L
+    .selectCols(buffer=2, cols=1, invert=FALSE) |>
+        expect_identical(exp)
+    selectCols(buffer=2, cols=1)$x |>
+        expect_identical(exp)
 
-    .selectInner(buffer=5, n=3, invert=TRUE) |>
-        .showSelection(buffer=5)
+    exp <- c(1L, 2L, 3L, 4L, 5L, 11L, 12L, 13L, 14L, 15L)
+    .selectCols(buffer=2, cols=c(1,3), invert=FALSE) |>
+        expect_identical(exp)
+    selectCols(buffer=2, cols=c(1,3))$x |>
+        expect_identical(exp)
 
-    .selectRows(buffer=5, rows=1:3, invert=FALSE) |>
-        .showSelection(buffer=5)
-    .selectRows(buffer=5, rows=1:3, invert=TRUE) |>
-        .showSelection(buffer=5)
+    exp <- 1:15L
+    .selectCols(buffer=2, cols=c(1:3), invert=FALSE) |>
+        expect_identical(exp)
+    selectCols(buffer=2, cols=c(1:3))$x |>
+        expect_identical(exp)
 
-    .selectCols(buffer=5, cols=1:3, invert=FALSE) |>
-        .showSelection(buffer=5)
-    .selectCols(buffer=5, cols=1:3, invert=TRUE) |>
-        .showSelection(buffer=5)
+    exp <- 6:25L
+    .selectCols(buffer=2, cols=1, invert=TRUE) |>
+        expect_identical(exp)
+    selectCols(buffer=2, cols=1, invert=TRUE)$x |>
+        expect_identical(exp)
 
-    .selectOuter(buffer=5, n=1, invert=FALSE) |>
-        .showSelection(buffer=5)
-    .selectOuter(buffer=5, n=1, invert=TRUE) |>
-        .showSelection(buffer=5)
+    exp <- c(6L, 7L, 8L, 9L, 10L, 16L, 17L, 18L, 19L, 20L, 21L, 22L, 23L,
+             24L, 25L)
+    .selectCols(buffer=2, cols=c(1,3), invert=TRUE) |>
+        expect_identical(exp)
+    selectCols(buffer=2, cols=c(1,3), invert=TRUE)$x |>
+        expect_identical(exp)
 
-    .selectOuter(buffer=5, n=3, invert=FALSE) |>
-        .showSelection(buffer=5)
-    .selectOuter(buffer=5, n=3, invert=TRUE) |>
-        .showSelection(buffer=5)
-
-
-    intersect(.selectOuter(buffer=5, n=1, invert=TRUE),
-              .selectOuter(buffer=5, n=2, invert=FALSE)) |>
-        .showSelection(buffer=5)
-
-    .selectRadius(c(1,3,5), buffer=5, invert=FALSE) |>
-        .showSelection(buffer=5)
-
-    .angleMatrix(3)
-    .manhattanMatrix(3)
-    .selectCenterPixel(0, 5, FALSE)
-    .selectCenterPixel(1:2, 5, FALSE) |>
-        .showSelection(5)
+    exp <- 16:25L
+    .selectCols(buffer=2, cols=c(1:3), invert=TRUE) |>
+        expect_identical(exp)
+    selectCols(buffer=2, cols=c(1:3), invert=TRUE)$x |>
+        expect_identical(exp)
 
 
-    ## Argument for excluding center pixel (for all functions)
-    ## TRUE for selectCenterPixel
+    ## Select inner ------------------------------------------------------------
 
-    .selectRadius(1:3, 4, FALSE) |>
-        .showSelection(4)
+
+    exp <- c(17L, 18L, 19L, 24L, 25L, 26L, 31L, 32L, 33L)
+    .selectInner(buffer=3, n=1, invert=FALSE) |>
+        expect_identical(exp)
+    selectInner(buffer=3, n=1)$x |>
+        expect_identical(exp)
+
+    exp <- c(9L, 10L, 11L, 12L, 13L, 16L, 17L, 18L, 19L, 20L, 23L, 24L,
+             25L, 26L, 27L, 30L, 31L, 32L, 33L, 34L, 37L, 38L, 39L, 40L, 41L)
+    .selectInner(buffer=3, n=2, invert=FALSE) |>
+        expect_identical(exp)
+    selectInner(buffer=3, n=2)$x |>
+        expect_identical(exp)
+
+    exp <- c(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L,
+             15L, 16L, 20L, 21L, 22L, 23L, 27L, 28L, 29L, 30L, 34L, 35L, 36L,
+             37L, 38L, 39L, 40L, 41L, 42L, 43L, 44L, 45L, 46L, 47L, 48L, 49L)
+    .selectInner(buffer=3, n=1, invert=TRUE) |>
+        expect_identical(exp)
+    selectInner(buffer=3, n=1, TRUE)$x |>
+        expect_identical(exp)
+
+    exp <- c(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 14L, 15L, 21L, 22L, 28L, 29L,
+             35L, 36L, 42L, 43L, 44L, 45L, 46L, 47L, 48L, 49L)
+    .selectInner(buffer=3, n=2, invert=TRUE) |>
+        expect_identical(exp)
+    selectInner(buffer=3, n=2, TRUE)$x |>
+        expect_identical(exp)
+
+
+    ## Select outer ------------------------------------------------------------
+
+    exp <- c(1L, 8L, 15L, 22L, 29L, 36L, 43L, 7L, 14L, 21L, 28L, 35L, 42L,
+             49L, 2L, 3L, 4L, 5L, 6L, 44L, 45L, 46L, 47L, 48L)
+    .selectOuter(buffer=3, n=1, invert=FALSE) |>
+        expect_identical(exp)
+    selectOuter(buffer=3, n=1)$x |>
+        expect_identical(exp)
+
+    exp <- c(1L, 2L, 8L, 9L, 15L, 16L, 22L, 23L, 29L, 30L, 36L, 37L, 43L,
+             44L, 7L, 6L, 14L, 13L, 21L, 20L, 28L, 27L, 35L, 34L, 42L, 41L,
+             49L, 48L, 3L, 4L, 5L, 10L, 11L, 12L, 45L, 46L, 47L, 38L, 39L,
+             40L)
+    .selectOuter(buffer=3, n=2, invert=FALSE) |>
+        expect_identical(exp)
+    selectOuter(buffer=3, n=2)$x |>
+        expect_identical(exp)
+
+    exp <- c(17L, 18L, 19L, 24L, 25L, 26L, 31L, 32L, 33L)
+    .selectOuter(buffer=3, n=2, invert=TRUE) |>
+        expect_identical(exp)
+    selectOuter(buffer=3, n=2, invert=TRUE)$x |>
+        expect_identical(exp)
 
 })
-
 
 test_that("calcLoopEnrichment", {
 
@@ -253,14 +535,49 @@ test_that("calcLoopEnrichment", {
     calcLoopEnrichment(loops, hicFiles, nBlocks=0) |>
         expect_error("`nBlocks` must be > 0.")
 
-    res <-
-        calcLoopEnrichment(x=loops[1:10] |> binPairs(100e03),
-                           files=hicFiles)
+    ## Show multiselection
+    .showMultiSelection(fg=selectRadius(0:1, 3)$x,
+                        bg=selectRadius(0:1, 3, TRUE)$x,
+                        buffer=3) |>
+        expect_error(NA)
 
-    res
+
+    ## Test whole function
+    exp <- new("DelayedMatrix",
+               seed = structure(
+                   c(1, 1, 1.57894736842105, 1.33333333333333,
+                     0.736842105263158, 1.33333333333333, 0.75,
+                     1.76470588235294, 0.818181818181818,
+                     0.333333333333333, 1.66666666666667, 1.4,
+                     2.16666666666667, 1, 0.777777777777778, 1,
+                     1, 1.44827586206897, 0.909090909090909, 0.8),
+                   dim = c(10L, 2L),
+                   dimnames = list(NULL,
+                                   c("LEUK_HEK_PJA27_inter_30.hic",
+                                     "LEUK_HEK_PJA30_inter_30.hic"))
+               ))
+    res <- calcLoopEnrichment(x=loops[1:10] |> binPairs(100e03),
+                              files=hicFiles)
+    expect_equal(res, exp)
+    expect_s4_class(res, "DelayedMatrix")
+    expect_equal(dim(res), c(10, 2))
 
 
-    .diagonalMatrix(loops[1:3], 1)
+    ## Selection concatenation
+    (selectInner(1, 4) - selectCenterPixel(0, 4))$x |>
+        expect_identical(c(31L, 32L, 33L, 40L, 42L, 49L, 50L, 51L))
+
+
+    exp <- c(18L, 24L, 26L, 32L, 11L, 17L, 19L, 23L, 27L, 31L, 33L, 39L)
+    (selectRadius(x=1, buffer=3) + selectRadius(x=2, buffer=3))$x |>
+        expect_identical(exp)
+
+    exp <- c(11L, 17L, 19L, 23L, 27L, 31L, 33L, 39L)
+    (selectRadius(x=0:2, buffer=3) - selectRadius(x=0:1, buffer=3))$x |>
+        expect_identical(exp)
+
+    (selectRadius(x=1, buffer=3) + selectRadius(x=2, buffer=4)) |>
+        expect_error("`buffer` must be the same")
 
 })
 

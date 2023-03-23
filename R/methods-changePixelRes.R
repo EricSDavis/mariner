@@ -40,9 +40,9 @@
                   paste0, collapse="-")
 
     ## Select pixels of interest
-    pixels <- sapply(seq_len(nrow(data)), \(i) {
+    pixels <- vapply(seq_len(nrow(data)), \(i) {
         data[i, poi[i]]
-    })
+    }, FUN.VALUE=character(1L))
 
     ## Split character ranges into
     pixelDF <-
@@ -111,8 +111,8 @@
 #'
 #' ## Pull 5x5 matrices
 #' iarr <- pullHicMatrices(x=loops[1:5],
-#'                         binSize=500e3,
 #'                         files=hicFiles,
+#'                         binSize=500e3,
 #'                         norm="KR",
 #'                         half='upper')
 #'

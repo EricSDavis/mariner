@@ -289,10 +289,10 @@ test_that("pullHicMatrices for square, regular arrays", {
             1 51500000 52000000 1 51500000 52000000
             1 150000000 150500000 1 150000000 150500000") |>
         as_ginteractions()
-    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="upper")
+    res <- pullHicMatrices(gi, hicFiles[1], 100e03, half="upper")
 
     ## half="both"
-    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="both")
+    res <- pullHicMatrices(gi, hicFiles[1], 100e03, half="both")
     exp <- array(data=c(67, 22, 13, 9, 8, 22, 59, 20, 10, 7,
                         13, 20, 51, 15, 6, 9, 10, 15, 49, 23,
                         8, 7, 6, 23, 66, 63, 25, 15, 4, 2, 25,
@@ -303,7 +303,7 @@ test_that("pullHicMatrices for square, regular arrays", {
     expect_identical(unname(as.array(counts(res))), exp)
 
     ## half="upper"
-    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="upper")
+    res <- pullHicMatrices(gi, hicFiles[1], 100e03, half="upper")
     exp <- array(data=c(67, NA, NA, NA, NA, 22, 59, NA, NA, NA,
                         13, 20, 51, NA, NA, 9, 10, 15, 49, NA,
                         8, 7, 6, 23, 66, 63, NA, NA, NA, NA, 25,
@@ -314,7 +314,7 @@ test_that("pullHicMatrices for square, regular arrays", {
     expect_identical(unname(as.array(counts(res))), exp)
 
     ## half="lower"
-    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="lower")
+    res <- pullHicMatrices(gi, hicFiles[1], 100e03, half="lower")
     exp <- array(data=c(67, 22, 13, 9, 8, NA, 59, 20, 10, 7, NA,
                         NA, 51, 15, 6, NA, NA, NA, 49, 23, NA,
                         NA, NA, NA, 66, 63, 25, 15, 4, 2, NA, 68,
@@ -336,21 +336,21 @@ test_that("pullHicMatrices for square, regular arrays", {
     expect_true(all(start1(gi) < start2(gi)))
 
     ## half="both"
-    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="both")
+    res <- pullHicMatrices(gi, hicFiles[1], 100e03, half="both")
     exp <- array(data=c(9, 10, 8, 7, 4, 7, 2, 3),
                  dim=c(2,2,2,1))
     expect_identical(interactions(res), gi)
     expect_identical(unname(as.array(counts(res))), exp)
 
     ## half="upper"
-    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="upper")
+    res <- pullHicMatrices(gi, hicFiles[1], 100e03, half="upper")
     exp <- array(data=c(9, 10, 8, 7, 4, 7, 2, 3),
                  dim=c(2,2,2,1))
     expect_identical(interactions(res), gi)
     expect_identical(unname(as.array(counts(res))), exp)
 
     ## half="lower"
-    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="lower")
+    res <- pullHicMatrices(gi, hicFiles[1], 100e03, half="lower")
     exp <- array(data=NA_real_, dim=c(2,2,2,1))
     expect_identical(interactions(res), gi)
     expect_identical(unname(as.array(counts(res))), exp)
@@ -367,20 +367,20 @@ test_that("pullHicMatrices for square, regular arrays", {
     expect_true(all(start1(gi) > start2(gi)))
 
     ## half="both"
-    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="both")
+    res <- pullHicMatrices(gi, hicFiles[1], 100e03, half="both")
     exp <- array(data=c(9, 8, 10, 7, 4, 2, 7, 3),
                  dim=c(2,2,2,1))
     expect_identical(interactions(res), gi)
     expect_identical(unname(as.array(counts(res))), exp)
 
     ## half="upper"
-    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="upper")
+    res <- pullHicMatrices(gi, hicFiles[1], 100e03, half="upper")
     exp <- array(data=NA_real_, dim=c(2,2,2,1))
     expect_identical(interactions(res), gi)
     expect_identical(unname(as.array(counts(res))), exp)
 
     ## half="lower"
-    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="lower")
+    res <- pullHicMatrices(gi, hicFiles[1], 100e03, half="lower")
     exp <- array(data=c(9, 8, 10, 7, 4, 2, 7, 3),
                  dim=c(2,2,2,1))
     expect_identical(interactions(res), gi)
@@ -397,19 +397,19 @@ test_that("pullHicMatrices for square, regular arrays", {
     expect_true(all(seqnames1(gi) < seqnames2(gi)))
 
     ## half="both"
-    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="both")
+    res <- pullHicMatrices(gi, hicFiles[1], 2.5e06, half="both")
     exp <- array(data=c(1, 1, 1, 0, 0, 1, 0, 0),
                  dim=c(2,2,2,1))
     expect_identical(interactions(res), gi)
     expect_identical(unname(as.array(counts(res))), exp)
 
     ## half="upper"
-    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="upper")
+    res <- pullHicMatrices(gi, hicFiles[1], 2.5e06, half="upper")
     expect_identical(interactions(res), gi)
     expect_identical(unname(as.array(counts(res))), exp)
 
     ## half="lower"
-    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="lower")
+    res <- pullHicMatrices(gi, hicFiles[1], 2.5e06, half="lower")
     expect_identical(interactions(res), gi)
     expect_identical(unname(as.array(counts(res))), exp)
 
@@ -423,19 +423,19 @@ test_that("pullHicMatrices for square, regular arrays", {
     expect_true(all(seqnames1(gi) > seqnames2(gi)))
 
     ## half="both"
-    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="both")
+    res <- pullHicMatrices(gi, hicFiles[1], 2.5e06, half="both")
     exp <- array(data=c(0, 0, 1, 1, 2, 1, 2, 0),
                  dim=c(2,2,2,1))
     expect_identical(interactions(res), gi)
     expect_identical(unname(as.array(counts(res))), exp)
 
     ## half="upper"
-    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="upper")
+    res <- pullHicMatrices(gi, hicFiles[1], 2.5e06, half="upper")
     expect_identical(interactions(res), gi)
     expect_identical(unname(as.array(counts(res))), exp)
 
     ## half="lower"
-    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="lower")
+    res <- pullHicMatrices(gi, hicFiles[1], 2.5e06, half="lower")
     expect_identical(interactions(res), gi)
     expect_identical(unname(as.array(counts(res))), exp)
 
@@ -451,7 +451,7 @@ test_that("pullHicMatrices for rectangular, regular arrays", {
         as_ginteractions()
 
     ## half="both"
-    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="both")
+    res <- pullHicMatrices(gi, hicFiles[1], 100e03, half="both")
     exp <- array(data=c(53, 15, 5, 15, 68, 19, 5, 19, 69, 1,
                         8, 12, 4, 5, 2, 63, 25, 15, 25, 68, 28,
                         15, 28, 87, 4, 7, 45, 2, 3, 11),
@@ -460,7 +460,7 @@ test_that("pullHicMatrices for rectangular, regular arrays", {
     expect_identical(unname(as.array(counts(res))), exp)
 
     ## half="upper"
-    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="upper")
+    res <- pullHicMatrices(gi, hicFiles[1], 100e03, half="upper")
     exp <- array(data=c(53, NA, NA, 15, 68, NA, 5, 19, 69, 1,
                         8, 12, 4, 5, 2, 63, NA, NA, 25, 68, NA,
                         15, 28, 87, 4, 7, 45, 2, 3, 11),
@@ -469,7 +469,7 @@ test_that("pullHicMatrices for rectangular, regular arrays", {
     expect_identical(unname(as.array(counts(res))), exp)
 
     ## half="lower"
-    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="lower")
+    res <- pullHicMatrices(gi, hicFiles[1], 100e03, half="lower")
     exp <- array(data=c(53, 15, 5, NA, 68, 19, NA, NA, 69, NA,
                         NA, NA, NA, NA, NA, 63, 25, 15, NA, 68,
                         28, NA, NA, 87, NA, NA, NA, NA, NA, NA),
@@ -489,7 +489,7 @@ test_that("pullHicMatrices for rectangular, regular arrays", {
     expect_true(all(start1(gi) < start2(gi)))
 
     ## half="both"
-    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="both")
+    res <- pullHicMatrices(gi, hicFiles[1], 100e03, half="both")
     exp <- array(data=c(1, 8, 12, 4, 5, 2, 1, 5, 2, 2, 3, 8,
                         1, 4, 2, 4, 7, 45, 2, 3, 11, 6, 7, 5,
                         3, 3, 3, 6, 2, 3),
@@ -498,7 +498,7 @@ test_that("pullHicMatrices for rectangular, regular arrays", {
     expect_identical(unname(as.array(counts(res))), exp)
 
     ## half="upper"
-    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="upper")
+    res <- pullHicMatrices(gi, hicFiles[1], 100e03, half="upper")
     exp <- array(data=c(1, 8, 12, 4, 5, 2, 1, 5, 2, 2, 3, 8,
                         1, 4, 2, 4, 7, 45, 2, 3, 11, 6, 7, 5,
                         3, 3, 3, 6, 2, 3),
@@ -507,7 +507,7 @@ test_that("pullHicMatrices for rectangular, regular arrays", {
     expect_identical(unname(as.array(counts(res))), exp)
 
     ## half="lower"
-    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="lower")
+    res <- pullHicMatrices(gi, hicFiles[1], 100e03, half="lower")
     exp <- array(data=NA_real_, dim=c(3,5,2,1))
     expect_identical(interactions(res), gi)
     expect_identical(unname(as.array(counts(res))), exp)
@@ -524,7 +524,7 @@ test_that("pullHicMatrices for rectangular, regular arrays", {
     expect_true(all(start1(gi) > start2(gi)))
 
     ## half="both"
-    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="both")
+    res <- pullHicMatrices(gi, hicFiles[1], 100e03, half="both")
     exp <- array(data=c(1, 4, 1, 2, 1, 8, 5, 5, 3, 4, 12, 2, 2,
                         8, 2, 4, 2, 6, 3, 6, 7, 3, 7, 3, 2, 45,
                         11, 5, 3, 3),
@@ -533,13 +533,13 @@ test_that("pullHicMatrices for rectangular, regular arrays", {
     expect_identical(unname(as.array(counts(res))), exp)
 
     ## half="upper"
-    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="upper")
+    res <- pullHicMatrices(gi, hicFiles[1], 100e03, half="upper")
     exp <- array(data=NA_real_, dim=c(5,3,2,1))
     expect_identical(interactions(res), gi)
     expect_identical(unname(as.array(counts(res))), exp)
 
     ## half="lower"
-    res <- pullHicMatrices(gi, 100e03, hicFiles[1], half="lower")
+    res <- pullHicMatrices(gi, hicFiles[1], 100e03, half="lower")
     exp <- array(data=c(1, 4, 1, 2, 1, 8, 5, 5, 3, 4, 12, 2, 2,
                         8, 2, 4, 2, 6, 3, 6, 7, 3, 7, 3, 2, 45,
                         11, 5, 3, 3),
@@ -558,7 +558,7 @@ test_that("pullHicMatrices for rectangular, regular arrays", {
     expect_true(all(seqnames1(gi) < seqnames2(gi)))
 
     ## half="both"
-    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="both")
+    res <- pullHicMatrices(gi, hicFiles[1], 2.5e06, half="both")
     exp <- array(data=c(1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1,
                         0, 3, 2, 0, 2, 0, 2, 1, 0, 1, 0, 0, 0,
                         2, 1, 1, 0),
@@ -567,12 +567,12 @@ test_that("pullHicMatrices for rectangular, regular arrays", {
     expect_identical(unname(as.array(counts(res))), exp)
 
     ## half="upper"
-    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="upper")
+    res <- pullHicMatrices(gi, hicFiles[1], 2.5e06, half="upper")
     expect_identical(interactions(res), gi)
     expect_identical(unname(as.array(counts(res))), exp)
 
     ## half="lower"
-    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="lower")
+    res <- pullHicMatrices(gi, hicFiles[1], 2.5e06, half="lower")
     expect_identical(interactions(res), gi)
     expect_identical(unname(as.array(counts(res))), exp)
 
@@ -587,7 +587,7 @@ test_that("pullHicMatrices for rectangular, regular arrays", {
     expect_true(all(seqnames1(gi) > seqnames2(gi)))
 
     ## half="both"
-    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="both")
+    res <- pullHicMatrices(gi, hicFiles[1], 2.5e06, half="both")
     exp <- array(data=c(1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0,
                         2, 0, 2, 0, 0, 0, 2, 1, 2, 1, 0, 2, 0,
                         1, 1, 1, 1),
@@ -596,12 +596,12 @@ test_that("pullHicMatrices for rectangular, regular arrays", {
     expect_identical(unname(as.array(counts(res))), exp)
 
     ## half="upper"
-    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="upper")
+    res <- pullHicMatrices(gi, hicFiles[1], 2.5e06, half="upper")
     expect_identical(interactions(res), gi)
     expect_identical(unname(as.array(counts(res))), exp)
 
     ## half="lower"
-    res <- pullHicMatrices(gi, 2.5e06, hicFiles[1], half="lower")
+    res <- pullHicMatrices(gi, hicFiles[1], 2.5e06, half="lower")
     expect_identical(interactions(res), gi)
     expect_identical(unname(as.array(counts(res))), exp)
 
@@ -615,7 +615,7 @@ test_that("Error when trying to pull irregular arrays", {
             1 150000000 150500000 1 150000000 150300000") |>
         as_ginteractions()
 
-    pullHicMatrices(gi, 100e03, hicFiles[1], half="both") |>
+    pullHicMatrices(gi, hicFiles[1], 100e03, half="both") |>
         expect_error("Variable sized anchors.*")
 
 })

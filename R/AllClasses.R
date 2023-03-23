@@ -15,6 +15,8 @@ setClassUnion("logical_OR_missing", c("logical", "missing"))
 #' @noRd
 setClassUnion("numeric_OR_missing", c("numeric", "missing"))
 #' @noRd
+setClassUnion("integer_OR_NULL", c("integer", "NULL"))
+#' @noRd
 setClassUnion("character_OR_numeric", c("character", "numeric"))
 #' @noRd
 setClassUnion("character_OR_numeric_OR_missing",
@@ -22,6 +24,12 @@ setClassUnion("character_OR_numeric_OR_missing",
 #' @noRd
 setClassUnion("character_OR_function_OR_list",
               c("character", "function", "list"))
+
+#' Class union for DelayedMatrix and matrix
+#' @importClassesFrom DelayedArray DelayedMatrix
+#' @noRd
+setClassUnion("DelayedMatrix_OR_matrix",
+              c("DelayedMatrix", "matrix"))
 
 #' Class union for GInteractionsList
 #' @importClassesFrom S4Vectors SimpleList
@@ -105,128 +113,6 @@ setMethod(
         .Object <- callNextMethod(.Object, ...)
         .Object
     })
-
-## BinnedGInteractions Class ---------------------------------------------------
-
-#' BinnedGInteractions Class
-#'
-#' The `BinnedGInteractions` class extends
-#' `GInteractions` to enforce consistent
-#' range widths.
-#'
-#' @slot delegate A `GInteractions` object used to initialize
-#'  `GInteractions`-specific slots.
-#' @slot firstBinSize Integer describing first pair bin width.
-#' @slot secondBinSize Integer describing second pair bin width.
-#' @slot pairBinsEqual Logical. TRUE if `firstBinSize` ==
-#'  `secondBinSize` and FALSE if `firstBinSize` != `secondBinSize`.
-#'
-#' @seealso [InteractionSet::GInteractions]
-#'
-#' @rdname BinnedGInteractions-class
-setClass(
-    Class = "BinnedGInteractions",
-    contains = c("GInteractions", "DelegatingGInteractions"),
-    slots = list(
-        delegate = "GInteractions",
-        firstBinSize = "integer",
-        secondBinSize = "integer",
-        pairBinsEqual = "logical"
-    )
-)
-
-#' Constructor for BinnedGInteractions Class
-#' @param delegate GInteractions object
-#' @rdname BinnedGInteractions-class
-#' @return BinnedGInteractions object
-BinnedGInteractions <- function(delegate) {
-    new("BinnedGInteractions", delegate = delegate)
-}
-
-#' Initialize BinnedGInteractions
-#' @param .Object object to initialize
-#' @param ... Additional arguments
-#' @param delegate GInteractions object for initialization
-#' @importFrom rlang abort
-#' @importFrom glue glue
-#' @return BinnedGInteractions object
-setMethod(
-    f = "initialize",
-    signature = "BinnedGInteractions",
-    definition = function(.Object, ..., delegate = GInteractions()) {
-
-        ## Get the widths of each pair
-        w <- width(delegate)
-        fbs <- w$first
-        sbs <- w$second
-
-        ## Check & set length of first bin
-        if (length(unique(fbs)) == 1) {
-            .Object@firstBinSize <- fbs[1]
-        } else {
-            msg <- c("First pair of ranges must all have equal widths.",
-                     'i' = glue("Use `binPairs()` to bin paired ranges."))
-            abort(msg)
-        }
-
-        ## Check & set length of second bin
-        if (length(unique(sbs)) == 1) {
-            .Object@secondBinSize <- sbs[1]
-        } else {
-            msg <- c("Second pair of ranges must all have equal widths.",
-                     'i' = glue("Use `binPairs()` to bin paired ranges."))
-            abort(msg)
-        }
-
-        ## Set pairBinsEqual flag
-        if (.Object@firstBinSize == .Object@secondBinSize) {
-            .Object@pairBinsEqual <- TRUE
-        } else {
-            .Object@pairBinsEqual <- FALSE
-        }
-
-        ## Pass GInteractions construction to virtual class
-        .Object <- callNextMethod(.Object, ..., delegate = delegate)
-        validObject(.Object)
-        .Object
-    })
-
-#' Validate BinnedGInteractions
-#' @name BinnedGInteractions-class
-setValidity("BinnedGInteractions", function(object) {
-
-    ## Get the widths of each pair
-    w <- width(object)
-    fbs <- w$first
-    sbs <- w$second
-
-    if (length(unique(fbs)) != 1)
-        "Widths of the first anchor are not the same."
-
-    if (length(unique(sbs)) != 1)
-        "Widths of the second anchor are not the same."
-
-    if (fbs[1] != object@firstBinSize)
-        "Incorrect `firstBinSize`."
-
-    if (sbs[1] != object@secondBinSize)
-        "Incorrect `secondBinSize`."
-
-    if (object@pairBinsEqual) {
-        if (object@firstBinSize != object@secondBinSize) {
-            "Incorrect `pairBinsEqual` flag."
-        }
-    }
-
-    if (!object@pairBinsEqual) {
-        if (object@firstBinSize == object@secondBinSize) {
-            "Incorrect `pairBinsEqual` flag."
-        }
-    }
-
-    return(TRUE)
-
-})
 
 ## MergedGInteractions Class ---------------------------------------------------
 
@@ -364,3 +250,54 @@ setClass(
     Class = "InteractionMatrix",
     contains = "InteractionSet"
 )
+
+#' Set validity for InteractionMatrix class
+#' @name InteractionMatrix-class
+setValidity("InteractionMatrix", function(object) {
+
+    ## If there are assays...
+    if (length(object@assays) == 0) {
+        return(TRUE)
+    }
+
+    ## And they are HDF5...
+    if (!is(object@assays@data@listData$counts, "HDF5Array")) {
+        return(TRUE)
+    }
+
+    ## Check for .h5 file
+    h5File <- object@assays@data@listData$counts@seed@filepath
+    if (!file.exists(h5File)) {
+        return(".h5 file doesn't exist. Update path to .h5 file.")
+    }
+
+    return(TRUE)
+
+})
+
+## MatrixSelection Class -------------------------------------------------------
+
+#' MatrixSelection Class
+#'
+#' An object containing the selected indices
+#' of a matrix.
+#'
+#' @slot x Vector of selected indices from
+#'  a matrix of `dim = buffer*2+1`.
+#' @slot buffer Integer indicating the
+#'  buffer size, or number of pixels
+#'  around a matrix.
+#'
+#' @examples
+#' selectCenterPixel(0, 5)
+#'
+#' @rdname MatrixSelection-class
+#' @export
+MatrixSelection <- setClass(
+    Class = "MatrixSelection",
+    slots = list(
+        x = "numeric",
+        buffer = "numeric"
+    )
+)
+

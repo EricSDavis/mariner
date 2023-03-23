@@ -95,7 +95,7 @@
     dt <- do.call(rbind, bedpe)
 
     ## Check column name exists in bedpe
-    if (!missing(column)) {
+    if (!is.null(column)) {
         if (!column %in% colnames(dt)) {
             abort(glue("Column '{column}' does not exist."))
         }
@@ -136,6 +136,9 @@
     ## Annotate id & groups (essentially pairs of chromosomes)
     x[,id := .I]
     x[,grp := .GRP,by = .(seqnames1, seqnames2)]
+
+    ## Rename "radius" and "method" columns if they exist
+    colnames(x) <- gsub("(^radius$|^method$)", "\\1_1", colnames(x))
 
     ## Initialize progress bar
     pb <- progress_bar$new(
@@ -192,6 +195,9 @@
         colnames(x) <- gsub("(^(mid1)_1$|^(mid2)_1$)", "\\1", colnames(x))
     }
 
+    ## Restore column names
+    colnames(x) <- gsub("(^(radius)_1$|^(method)_1$)", "\\1", colnames(x))
+
     ## Separate unique pairs by denoting as negative integers
     x[clst == 0, clst := seq(1, length(clst))*-1, by = grp]
 
@@ -230,20 +236,30 @@
         gsub("^grp_1$", "grp", x = _) |>
         gsub("^clst_1$", "clst", x = _) |>
         gsub("^mid1_1$", "mid1", x = _) |>
-        gsub("^mid2_1$", "mid2", x = _)
+        gsub("^mid2_1$", "mid2", x = _) |>
+        gsub("^radius_1$", "radius", x = _) |>
+        gsub("^method_1$", "method", x = _)
 }
 
 
 #' Internal mergePairs function
 #' @inheritParams mergePairs
 #' @importFrom rlang inform
-#' @importFrom data.table as.data.table uniqueN `:=`
+#' @importFrom data.table as.data.table uniqueN `:=` copy
 #' @importFrom S4Vectors mcols
 #' @noRd
 .mergePairs <- function(x, radius, method, column, selectMax, pos) {
 
     ## Suppress NSE notes in R CMD check
     clst = grp = NULL
+
+    ## Check argument types
+    ## column is checked later (can be string or NULL)
+    .checkTypes(c(
+        method="string",
+        selectMax="boolean",
+        pos="string"
+    ))
 
     ## Parse list or GInteractions input and return
     ## as a concatenated data.table
@@ -253,15 +269,18 @@
     dt <- .clusterPairs(x=dt, radius=radius, method=method, pos=pos)
 
     ## Perform selection
-    if (missing(column)) {
+    if (is.null(column)) {
         ## Fast mean of modes
         selectionMethod <- "Mean of modes"
 
         ## Define start & end columns to update
         columnsToUpdate <- c("start1", "end1", "start2", "end2")
 
+        ## Make copy of pairs to retain original ranges
+        dt2 <- copy(dt)
+
         ## Update with mean of modes for each group and cluster
-        dt[clst > 0,
+        dt2[clst > 0,
            (columnsToUpdate) :=
                .newPairRanges(start1 = .SD[['start1']],
                               start2 = .SD[['start2']],
@@ -270,15 +289,16 @@
            by = .(grp, clst)]
 
         ## Select the first of the duplicated pairs
-        single <- dt[clst < 0]
-        selected <- dt[dt[clst > 0,.I[1], by = .(grp, clst)]$V1]
+        single <- dt2[clst < 0]
+        selected <- dt2[dt2[clst > 0,.I[1], by = .(grp, clst)]$V1]
         mergedPairs <- rbind(single, selected)
 
     } else {
         selectionMethod <- glue("Select by column '{column}'")
 
         ## Edit column if it matches src, id, grp, or clst
-        column <- gsub("(^src$|^id$|^grp$|^clst$)", "\\1_1", column)
+        pattern <- "(^src$|^id$|^grp$|^clst$|^radius$|^method$)"
+        column <- gsub(pattern, "\\1_1", column)
 
         ## Select max or min
         fun <- ifelse(selectMax, `which.max`, `which.min`)
@@ -305,7 +325,7 @@
 
     ## Remove metadata if using mean of modes
     ## since the choice is arbitrary.
-    if (missing(column)) mcols(mergedPairs) <- NULL
+    if (is.null(column)) mcols(mergedPairs) <- NULL
 
     ## Build MergedGInteractions object
     obj <-
@@ -321,9 +341,8 @@
 
 #' Merge sets of paired interactions
 #'
-#' Sets of paired range objects (like `GInteractions`
-#' or BEDPE-formatted `data.frame`-like objects) are
-#' first clustered by genomic distance with `dbscan`,
+#' Sets of paired range objects (i.e., `GInteractions`)
+#' are first clustered by genomic distance with `dbscan`,
 #' then a representative interaction is selected for
 #' each cluster.
 #'
@@ -379,9 +398,5 @@
 #' @export
 setMethod("mergePairs",
           signature(x = 'list_OR_SimpleList_OR_GInteractions',
-                    radius = 'numeric',
-                    method = 'character_OR_missing',
-                    column = 'character_OR_missing',
-                    selectMax = 'logical_OR_missing',
-                    pos = "character_OR_missing"),
+                    radius = 'numeric'),
           definition = .mergePairs)

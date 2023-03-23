@@ -2,16 +2,16 @@
 % Please edit documentation in R/AllGenerics.R, R/methods-pullHic.R
 \name{pullHicPixels}
 \alias{pullHicPixels}
-\alias{pullHicPixels,GInteractions,numeric,character-method}
+\alias{pullHicPixels,GInteractions,character,numeric-method}
 \title{Pull contact frequency from `.hic` files}
 \usage{
 pullHicPixels(
   x,
-  binSize,
   files,
+  binSize,
   ...,
-  half = "both",
   h5File = tempfile(fileext = ".h5"),
+  half = "both",
   norm = "NONE",
   matrix = "observed",
   blockSize = 248956422,
@@ -20,12 +20,12 @@ pullHicPixels(
   chunkSize = 1
 )
 
-\S4method{pullHicPixels}{GInteractions,numeric,character}(
+\S4method{pullHicPixels}{GInteractions,character,numeric}(
   x,
-  binSize,
   files,
-  half,
+  binSize,
   h5File,
+  half,
   norm,
   matrix,
   blockSize,
@@ -35,14 +35,17 @@ pullHicPixels(
 )
 }
 \arguments{
-\item{x}{GInteractions object.}
+\item{x}{GInteractions object containing interactions
+to extract from Hi-C files.}
+
+\item{files}{Character file paths to `.hic` files.}
 
 \item{binSize}{Integer (numeric) describing the
 resolution (range widths) of the paired data.}
 
-\item{files}{Character file paths to `.hic` files.}
-
 \item{...}{Additional arguments.}
+
+\item{h5File}{Character file path to save `.h5` file.}
 
 \item{half}{String (character vector of length one)
 indicating whether to keep values for the upper
@@ -55,8 +58,6 @@ When `half="both"` there are no `NA` values.
 For interchromosomal interactions there is no inherent
 directionality between chromosomes, so data is returned
 regardless of specified order.}
-
-\item{h5File}{Character file path to save `.h5` file.}
 
 \item{norm}{String (length one character vector)
 describing the Hi-C normalization to apply. Use
