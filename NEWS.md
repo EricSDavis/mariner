@@ -1,4 +1,4 @@
-# mariner 0.2.1
+# mariner 0.99.0
 
 Bug fixes and improvements:
 
