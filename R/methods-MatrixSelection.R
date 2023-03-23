@@ -308,7 +308,7 @@ setMethod("selectSubmatrix", "matrix", function(m, invert) {
 #' @noRd
 .selectCoordinates <- function(rowInd, colInd, buffer, invert) {
     w <- buffer*2+1
-    m <- matrix(1:w^2, nrow=w, ncol=w)
+    m <- matrix(seq(1,w^2), nrow=w, ncol=w)
     ind <- m[cbind(rowInd, colInd)]
     if (invert) which(!m %in% ind) else ind
 }
@@ -341,7 +341,7 @@ setMethod("selectCoordinates", "numeric",
 #' @noRd
 .selectBlock <- function(rowInd, colInd, buffer, invert) {
     w <- buffer*2+1
-    m <- matrix(1:w^2, nrow=w, ncol=w)
+    m <- matrix(seq(1,w^2), nrow=w, ncol=w)
     ind <- as.vector(m[rowInd, colInd])
     if (invert) which(!m %in% ind) else ind
 }
@@ -505,7 +505,7 @@ setMethod("selectBottomLeft", "numeric",
     )
     if (invert) {
         w <- buffer*2+1
-        m <- matrix(1:w^2, nrow=w, ncol=w)
+        m <- matrix(seq(1,w^2), nrow=w, ncol=w)
         which(!m %in% ind)
     } else {
         ind
@@ -539,7 +539,7 @@ setMethod("selectCorners", "numeric",
 #' @noRd
 .selectRows <- function(rows, buffer, invert) {
     w <- buffer*2+1
-    m <- matrix(1:w^2, nrow=w, ncol=w)
+    m <- matrix(seq(1,w^2), nrow=w, ncol=w)
     ind <- as.vector(m[rows,])
     if (invert) which(!m %in% ind) else ind
 }
@@ -566,7 +566,7 @@ setMethod("selectRows", "numeric",
 #' @noRd
 .selectCols <- function(cols, buffer, invert) {
     w <- buffer*2+1
-    m <- matrix(1:w^2, nrow=w, ncol=w)
+    m <- matrix(seq(1,w^2), nrow=w, ncol=w)
     ind <- as.vector(m[,cols])
     if (invert) which(!m %in% ind) else ind
 }
@@ -620,7 +620,7 @@ setMethod("selectInner", "numeric",
 #' @noRd
 .selectOuter <- function(n, buffer, invert) {
     w <- buffer*2+1
-    m <- matrix(1:w^2, nrow=w, ncol=w)
+    m <- matrix(seq(1,w^2), nrow=w, ncol=w)
     tRim <- seq(1, n)
     bRim <- seq(w, w-n+1)
     tr <- .selectRows(tRim, buffer, invert=FALSE)

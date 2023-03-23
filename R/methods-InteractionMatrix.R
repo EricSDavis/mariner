@@ -230,6 +230,10 @@ setMethod("path",
 #' This allows the file path to be updated even
 #' if the original linked data no longer exists.
 #'
+#' @param object InteractionMatrix object
+#' @param value String (length-one character vector)
+#'  to use for path replacement.
+#'
 #' @returns Updates path to HDF5 file for the
 #'  InteractionMatrix object.
 #'

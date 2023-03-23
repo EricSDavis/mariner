@@ -11,6 +11,9 @@
 }
 \arguments{
 \item{object}{InteractionMatrix object}
+
+\item{value}{String (length-one character vector)
+to use for path replacement.}
 }
 \value{
 The path to the HDF5 file associated with

@@ -8,7 +8,6 @@
 calcLoopEnrichment(
   x,
   files,
-  buffer = 5,
   fg = selectCenterPixel(mhDist = 1, buffer = 5),
   bg = selectTopLeft(buffer = 5, n = 4) + selectBottomRight(buffer = 5, n = 4),
   FUN = function(fg, bg) median(fg + 1)/median(bg + 1),
@@ -21,7 +20,6 @@ calcLoopEnrichment(
 \S4method{calcLoopEnrichment}{GInteractions,character}(
   x,
   files,
-  buffer = 5,
   fg = selectCenterPixel(mhDist = 1, buffer = 5),
   bg = selectTopLeft(buffer = 5, n = 4) + selectBottomRight(buffer = 5, n = 4),
   FUN = function(fg, bg) median(fg + 1)/median(bg + 1),
@@ -66,6 +64,7 @@ A DelayedMatrix of enrichment scores
  columns are Hi-C files.
 }
 \description{
-Pulls Hi-C pixels and calculates the enrichment
-over background.
+Pulls Hi-C pixels and calculates the enrichment of
+the selected foreground (`fg`) over the selected
+background (`bg`).
 }

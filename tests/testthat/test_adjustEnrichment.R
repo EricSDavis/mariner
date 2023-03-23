@@ -31,7 +31,7 @@ test_that("adjusting enrichment for distance", {
     .adjustEnrich(x=loops, scores=enrich[,1]) |>
     expect_error(NA)
 
-    ans <- .adjustEnrichment(enrich, loops, k=25, nknots=10)
+    ans <- .adjustEnrichment(enrich, interactions=loops, k=25, nknots=10)
     expect_equal(dim(ans), c(12095, 2))
 
     ans <- adjustEnrichment(enrich, loops)
