@@ -12,6 +12,9 @@
 #' @noRd
 .rollEnrich <- function(x, scores, k=200, thresh=Inf) {
 
+    ## Suppress NSE notes in R CMD check
+    size = rollMedSize = rollMedScore = NULL
+
     ## Data table of loop size and score
     dat <- data.table(
         size = pairdist(x),
@@ -74,7 +77,7 @@
 .adjustEnrichment <- function(x, interactions, k, nknots) {
     ## Apply enrichment to each column of a matrix
     ans <- vapply(seq_len(ncol(x)), \(i) {
-        ae <- .adjustEnrich(x=loops, scores=x[,i], k, nknots)
+        ae <- .adjustEnrich(x=interactions, scores=x[,i], k, nknots)
         ae$adjusted
     }, numeric(nrow(x))) |>
         DelayedArray() |>
@@ -130,8 +133,14 @@ setMethod("adjustEnrichment",
 #' Show diagnostic plot of enrichment before
 #' and after correction.
 #' @inheritParams plotEnrichment
+#' @importFrom graphics lines
+#' @importFrom graphics abline
+#' @importFrom graphics legend
 #' @noRd
 .plotEnrich <- function(scores, interactions, k, nknots, plot) {
+
+    ## Suppress NSE notes in R CMD check
+    size = rollMedSize = rollMedScore = NULL
 
     ## Adjust enrichment scores & assign results
     ## to variables for plotting

@@ -6,6 +6,12 @@
 #'  to use for mapping values to colors.
 #'
 #' @importFrom colourvalues color_values
+#' @importFrom grDevices colorRamp
+#' @importFrom graphics polygon
+#' @importFrom graphics par
+#' @importFrom graphics rect
+#' @importFrom graphics segments
+#' @importFrom graphics text
 #'
 #' @examples
 #' plotBullseye(x = matrix(1:(21*21), 21, 21), title="test")
@@ -52,7 +58,7 @@ plotBullseye <- function(x,
         ## Create color values for legend scale
         scale_cols <- colourvalues::color_values(
             seq(zrange[1],zrange[2], zrange[2]*0.001),
-            palette = colorRamp(cols)((1:10)/10)
+            palette = colorRamp(cols)((seq(1,10))/10)
         )
 
         scale_cols <- col_fun(1000)
@@ -72,7 +78,7 @@ plotBullseye <- function(x,
     j = 10 # total number of shells
 
     ## Walk along each diagonal (counterclock-wise) to get points
-    for (n in 1:j){
+    for (n in seq(1,j)){
         for(i in 0:(n-1)){
             ## NW diagonal
             pos1 <- c(pos1, n1-n+i)
@@ -112,7 +118,7 @@ plotBullseye <- function(x,
                      stringsAsFactors = F, row.names = NULL)
 
     ## Change columns to numeric
-    df[,1:3] <- apply(df[,1:3], 2, as.numeric)
+    df[,seq(1,3)] <- apply(df[,seq(1,3)], 2, as.numeric)
 
     ## Define function to plot shell layers ###
     plotShell <- function(cx=0.5,
@@ -120,7 +126,7 @@ plotBullseye <- function(x,
                           r1=1*0.025,
                           r2=2*0.025,
                           slices=4,
-                          cols=1:length(breaks),
+                          cols=seq(1,length(breaks)),
                           shell=1){
         degrees = 360*slices
         res = 2*pi/slices
@@ -141,17 +147,17 @@ plotBullseye <- function(x,
 
         breaks = seq(1, degrees, (degrees/slices))
 
-        for(i in 1:(length(breaks)-1)){
-            polygon(x = c(xarc1[breaks[i]:breaks[i+1]],
-                          rev(xarc2[breaks[i]:breaks[i+1]])),
-                    y = c(yarc1[breaks[i]:breaks[i+1]],
-                          rev(yarc2[breaks[i]:breaks[i+1]])),
+        for(i in seq(1,(length(breaks)-1))){
+            polygon(x = c(xarc1[seq(breaks[i],breaks[i+1])],
+                          rev(xarc2[seq(breaks[i],breaks[i+1])])),
+                    y = c(yarc1[seq(breaks[i],breaks[i+1])],
+                          rev(yarc2[seq(breaks[i],breaks[i+1])])),
                     col = cols[i], border = NA)
         }
-        polygon(x = c(xarc1[breaks[i+1]:length(xarc1)],
-                      rev(xarc2[breaks[i+1]:length(xarc2)])),
-                y = c(yarc1[breaks[i+1]:length(yarc1)],
-                      rev(yarc2[breaks[i+1]:length(yarc2)])),
+        polygon(x = c(xarc1[seq(breaks[i+1],length(xarc1))],
+                      rev(xarc2[seq(breaks[i+1],length(xarc2))])),
+                y = c(yarc1[seq(breaks[i+1],length(yarc1))],
+                      rev(yarc2[seq(breaks[i+1],length(yarc2))])),
                 col = cols[i+1], border = NA)
     }
 
@@ -192,7 +198,7 @@ plotBullseye <- function(x,
     breaks <- seq(center-0.05, 0.95, length.out = length(scale_cols))
 
     ## Draw rectangles for each color in the scale
-    for(i in 1:(length(scale_cols)-1)){
+    for(i in seq(1,(length(scale_cols)-1))){
         rect(xleft = 1.025, xright = 1.1,
              ybottom = breaks[i], ytop = breaks[i+1],
              col=scale_cols[i], border = NA)
@@ -207,9 +213,9 @@ plotBullseye <- function(x,
 
     positions <- seq(center-0.05, 0.95, length.out = 5)
 
-    for(i in 1:length(positions)){
-        segments(x=1.025, x1=1.045, y0=positions[i], y1=positions[i])
-        segments(x=1.08, x1=1.1, y0=positions[i], y1=positions[i])
+    for(i in seq(1,length(positions))){
+        segments(x0=1.025, x1=1.045, y0=positions[i], y1=positions[i])
+        segments(x0=1.08, x1=1.1, y0=positions[i], y1=positions[i])
         text(x = 1.11, y=positions[i], labels = labels[i],
              cex = 0.6, adj = c(0, 0.5))
     }

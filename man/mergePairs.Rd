@@ -50,9 +50,8 @@ one of "start", "end" or "center". Default is "center".}
 Returns a `MergedGInteractions` object.
 }
 \description{
-Sets of paired range objects (like `GInteractions`
-or BEDPE-formatted `data.frame`-like objects) are
-first clustered by genomic distance with `dbscan`,
+Sets of paired range objects (i.e., `GInteractions`)
+are first clustered by genomic distance with `dbscan`,
 then a representative interaction is selected for
 each cluster.
 }

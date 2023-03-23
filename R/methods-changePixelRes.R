@@ -40,9 +40,9 @@
                   paste0, collapse="-")
 
     ## Select pixels of interest
-    pixels <- sapply(seq_len(nrow(data)), \(i) {
+    pixels <- vapply(seq_len(nrow(data)), \(i) {
         data[i, poi[i]]
-    })
+    }, FUN.VALUE=character(1L))
 
     ## Split character ranges into
     pixelDF <-

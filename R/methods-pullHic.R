@@ -71,7 +71,8 @@
     ## if this fails, user will have to run
     ## the function in separate calls
     chrMaps <- lapply(files, \(f) readHicChroms(f))
-    if (!all(sapply(chrMaps, identical, chrMaps[[1]]))) {
+    if (!all(vapply(chrMaps, identical, chrMaps[[1]],
+                    FUN.VALUE = logical(1L)))) {
         abort(c(
             "Chromosome maps in `files` are not identical",
             "i"="Check this with `strawr::readHicChroms(files[1])`",

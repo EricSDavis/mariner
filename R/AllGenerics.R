@@ -86,18 +86,6 @@ setGeneric("aggPairMcols",
            function(x, columns, funs)
                standardGeneric("aggPairMcols"))
 
-#' @rdname BinnedGInteractions-class
-#' @export
-setGeneric("firstBinSize", function(x) standardGeneric("firstBinSize"))
-
-#' @rdname BinnedGInteractions-class
-#' @export
-setGeneric("secondBinSize", function(x) standardGeneric("secondBinSize"))
-
-#' @rdname BinnedGInteractions-class
-#' @export
-setGeneric("pairBinsEqual", function(x) standardGeneric("pairBinsEqual"))
-
 #' @rdname pullHicMatrices
 #' @export
 setGeneric("pullHicMatrices",
@@ -321,7 +309,6 @@ setGeneric("selectOuter",
 #' @export
 setGeneric("calcLoopEnrichment",
            function(x, files,
-                    buffer=5,
                     fg=selectCenterPixel(mhDist=1, buffer=5),
                     bg=selectTopLeft(buffer=5, n=4) +
                         selectBottomRight(buffer=5, n=4),

@@ -66,8 +66,9 @@
 
 #' Calculate loop enrichment over background.
 #'
-#' Pulls Hi-C pixels and calculates the enrichment
-#' over background.
+#' Pulls Hi-C pixels and calculates the enrichment of
+#' the selected foreground (`fg`) over the selected
+#' background (`bg`).
 #'
 #' @param x GInteractions object.
 #' @param files Character file paths to `.hic` files.

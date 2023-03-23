@@ -142,8 +142,7 @@ objects with `binPairs`, `binRanges`, `shiftRanges`.
 `GInteractions` objects with `mergePairs`.
 
 * Extensions to `GInteractions` class with
-`MergedGInteractions`, `BinnedGInteractions`, and
-`DelegatingGInteractions`.
+`MergedGInteractions`, and `DelegatingGInteractions`.
 
 * Accessor functions for `MergedGInteractions`:
     * `aggPairMcols`

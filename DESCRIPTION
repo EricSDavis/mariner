@@ -19,7 +19,10 @@ Suggests:
     knitr,
     testthat (>= 3.0.0),
     dplyr,
-    utils
+    utils,
+    grDevices,
+    graphics,
+    grid
 Imports:
     methods,
     S4Vectors,
@@ -49,7 +52,7 @@ Imports:
     RColorBrewer,
     colourvalues
 Remotes:
-    EricSDavis/straw/R
+    aidenlab/straw/R
 biocViews:
     FunctionalGenomics,
     Visualization,
@@ -61,7 +64,6 @@ Config/testthat/edition: 3
 Collate: 
     'AllClasses.R'
     'AllGenerics.R'
-    'methods-BinnedGInteractions.R'
     'methods-GInteractions.R'
     'utils.R'
     'methods-InteractionArray.R'
