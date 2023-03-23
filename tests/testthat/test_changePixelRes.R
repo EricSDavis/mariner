@@ -1,4 +1,4 @@
-# library(mariner)
+library(mariner)
 
 ## Read .hic file paths
 hicFiles <-

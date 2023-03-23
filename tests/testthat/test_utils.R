@@ -159,3 +159,24 @@ test_that("Checking types of function arguments.", {
     .checkTypes(c(arg1="string", arg2="boolean", arg3="number")) |>
         expect_error("arg3 is not a number.*")
 })
+
+test_that("Getting binSize", {
+
+    ## Read in loops as GInteractions object
+    loops <-
+        system.file("extdata", package="mariner") |>
+        list.files(pattern="WT.*Loops.txt", full.names=TRUE) |>
+        read.table(header=TRUE) |>
+        as_ginteractions(keep.extra.columns=FALSE)
+
+    ## Removes the "chr" prefix for compatibility
+    ## with the preprocessed hic files
+    GenomeInfoDb::seqlevelsStyle(loops) <- 'ENSEMBL'
+
+    .getBinSize(x=loops) |>
+        expect_identical(5000)
+
+    .getBinSize(x=binPairs(loops, 10e03)) |>
+        expect_identical(10000)
+
+})

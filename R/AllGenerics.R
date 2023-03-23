@@ -53,7 +53,7 @@ setGeneric("mergePairs",
            function(x,
                     radius,
                     method = "manhattan",
-                    column,
+                    column = NULL,
                     selectMax = TRUE,
                     pos = "center")
                standardGeneric("mergePairs"))
@@ -86,27 +86,15 @@ setGeneric("aggPairMcols",
            function(x, columns, funs)
                standardGeneric("aggPairMcols"))
 
-#' @rdname BinnedGInteractions-class
-#' @export
-setGeneric("firstBinSize", function(x) standardGeneric("firstBinSize"))
-
-#' @rdname BinnedGInteractions-class
-#' @export
-setGeneric("secondBinSize", function(x) standardGeneric("secondBinSize"))
-
-#' @rdname BinnedGInteractions-class
-#' @export
-setGeneric("pairBinsEqual", function(x) standardGeneric("pairBinsEqual"))
-
 #' @rdname pullHicMatrices
 #' @export
 setGeneric("pullHicMatrices",
            function(x,
-                    binSize,
                     files,
+                    binSize,
                     ...,
-                    half="both",
                     h5File = tempfile(fileext = ".h5"),
+                    half="both",
                     norm = 'NONE',
                     matrix = 'observed',
                     blockSize = 248956422,
@@ -119,11 +107,11 @@ setGeneric("pullHicMatrices",
 #' @export
 setGeneric("pullHicPixels",
            function(x,
-                    binSize,
                     files,
+                    binSize,
                     ...,
-                    half="both",
                     h5File = tempfile(fileext = ".h5"),
+                    half="both",
                     norm = 'NONE',
                     matrix = 'observed',
                     blockSize = 248956422,
@@ -143,8 +131,11 @@ setGeneric("InteractionArray", function(assays, interactions, ...)
     standardGeneric("InteractionArray"))
 
 setGeneric("counts", package="BiocGenerics")
+setGeneric("counts<-", package="BiocGenerics")
 setGeneric("rbind", package="BiocGenerics")
 setGeneric("cbind", package="BiocGenerics")
+setGeneric("path", package="BiocGenerics")
+setGeneric("path<-", package="BiocGenerics")
 
 
 #' @rdname InteractionMatrix-class
@@ -214,13 +205,128 @@ setGeneric("start2", function(x, ...) standardGeneric("start2"))
 #' @export
 setGeneric("end2", function(x, ...) standardGeneric("end2"))
 
+#' @rdname plotMatrix
+#' @export
+setGeneric("plotMatrix",
+           function(data,
+                    params=NULL,
+                    x=NULL,
+                    y=NULL,
+                    width=NULL,
+                    height=NULL,
+                    just=c("left", "top"),
+                    default.units="inches",
+                    draw=TRUE,
+                    palette=colorRampPalette(
+                        RColorBrewer::brewer.pal(9, 'YlGnBu')
+                    ),
+                    zrange=NULL,
+                    na.color="grey")
+           standardGeneric("plotMatrix"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectRadius", function(x, buffer, invert=FALSE)
+    standardGeneric("selectRadius"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectCenterPixel", function(mhDist, buffer, invert=FALSE)
+    standardGeneric("selectCenterPixel"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectSubmatrix", function(m, invert=FALSE)
+    standardGeneric("selectSubmatrix"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectCoordinates",
+           function(rowInd, colInd, buffer, invert=FALSE)
+    standardGeneric("selectCoordinates"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectBlock",
+           function(rowInd, colInd, buffer, invert=FALSE)
+               standardGeneric("selectBlock"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectTopLeft",
+           function(n, buffer, inset=0, invert=FALSE)
+               standardGeneric("selectTopLeft"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectTopRight",
+           function(n, buffer, inset=0, invert=FALSE)
+               standardGeneric("selectTopRight"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectBottomRight",
+           function(n, buffer, inset=0, invert=FALSE)
+               standardGeneric("selectBottomRight"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectBottomLeft",
+           function(n, buffer, inset=0, invert=FALSE)
+               standardGeneric("selectBottomLeft"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectCorners",
+           function(n, buffer, inset=0, invert=FALSE)
+               standardGeneric("selectCorners"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectRows",
+           function(rows, buffer, invert=FALSE)
+               standardGeneric("selectRows"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectCols",
+           function(cols, buffer, invert=FALSE)
+               standardGeneric("selectCols"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectInner",
+           function(n, buffer, invert=FALSE)
+               standardGeneric("selectInner"))
+
+#' @rdname selection-functions
+#' @export
+setGeneric("selectOuter",
+           function(n, buffer, invert=FALSE)
+               standardGeneric("selectOuter"))
+
 #' @rdname calcLoopEnrichment
 #' @export
 setGeneric("calcLoopEnrichment",
            function(x, files,
-                    mhDist=c(4,5,6),
+                    fg=selectCenterPixel(mhDist=1, buffer=5),
+                    bg=selectTopLeft(buffer=5, n=4) +
+                        selectBottomRight(buffer=5, n=4),
+                    FUN=\(fg, bg) median(fg+1) / median(bg+1),
                     nBlocks=5,
                     verbose=TRUE,
                     BPPARAM=bpparam(),
                     ...)
-    standardGeneric("calcLoopEnrichment"))
+               standardGeneric("calcLoopEnrichment"))
+
+#' @rdname adjustEnrichment
+#' @export
+setGeneric("plotEnrichment",
+           function(scores, interactions, k=25, nknots=10, plot=TRUE)
+               standardGeneric("plotEnrichment"))
+
+#' @rdname adjustEnrichment
+#' @export
+setGeneric("adjustEnrichment",
+           function(x, interactions, k=25, nknots=10)
+               standardGeneric("adjustEnrichment"))

@@ -90,10 +90,10 @@ test_that("S4Vectors List() and SimpleList() types are accepted", {
     gi <- GInteractions(gr1, gr2)
 
     ## Test List() and SimpleList()
-    gil <- .readGInteractionsList(list(gi, gi))
-    .readGInteractionsList(list(gi, gi)) |>
+    gil <- .readGInteractionsList(list(gi, gi), column=NULL)
+    .readGInteractionsList(list(gi, gi), column=NULL) |>
         expect_identical(gil)
-    .readGInteractionsList(SimpleList(gi, gi)) |>
+    .readGInteractionsList(S4Vectors::SimpleList(gi, gi), column=NULL) |>
         expect_identical(gil)
 
 })
@@ -295,4 +295,80 @@ test_that("pos parameter works", {
                pos = "end") |>
         length() |>
         expect_equal(3)
+})
+
+test_that("Mean of modes option doesn't alter original ranges", {
+
+    ## Define start and end of grid,
+    ## binSize, and n interactions
+    binSize <- 5
+    n <- 10
+    breaks <- seq(0, 60, binSize)
+
+    ## Generate grid of options to avoid
+    ## duplicating pixels
+    opts <- expand.grid(
+        bin1 = breaks[-length(breaks)],
+        bin2 = breaks[-length(breaks)]
+    )
+
+    ## Randomly select pixels
+    set.seed(123)
+    s <- sample(seq_len(nrow(opts)), n, replace = FALSE)
+    cnts <- sample(breaks, n, replace = TRUE)
+    r1 <- opts[s, 1]
+    r2 <- opts[s, 2]
+
+    ## Construct GInteractions object
+    library(InteractionSet)
+    gi <- GInteractions(
+        anchor1 = GRanges(
+            seqnames = "chr1",
+            ranges = IRanges(
+                start = r1,
+                width = binSize + 1
+            )
+        ),
+        anchor2 = GRanges(
+            seqnames = "chr1",
+            ranges = IRanges(
+                start = r2,
+                width = binSize + 1
+            )
+        ),
+        count = cnts
+    )
+
+    mgi1 <- mergePairs(x=gi, radius=binSize*2, column='count')
+    mgi2 <- mergePairs(x=gi, radius=binSize*2)
+    expect_identical(
+        getPairClusters(mgi1),
+        getPairClusters(mgi2)
+    )
+
+})
+
+test_that("radius and method columns don't cause issues", {
+
+    ## Create example giList
+    giList <- list(
+        read.table(text="chr1 10 20 chr1 50 60") |>
+            as_ginteractions(),
+        read.table(text="chr1 5 15 chr1 45 55") |>
+            as_ginteractions()
+    )
+
+    ## Add "radius" column to a giList
+    giList[[1]]$radius <- 1
+    giList[[2]]$radius <- 2
+    giList[[1]]$method <- 2
+    giList[[2]]$method <- 1
+    mgi <- mergePairs(x=giList, radius=10, column="radius")
+    expect_identical(mgi$radius, 2)
+    expect_identical(mgi$method, 1)
+
+    mgi <- mergePairs(x=giList, radius=10, column="method")
+    expect_identical(mgi$radius, 1)
+    expect_identical(mgi$method, 2)
+
 })
