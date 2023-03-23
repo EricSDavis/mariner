@@ -271,7 +271,7 @@
     name <- paste0("MatrixPlot", nObjs + 1)
 
     ## Make grobs
-    mpRaster <- rasterGrob(image=m, interpolate=F, name=name)
+    mpRaster <- rasterGrob(image=m, interpolate=FALSE, name=name)
 
     ## Assign grobs to gTree
     assign(x="MatrixPlotGrobs",
