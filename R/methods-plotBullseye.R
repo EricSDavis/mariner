@@ -39,7 +39,7 @@ plotBullseye <- function(x,
     if(is.null(zrange)){
         ## Convert to colorscale
         grps <- cut(dat, seq(min(dat), max(dat), length.out = 1000),
-                    include.lowest = T)
+                    include.lowest = TRUE)
         cdat <- matrix(col_fun(1000)[grps], nrow = 21, ncol = 21)
 
         ## Create color values for legend scale
@@ -52,7 +52,7 @@ plotBullseye <- function(x,
 
         ## Convert to colorscale
         grps <- cut(dat, seq(zrange[1], zrange[2],
-                             length.out = 1000), include.lowest = T)
+                             length.out = 1000), include.lowest = TRUE)
         cdat <- matrix(col_fun(1000)[grps], nrow = 21, ncol = 21)
 
         ## Create color values for legend scale
@@ -115,7 +115,7 @@ plotBullseye <- function(x,
 
     ## Bind into data frame
     df <- data.frame(cbind(pos1, pos2, shell, value, color),
-                     stringsAsFactors = F, row.names = NULL)
+                     stringsAsFactors = FALSE, row.names = NULL)
 
     ## Change columns to numeric
     df[,seq(1,3)] <- apply(df[,seq(1,3)], 2, as.numeric)
@@ -169,7 +169,7 @@ plotBullseye <- function(x,
     par(pty="s") ## keep square asp ratio when not plotting axes
     plot(center, center, 'n',
          xlim=c(0,1.2), ylim=c(0,1.2),
-         axes=F, main = title,
+         axes=FALSE, main = title,
          asp=1, xlab="", ylab="")
 
     ## Plot center pixel
