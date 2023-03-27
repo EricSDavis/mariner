@@ -12,6 +12,10 @@ sources(x)
 \arguments{
 \item{x}{MergedGInteractions object.}
 }
+\value{
+A character vector of names or source
+ files of a `MergedGInteractions` object.
+}
 \description{
 Access the names or source files of
 a `MergedGInteractions` object.
