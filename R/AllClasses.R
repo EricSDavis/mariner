@@ -213,6 +213,8 @@ setMethod("parallel_slot_names", "MergedGInteractions", function(x) {
 #' `pullHicMatrices()` function when all
 #' paired ranges have equal dimensions.
 #'
+#' @returns An InteractionArray (see description)
+#'
 #' @seealso [InteractionSet::InteractionSet]
 #'
 #' @examples
@@ -238,6 +240,7 @@ setClass(
 #' `pullHicPixels()` function when all
 #' paired ranges define a single pixel.
 #'
+#' @returns An InteractionMatrix (see description)
 #'
 #' @seealso [InteractionSet::InteractionSet]
 #'

@@ -73,13 +73,13 @@ plotBullseye <- function(x,
     color <- c(cdat[11,11])
 
     ## Define center point and shell layers
-    n1 = 11
-    n2 = 11
-    j = 10 # total number of shells
+    n1 <- 11
+    n2 <- 11
+    j <- 10 # total number of shells
 
     ## Walk along each diagonal (counterclock-wise) to get points
     for (n in seq(1,j)){
-        for(i in 0:(n-1)){
+        for(i in seq(0,(n-1))){
             ## NW diagonal
             pos1 <- c(pos1, n1-n+i)
             pos2 <- c(pos2, n2-i)
@@ -87,7 +87,7 @@ plotBullseye <- function(x,
             value <- c(value, dat[n1-n+i, n2-i])
             color <- c(color, cdat[n1-n+i, n2-i])
         }
-        for(i in 0:(n-1)){
+        for(i in seq(0,(n-1))){
             ## SW diagonal
             pos1 <- c(pos1, n1+i)
             pos2 <- c(pos2, n2-n+i)
@@ -95,7 +95,7 @@ plotBullseye <- function(x,
             value <- c(value, dat[n1+i, n2-n+i])
             color <- c(color, cdat[n1+i, n2-n+i])
         }
-        for(i in 0:(n-1)){
+        for(i in seq(0,(n-1))){
             ## SE diagonal
             pos1 <- c(pos1, n1+n-i)
             pos2 <- c(pos2, n2+i)
@@ -103,7 +103,7 @@ plotBullseye <- function(x,
             value <- c(value, dat[n1+n-i, n2+i])
             color <- c(color, cdat[n1+n-i, n2+i])
         }
-        for(i in 0:(n-1)){
+        for(i in seq(0,(n-1))){
             ## NE diagonal
             pos1 <- c(pos1, n1-i)
             pos2 <- c(pos2, n2+n-i)
@@ -128,8 +128,8 @@ plotBullseye <- function(x,
                           slices=4,
                           cols=seq(1,length(breaks)),
                           shell=1){
-        degrees = 360*slices
-        res = 2*pi/slices
+        degrees <- 360*slices
+        res <- 2*pi/slices
 
         xarc1 <- cos(seq((shell*2-1)*pi/slices,
                          (shell*2-1)*pi/slices+2*pi,
@@ -145,7 +145,7 @@ plotBullseye <- function(x,
                          (shell*2-1)*pi/slices+2*pi,
                          length.out = degrees))*r2+cy
 
-        breaks = seq(1, degrees, (degrees/slices))
+        breaks <- seq(1, degrees, (degrees/slices))
 
         for(i in seq(1,(length(breaks)-1))){
             polygon(x = c(xarc1[seq(breaks[i],breaks[i+1])],
@@ -163,8 +163,8 @@ plotBullseye <- function(x,
 
     ## Create bulls-eye plot ####
     ## Define variables for plotting
-    len = 0.045 # radius length
-    center = 0.5 # center of the plot (could define cx and cy separately if desired)
+    len <- 0.045 # radius length
+    center <- 0.5 # center of the plot (could define cx and cy separately if desired)
 
     par(pty="s") ## keep square asp ratio when not plotting axes
     plot(center, center, 'n',
@@ -178,9 +178,9 @@ plotBullseye <- function(x,
             col = df$color[1], border = NA)
 
     ## Plot each shell (increasing by 4 each time)
-    shells = 10
-    seg = 4
-    for(n in 0:shells){
+    shells <- 10
+    seg <- 4
+    for(n in seq(0,shells)){
         plotShell(cx = center, cy = center,
                   r1 = (n+1)*len, r2 = (n+2)*len,
                   slices = seg, cols = df$color[df$shell == n+1],
