@@ -67,15 +67,13 @@
 #'  by `pos1` and `pos2`.
 #'
 #' @examples
-#' ## Construct GInteractions
-#' library(InteractionSet)
-#' gi1 <-
+#' ## Construct interactions as data.frame
+#' df1 <-
 #'     data.frame(chr1 = "chr1", x1 = 10000, x2 = 20000,
-#'                chr2 = "chr1", y1 = 30000, y2 = 40000) |>
-#'     as_ginteractions()
+#'                chr2 = "chr1", y1 = 30000, y2 = 40000)
 #'
 #' ## Assign each range to 20-kb bins from the start positions
-#' binPairs(x = gi1,
+#' binPairs(x = df1,
 #'          binSize = 20000,
 #'          pos1 = 'start',
 #'          pos2 = 'start')
@@ -90,6 +88,19 @@ setMethod("binPairs",
           definition = .binPairs)
 
 #' @rdname binPairs
+#' @examples
+#' ## Construct GInteractions
+#' library(InteractionSet)
+#' gi1 <-
+#'     data.frame(chr1 = "chr1", x1 = 10000, x2 = 20000,
+#'                chr2 = "chr1", y1 = 30000, y2 = 40000) |>
+#'     as_ginteractions()
+#'
+#' ## Assign each range to 20-kb bins from the start positions
+#' binPairs(x = gi1,
+#'          binSize = 20000,
+#'          pos1 = 'start',
+#'          pos2 = 'start')
 #' @export
 setMethod("binPairs",
           signature(x = 'GInteractions',

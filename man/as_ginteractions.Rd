@@ -64,6 +64,11 @@ GInteractions object. For convenience,
 ## data.frame
 df <- data.frame(chr1 = "chr1", x1 = 10000, x2 = 20000,
                  chr2 = "chr1", y1 = 30000, y2 = 40000)
+makeGInteractionsFromDataFrame(df)
+
+## data.frame
+df <- data.frame(chr1 = "chr1", x1 = 10000, x2 = 20000,
+                 chr2 = "chr1", y1 = 30000, y2 = 40000)
 as_ginteractions(df)
 
 ## data.table
