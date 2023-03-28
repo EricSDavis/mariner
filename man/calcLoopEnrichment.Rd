@@ -9,7 +9,7 @@ calcLoopEnrichment(
   x,
   files,
   fg = selectCenterPixel(mhDist = 1, buffer = 5),
-  bg = selectTopLeft(buffer = 5, n = 4) + selectBottomRight(buffer = 5, n = 4),
+  bg = selectTopLeft(n = 4, buffer = 5) + selectBottomRight(n = 4, buffer = 5),
   FUN = function(fg, bg) median(fg + 1)/median(bg + 1),
   nBlocks = 5,
   verbose = TRUE,
@@ -21,7 +21,7 @@ calcLoopEnrichment(
   x,
   files,
   fg = selectCenterPixel(mhDist = 1, buffer = 5),
-  bg = selectTopLeft(buffer = 5, n = 4) + selectBottomRight(buffer = 5, n = 4),
+  bg = selectTopLeft(n = 4, buffer = 5) + selectBottomRight(n = 4, buffer = 5),
   FUN = function(fg, bg) median(fg + 1)/median(bg + 1),
   nBlocks = 5,
   verbose = TRUE,
@@ -67,4 +67,40 @@ A DelayedMatrix of enrichment scores
 Pulls Hi-C pixels and calculates the enrichment of
 the selected foreground (`fg`) over the selected
 background (`bg`).
+}
+\examples{
+## Read .hic file paths
+hicFiles <-
+    system.file("extdata/test_hic", package="mariner") |>
+    list.files(pattern=".hic", full.names=TRUE)
+
+## Read in loops as GInteractions object
+loops <-
+    system.file("extdata", package="mariner") |>
+    list.files(pattern="WT.*Loops.txt", full.names=TRUE) |>
+    read.table(header=TRUE) |>
+    as_ginteractions(keep.extra.columns=FALSE)
+
+## Removes the "chr" prefix for compatibility
+## with the preprocessed hic files
+GenomeInfoDb::seqlevelsStyle(loops) <- 'ENSEMBL'
+
+## Expand binSize of loops
+loops <- binPairs(x=loops, binSize=100e3)
+
+## Calculate loop enrichment
+calcLoopEnrichment(x=loops[1:10],
+                   files=hicFiles)
+
+## Customize different foreground/background
+## with selection functions
+buffer <- 10 # choose pixel radius around center
+fg <- selectCenterPixel(mhDist=seq(0,4), buffer=buffer)
+bg <- selectCorners(n=6, buffer=buffer) +
+    selectOuter(n=2, buffer=buffer)
+calcLoopEnrichment(x=loops[1:10],
+                   files=hicFiles,
+                   fg=fg,
+                   bg=bg)
+
 }
