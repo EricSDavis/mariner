@@ -277,6 +277,14 @@ setMethod("path<-",
 #' Internal show method
 #' @noRd
 .showInteractionMatrix <- function(object) {
+
+}
+
+#' show for InteractionMatrix
+#' @param object InteractionMatrix object.
+#' @rdname InteractionMatrix-class
+#' @export
+setMethod("show", "InteractionMatrix", function(object) {
     validObject(object)
     output <- utils::capture.output(callNextMethod(object))
     if (length(assays(object)) == 0) {
@@ -287,15 +295,7 @@ setMethod("path<-",
     msg <- "dim: count matrix with %s interactions and %s file(s)"
     output[2] <- do.call(sprintf, c(msg, as.list(dims)))
     cat(output, sep = "\n")
-}
-
-#' show for InteractionMatrix
-#' @param object InteractionMatrix object.
-#' @rdname InteractionMatrix-class
-#' @export
-setMethod("show",
-          signature(object="InteractionMatrix"),
-          definition = .showInteractionMatrix)
+})
 
 ## Concatenation ---------------------------------------------------------------
 

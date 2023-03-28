@@ -52,54 +52,7 @@ setMethod("InteractionArray", c("missing", "missing"),
     cnts <- aperm(assay(object, 'counts'), c(3,4,1,2))
 
     if (showDimnames) {
-        ## Row/colnames
-        rows <- assay(object, 'rownames')
-        cols <- assay(object, 'colnames')
-
-        ## Get the header and dimensions
-        fullHeader <- capture.output(show(cnts))[1]
-        dims <- dim(cnts)
-        dn <- dimnames(cnts)
-
-        ## Fxn to add row/colnames to matrix
-        mat_with_dimnames <- function(x, rows, cols) {
-            if (is.vector(x)) {
-                x <- matrix(x, length(rows), length(cols))
-                x <- DelayedArray(x)
-            }
-            dimnames(x) <- list(rows, cols)
-            capture.output(show(x))[-1]
-        }
-
-        ## Construct first & last matrix header
-        firstHeader <-
-            paste0(c(",,"),
-                   ifelse(is.null(dn[[3]]), 1, dn[[1]][1]), ",",
-                   ifelse(is.null(dn[[4]]), 1, dn[[4]][1]))
-
-        lastHeader <-
-            paste0(c(",,"),
-                   ifelse(is.null(dn[[3]]),
-                          dims[3], dn[[1]][dims[3]]), ",",
-                   ifelse(is.null(dn[[4]]),
-                          dims[4], dn[[4]][dims[4]]))
-
-        ## Construct new object to print
-        ans <- fullHeader
-        ans <- c(ans, firstHeader)
-        ans <- c(ans, mat_with_dimnames(cnts[,,1,1],
-                                        rows[1,1,], cols[1,1,]))
-        if (dims[3] != 1L | dims[4] != 1L) {
-            ans <- c(ans, "\n...\n")
-            ans <- c(ans, lastHeader)
-            ans <- c(ans, mat_with_dimnames(cnts[,,dims[3],dims[4]],
-                                            rows[dims[3],dims[4],],
-                                            cols[dims[3],dims[4],]))
-        } else {
-            dimnames(cnts)[c(1,2)] <- list(rows[1,1,], cols[1,1,])
-        }
-        cat(ans, sep="\n")
-        return(invisible(cnts))
+        return(CountMatrix(seed=cnts, object=object))
     } else {
         return(cnts)
     }
@@ -156,9 +109,11 @@ setMethod("counts",
 
 ## Show ------------------------------------------------------------------------
 
-#' Internal show method
-#' @noRd
-.showInteractionArray <- function(object) {
+#' show for InteractionArray
+#' @param object InteractionArray object.
+#' @rdname InteractionArray-class
+#' @export
+setMethod("show", "InteractionArray", function(object) {
     output <- utils::capture.output(callNextMethod(object))
     if (length(assays(object)) == 0) {
         dims <- rep(0, 4)
@@ -168,15 +123,7 @@ setMethod("counts",
     msg <- "dim: %s interaction(s), %s file(s), %sx%s count matrix(es)"
     output[2] <- do.call(sprintf, c(msg, as.list(dims)))
     cat(output, sep = "\n")
-}
-
-#' show for InteractionArray
-#' @param object InteractionArray object.
-#' @rdname InteractionArray-class
-#' @export
-setMethod("show",
-          signature(object="InteractionArray"),
-          definition=.showInteractionArray)
+})
 
 
 ## Concatenation ---------------------------------------------------------------
