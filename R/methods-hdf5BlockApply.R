@@ -38,6 +38,9 @@
 #' Read in array data in blocks, apply function,
 #' and write back to an HDF5 file.
 #'
+#' Implements an HDF5-backed option for block
+#' processing on DelayedArray objects.
+#'
 #' @param x Delayed Array object.
 #' @param FUN Function that takes one argument
 #'  'block' and processes it.
@@ -46,7 +49,73 @@
 #' @param sink_grid ArrayGrid over `sink`.
 #' @param verbose Logical - whether block processing
 #'  progress should be displayed.
-#' @returns DelayedArray object.
+#' @returns An HDF5Array object.
+#'
+#' @examples
+#'
+#' ## ################################################
+#' ## This function is intended for advanced users.
+#' ## To learn more about using DelayedArray
+#' ## or HDF5-backed objects, see ?DelayedArray or
+#' ## ?HDF5Array
+#' ###################################################
+#'
+#' library(DelayedArray)
+#' library(HDF5Array)
+#' library(rhdf5)
+#'
+#' ## Create example array that is longer in the
+#' ## 3rd dimension (representing interactions)
+#' dims <- c(11L, 11L, 100L, 2L)
+#' a <- array(data=seq(1, prod(dims)), dim=dims)
+#' a <- DelayedArray(a)
+#'
+#' ## Define spacings, breaking up the longest dim
+#' ## Here we are processing in blocks of 10
+#' spacings <- dim(a)
+#' spacings[3] <- ceiling(spacings[3]/10)
+#'
+#' ## Define storage dimensions (all except those
+#' ## over which the function is being applied)
+#' storageDims <- dims[c(1,2,3)]
+#'
+#' ## Define chunk dimensions for writing to HDF5
+#' chunkDims <- storageDims
+#' chunkDims[3] <- spacings[3]
+#'
+#' ## Create grid for applying the data (grid)
+#' ## and grid for writing to the sink (sink_grid)
+#' grid <- RegularArrayGrid(dims, spacings)
+#' sink_grid <- RegularArrayGrid(storageDims, chunkDims)
+#'
+#' ## Create HDF5 file for writing
+#' h5 <- tempfile(fileext = ".h5")
+#' h5createFile(h5)
+#'
+#' ## Define compression for HDF5
+#' compressionLevel <- 0
+#'
+#' ## Create HDF5-backed realization sink
+#' sink <- HDF5RealizationSink(filepath=h5,
+#'                             name="counts",
+#'                             type="integer",
+#'                             dim=storageDims,
+#'                             chunkdim=chunkDims,
+#'                             level=compressionLevel)
+#'
+#' ## Wrap function that operates on each block
+#' ## this can be anything, here it is sum
+#' FUN <- \(block) apply(block, c(1,2,3), sum)
+#'
+#' ## Read, apply, and write to HDF5
+#' ans <- hdf5BlockApply(x=a,
+#'                       FUN=FUN,
+#'                       sink=sink,
+#'                       grid=grid,
+#'                       sink_grid=sink_grid,
+#'                       verbose=TRUE)
+#' ans
+#'
 #' @rdname hdf5BlockApply
 #' @export
 setMethod("hdf5BlockApply",
