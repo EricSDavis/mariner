@@ -698,6 +698,43 @@
 #'  The submatrices returned have rows cooresponding to anchor1
 #'  of `x` and columns correspond to anchor2 of `x`.
 #'
+#' @examples
+#' ## Read .hic file paths
+#' hicFiles <-
+#'   system.file("extdata/test_hic", package="mariner") |>
+#'   list.files(pattern=".hic", full.names=TRUE)
+#'
+#' ## Read in loop pixels as GInteractions object
+#' pixels <-
+#'   system.file("extdata", package="mariner") |>
+#'   list.files(pattern="WT.*Loops.txt", full.names=TRUE) |>
+#'   read.table(header=TRUE) |>
+#'   as_ginteractions(keep.extra.columns=FALSE) |>
+#'   binPairs(binSize=100e3)
+#'
+#' ## Removes the "chr" prefix for compatibility
+#' ## with the preprocessed hic files
+#' GenomeInfoDb::seqlevelsStyle(pixels) <- 'ENSEMBL'
+#'
+#' ## Expand pixels to regions for pulling
+#' ## Hi-C submatrices
+#' regions <- pixelsToMatrices(x=pixels, buffer=5)
+#'
+#' ## Extract 11x11 count matrices from the
+#' ## first 100 regions and 2 Hi-C files
+#' iarr <- pullHicMatrices(x=regions[1:100],
+#'                         files=hicFiles,
+#'                         binSize=100e3)
+#' iarr
+#'
+#' ## Access count matrices
+#' counts(iarr)
+#'
+#' ## Display the start bin of each
+#' ## interaction in the count
+#' ## matrices
+#' counts(iarr, showDimnames=TRUE)
+#'
 #' @rdname pullHicMatrices
 #' @export
 setMethod("pullHicMatrices",
@@ -952,6 +989,33 @@ setMethod("pullHicMatrices",
 #'
 #' @returns InteractionSet object with a 2-dimensional array
 #'  of Hi-C interactions (rows) and Hi-C sample (columns).
+#'
+#' @examples
+#' ## Read .hic file paths
+#' hicFiles <-
+#'   system.file("extdata/test_hic", package="mariner") |>
+#'   list.files(pattern=".hic", full.names=TRUE)
+#'
+#' ## Read in loop pixels as GInteractions object
+#' pixels <-
+#'   system.file("extdata", package="mariner") |>
+#'   list.files(pattern="WT.*Loops.txt", full.names=TRUE) |>
+#'   read.table(header=TRUE) |>
+#'   as_ginteractions(keep.extra.columns=FALSE) |>
+#'   binPairs(binSize=100e3)
+#'
+#' ## Removes the "chr" prefix for compatibility
+#' ## with the preprocessed hic files
+#' GenomeInfoDb::seqlevelsStyle(pixels) <- 'ENSEMBL'
+#'
+#' ## Extract the first 100 pixels
+#' imat <- pullHicPixels(x=pixels[1:100],
+#'                       files=hicFiles,
+#'                       binSize=100e3)
+#' imat
+#'
+#' ## Access count matrix
+#' counts(imat)
 #'
 #' @rdname pullHicPixels
 #' @export

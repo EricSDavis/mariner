@@ -102,3 +102,31 @@ InteractionSet object with a 2-dimensional array
 \description{
 Pull contact frequency from `.hic` files
 }
+\examples{
+## Read .hic file paths
+hicFiles <-
+  system.file("extdata/test_hic", package="mariner") |>
+  list.files(pattern=".hic", full.names=TRUE)
+
+## Read in loop pixels as GInteractions object
+pixels <-
+  system.file("extdata", package="mariner") |>
+  list.files(pattern="WT.*Loops.txt", full.names=TRUE) |>
+  read.table(header=TRUE) |>
+  as_ginteractions(keep.extra.columns=FALSE) |>
+  binPairs(binSize=100e3)
+
+## Removes the "chr" prefix for compatibility
+## with the preprocessed hic files
+GenomeInfoDb::seqlevelsStyle(pixels) <- 'ENSEMBL'
+
+## Extract the first 100 pixels
+imat <- pullHicPixels(x=pixels[1:100],
+                      files=hicFiles,
+                      binSize=100e3)
+imat
+
+## Access count matrix
+counts(imat)
+
+}

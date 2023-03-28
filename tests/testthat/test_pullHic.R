@@ -24,7 +24,7 @@ giList <-
     lapply(bedpeFiles, fread) |>
     lapply(as_ginteractions)
 
-## Create out-of-ordered, interchromosomal ranges
+## Create out-of-order, interchromosomal ranges
 ## (for testing)
 giList <-
     lapply(giList, \(x) {
