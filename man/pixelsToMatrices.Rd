@@ -40,6 +40,7 @@ ranges.
 }
 \examples{
 ## Define example 100bp pixel
+library(InteractionSet)
 pixel <- GInteractions(
     anchor1=GRanges("chr1:500-600"),
     anchor2=GRanges("chr1:2000-2100")
