@@ -164,7 +164,8 @@ plotBullseye <- function(x,
     ## Create bulls-eye plot ####
     ## Define variables for plotting
     len <- 0.045 # radius length
-    center <- 0.5 # center of the plot (could define cx and cy separately if desired)
+    center <- 0.5 # center of the plot ...
+    # ...(could define cx and cy separately if desired)
 
     par(pty="s") ## keep square asp ratio when not plotting axes
     plot(center, center, 'n',
