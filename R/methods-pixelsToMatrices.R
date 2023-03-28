@@ -10,16 +10,9 @@
     ## Check input types
     .checkTypes(c(buffer="number"))
 
-    ## Get binSize for ranges in x
-    binSize <- unique(width(regions(x))) - 1
-
-    ## Ensure x is binned correctly
-    if (length(binSize) != 1L) {
-        abort(c(
-            "All ranges in `x` must be the same width.",
-            "i"="Use `binPairs(x)` to set `binSize`."
-        ))
-    }
+    ## Get binSize for ranges in x &
+    ## ensure x is binned correctly
+    binSize <- .getBinSize(x)
 
     ## Resize each anchor
     a1 <-
@@ -68,6 +61,19 @@
 #'  of pixels around the pixels in `x`.
 #'
 #' @returns `x` with updated ranges.
+#'
+#' @examples
+#' ## Define example 100bp pixel
+#' pixel <- GInteractions(
+#'     anchor1=GRanges("chr1:500-600"),
+#'     anchor2=GRanges("chr1:2000-2100")
+#' )
+#'
+#' ## Expand pixel to matrix with
+#' ## 3 pixels surrounding the center
+#' ## pixel
+#' region <- pixelsToMatrices(x=pixel, buffer=3)
+#' region
 #'
 #' @rdname pixelsToMatrices
 #' @export
