@@ -106,3 +106,41 @@ InteractionSet object with a 4-dimensional array
 \description{
 Pull submatrices from `.hic` files
 }
+\examples{
+## Read .hic file paths
+hicFiles <-
+  system.file("extdata/test_hic", package="mariner") |>
+  list.files(pattern=".hic", full.names=TRUE)
+
+## Read in loop pixels as GInteractions object
+pixels <-
+  system.file("extdata", package="mariner") |>
+  list.files(pattern="WT.*Loops.txt", full.names=TRUE) |>
+  read.table(header=TRUE) |>
+  as_ginteractions(keep.extra.columns=FALSE) |>
+  binPairs(binSize=100e3)
+
+## Removes the "chr" prefix for compatibility
+## with the preprocessed hic files
+GenomeInfoDb::seqlevelsStyle(pixels) <- 'ENSEMBL'
+
+## Expand pixels to regions for pulling
+## Hi-C submatrices
+regions <- pixelsToMatrices(x=pixels, buffer=5)
+
+## Extract 11x11 count matrices from the
+## first 100 regions and 2 Hi-C files
+iarr <- pullHicMatrices(x=regions[1:100],
+                        files=hicFiles,
+                        binSize=100e3)
+iarr
+
+## Access count matrices
+counts(iarr)
+
+## Display the start bin of each
+## interaction in the count
+## matrices
+counts(iarr, showDimnames=TRUE)
+
+}
