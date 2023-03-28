@@ -204,6 +204,39 @@
 #'  If `by=interactions` or `by=files` then a 3-dimensional
 #'  `DelayedArray` is returned. If `by=NULL` (default) then
 #'  A 2-dimensional `DelayedMatrix` is returned.
+#' @examples
+#' ## Read .hic file paths
+#' hicFiles <-
+#'     system.file("extdata/test_hic", package="mariner") |>
+#'     list.files(pattern=".hic", full.names=TRUE)
+#'
+#' ## Read in loops as GInteractions object
+#' loops <-
+#'     system.file("extdata", package="mariner") |>
+#'     list.files(pattern="WT.*Loops.txt", full.names=TRUE) |>
+#'     read.table(header=TRUE) |>
+#'     as_ginteractions(keep.extra.columns=FALSE)
+#'
+#' ## Removes the "chr" prefix for compatibility
+#' ## with the preprocessed hic files
+#' GenomeInfoDb::seqlevelsStyle(loops) <- 'ENSEMBL'
+#'
+#' ## Expand pixel ranges with a 5 pixel buffer on either side
+#' loops <-
+#'     binPairs(loops, binSize=100e3) |>
+#'     pixelsToMatrices(buffer=5)
+#'
+#' ## Extract 10, 11x11 count matrices from 2 hic files
+#' iarr <-
+#'     loops[1:10] |>
+#'     pullHicMatrices(binSize=100e3,
+#'                     files=hicFiles)
+#'
+#' ## Aggregate all, by files, or by interactions
+#' aggHicMatrices(x=iarr)
+#' aggHicMatrices(x=iarr, by="files")
+#' aggHicMatrices(x=iarr, by="interactions")
+#'
 #' @rdname aggHicMatrices
 #' @export
 setMethod("aggHicMatrices",

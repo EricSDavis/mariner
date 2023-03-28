@@ -45,7 +45,6 @@ test_that("counts accessor for InteractionArray", {
                  ".*has no count matrices.$")
 })
 
-
 test_that("Concatenating InteractionArray objects", {
 
     ## Reference

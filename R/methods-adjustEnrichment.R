@@ -13,7 +13,7 @@
 .rollEnrich <- function(x, scores, k=200, thresh=Inf) {
 
     ## Suppress NSE notes in R CMD check
-    size = rollMedSize = rollMedScore = NULL
+    size <- rollMedSize <- rollMedScore <- NULL
 
     ## Data table of loop size and score
     dat <- data.table(
@@ -140,7 +140,7 @@ setMethod("adjustEnrichment",
 .plotEnrich <- function(scores, interactions, k, nknots, plot) {
 
     ## Suppress NSE notes in R CMD check
-    size = rollMedSize = rollMedScore = NULL
+    size <- rollMedSize <- rollMedScore <- NULL
 
     ## Adjust enrichment scores & assign results
     ## to variables for plotting

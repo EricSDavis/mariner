@@ -131,7 +131,7 @@
 .orderInteractions <- function(x, file) {
 
     ## Suppress NSE notes in R CMD check
-    chromIndex1 = chromIndex2 = NULL
+    chromIndex1 <- chromIndex2 <- NULL
 
     ## Convert to data.table format
     x <- as.data.table(x)[, c("seqnames1", "start1", "end1",
@@ -286,7 +286,7 @@
 .assignCounts <- function(g, longMat, sparseMat, chrSwapped, half) {
 
     ## Suppress NSE notes in R CMD check
-    x = y = grp = NULL
+    x <- y <- grp <- NULL
 
     ## Set intrachromosomal flag
     intra <- identical(g$seqnames1, g$seqnames2)
@@ -351,7 +351,7 @@
                        chunkSize, mDim1, mDim2, blocks, chrSwapped) {
 
     ## Suppress NSE notes in R CMD check
-    grp = NULL
+    grp <- NULL
 
     ## Determine dimensions for dataset
     ## Dim order is nInteractions, nFiles, matrix dims
@@ -431,16 +431,13 @@
             g <- as.data.table(x[xIndices])
             g$xIndices <- xIndices
 
-            ## Set intrachromosomal flag
-            # intra <- identical(g$seqnames1, g$seqnames2)
-
             ## Create submatrix bins for each range
             ## with a fast cross-join
             longMat <- g[,{
-                x=seq(start1, end1-binSize, binSize);
-                y=seq(start2, end2-binSize, binSize);
-                x=as.integer(x) #seq sometimes returns double
-                y=as.integer(y)
+                x <- seq(start1, end1-binSize, binSize);
+                y <- seq(start2, end2-binSize, binSize);
+                x <- as.integer(x) #seq sometimes returns double
+                y <- as.integer(y)
                 CJ(x, y, sorted=FALSE)
             },
             by=.(grp=xIndices)]
@@ -555,7 +552,7 @@
                            chunkSize) {
 
     ## Suppress NSE notes in R CMD check
-    block = xIndex = NULL
+    block <- xIndex <- NULL
 
     ## Check input types
     .checkTypes(c(
@@ -701,6 +698,43 @@
 #'  The submatrices returned have rows cooresponding to anchor1
 #'  of `x` and columns correspond to anchor2 of `x`.
 #'
+#' @examples
+#' ## Read .hic file paths
+#' hicFiles <-
+#'   system.file("extdata/test_hic", package="mariner") |>
+#'   list.files(pattern=".hic", full.names=TRUE)
+#'
+#' ## Read in loop pixels as GInteractions object
+#' pixels <-
+#'   system.file("extdata", package="mariner") |>
+#'   list.files(pattern="WT.*Loops.txt", full.names=TRUE) |>
+#'   read.table(header=TRUE) |>
+#'   as_ginteractions(keep.extra.columns=FALSE) |>
+#'   binPairs(binSize=100e3)
+#'
+#' ## Removes the "chr" prefix for compatibility
+#' ## with the preprocessed hic files
+#' GenomeInfoDb::seqlevelsStyle(pixels) <- 'ENSEMBL'
+#'
+#' ## Expand pixels to regions for pulling
+#' ## Hi-C submatrices
+#' regions <- pixelsToMatrices(x=pixels, buffer=5)
+#'
+#' ## Extract 11x11 count matrices from the
+#' ## first 100 regions and 2 Hi-C files
+#' iarr <- pullHicMatrices(x=regions[1:100],
+#'                         files=hicFiles,
+#'                         binSize=100e3)
+#' iarr
+#'
+#' ## Access count matrices
+#' counts(iarr)
+#'
+#' ## Display the start bin of each
+#' ## interaction in the count
+#' ## matrices
+#' counts(iarr, showDimnames=TRUE)
+#'
 #' @rdname pullHicMatrices
 #' @export
 setMethod("pullHicMatrices",
@@ -794,8 +828,12 @@ setMethod("pullHicMatrices",
 
             ## Create submatrix bins for each range
             ## with a fast cross-join (rename)
-            longMat <- g[,{x=start1; y=start2; CJ(x, y, sorted=FALSE)},
-                         by=.(grp=xIndices)]
+            longMat <- g[,{
+                x <- start1;
+                y <- start2;
+                CJ(x, y, sorted=FALSE)
+            },
+            by=.(grp=xIndices)]
 
             ## Assign counts
             longMat <- .assignCounts(g, longMat,
@@ -951,6 +989,33 @@ setMethod("pullHicMatrices",
 #'
 #' @returns InteractionSet object with a 2-dimensional array
 #'  of Hi-C interactions (rows) and Hi-C sample (columns).
+#'
+#' @examples
+#' ## Read .hic file paths
+#' hicFiles <-
+#'   system.file("extdata/test_hic", package="mariner") |>
+#'   list.files(pattern=".hic", full.names=TRUE)
+#'
+#' ## Read in loop pixels as GInteractions object
+#' pixels <-
+#'   system.file("extdata", package="mariner") |>
+#'   list.files(pattern="WT.*Loops.txt", full.names=TRUE) |>
+#'   read.table(header=TRUE) |>
+#'   as_ginteractions(keep.extra.columns=FALSE) |>
+#'   binPairs(binSize=100e3)
+#'
+#' ## Removes the "chr" prefix for compatibility
+#' ## with the preprocessed hic files
+#' GenomeInfoDb::seqlevelsStyle(pixels) <- 'ENSEMBL'
+#'
+#' ## Extract the first 100 pixels
+#' imat <- pullHicPixels(x=pixels[1:100],
+#'                       files=hicFiles,
+#'                       binSize=100e3)
+#' imat
+#'
+#' ## Access count matrix
+#' counts(imat)
 #'
 #' @rdname pullHicPixels
 #' @export

@@ -128,7 +128,7 @@
 .clusterPairs <- function(x, radius, method, pos) {
 
     ## Suppress NSE notes in R CMD check
-    id = grp = clst = seqnames1 = seqnames2 = NULL
+    id <- grp <- clst <- seqnames1 <- seqnames2 <- NULL
 
     ## Parse pos parameter
     pos <- match.arg(pos, choices = c("start", "end", "center"))
@@ -251,7 +251,7 @@
 .mergePairs <- function(x, radius, method, column, selectMax, pos) {
 
     ## Suppress NSE notes in R CMD check
-    clst = grp = NULL
+    clst <- grp <- NULL
 
     ## Check argument types
     ## column is checked later (can be string or NULL)

@@ -93,6 +93,41 @@
 #'  where rows are interactions (i.e. loops) and
 #'  columns are Hi-C files.
 #'
+#' @examples
+#' ## Read .hic file paths
+#' hicFiles <-
+#'     system.file("extdata/test_hic", package="mariner") |>
+#'     list.files(pattern=".hic", full.names=TRUE)
+#'
+#' ## Read in loops as GInteractions object
+#' loops <-
+#'     system.file("extdata", package="mariner") |>
+#'     list.files(pattern="WT.*Loops.txt", full.names=TRUE) |>
+#'     read.table(header=TRUE) |>
+#'     as_ginteractions(keep.extra.columns=FALSE)
+#'
+#' ## Removes the "chr" prefix for compatibility
+#' ## with the preprocessed hic files
+#' GenomeInfoDb::seqlevelsStyle(loops) <- 'ENSEMBL'
+#'
+#' ## Expand binSize of loops
+#' loops <- binPairs(x=loops, binSize=100e3)
+#'
+#' ## Calculate loop enrichment
+#' calcLoopEnrichment(x=loops[1:10],
+#'                    files=hicFiles)
+#'
+#' ## Customize different foreground/background
+#' ## with selection functions
+#' buffer <- 10 # choose pixel radius around center
+#' fg <- selectCenterPixel(mhDist=seq(0,4), buffer=buffer)
+#' bg <- selectCorners(n=6, buffer=buffer) +
+#'     selectOuter(n=2, buffer=buffer)
+#' calcLoopEnrichment(x=loops[1:10],
+#'                    files=hicFiles,
+#'                    fg=fg,
+#'                    bg=bg)
+#'
 #' @rdname calcLoopEnrichment
 #' @export
 setMethod("calcLoopEnrichment",

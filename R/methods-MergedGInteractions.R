@@ -14,7 +14,7 @@
 .mapIds <- function(x) {
 
     ## Suppress NSE notes in R CMD check
-    id = grp = clst = NULL
+    id <- grp <- clst <- NULL
 
     ## Pull out all pairs
     ap <- x@allPairs
@@ -42,7 +42,7 @@
 .aggPairMcols <- function(x, columns, funs){
 
     ## Suppress NSE notes in R CMD check
-    i.id = NULL
+    i.id <- NULL
 
     ## Check columns exist
     if (!any(columns %in% colnames(x@allPairs))) {
@@ -166,6 +166,8 @@ setMethod("aggPairMcols", signature(x = "MergedGInteractions",
 #' a `MergedGInteractions` object.
 #'
 #' @inheritParams subsetBySource
+#' @return A character vector of names or source
+#'  files of a `MergedGInteractions` object.
 #' @examples
 #' ## Load required packages
 #' library(data.table, include.only="fread")
@@ -200,7 +202,7 @@ setMethod("sources", "MergedGInteractions",
 .makeSrcMatrix <- function(x) {
 
     ## Suppress NSE notes in R CMD check
-    i.id = NULL
+    i.id <- NULL
 
     ## Map ids joined by group and cluster
     res <- .mapIds(x)
@@ -336,7 +338,7 @@ setMethod("sources", "MergedGInteractions",
 .subsetBySource <- function(x) {
 
     ## Suppress NSE notes in R CMD check
-    id = grp = clst = src = nDistinct = NULL
+    id <- grp <- clst <- src <- nDistinct <- NULL
 
     ## Pull out all pairs
     ap <- x@allPairs
@@ -464,7 +466,7 @@ setMethod("subsetBySource",
 .getPairClusters <- function(x) {
 
     ## Suppress NSE notes in R CMD check
-    i.id = NULL
+    i.id <- NULL
 
     ## Map ids joined by group and cluster
     res <- .mapIds(x)
