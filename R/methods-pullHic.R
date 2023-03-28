@@ -434,10 +434,10 @@
             ## Create submatrix bins for each range
             ## with a fast cross-join
             longMat <- g[,{
-                x=seq(start1, end1-binSize, binSize);
-                y=seq(start2, end2-binSize, binSize);
-                x=as.integer(x) #seq sometimes returns double
-                y=as.integer(y)
+                x <- seq(start1, end1-binSize, binSize);
+                y <- seq(start2, end2-binSize, binSize);
+                x <- as.integer(x) #seq sometimes returns double
+                y <- as.integer(y)
                 CJ(x, y, sorted=FALSE)
             },
             by=.(grp=xIndices)]
@@ -791,8 +791,12 @@ setMethod("pullHicMatrices",
 
             ## Create submatrix bins for each range
             ## with a fast cross-join (rename)
-            longMat <- g[,{x=start1; y=start2; CJ(x, y, sorted=FALSE)},
-                         by=.(grp=xIndices)]
+            longMat <- g[,{
+                x <- start1;
+                y <- start2;
+                CJ(x, y, sorted=FALSE)
+            },
+            by=.(grp=xIndices)]
 
             ## Assign counts
             longMat <- .assignCounts(g, longMat,
