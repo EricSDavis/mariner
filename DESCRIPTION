@@ -18,11 +18,7 @@ RoxygenNote: 7.2.1
 Suggests:
     knitr,
     testthat (>= 3.0.0),
-    dplyr,
-    utils,
-    grDevices,
-    graphics,
-    grid
+    dplyr
 Imports:
     methods,
     S4Vectors,
@@ -50,7 +46,11 @@ Imports:
     rhdf5,
     plotgardener,
     RColorBrewer,
-    colourvalues
+    colourvalues,
+    utils,
+    grDevices,
+    graphics,
+    grid
 Remotes:
     aidenlab/straw/R
 biocViews:
@@ -64,6 +64,7 @@ Config/testthat/edition: 3
 Collate: 
     'AllClasses.R'
     'AllGenerics.R'
+    'methods-CountMatrix.R'
     'methods-GInteractions.R'
     'utils.R'
     'methods-InteractionArray.R'

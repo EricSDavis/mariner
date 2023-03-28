@@ -15,8 +15,8 @@
 .snap <- function(start, end, binSize, tolerance = 1e-08) {
 
     ## Suppress NSE notes in R CMD check
-    coversBins = coversOneBin = crossMid =
-        equalSides = leftSide = rightSide = NULL
+    coversBins <- coversOneBin <- crossMid <-
+        equalSides <- leftSide <- rightSide <- NULL
 
     ## Get the starts and ends in terms of binSize
     s <- start/binSize

@@ -213,6 +213,8 @@ setMethod("parallel_slot_names", "MergedGInteractions", function(x) {
 #' `pullHicMatrices()` function when all
 #' paired ranges have equal dimensions.
 #'
+#' @returns An InteractionArray (see description)
+#'
 #' @seealso [InteractionSet::InteractionSet]
 #'
 #' @examples
@@ -238,6 +240,7 @@ setClass(
 #' `pullHicPixels()` function when all
 #' paired ranges define a single pixel.
 #'
+#' @returns An InteractionMatrix (see description)
 #'
 #' @seealso [InteractionSet::InteractionSet]
 #'
@@ -301,3 +304,23 @@ MatrixSelection <- setClass(
     )
 )
 
+
+## CountMatrix Class -----------------------------------------------------------
+
+#' CountMatrix Class
+#'
+#' A class for displaying dimnames associated
+#' with the count matrices resulting from
+#' pullHicMatrices() |> counts(showDimnames=TRUE).
+#'
+#' This class is used only for attaching
+#' a "show" method.
+#'
+#' @slot object InteractionArray object
+#' @returns A CountMatrix object (clone of DelayedArray)
+#' @rdname CountMatrix-class
+CountMatrix <- setClass(
+    Class = "CountMatrix",
+    contains = "DelayedArray",
+    slots = list(object = "InteractionArray")
+)

@@ -131,6 +131,12 @@
 }
 
 #' @rdname as_ginteractions
+#' @examples
+#' ## data.frame
+#' df <- data.frame(chr1 = "chr1", x1 = 10000, x2 = 20000,
+#'                  chr2 = "chr1", y1 = 30000, y2 = 40000)
+#' makeGInteractionsFromDataFrame(df)
+#'
 #' @export
 setMethod("makeGInteractionsFromDataFrame",
           signature(df = 'DF_OR_df_OR_dt',

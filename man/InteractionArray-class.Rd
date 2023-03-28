@@ -36,6 +36,9 @@ All objects must be the same class.}
 \item{deparse.level}{An integer scalar; see `?base::cbind` for
 a description of this argument.}
 }
+\value{
+An InteractionArray (see description)
+}
 \description{
 The `InteractionArray` class extends
 `InteractionSet` to provide an interface

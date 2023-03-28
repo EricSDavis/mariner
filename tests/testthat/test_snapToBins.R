@@ -5,9 +5,9 @@ library(GenomicRanges)
 test_that("Internal snap function behaves as expected", {
 
     ## Define test positions
-    start = c(1, 9, 8, 9, 5, 9, 9, 6, 5, 3, 5, 15, 19)
-    end = c(2, 10, 11, 12, 11, 15, 11, 14, 15, 15, 17, 35, 31)
-    binSize = 10
+    start <- c(1, 9, 8, 9, 5, 9, 9, 6, 5, 3, 5, 15, 19)
+    end <- c(2, 10, 11, 12, 11, 15, 11, 14, 15, 15, 17, 35, 31)
+    binSize <- 10
 
     ## Snap to bins
     .snap(start, end, binSize) |>

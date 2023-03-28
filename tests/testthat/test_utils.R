@@ -109,53 +109,53 @@ test_that(".modes returns correct results", {
 
 test_that("Checking types of function arguments.", {
 
-    arg1="hello"
+    arg1 <- "hello"
     .checkTypes(c(arg1="string")) |>
         expect_null()
 
-    arg1=c("hello", "there")
+    arg1 <- c("hello", "there")
     .checkTypes(c(arg1="string")) |>
         expect_error("arg1 is not a string.*")
 
-    arg1=1
+    arg1 <- 1
     .checkTypes(c(arg1="string")) |>
         expect_error("arg1 is not a string.*")
 
-    arg1="hello"
-    arg2=TRUE
+    arg1 <- "hello"
+    arg2 <- TRUE
     .checkTypes(c(arg1="string", arg2="boolean")) |>
         expect_null()
 
-    arg1="hello"
-    arg2=c(TRUE, NA)
+    arg1 <- "hello"
+    arg2 <- c(TRUE, NA)
     .checkTypes(c(arg1="string", arg2="boolean")) |>
         expect_error("arg2 is not a boolean.*")
 
-    arg1="hello"
-    arg2=NA
+    arg1 <- "hello"
+    arg2 <- NA
     .checkTypes(c(arg1="string", arg2="boolean")) |>
         expect_error("arg2 is not a boolean.*")
 
-    arg1="hello"
-    arg2=c(NA, NA)
+    arg1 <- "hello"
+    arg2 <- c(NA, NA)
     .checkTypes(c(arg1="string", arg2="boolean")) |>
         expect_error("arg2 is not a boolean.*")
 
-    arg1="hello"
-    arg2=TRUE
-    arg3=1
+    arg1 <- "hello"
+    arg2 <- TRUE
+    arg3 <- 1
     .checkTypes(c(arg1="string", arg2="boolean", arg3="number")) |>
         expect_null()
 
-    arg1="hello"
-    arg2=TRUE
-    arg3=c(1,2)
+    arg1 <- "hello"
+    arg2 <- TRUE
+    arg3 <- c(1,2)
     .checkTypes(c(arg1="string", arg2="boolean", arg3="number")) |>
         expect_error("arg3 is not a number.*")
 
-    arg1="hello"
-    arg2=TRUE
-    arg3="hi"
+    arg1 <- "hello"
+    arg2 <- TRUE
+    arg3 <- "hi"
     .checkTypes(c(arg1="string", arg2="boolean", arg3="number")) |>
         expect_error("arg3 is not a number.*")
 })
