@@ -36,7 +36,7 @@ Imports:
     purrr,
     progress,
     GenomeInfoDb,
-    strawr,
+    strawr (>= 0.0.91),
     DelayedArray,
     HDF5Array,
     abind,
@@ -51,8 +51,6 @@ Imports:
     grDevices,
     graphics,
     grid
-Remotes:
-    aidenlab/straw/R
 biocViews:
     FunctionalGenomics,
     Visualization,
