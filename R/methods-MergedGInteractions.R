@@ -113,7 +113,6 @@
 #' @examples
 #' ## Load required packages
 #' library(data.table, include.only = "fread")
-#' library(purrr, include.only = "pmap")
 #'
 #' ## Reference BEDPE files
 #' bedpeFiles <-
@@ -121,20 +120,20 @@
 #'     list.files(pattern = "Loops.txt", full.names = TRUE)
 #'
 #' ## Read in bedpeFiles as a list of GInteractions
+#' ## Use only first 1000 rows for fast example
 #' giList <-
-#'     lapply(bedpeFiles, fread) |>
+#'     lapply(bedpeFiles, fread, nrows=1000) |>
 #'     lapply(as_ginteractions) |>
 #'     setNames(gsub("^.*extdata/(.{2}).*$", "\\1", bedpeFiles))
 #'
 #' ## Add names describing the source and loop
-#' giList <-
-#'     pmap(.l = list(giList, names(giList)),
-#'          .f = \(x, n) {
-#'              x$name <- paste0(n, "_loop_", seq_len(length(x)))
-#'              return(x)
-#'          })
+#' giList <- lapply(seq_along(giList), \(i) {
+#'     x <- giList[[i]]
+#'     x$name <- paste0(names(giList)[i], "_loop_", length(x))
+#'     return(x)
+#' })
 #'
-#' ## Merge pairs
+#' ## Cluster & merge pairs
 #' x <- mergePairs(x = giList,
 #'                 radius = 5e03)
 #'
@@ -172,15 +171,19 @@ setMethod("aggPairMcols", signature(x = "MergedGInteractions",
 #' ## Load required packages
 #' library(data.table, include.only="fread")
 #'
+#' ## Reference BEDPE files (loops called with SIP)
 #' loopFiles <-
 #'     list.files(path = system.file("extdata", package = "mariner"),
 #'                pattern = "Loops.txt",
 #'                full.names = TRUE)
 #'
+#' ## Read in loopFiles as a list of GInteractions
+#' ## Use only first 1000 rows for fast example
 #' giList <-
-#'     lapply(loopFiles, fread) |>
+#'     lapply(loopFiles, fread, nrows=1000) |>
 #'     lapply(as_ginteractions)
 #'
+#' ## Cluster & merge pairs
 #' x <- mergePairs(x = giList,
 #'                 radius = 10e03)
 #'
@@ -504,18 +507,22 @@ setMethod("subsetBySource",
 #'     system.file("extdata", package = "mariner") |>
 #'     list.files(pattern = "Loops.txt", full.names = TRUE)
 #'
+#' ## Read in bedpeFiles as a list of GInteractions
+#' ## Use only first 1000 rows for fast example
 #' giList <-
-#'     lapply(bedpeFiles, fread) |>
+#'     lapply(bedpeFiles, fread, nrows = 1000) |>
 #'     lapply(as_ginteractions)
 #'
+#' ## Cluster & merge pairs
 #' x <- mergePairs(x = giList,
 #'                 radius = 10e03,
 #'                 column = "APScoreAvg")
 #'
+#' ## Access pair clusters
 #' getPairClusters(x[1:3])
 #' getPairClusters(x[3:1])
 #' getPairClusters(x[c(3, 1, 2)])
-#' getPairClusters(x)
+#' getPairClusters(x) |> length()
 #'
 #' @rdname getPairClusters
 #' @export
@@ -539,10 +546,13 @@ setMethod("getPairClusters", signature(x = "MergedGInteractions"),
 #'     system.file("extdata", package = "mariner") |>
 #'     list.files(pattern = "Loops.txt", full.names = TRUE)
 #'
+#' ## Read in bedpeFiles as a list of GInteractions
+#' ## Use only first 1000 rows for fast example
 #' giList <-
-#'     lapply(bedpeFiles, fread) |>
+#'     lapply(bedpeFiles, fread, nrows=1000) |>
 #'     lapply(as_ginteractions)
 #'
+#' ## Cluster & merge pairs
 #' x <- mergePairs(x = giList,
 #'                 radius = 10e03,
 #'                 column = "APScoreAvg")
