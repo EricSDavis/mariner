@@ -19,7 +19,8 @@ Depends: R (>= 4.2.0)
 Suggests:
     knitr,
     testthat (>= 3.0.0),
-    dplyr
+    dplyr,
+    rmarkdown
 Imports:
     methods,
     S4Vectors,
