@@ -108,7 +108,7 @@
 #' loops <-
 #'     system.file("extdata", package="mariner") |>
 #'     list.files(pattern="WT.*Loops.txt", full.names=TRUE) |>
-#'     read.table(header=TRUE) |>
+#'     read.table(header=TRUE, nrows=1000) |>
 #'     as_ginteractions(keep.extra.columns=FALSE)
 #'
 #' ## Removes the "chr" prefix for compatibility

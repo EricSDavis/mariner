@@ -27,7 +27,6 @@ Aggregate the metadata columns of merged pairs
 \examples{
 ## Load required packages
 library(data.table, include.only = "fread")
-library(purrr, include.only = "pmap")
 
 ## Reference BEDPE files
 bedpeFiles <-
@@ -35,18 +34,18 @@ bedpeFiles <-
     list.files(pattern = "Loops.txt", full.names = TRUE)
 
 ## Read in bedpeFiles as a list of GInteractions
+## Use only first 1000 rows for fast example
 giList <-
-    lapply(bedpeFiles, fread) |>
+    lapply(bedpeFiles, fread, nrows=1000) |>
     lapply(as_ginteractions) |>
     setNames(gsub("^.*extdata/(.{2}).*$", "\\\\1", bedpeFiles))
 
 ## Add names describing the source and loop
-giList <-
-    pmap(.l = list(giList, names(giList)),
-         .f = \(x, n) {
-             x$name <- paste0(n, "_loop_", seq_len(length(x)))
-             return(x)
-         })
+giList <- lapply(seq_along(giList), \(i) {
+    x <- giList[[i]]
+    x$name <- paste0(names(giList)[i], "_loop_", length(x))
+    return(x)
+})
 
 ## Merge pairs
 x <- mergePairs(x = giList,

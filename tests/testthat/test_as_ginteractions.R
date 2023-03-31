@@ -187,7 +187,7 @@ test_that("Multiple conversions work", {
 
     library(data.table)
     firstRead <-
-        system.file("extdata/WT_5KbLoops.txt",
+        system.file("extdata/WT_5kbLoops.txt",
                     package = "mariner") |>
         fread() |>
         as_ginteractions()
