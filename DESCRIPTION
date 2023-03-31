@@ -15,6 +15,7 @@ Description: Tools for manipulating paired ranges and
     Designed for compatibility with plotgardener for
     visualization.
 RoxygenNote: 7.2.1
+Depends: R (>= 4.2.0)
 Suggests:
     knitr,
     testthat (>= 3.0.0),
