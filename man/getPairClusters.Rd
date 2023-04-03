@@ -33,7 +33,8 @@ bedpeFiles <-
     system.file("extdata", package = "mariner") |>
     list.files(pattern = "Loops.txt", full.names = TRUE)
 
-## Read in the first 1000 rows of bedpeFiles
+## Read in bedpeFiles as a list of GInteractions
+## Use only first 1000 rows for fast example
 giList <-
     lapply(bedpeFiles, fread, nrows = 1000) |>
     lapply(as_ginteractions)

@@ -24,15 +24,19 @@ a `MergedGInteractions` object.
 ## Load required packages
 library(data.table, include.only="fread")
 
+## Reference BEDPE files (loops called with SIP)
 loopFiles <-
     list.files(path = system.file("extdata", package = "mariner"),
                pattern = "Loops.txt",
                full.names = TRUE)
 
+## Read in loopFiles as a list of GInteractions
+## Use only first 1000 rows for fast example
 giList <-
-    lapply(loopFiles, fread) |>
+    lapply(loopFiles, fread, nrows=1000) |>
     lapply(as_ginteractions)
 
+## Cluster & merge pairs
 x <- mergePairs(x = giList,
                 radius = 10e03)
 
