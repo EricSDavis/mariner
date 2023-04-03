@@ -114,11 +114,13 @@ test_that("path accessor for InteractionMatrix", {
     h5File <- tempfile(fileext=".h5")
     imat <- pullHicPixels(x, hicFiles, 500e03, h5File=h5File)
     fullPath <- normalizePath(h5File)
-    expect_identical(path(imat), fullPath)
+    filePath <- normalizePath(path(imat))
+    expect_identical(filePath, fullPath)
 
     ## Warns when removed (but still allows access)
     file.remove(h5File)
     path(imat) |>
+        normalizePath(mustWork=FALSE) |>
         expect_identical(fullPath) |>
         expect_warning("HDF5 file no longer exists")
 
@@ -155,3 +157,4 @@ test_that("path<- method for InteractionMatrix", {
         expect_error("No HDF5 file path to replace")
 
 })
+
