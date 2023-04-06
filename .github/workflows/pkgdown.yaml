@@ -26,7 +26,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r@v2
         with:
-          r-version: 4.3.0
+          r-version: 'next'
           use-public-rspm: true
 
       ## Install marinerData from github (temp)
