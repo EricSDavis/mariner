@@ -5,6 +5,9 @@
 \alias{MatrixSelection-class}
 \alias{MatrixSelection}
 \title{MatrixSelection Class}
+\value{
+A MatrixSelection object (see description)
+}
 \description{
 An object containing the selected indices
 of a matrix.

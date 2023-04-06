@@ -5,6 +5,9 @@
 \alias{MergedGInteractions-class}
 \alias{MergedGInteractions}
 \title{MergedGInteractions Class}
+\value{
+A MergedGInteractions object (see description)
+}
 \description{
 The `MergedGInteractions` class extends the
 `GInteractions` to contain additional information
@@ -48,15 +51,19 @@ bedpeFiles <-
     system.file("extdata", package = "mariner") |>
     list.files(pattern = "Loops.txt", full.names = TRUE)
 
+## Read in bedpeFiles as a list of GInteractions
+## Use only first 1000 rows for fast example
 giList <-
-    lapply(bedpeFiles, fread) |>
+    lapply(bedpeFiles, fread, nrows=1000) |>
     lapply(as_ginteractions)
 
+## Cluster & merge pairs
 x <- mergePairs(x = giList,
                 radius = 10e03,
                 column = "APScoreAvg")
 
 class(x)
+
 }
 \seealso{
 [InteractionSet::GInteractions]

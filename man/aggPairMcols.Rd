@@ -47,7 +47,7 @@ giList <- lapply(seq_along(giList), \(i) {
     return(x)
 })
 
-## Merge pairs
+## Cluster & merge pairs
 x <- mergePairs(x = giList,
                 radius = 5e03)
 
