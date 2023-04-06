@@ -33,6 +33,13 @@ jobs:
           extra-packages: any::pkgdown, local::.
           needs: website
 
+      ## Install marinerData from github (temp)
+      - name: Install marinerData from github
+        run: |
+          BiocManager::install("ExperimentHub", version="devel")
+          remotes::install_github("EricSDavis/marinerData")
+        shell: Rscript {0}
+
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
         shell: Rscript {0}
