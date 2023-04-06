@@ -14,12 +14,15 @@ Description: Tools for manipulating paired ranges and
     from `.hic` files, and visualizing the results. 
     Designed for compatibility with plotgardener for
     visualization.
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Depends: R (>= 4.2.0)
 Suggests:
     knitr,
     testthat (>= 3.0.0),
-    dplyr
+    dplyr,
+    rmarkdown,
+    ExperimentHub,
+    marinerData
 Imports:
     methods,
     S4Vectors,

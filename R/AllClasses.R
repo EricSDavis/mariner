@@ -167,6 +167,7 @@ setMethod(
 #'
 #' class(x)
 #'
+#' @returns A MergedGInteractions object (see description)
 #' @rdname MergedGInteractions-class
 #' @export
 MergedGInteractions <- setClass(
@@ -298,6 +299,7 @@ setValidity("InteractionMatrix", function(object) {
 #' @examples
 #' selectCenterPixel(0, 5)
 #'
+#' @returns A MatrixSelection object (see description)
 #' @rdname MatrixSelection-class
 #' @export
 MatrixSelection <- setClass(
