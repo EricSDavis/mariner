@@ -167,6 +167,12 @@ jobs:
           install.packages("https://cran.rstudio.com/src/contrib/strawr_0.0.91.tar.gz", repos=NULL, type="source")
         shell: Rscript {0}
 
+      ## Install marinerData from github (temp)
+      - name: Install marinerData from github
+        run: |
+          remotes::install_github("EricSDavis/marinerData")
+        shell: Rscript {0}
+
       - name: Install dependencies pass 1
         run: |
           ## Try installing the package dependencies in steps. First the local

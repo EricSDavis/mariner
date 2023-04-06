@@ -5,6 +5,9 @@
 \alias{MergedGInteractions-class}
 \alias{MergedGInteractions}
 \title{MergedGInteractions Class}
+\value{
+A MergedGInteractions object (see description)
+}
 \description{
 The `MergedGInteractions` class extends the
 `GInteractions` to contain additional information
