@@ -37,6 +37,7 @@ reference:
       - pullHicPixels
       - InteractionMatrix
       - pixelsToMatrices
+      - removeShortPairs
       - pullHicMatrices
       - InteractionArray
       - counts,InteractionArray-method

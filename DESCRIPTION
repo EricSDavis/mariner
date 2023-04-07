@@ -86,6 +86,7 @@ Collate:
     'methods-plotBullseye.R'
     'methods-plotMatrix.R'
     'methods-pullHic.R'
+    'methods-removeShortPairs.R'
     'methods-shiftRanges.R'
     'methods-snapToBins.R'
     'zzz.R'
