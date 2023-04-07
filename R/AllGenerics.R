@@ -330,3 +330,9 @@ setGeneric("plotEnrichment",
 setGeneric("adjustEnrichment",
            function(x, interactions, k=25, nknots=10)
                standardGeneric("adjustEnrichment"))
+
+#' @rdname removeShortPairs
+#' @export
+setGeneric("removeShortPairs",
+           function(x, padding=0)
+               standardGeneric("removeShortPairs"))
