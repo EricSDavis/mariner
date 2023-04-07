@@ -21,3 +21,4 @@ initialization to assign its `GInteractions` slots.
 \seealso{
 [InteractionSet::GInteractions]
 }
+\keyword{internal}

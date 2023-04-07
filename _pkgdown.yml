@@ -2,3 +2,62 @@ url: http://ericscottdavis.com/mariner/
 template:
   bootstrap: 5
 
+title: mariner
+
+figures:
+  fig.width: 5.5
+  fig.retina: 1
+
+reference:
+  - title: "Manipulating Paired Ranges"
+    desc: "Convert, bin, and shift paired genomic ranges"
+    contents:
+      - as_ginteractions
+      - shiftRanges
+      - binRanges
+      - binPairs
+      - snapToBins
+      - seqnames1
+  - title: "Clustering & Merging Interactions"
+    desc: >
+      Group nearby interactions and select one as
+      representative
+    contents:
+      - mergePairs
+      - MergedGInteractions
+      - aggPairMcols
+      - getPairClusters
+      - sources
+      - subsetBySource
+  - title: "Extracting & Aggregating Interactions"
+    desc: >
+      Pull Hi-C pixels or matrices, then aggregate by
+      files or interactions
+    contents:
+      - pullHicPixels
+      - InteractionMatrix
+      - pixelsToMatrices
+      - pullHicMatrices
+      - InteractionArray
+      - counts,InteractionArray-method
+      - path,InteractionMatrix-method
+      - aggHicMatrices
+      - hdf5BlockApply
+      - plotMatrix
+  - title: "Calculating Loop Enrichment"
+    desc: >
+      Determine loop enrichment to local background with
+      selection functions to flexibility select foreground
+      and background.
+    contents:
+      - calcLoopEnrichment
+      - plotEnrichment
+  - subtitle: "Selection functions"
+    contents:
+      - MatrixSelection
+      - selectRadius
+      - selectionMethod
+  - title: "Miscellaneous"
+    contents:
+      - changePixelRes
+      - selectPixel

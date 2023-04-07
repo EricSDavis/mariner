@@ -19,3 +19,4 @@ DelegatingGInteractions object
 \description{
 Initialization method for DelegatingGInteractions
 }
+\keyword{internal}

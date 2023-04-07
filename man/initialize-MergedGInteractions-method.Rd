@@ -19,3 +19,4 @@ MergedGInteractions
 \description{
 Initialize MergedGInteractions
 }
+\keyword{internal}
