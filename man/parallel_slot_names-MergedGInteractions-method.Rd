@@ -16,3 +16,4 @@ MergedGInteractions with parallel slots
 \description{
 Method for parallel slots for MergedGInteractions
 }
+\keyword{internal}

@@ -66,3 +66,4 @@ iarr <- pullHicMatrices(x=regions[1:100],
 ## matrices
 counts(iarr, showDimnames=TRUE)
 }
+\keyword{internal}
