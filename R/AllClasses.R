@@ -59,6 +59,7 @@ setClassUnion("GInteractions_OR_InteractionSet",
 #'
 #' @rdname DelegatingGInteractions-class
 #' @return DelegatingGInteractions virtual class
+#' @keywords internal
 #' @export
 setClass(
     Class = "DelegatingGInteractions",
@@ -96,6 +97,7 @@ setClass(
 #' @importFrom InteractionSet regions
 #' @importFrom S4Vectors elementMetadata
 #' @importFrom S4Vectors metadata
+#' @keywords internal
 #' @return DelegatingGInteractions object
 setMethod(
     f = "initialize",
@@ -185,6 +187,7 @@ MergedGInteractions <- setClass(
 #' @param .Object GInteractions object
 #' @param ... Additional arguments
 #' @param delegate GInteractions object
+#' @keywords internal
 #' @return MergedGInteractions
 setMethod(
     f = "initialize",
@@ -200,6 +203,7 @@ setMethod(
 #' @param x See
 #'   \code{? \link[S4Vectors]{parallel_slot_names}}
 #' @importFrom S4Vectors parallel_slot_names
+#' @keywords internal
 #' @return MergedGInteractions with parallel slots
 setMethod("parallel_slot_names", "MergedGInteractions", function(x) {
     c("ids", callNextMethod())
@@ -324,6 +328,7 @@ MatrixSelection <- setClass(
 #'
 #' @slot object InteractionArray object
 #' @returns A CountMatrix object (clone of DelayedArray)
+#' @keywords internal
 #' @rdname CountMatrix-class
 CountMatrix <- setClass(
     Class = "CountMatrix",
