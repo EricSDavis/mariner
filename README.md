@@ -19,20 +19,20 @@ data quickly and efficiently.
 
 <div class = "row">
 <div class = "col-md-4">
-**One ecosystem**<br>
-`mariner` extends common Bioconductor classes, leveraging the thousands of
+<b>One ecosystem</b><br>
+<code>mariner</code> extends common Bioconductor classes, leveraging the thousands of
 existing tools for analyzing and visualizing genomic data.
 </div>
   
 <div class = "col-md-4">
-**Modular design**<br>
-`mariner's` functions can be combined and chained in various ways to produce
+<b>Modular design</b><br>
+<code>mariner's</code> functions can be combined and chained in various ways to produce
 custom workflows.
 </div>
   
 <div class = "col-md-4">
-**Fast and efficient**<br>
-`mariner` leverages HDF5 to store large results and uses block processing
+<b>Fast and efficient</b><br>
+<code>mariner</code> leverages HDF5 to store large results and uses block processing
 to minimize hardware requirements.
 </div>
 </div>
@@ -41,13 +41,13 @@ to minimize hardware requirements.
 
 <div class="row">
 <div class="col-md-6" style="margin-bottom:20px; max-width:500px">
-**Manipulating Paired Ranges**<br>
+<b>Manipulating Paired Ranges</b><br>
 <i>Convert, bin, and shift paired genomic ranges</i>
 <img src="man/figures/binningFigure2.png" style="padding-top:20px;"></img>
 </div>
   
 <div class="col-md-6" style="margin-bottom:20px; max-width:500px">
-**Clustering & Merging Interactions**<br>
+<b>Clustering & Merging Interactions</b><br>
 <i>Group nearby interactions and select one as representative</i>
 <img src="man/figures/mergingFigure.png" style="padding-top:20px;"></img>
 </div>
@@ -55,13 +55,13 @@ to minimize hardware requirements.
  
 <div class="row">
 <div class="col-md-6" style="margin-bottom:20px; max-width:500px">
-**Extracting & Aggregating Interactions**<br>
+<b>Extracting & Aggregating Interactions</b><br>
 <i>Pull Hi-C pixels or matrices, then aggregate by files or interactions</i>
 <img src="man/figures/aggregateFigure.png" style="padding-top:20px;"></img>
 </div>
 
 <div class="col-md-6" style="margin-bottom:20px; max-width:500px">
-**Calculating Loop Enrichment**<br>
+<b>Calculating Loop Enrichment</b><br>
 <i>Determine loop enrichment to local background with
 selection functions to flexibility select foreground
 and background.</i>
