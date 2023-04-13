@@ -70,15 +70,12 @@ converting BEDPE-formatted data to `GInteractions`
 as well as accessing relevant components of these
 objects.
 
-```{r as_ginteractions}
+```{r as_ginteractions, message=FALSE}
 library(mariner)
+library(marinerData)
 
 ## BEDPE-formatted file
-bedpeFile <- system.file(
-    "extdata",
-    "WT_5kbLoops.txt",
-    package = "mariner"
-)
+bedpeFile <- marinerData::WT_5kbLoops.txt()
 
 ## Read BEDPE
 bedpe <- read.table(bedpeFile, header = TRUE)
@@ -197,13 +194,16 @@ select a representative interaction for the group.
 Here, two example BEDPE files are imported as a list of
 `GInteractions` objects.
 
-```{r merging1}
+```{r merging1, message=FALSE}
 library(mariner)
+library(marinerData)
 
 ## BEDPE-formatted files
-bedpeFiles <- 
-    system.file("extdata", package="mariner") |>
-    list.files(pattern="Loops.txt", full.names=TRUE)
+bedpeFiles <- c(
+    marinerData::FS_5kbLoops.txt(),
+    marinerData::WT_5kbLoops.txt()
+)
+names(bedpeFiles) <- c("FS", "WT")
 
 ## Read as list of GInteractions
 giList <-
@@ -328,13 +328,17 @@ interaction (row) and `.hic` file (column).
 As described in previous sections, BEDPE files containing
 the locations of chromatin loops can be read in and merged.
 
-```{r examplePullPixels}
+```{r examplePullPixels, message=FALSE}
 library(mariner)
+library(marinerData)
 
 ## BEDPE-formatted files
-bedpeFiles <- 
-    system.file("extdata", package="mariner") |>
-    list.files(pattern="Loops.txt", full.names=TRUE)
+## BEDPE-formatted files
+bedpeFiles <- c(
+    marinerData::FS_5kbLoops.txt(),
+    marinerData::WT_5kbLoops.txt()
+)
+names(bedpeFiles) <- c("FS", "WT")
 
 ## Read as list of GInteractions
 giList <-
@@ -659,7 +663,8 @@ hicFiles <- c(
 
 ## Read in loops
 loops <- 
-    system.file("extdata", "WT_5kbLoops.txt", package="mariner") |>
+    WT_5kbLoops.txt() |>
+    setNames("WT") |>
     read.table(header=TRUE, nrows=1000) |>
     as_ginteractions() |>
     binPairs(binSize=100e3) |>
