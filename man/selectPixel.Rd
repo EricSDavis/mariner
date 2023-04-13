@@ -52,15 +52,21 @@ Get the pixel representing the strongest
 or weakest interaction in an InteractionArray
 }
 \examples{
+## Load marinerData
+if (!require("marinerData", quietly = TRUE))
+    install.packages("marinerData")
+
 ## Read .hic file paths
-hicFiles <-
-    system.file("extdata/test_hic", package="mariner") |>
-    list.files(pattern=".hic", full.names=TRUE)
+hicFiles <- c(
+    marinerData::LEUK_HEK_PJA27_inter_30.hic(),
+    marinerData::LEUK_HEK_PJA30_inter_30.hic()
+)
+names(hicFiles) <- c("FS", "WT")
 
 ## Read in loops as GInteractions object
 loops <-
-    system.file("extdata", package="mariner") |>
-    list.files(pattern="WT.*Loops.txt", full.names=TRUE) |>
+    WT_5kbLoops.txt() |>
+    setNames("WT") |>
     read.table(header=TRUE) |>
     as_ginteractions(keep.extra.columns=FALSE)
 

@@ -24,11 +24,16 @@ a `MergedGInteractions` object.
 ## Load required packages
 library(data.table, include.only="fread")
 
+## Load marinerData
+if (!require("marinerData", quietly = TRUE))
+    install.packages("marinerData")
+
 ## Reference BEDPE files (loops called with SIP)
-loopFiles <-
-    list.files(path = system.file("extdata", package = "mariner"),
-               pattern = "Loops.txt",
-               full.names = TRUE)
+loopFiles <- c(
+    marinerData::FS_5kbLoops.txt(),
+    marinerData::WT_5kbLoops.txt()
+)
+names(bedpeFiles) <- c("FS", "WT")
 
 ## Read in loopFiles as a list of GInteractions
 ## Use only first 1000 rows for fast example
