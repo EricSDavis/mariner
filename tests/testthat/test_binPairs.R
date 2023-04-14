@@ -80,11 +80,14 @@ test_that("binPairs doesn't modify class", {
 
     ## Load required packages
     library(data.table)
+    library(marinerData)
 
     ## Reference BEDPE files (loops called with SIP)
-    bedpeFiles <-
-        system.file("extdata", package = "mariner") |>
-        list.files(pattern = "Loops.txt", full.names = TRUE)
+    bedpeFiles <- c(
+        FS_5kbLoops.txt(),
+        WT_5kbLoops.txt()
+    )
+    names(bedpeFiles) <- c("FS", "WT")
 
     ## Assemble list of GInteractions
     giList <-

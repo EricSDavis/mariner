@@ -1,4 +1,5 @@
 library(mariner)
+library(marinerData)
 
 test_that("removeShortPairs works as expected", {
 
@@ -63,15 +64,14 @@ test_that("complex test for removeShortPairs", {
 
     ## Hi-C files
     hicFiles <- c(
-        marinerData::LEUK_HEK_PJA27_inter_30.hic(),
-        marinerData::LEUK_HEK_PJA30_inter_30.hic()
+        LEUK_HEK_PJA27_inter_30.hic(),
+        LEUK_HEK_PJA30_inter_30.hic()
     ) |> setNames(c("FS", "WT")) |>
         suppressMessages()
 
     ## Loops from each condition
-    loopList <-
-        system.file("extdata", package="mariner") |>
-        list.files("*Loops.txt", full.names=TRUE) |>
+    loopList <- c(FS_5kbLoops.txt(), WT_5kbLoops.txt()) |>
+        setNames(c("FS", "WT")) |>
         lapply(read.table, header=TRUE, nrows=1000) |>
         lapply(as_ginteractions)
 

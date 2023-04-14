@@ -124,7 +124,7 @@
 #' ## Read in bedpeFiles as a list of GInteractions
 #' ## Use only first 1000 rows for fast example
 #' giList <-
-#'     lapply(bedpeFiles, fread, nrows=1000) |>
+#'     lapply(bedpeFiles, read.table, header=TRUE, nrows=1000) |>
 #'     lapply(as_ginteractions) |>
 #'     setNames(gsub("^.*extdata/(.{2}).*$", "\\1", bedpeFiles))
 #'
@@ -182,7 +182,7 @@ setMethod("aggPairMcols", signature(x = "MergedGInteractions",
 #'     marinerData::FS_5kbLoops.txt(),
 #'     marinerData::WT_5kbLoops.txt()
 #' )
-#' names(bedpeFiles) <- c("FS", "WT")
+#' names(loopFiles) <- c("FS", "WT")
 #'
 #' ## Read in loopFiles as a list of GInteractions
 #' ## Use only first 1000 rows for fast example

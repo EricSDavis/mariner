@@ -1,4 +1,5 @@
 library(mariner)
+library(marinerData)
 library(data.table)
 library(InteractionSet)
 library(glue, include.only = "glue")
@@ -9,15 +10,19 @@ library(GenomicRanges)
 
 ## Shared objects --------------------------------------------------------------
 
-## Test .hic files
-hicFiles <-
-    system.file("extdata/test_hic", package = "mariner") |>
-    list.files(pattern = ".hic", full.names = TRUE)
+## Read .hic file paths
+hicFiles <- c(
+    LEUK_HEK_PJA27_inter_30.hic(),
+    LEUK_HEK_PJA30_inter_30.hic()
+)
+names(hicFiles) <- c("FS", "WT")
 
 ## Reference BEDPE files (loops called with SIP)
-bedpeFiles <-
-    system.file("extdata", package = "mariner") |>
-    list.files(pattern = "Loops.txt", full.names = TRUE)
+bedpeFiles <- c(
+    FS_5kbLoops.txt(),
+    WT_5kbLoops.txt()
+)
+names(bedpeFiles) <- c("FS", "WT")
 
 ## Read in bedpeFiles as a list of GInteractions
 giList <-

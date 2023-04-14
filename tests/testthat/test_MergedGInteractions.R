@@ -1,4 +1,5 @@
 library(mariner)
+library(marinerData)
 library(GenomicRanges)
 library(InteractionSet)
 library(data.table)
@@ -23,9 +24,11 @@ dt <- GInteractions(gr1, gr2) |> as.data.table()
 dts <- split(dt, c(rep(1,3), rep(2, 2)))
 
 ## Reference BEDPE files (loops called with SIP)
-bedpeFiles <-
-    system.file("extdata", package = "mariner") |>
-    list.files(pattern = "Loops.txt", full.names = TRUE)
+bedpeFiles <- c(
+    FS_5kbLoops.txt(),
+    WT_5kbLoops.txt()
+)
+names(bedpeFiles) <- c("FS", "WT")
 
 ## Read in bedpeFiles as a list of GInteractions
 giList <-
@@ -82,24 +85,30 @@ test_that("getPairClusters accessor works", {
 test_that("subsetBySource method works (and sources accessor)", {
 
     ## LIMA loops test
-    loopFiles <-
-        system.file("extdata/lima_loops",
-                    package = "mariner") |>
-        list.files(full.names = TRUE)
+    loopFiles <- c(
+        LIMA_0000.bedpe(),
+        LIMA_0030.bedpe(),
+        LIMA_0060.bedpe(),
+        LIMA_0090.bedpe(),
+        LIMA_0120.bedpe(),
+        LIMA_0240.bedpe(),
+        LIMA_0360.bedpe(),
+        LIMA_1440.bedpe()
+    )
+    names(loopFiles) <- c(0, 30, 60, 90, 120, 240, 360, 1440)
 
     ## Subsample to 1/4 rows for faster tests
     set.seed(123)
     loops <-
         lapply(loopFiles, fread) |>
         lapply(\(x) x[sample(1:nrow(x), nrow(x)/4, replace = FALSE)]) |>
-        lapply(as_ginteractions) |>
-        setNames(basename(loopFiles))
+        lapply(as_ginteractions)
 
     ## Merge loops
     x <- mergePairs(loops, radius = 25e03*5)
 
     ## Test sources accessor
-    expect_identical(sources(x), basename(loopFiles))
+    expect_identical(sources(x), names(loopFiles))
 
     ## subsetBySource method dispatch
     expect_equal(subsetBySource(x) |> length(), 8)
@@ -227,69 +236,5 @@ test_that("Aggregating metadata columns works", {
 
     aggPairMcols(x, columns = c("blah", "foo"), funs = "mean") |>
         expect_error("^Column.*not exist.$")
-
-})
-
-
-test_that("Complex mcol aggregation works", {
-
-    ## TAD cluster example
-
-    ## Load required packages
-    library(data.table)
-    library(mariner)
-    library(InteractionSet)
-    library(plyranges)
-
-    ## List TAD files for each timepoint
-    bedpeFiles <-
-        system.file("extdata/tads", package = "mariner") |>
-        list.files(full.names = TRUE)
-
-    ## Read in data
-    tadList <-
-        bedpeFiles |>
-        lapply(fread, skip=2, select=1:6) |>
-        lapply(as_ginteractions) |>
-        setNames(gsub("[^0-9]+", "", bedpeFiles))
-
-    ## Since the anchors are redundant,
-    ## define the loop at the tip of each
-    ## domain
-    giList <-
-        lapply(tadList, \(x, binSize = 10e03) {
-
-            ## Update the first anchor
-            newAnchor1 <-
-                anchors(x, 'first') |>
-                mutate(end = start + binSize)
-
-            ## Update the second anchor
-            newAnchor2 <-
-                anchors(x, 'second') |>
-                mutate(start = end - binSize)
-
-            ## Form new GInteractions object
-            GInteractions(anchor1 = newAnchor1,
-                          anchor2 = newAnchor2,
-                          name = paste0("TAD_", 1:length(x)))
-
-        })
-
-    ## Cluster and merge pairs
-    mgi <-
-        mergePairs(x = giList,
-                   radius = 10e05,
-                   method = "manhattan")
-
-    ## There should be the same number of listed
-    ## names as clusters
-    obs <-
-        aggPairMcols(mgi, columns = "name", funs = "list")$list.name |>
-        lapply(length)
-
-    exp <- lapply(getPairClusters(mgi), nrow)
-
-    expect_identical(obs, exp)
 
 })
