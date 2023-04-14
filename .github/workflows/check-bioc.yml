@@ -52,9 +52,9 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { os: ubuntu-latest, r: auto, bioc: devel, cont: "bioconductor/bioconductor_docker:devel", rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest" }
-          - { os: macOS-latest, r: auto, bioc: devel}
-          - { os: windows-latest, r: auto, bioc: devel}
+          - { os: ubuntu-latest, r: "next", bioc: devel, cont: "bioconductor/bioconductor_docker:devel", rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest" }
+          - { os: macOS-latest, r: "next", bioc: devel}
+          - { os: windows-latest, r: "next", bioc: devel}
           ## Check https://github.com/r-lib/actions/tree/master/examples
           ## for examples using the http-user-agent
     env:
@@ -105,16 +105,16 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ env.R_LIBS_USER }}
-          key: ${{ env.cache-version }}-${{ runner.os }}-biocversion-devel-r-auto-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ env.cache-version }}-${{ runner.os }}-biocversion-devel-r-auto-
+          key: ${{ env.cache-version }}-${{ runner.os }}-biocversion-devel-r-next-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ env.cache-version }}-${{ runner.os }}-biocversion-devel-r-next-
 
       - name: Cache R packages on Linux
         if: "!contains(github.event.head_commit.message, '/nocache') && runner.os == 'Linux' "
         uses: actions/cache@v3
         with:
           path: /home/runner/work/_temp/Library
-          key: ${{ env.cache-version }}-${{ runner.os }}-biocversion-devel-r-auto-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ env.cache-version }}-${{ runner.os }}-biocversion-devel-r-auto-
+          key: ${{ env.cache-version }}-${{ runner.os }}-biocversion-devel-r-next-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ env.cache-version }}-${{ runner.os }}-biocversion-devel-r-next-
 
       - name: Install Linux system dependencies
         if: runner.os == 'Linux'
@@ -304,7 +304,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@master
         with:
-          name: ${{ runner.os }}-biocversion-devel-r-auto-results
+          name: ${{ runner.os }}-biocversion-devel-r-next-results
           path: check
 
         ## Note that DOCKER_PASSWORD is really a token for your dockerhub

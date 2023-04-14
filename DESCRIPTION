@@ -1,7 +1,7 @@
 Package: mariner
 Type: Package
 Title: Mariner: Explore the Hi-Cs
-Version: 0.99.2
+Version: 0.99.3
 Authors@R: c(
     person("Eric", "Davis", role = c("aut", "cre"),
       email = "ericscottdavis@outlook.com",
