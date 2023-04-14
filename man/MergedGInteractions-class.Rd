@@ -48,7 +48,7 @@ library(data.table, include.only="fread")
 
 ## Load marinerData
 if (!require("marinerData", quietly = TRUE))
-    install.packages("marinerData")
+    BiocManager::install("marinerData")
 
 ## Reference BEDPE files (loops called with SIP)
 bedpeFiles <- c(

@@ -78,13 +78,9 @@ setMethod("InteractionArray", c("missing", "missing"),
 #'  Hi-C `files`.
 #'
 #' @examples
-#' ######################################
-#' ## Accessing Hi-C count submatrices ##
-#' ######################################
-#'
 #' ## Load marinerData
 #' if (!require("marinerData", quietly = TRUE))
-#'     install.packages("marinerData")
+#'     BiocManager::install("marinerData")
 #'
 #' ## Read .hic file paths
 #' hicFiles <- c(
@@ -92,6 +88,10 @@ setMethod("InteractionArray", c("missing", "missing"),
 #'     marinerData::LEUK_HEK_PJA30_inter_30.hic()
 #' )
 #' names(hicFiles) <- c("FS", "WT")
+#'
+#' ######################################
+#' ## Accessing Hi-C count submatrices ##
+#' ######################################
 #'
 #' ## Create example interactions
 #' x <- read.table(text="

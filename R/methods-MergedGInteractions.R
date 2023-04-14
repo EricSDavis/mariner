@@ -113,7 +113,7 @@
 #' @examples
 #' ## Load marinerData
 #' if (!require("marinerData", quietly = TRUE))
-#'     install.packages("marinerData")
+#'     BiocManager::install("marinerData")
 #'
 #' bedpeFiles <- c(
 #'     marinerData::FS_5kbLoops.txt(),
@@ -175,7 +175,7 @@ setMethod("aggPairMcols", signature(x = "MergedGInteractions",
 #'
 #' ## Load marinerData
 #' if (!require("marinerData", quietly = TRUE))
-#'     install.packages("marinerData")
+#'     BiocManager::install("marinerData")
 #'
 #' ## Reference BEDPE files (loops called with SIP)
 #' loopFiles <- c(
@@ -511,7 +511,7 @@ setMethod("subsetBySource",
 #'
 #' ## Load marinerData
 #' if (!require("marinerData", quietly = TRUE))
-#'     install.packages("marinerData")
+#'     BiocManager::install("marinerData")
 #'
 #' ## Reference BEDPE files (loops called with SIP)
 #' bedpeFiles <- c(
@@ -556,7 +556,7 @@ setMethod("getPairClusters", signature(x = "MergedGInteractions"),
 #'
 #' ## Load marinerData
 #' if (!require("marinerData", quietly = TRUE))
-#'     install.packages("marinerData")
+#'     BiocManager::install("marinerData")
 #'
 #' ## Reference BEDPE files (loops called with SIP)
 #' bedpeFiles <- c(
