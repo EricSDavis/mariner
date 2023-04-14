@@ -147,13 +147,14 @@ setMethod(
 #'
 #' @seealso [InteractionSet::GInteractions]
 #'
+#' @importFrom BiocManager install
 #' @examples
 #' ## Load required packages
 #' library(data.table, include.only="fread")
 #'
 #' ## Load marinerData
 #' if (!require("marinerData", quietly = TRUE))
-#'     install.packages("marinerData")
+#'     BiocManager::install("marinerData")
 #'
 #' ## Reference BEDPE files (loops called with SIP)
 #' bedpeFiles <- c(

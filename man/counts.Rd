@@ -50,13 +50,9 @@ InteractionArray or InteractionMatrix
 Replace method for counts
 }
 \examples{
-######################################
-## Accessing Hi-C count submatrices ##
-######################################
-
 ## Load marinerData
 if (!require("marinerData", quietly = TRUE))
-    install.packages("marinerData")
+    BiocManager::install("marinerData")
 
 ## Read .hic file paths
 hicFiles <- c(
@@ -64,6 +60,10 @@ hicFiles <- c(
     marinerData::LEUK_HEK_PJA30_inter_30.hic()
 )
 names(hicFiles) <- c("FS", "WT")
+
+######################################
+## Accessing Hi-C count submatrices ##
+######################################
 
 ## Create example interactions
 x <- read.table(text="
@@ -83,45 +83,6 @@ counts(iarr, FALSE)
 ## Accessing Hi-C count matrix ##
 #################################
 
-## Load marinerData
-if (!require("marinerData", quietly = TRUE))
-    install.packages("marinerData")
-
-## Read .hic file paths
-hicFiles <- c(
-    marinerData::LEUK_HEK_PJA27_inter_30.hic(),
-    marinerData::LEUK_HEK_PJA30_inter_30.hic()
-)
-names(hicFiles) <- c("FS", "WT")
-
-## Create example interactions
-x <- read.table(text="
-        9 14000000 14500000 9 14500000 15000000
-        9 89500000 90000000 9 89500000 90000000
-        9 23500000 24000000 9 23500000 24000000")
-x <- as_ginteractions(x)
-
-## Extract 3 pixels from 2 hic files
-iarr <- pullHicPixels(x, hicFiles, 500e03)
-
-## Access count matrix
-counts(iarr)
-
-#################################
-## Replacing Hi-C count matrix ##
-#################################
-
-## Load marinerData
-if (!require("marinerData", quietly = TRUE))
-    install.packages("marinerData")
-
-## Read .hic file paths
-hicFiles <- c(
-    marinerData::LEUK_HEK_PJA27_inter_30.hic(),
-    marinerData::LEUK_HEK_PJA30_inter_30.hic()
-)
-names(hicFiles) <- c("FS", "WT")
-
 ## Create example interactions
 x <- read.table(text="
         9 14000000 14500000 9 14500000 15000000
@@ -132,8 +93,15 @@ x <- as_ginteractions(x)
 ## Extract 3 pixels from 2 hic files
 imat <- pullHicPixels(x, hicFiles, 500e03)
 
+## Access count matrix
+counts(imat)
+
+#################################
+## Replacing Hi-C count matrix ##
+#################################
+
 ## Realize as in-memory matrix
-counts(imat) <- as.matrix(counts(iarr))
+counts(imat) <- as.matrix(counts(imat))
 counts(imat)
 imat
 

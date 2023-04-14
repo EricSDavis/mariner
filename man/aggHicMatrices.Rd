@@ -79,7 +79,7 @@ processing.
 \examples{
 ## Load marinerData
 if (!require("marinerData", quietly = TRUE))
-    install.packages("marinerData")
+    BiocManager::install("marinerData")
 
 ## Read .hic file paths
 hicFiles <- c(

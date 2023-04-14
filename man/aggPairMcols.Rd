@@ -27,7 +27,7 @@ Aggregate the metadata columns of merged pairs
 \examples{
 ## Load marinerData
 if (!require("marinerData", quietly = TRUE))
-    install.packages("marinerData")
+    BiocManager::install("marinerData")
 
 bedpeFiles <- c(
     marinerData::FS_5kbLoops.txt(),

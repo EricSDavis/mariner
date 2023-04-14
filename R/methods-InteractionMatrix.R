@@ -61,17 +61,6 @@ setMethod("InteractionMatrix", c("missing", "missing"),
 #' ## Accessing Hi-C count matrix ##
 #' #################################
 #'
-#' ## Load marinerData
-#' if (!require("marinerData", quietly = TRUE))
-#'     install.packages("marinerData")
-#'
-#' ## Read .hic file paths
-#' hicFiles <- c(
-#'     marinerData::LEUK_HEK_PJA27_inter_30.hic(),
-#'     marinerData::LEUK_HEK_PJA30_inter_30.hic()
-#' )
-#' names(hicFiles) <- c("FS", "WT")
-#'
 #' ## Create example interactions
 #' x <- read.table(text="
 #'         9 14000000 14500000 9 14500000 15000000
@@ -80,10 +69,10 @@ setMethod("InteractionMatrix", c("missing", "missing"),
 #' x <- as_ginteractions(x)
 #'
 #' ## Extract 3 pixels from 2 hic files
-#' iarr <- pullHicPixels(x, hicFiles, 500e03)
+#' imat <- pullHicPixels(x, hicFiles, 500e03)
 #'
 #' ## Access count matrix
-#' counts(iarr)
+#' counts(imat)
 #'
 #' @rdname counts
 #' @export
@@ -104,29 +93,8 @@ setMethod("counts",
 #' ## Replacing Hi-C count matrix ##
 #' #################################
 #'
-#' ## Load marinerData
-#' if (!require("marinerData", quietly = TRUE))
-#'     install.packages("marinerData")
-#'
-#' ## Read .hic file paths
-#' hicFiles <- c(
-#'     marinerData::LEUK_HEK_PJA27_inter_30.hic(),
-#'     marinerData::LEUK_HEK_PJA30_inter_30.hic()
-#' )
-#' names(hicFiles) <- c("FS", "WT")
-#'
-#' ## Create example interactions
-#' x <- read.table(text="
-#'         9 14000000 14500000 9 14500000 15000000
-#'         9 89500000 90000000 9 89500000 90000000
-#'         9 23500000 24000000 9 23500000 24000000")
-#' x <- as_ginteractions(x)
-#'
-#' ## Extract 3 pixels from 2 hic files
-#' imat <- pullHicPixels(x, hicFiles, 500e03)
-#'
 #' ## Realize as in-memory matrix
-#' counts(imat) <- as.matrix(counts(iarr))
+#' counts(imat) <- as.matrix(counts(imat))
 #' counts(imat)
 #' imat
 #'
@@ -181,13 +149,9 @@ setMethod("counts<-",
 #' @returns The path to the HDF5 file associated with
 #'  the InteractionMatrix object.
 #' @examples
-#' #################################
-#' ## Accessing path to HDF5 data ##
-#' #################################
-#'
 #' ## Load marinerData
 #' if (!require("marinerData", quietly = TRUE))
-#'     install.packages("marinerData")
+#'     BiocManager::install("marinerData")
 #'
 #' ## Read .hic file paths
 #' hicFiles <- c(
@@ -195,6 +159,10 @@ setMethod("counts<-",
 #'     marinerData::LEUK_HEK_PJA30_inter_30.hic()
 #' )
 #' names(hicFiles) <- c("FS", "WT")
+#'
+#' #################################
+#' ## Accessing path to HDF5 data ##
+#' #################################
 #'
 #' ## Create example interactions
 #' x <- read.table(text="
@@ -259,17 +227,6 @@ setMethod("path",
 #' #################################
 #' ## Updating path to HDF5 data ##
 #' ################################
-#'
-#' ## Load marinerData
-#' if (!require("marinerData", quietly = TRUE))
-#'     install.packages("marinerData")
-#'
-#' ## Read .hic file paths
-#' hicFiles <- c(
-#'     marinerData::LEUK_HEK_PJA27_inter_30.hic(),
-#'     marinerData::LEUK_HEK_PJA30_inter_30.hic()
-#' )
-#' names(hicFiles) <- c("FS", "WT")
 #'
 #' ## Create example interactions
 #' x <- read.table(text="

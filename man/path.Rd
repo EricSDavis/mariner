@@ -40,13 +40,9 @@ This allows the file path to be updated even
 if the original linked data no longer exists.
 }
 \examples{
-#################################
-## Accessing path to HDF5 data ##
-#################################
-
 ## Load marinerData
 if (!require("marinerData", quietly = TRUE))
-    install.packages("marinerData")
+    BiocManager::install("marinerData")
 
 ## Read .hic file paths
 hicFiles <- c(
@@ -54,6 +50,10 @@ hicFiles <- c(
     marinerData::LEUK_HEK_PJA30_inter_30.hic()
 )
 names(hicFiles) <- c("FS", "WT")
+
+#################################
+## Accessing path to HDF5 data ##
+#################################
 
 ## Create example interactions
 x <- read.table(text="
@@ -71,17 +71,6 @@ path(imat)
 #################################
 ## Updating path to HDF5 data ##
 ################################
-
-## Load marinerData
-if (!require("marinerData", quietly = TRUE))
-    install.packages("marinerData")
-
-## Read .hic file paths
-hicFiles <- c(
-    marinerData::LEUK_HEK_PJA27_inter_30.hic(),
-    marinerData::LEUK_HEK_PJA30_inter_30.hic()
-)
-names(hicFiles) <- c("FS", "WT")
 
 ## Create example interactions
 x <- read.table(text="
