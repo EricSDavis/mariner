@@ -1,4 +1,5 @@
 library(mariner)
+library(marinerData)
 library(data.table)
 
 ## Shared objects --------------------------------------------------------------
@@ -13,9 +14,11 @@ dfs <-
     )
 
 ## Reference BEDPE files (loops called with SIP)
-bedpeFiles <-
-    system.file("extdata", package = "mariner") |>
-    list.files(pattern = "Loops.txt", full.names = TRUE)
+bedpeFiles <- c(
+    FS_5kbLoops.txt(),
+    WT_5kbLoops.txt()
+)
+names(bedpeFiles) <- c("FS", "WT")
 
 giList <-
     lapply(bedpeFiles, fread) |>

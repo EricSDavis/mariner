@@ -1,4 +1,5 @@
 library(mariner)
+library(marinerData)
 ## Shared objects --------------------------------------------------------------
 library(GenomicRanges)
 library(InteractionSet)
@@ -164,8 +165,8 @@ test_that("Getting binSize", {
 
     ## Read in loops as GInteractions object
     loops <-
-        system.file("extdata", package="mariner") |>
-        list.files(pattern="WT.*Loops.txt", full.names=TRUE) |>
+        WT_5kbLoops.txt() |>
+        setNames("WT") |>
         read.table(header=TRUE) |>
         as_ginteractions(keep.extra.columns=FALSE)
 

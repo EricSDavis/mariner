@@ -186,9 +186,9 @@ test_that("as_ginteractions supports 10-column format (chrom)", {
 test_that("Multiple conversions work", {
 
     library(data.table)
+    library(marinerData)
     firstRead <-
-        system.file("extdata/WT_5kbLoops.txt",
-                    package = "mariner") |>
+        WT_5kbLoops.txt() |>
         fread() |>
         as_ginteractions()
 

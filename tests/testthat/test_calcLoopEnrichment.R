@@ -1,15 +1,18 @@
 library(mariner)
+library(marinerData)
 
 ## Shared objects --------------------------------------------------------------
 ## Read .hic file paths
-hicFiles <-
-    system.file("extdata/test_hic", package="mariner") |>
-    list.files(pattern=".hic", full.names=TRUE)
+hicFiles <- c(
+    LEUK_HEK_PJA27_inter_30.hic(),
+    LEUK_HEK_PJA30_inter_30.hic()
+)
+names(hicFiles) <- c("FS", "WT")
 
 ## Read in loops as GInteractions object
 loops <-
-    system.file("extdata", package="mariner") |>
-    list.files(pattern="WT.*Loops.txt", full.names=TRUE) |>
+    WT_5kbLoops.txt() |>
+    setNames("WT") |>
     read.table(header=TRUE) |>
     as_ginteractions(keep.extra.columns=FALSE)
 
@@ -552,9 +555,7 @@ test_that("calcLoopEnrichment", {
                      2.16666666666667, 1, 0.777777777777778, 1,
                      1, 1.44827586206897, 0.909090909090909, 0.8),
                    dim = c(10L, 2L),
-                   dimnames = list(NULL,
-                                   c("LEUK_HEK_PJA27_inter_30.hic",
-                                     "LEUK_HEK_PJA30_inter_30.hic"))
+                   dimnames = list(NULL, c("FS","WT"))
                ))
     res <- calcLoopEnrichment(x=loops[1:10] |> binPairs(100e03),
                               files=hicFiles)

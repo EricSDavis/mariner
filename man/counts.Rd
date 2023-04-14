@@ -54,10 +54,16 @@ Replace method for counts
 ## Accessing Hi-C count submatrices ##
 ######################################
 
+## Load marinerData
+if (!require("marinerData", quietly = TRUE))
+    install.packages("marinerData")
+
 ## Read .hic file paths
-hicFiles <-
-    system.file("extdata/test_hic", package="mariner") |>
-    list.files(pattern=".hic", full.names=TRUE)
+hicFiles <- c(
+    marinerData::LEUK_HEK_PJA27_inter_30.hic(),
+    marinerData::LEUK_HEK_PJA30_inter_30.hic()
+)
+names(hicFiles) <- c("FS", "WT")
 
 ## Create example interactions
 x <- read.table(text="
@@ -77,10 +83,16 @@ counts(iarr, FALSE)
 ## Accessing Hi-C count matrix ##
 #################################
 
+## Load marinerData
+if (!require("marinerData", quietly = TRUE))
+    install.packages("marinerData")
+
 ## Read .hic file paths
-hicFiles <-
-    system.file("extdata/test_hic", package="mariner") |>
-    list.files(pattern=".hic", full.names=TRUE)
+hicFiles <- c(
+    marinerData::LEUK_HEK_PJA27_inter_30.hic(),
+    marinerData::LEUK_HEK_PJA30_inter_30.hic()
+)
+names(hicFiles) <- c("FS", "WT")
 
 ## Create example interactions
 x <- read.table(text="
@@ -99,10 +111,16 @@ counts(iarr)
 ## Replacing Hi-C count matrix ##
 #################################
 
+## Load marinerData
+if (!require("marinerData", quietly = TRUE))
+    install.packages("marinerData")
+
 ## Read .hic file paths
-hicFiles <-
-    system.file("extdata/test_hic", package="mariner") |>
-    list.files(pattern=".hic", full.names=TRUE)
+hicFiles <- c(
+    marinerData::LEUK_HEK_PJA27_inter_30.hic(),
+    marinerData::LEUK_HEK_PJA30_inter_30.hic()
+)
+names(hicFiles) <- c("FS", "WT")
 
 ## Create example interactions
 x <- read.table(text="

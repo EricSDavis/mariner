@@ -9,7 +9,7 @@
       assays(1): counts
       rownames: NULL
       rowData names(0):
-      colnames(2): LEUK_HEK_PJA27_inter_30.hic LEUK_HEK_PJA30_inter_30.hic
+      colnames(2): FS WT
       colData names(2): files fileNames
       type: GInteractions
       regions: 4
@@ -25,7 +25,7 @@
       assays(1): counts
       rownames: NULL
       rowData names(0):
-      colnames(2): LEUK_HEK_PJA27_inter_30.hic LEUK_HEK_PJA30_inter_30.hic
+      colnames(2): FS WT
       colData names(2): files fileNames
       type: GInteractions
       regions: 4
@@ -41,7 +41,7 @@
       assays(1): counts
       rownames: NULL
       rowData names(0):
-      colnames(1): LEUK_HEK_PJA27_inter_30.hic
+      colnames(1): FS
       colData names(2): files fileNames
       type: GInteractions
       regions: 4
@@ -57,7 +57,7 @@
       assays(1): counts
       rownames: NULL
       rowData names(0):
-      colnames(1): LEUK_HEK_PJA30_inter_30.hic
+      colnames(1): WT
       colData names(2): files fileNames
       type: GInteractions
       regions: 4
