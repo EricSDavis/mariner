@@ -1,7 +1,7 @@
 Package: mariner
 Type: Package
 Title: Mariner: Explore the Hi-Cs
-Version: 0.99.4
+Version: 0.99.5
 Authors@R: c(
     person("Eric", "Davis", role = c("aut", "cre"),
       email = "ericscottdavis@outlook.com",
@@ -21,6 +21,7 @@ Suggests:
     testthat (>= 3.0.0),
     dplyr,
     rmarkdown,
+    BiocManager,
     ExperimentHub,
     marinerData
 Imports:
