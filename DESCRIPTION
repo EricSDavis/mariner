@@ -67,6 +67,7 @@ Config/testthat/edition: 3
 Collate: 
     'AllClasses.R'
     'AllGenerics.R'
+    'mariner.R'
     'methods-CountMatrix.R'
     'methods-GInteractions.R'
     'utils.R'

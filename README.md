@@ -71,7 +71,15 @@ and background.</i>
 
 ## Installation
 
-This package can be installed via github:
+This package can be installed through Bioconductor:
+
+```{r}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("mariner")
+```
+
+Or the development version can be installed via GitHub:
 
 ```{r}
 if (!requireNamespace("remotes", quietly = TRUE))

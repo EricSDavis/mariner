@@ -45,15 +45,25 @@ to minimize hardware requirements.
 </div>
 </div>
 
-# Key features
+# Installation
 
-This package can be installed via github:
+This package can be installed through Bioconductor:
+
+```{r installPackageBioconductor, eval=FALSE}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("mariner")
+```
+
+Or the development version can be installed via GitHub:
 
 ```{r installPackage, eval=FALSE}
 if (!requireNamespace("remotes", quietly = TRUE))
     install.packages("remotes")
 remotes::install_github("EricSDavis/mariner")
 ```
+
+# Key features
 
 ## Manipulating Paired Ranges
 
