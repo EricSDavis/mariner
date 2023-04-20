@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -318,6 +318,11 @@ reduce duplicate or near duplicate interactions.
 <code><a href="../reference/mergePairs.html">mergePairs()</a></code> allows users to cluster interactions within a
 specified genomic radius and select a representative interaction for the
 group.</p>
+<p>This is particularly helpful in analysis of chromatin loop where
+multiple Hi-C replicates often identify the same loop but assign it to a
+different (but often neighboring) pixel. To avoid redundancy,
+<code><a href="../reference/mergePairs.html">mergePairs()</a></code> identifies and merges these into a unified
+non-redundant loop set.</p>
 <p>Here, two example BEDPE files are imported as a list of
 <code>GInteractions</code> objects.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -415,8 +420,8 @@ contains additional information about the clustered interactions.</p>
 <span><span class="co">## 1:  FS</span></span>
 <span><span class="co">## 2:  WT</span></span></code></pre>
 <p>When no <code>column</code> argument is provided the most frequently
-occurring interaction is selected. In the pair above, the average of the
-two interactions is selected since neither is more frequent.</p>
+occurring interaction is selected. In the pair above, the mean position
+of both anchors is returned since neither is more frequent.</p>
 <p>Alternatively, users can specify the <code>column</code> argument to
 use a custom metric for selecting a representative interaction.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
@@ -662,10 +667,10 @@ normalizations in the <code>.hic</code> files.</p>
 <span><span class="co">## Normalizations</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">hicFiles</span>, <span class="va">readHicNormTypes</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $FS</span></span>
-<span><span class="co">## [1] "VC_SQRT" "VC"      "NONE"    "KR"     </span></span>
+<span><span class="co">## [1] "VC"      "VC_SQRT" "NONE"    "KR"     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $WT</span></span>
-<span><span class="co">## [1] "VC_SQRT" "VC"      "NONE"    "KR"</span></span></code></pre>
+<span><span class="co">## [1] "VC"      "VC_SQRT" "NONE"    "KR"</span></span></code></pre>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Resolutions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">hicFiles</span>, <span class="va">readHicBpResolutions</span><span class="op">)</span></span></code></pre></div>
