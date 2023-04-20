@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.7</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@
       <img src="" class="logo" alt=""><h1>Introduction to mariner</h1>
                         <h4 data-toc-skip class="author">Eric Davis</h4>
             
-            <h4 data-toc-skip class="date">2023-03-31</h4>
+            <h4 data-toc-skip class="date">2023-04-20</h4>
       
       
       <div class="d-none name"><code>introduction_to_mariner.Rmd</code></div>
@@ -75,67 +75,1229 @@
 
     
     
-<div class="section level3">
-<h3 id="r-markdown">R Markdown<a class="anchor" aria-label="anchor" href="#r-markdown"></a>
-</h3>
-<p>This is an R Markdown document. Markdown is a simple formatting
-syntax for authoring HTML, PDF, and MS Word documents. For more details
-on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="external-link uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be
-generated that includes both content as well as the output of any
-embedded R code chunks within the document. You can embed an R code
-chunk like this:</p>
+<div class="section level2">
+<h2 id="why-mariner">Why mariner?<a class="anchor" aria-label="anchor" href="#why-mariner"></a>
+</h2>
+<p>Disruption or aberrant formation of chromatin interactions can result
+in developmental abnormalities and disease. Therefore, deriving
+biological insights from 3D chromatin structure experiments, such as
+Hi-C or Micro-C, is essential for understanding and correcting human
+disease.</p>
+<p><code>mariner</code> is an R/Bioconductor package for exploring 3D
+chromatin structure data from Hi-C or Micro-C experiments. It enables
+users to flexibly manipulate, extract, and aggregate chromatin
+interaction data quickly and efficiently.</p>
+<div class="row">
+<div class="col-md-4">
+<p><strong>One ecosystem</strong><br><code>mariner</code> extends
+common Bioconductor classes, leveraging the thousands of existing tools
+for analyzing and visualizing genomic data.</p>
+</div>
+<div class="col-md-4">
+<p><strong>Modular design</strong><br><code>mariner's</code> functions
+can be combined and chained in various ways to produce custom
+workflows.</p>
+</div>
+<div class="col-md-4">
+<p><strong>Fast and efficient</strong><br><code>mariner</code>
+leverages HDF5 to store large results and uses block processing to
+minimize hardware requirements.</p>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>This package can be installed through Bioconductor:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cars</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##      speed           dist       </span></span>
-<span><span class="co">##  Min.   : 4.0   Min.   :  2.00  </span></span>
-<span><span class="co">##  1st Qu.:12.0   1st Qu.: 26.00  </span></span>
-<span><span class="co">##  Median :15.0   Median : 36.00  </span></span>
-<span><span class="co">##  Mean   :15.4   Mean   : 42.98  </span></span>
-<span><span class="co">##  3rd Qu.:19.0   3rd Qu.: 56.00  </span></span>
-<span><span class="co">##  Max.   :25.0   Max.   :120.00</span></span></code></pre>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"mariner"</span><span class="op">)</span></span></code></pre></div>
+<p>Or the development version can be installed via GitHub:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"EricSDavis/mariner"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="key-features">Key features<a class="anchor" aria-label="anchor" href="#key-features"></a>
+</h2>
+<div class="section level3">
+<h3 id="manipulating-paired-ranges">Manipulating Paired Ranges<a class="anchor" aria-label="anchor" href="#manipulating-paired-ranges"></a>
+</h3>
+<p><code>mariner</code> provides helpful functions for converting,
+binning, and shifting paired genomic ranges.</p>
+<div class="section level4">
+<h4 id="coercing-to-and-accessing-ginteractions">Coercing to and accessing GInteractions<a class="anchor" aria-label="anchor" href="#coercing-to-and-accessing-ginteractions"></a>
+</h4>
+<p>Pairwise interactions between genomic regions are represented in
+Bioconductor with the <code>GInteractions</code> class from the
+<code>InteractionSet</code> package. <code>mariner</code> provides
+additional utilities for converting BEDPE-formatted data to
+<code>GInteractions</code> as well as accessing relevant components of
+these objects.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://ericscottdavis.com/mariner/">mariner</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">marinerData</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## BEDPE-formatted file</span></span>
+<span><span class="va">bedpeFile</span> <span class="op">&lt;-</span> <span class="fu">marinerData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/marinerData/man/WT_5kbLoops.txt.html" class="external-link">WT_5kbLoops.txt</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Read BEDPE</span></span>
+<span><span class="va">bedpe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="va">bedpeFile</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bedpe</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##   chromosome1        x1        x2 chromosome2        y1        y2 color</span></span>
+<span><span class="co">## 1        chr9  14460000  14465000        chr9  14765000  14770000 0,0,0</span></span>
+<span><span class="co">## 2        chr9  89565000  89570000        chr9  89810000  89815000 0,0,0</span></span>
+<span><span class="co">## 3        chr9  23725000  23730000        chr9  23785000  23790000 0,0,0</span></span>
+<span><span class="co">## 4        chr9 128165000 128170000        chr9 128670000 128675000 0,0,0</span></span>
+<span><span class="co">## 5        chr9 113100000 113105000        chr9 113380000 113385000 0,0,0</span></span>
+<span><span class="co">## 6        chr9  16570000  16575000        chr9  16865000  16870000 0,0,0</span></span>
+<span><span class="co">##   APScoreAvg ProbabilityofEnrichment RegAPScoreAvg Avg_diffMaxNeihgboor_1</span></span>
+<span><span class="co">## 1   3.272132               0.9868535      2.233533              1.0059373</span></span>
+<span><span class="co">## 2   2.062756               0.9528638      1.326748              1.1275173</span></span>
+<span><span class="co">## 3   1.953737               0.9335626      1.408335              0.6212205</span></span>
+<span><span class="co">## 4   4.217386               0.9919898      2.144296              2.2130080</span></span>
+<span><span class="co">## 5   2.527488               0.9682012      1.470122              1.3876540</span></span>
+<span><span class="co">## 6   4.385120               0.9976317      2.230119              2.1201570</span></span>
+<span><span class="co">##   Avg_diffMaxNeihgboor_2      avg       std    value</span></span>
+<span><span class="co">## 1              1.6455076 3.437883 0.5164226 4.332049</span></span>
+<span><span class="co">## 2              1.1394584 2.052792 0.5861371 3.055030</span></span>
+<span><span class="co">## 3              0.8722256 2.159580 0.3773057 2.711776</span></span>
+<span><span class="co">## 4              2.6013327 2.860420 1.0796510 4.827538</span></span>
+<span><span class="co">## 5              1.5604625 2.215215 0.6669347 3.448685</span></span>
+<span><span class="co">## 6              3.5826060 4.161625 1.0922525 6.046209</span></span></code></pre>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Coerce to GInteractions</span></span>
+<span><span class="va">gi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_ginteractions.html">as_ginteractions</a></span><span class="op">(</span><span class="va">bedpe</span>, keep.extra.columns <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">gi</span></span></code></pre></div>
+<pre><code><span><span class="co">## GInteractions object with 12095 interactions and 0 metadata columns:</span></span>
+<span><span class="co">##           seqnames1             ranges1     seqnames2             ranges2</span></span>
+<span><span class="co">##               &lt;Rle&gt;           &lt;IRanges&gt;         &lt;Rle&gt;           &lt;IRanges&gt;</span></span>
+<span><span class="co">##       [1]      chr9   14460000-14465000 ---      chr9   14765000-14770000</span></span>
+<span><span class="co">##       [2]      chr9   89565000-89570000 ---      chr9   89810000-89815000</span></span>
+<span><span class="co">##       [3]      chr9   23725000-23730000 ---      chr9   23785000-23790000</span></span>
+<span><span class="co">##       [4]      chr9 128165000-128170000 ---      chr9 128670000-128675000</span></span>
+<span><span class="co">##       [5]      chr9 113100000-113105000 ---      chr9 113380000-113385000</span></span>
+<span><span class="co">##       ...       ...                 ... ...       ...                 ...</span></span>
+<span><span class="co">##   [12091]     chr17   16900000-16905000 ---     chr17   17095000-17100000</span></span>
+<span><span class="co">##   [12092]     chr17     7255000-7260000 ---     chr17     7470000-7475000</span></span>
+<span><span class="co">##   [12093]     chr17   46880000-46885000 ---     chr17   46955000-46960000</span></span>
+<span><span class="co">##   [12094]     chr17   17580000-17585000 ---     chr17   17695000-17700000</span></span>
+<span><span class="co">##   [12095]     chr17   47645000-47650000 ---     chr17   48075000-48080000</span></span>
+<span><span class="co">##   -------</span></span>
+<span><span class="co">##   regions: 20390 ranges and 0 metadata columns</span></span>
+<span><span class="co">##   seqinfo: 23 sequences from an unspecified genome; no seqlengths</span></span></code></pre>
+<p><code>mariner</code> extends <code>InteractionSet</code>’s accessors,
+allowing users to extract each component of interactions as vectors.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/GInteractions-accessors.html">seqnames1</a></span><span class="op">(</span><span class="va">gi</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/GInteractions-accessors.html">start1</a></span><span class="op">(</span><span class="va">gi</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/GInteractions-accessors.html">end1</a></span><span class="op">(</span><span class="va">gi</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/GInteractions-accessors.html">seqnames2</a></span><span class="op">(</span><span class="va">gi</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/GInteractions-accessors.html">start2</a></span><span class="op">(</span><span class="va">gi</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/GInteractions-accessors.html">end2</a></span><span class="op">(</span><span class="va">gi</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "chr9" "chr9" "chr9" "chr9" "chr9" "chr9"</span></span>
+<span><span class="co">## [1]  14460000  89565000  23725000 128165000 113100000  16570000</span></span>
+<span><span class="co">## [1]  14465000  89570000  23730000 128170000 113105000  16575000</span></span>
+<span><span class="co">## [1] "chr9" "chr9" "chr9" "chr9" "chr9" "chr9"</span></span>
+<span><span class="co">## [1]  14765000  89810000  23785000 128670000 113380000  16865000</span></span>
+<span><span class="co">## [1]  14770000  89815000  23790000 128675000 113385000  16870000</span></span></code></pre>
+</div>
+<div class="section level4">
+<h4 id="assigning-paired-ranges-to-bins">Assigning paired ranges to bins<a class="anchor" aria-label="anchor" href="#assigning-paired-ranges-to-bins"></a>
+</h4>
+<p>Chromatin interaction data is usually binned at specific resolutions.
+<code>mariner</code> provides helpful functions for assigning
+<code>GInteractions</code> objects to differently sized bins.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Assign to 1Kb bins</span></span>
+<span><span class="va">binned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/binPairs.html">binPairs</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">gi</span>, binSize <span class="op">=</span> <span class="fl">1e3</span>, pos1<span class="op">=</span><span class="st">'center'</span>, pos2<span class="op">=</span><span class="st">'center'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Show that each anchor is 1Kb</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">InteractionSet</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/start.html" class="external-link">width</a></span><span class="op">(</span><span class="va">binned</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">unique</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## $first</span></span>
+<span><span class="co">## [1] 1001</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $second</span></span>
+<span><span class="co">## [1] 1001</span></span></code></pre>
+<div style="
+padding: .5em 1em;
+margin-bottom: 10px;
+border-radius:5px;
+border-left: 5px solid #2780e3;
+border-right: 1px solid #dee2e6;
+border-top: 1px solid #dee2e6;
+border-bottom: 1px solid #dee2e6;
+">
+<div style="font-weight: 600; opacity: 75%;">
+<p style="margin:0px">
+Note
+</p>
+</div>
+<p><code>GenomicRanges</code> and <code>GInteractions</code> use ranges
+that are 1-based while <code>.hic</code> are 0-based. For correct
+downstream processing with <code>.hic</code> files, these functions put
+ranges into 0-based bins. This is why the <code>width</code> function
+returns <code>binSize + 1</code>.</p>
+</div>
+<p>This function also allows each pair, or anchor, to be binned
+separately and from different reference points (e.g. <code>pos1</code>
+and <code>pos2</code>).</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Assign anchor1 to 1Kb bins and anchor2 to 25Kb bins</span></span>
+<span><span class="va">binned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/binPairs.html">binPairs</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">gi</span>, binSize<span class="op">=</span><span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1e3</span>, <span class="fl">25e3</span><span class="op">)</span>, pos1<span class="op">=</span><span class="st">"start"</span>, pos2<span class="op">=</span><span class="st">"center"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Show that the first anchor is 1Kb and</span></span>
+<span><span class="co">## second anchor is 25Kb</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/start.html" class="external-link">width</a></span><span class="op">(</span><span class="va">binned</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">unique</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## $first</span></span>
+<span><span class="co">## [1] 1001</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $second</span></span>
+<span><span class="co">## [1] 25001</span></span></code></pre>
+<p>While <code><a href="../reference/binPairs.html">binPairs()</a></code> assigns each pair of ranges to a single
+bin, the <code><a href="../reference/snapToBins.html">snapToBins()</a></code> function assigns the starts and ends
+of the ranges to their nearest bin. This allows each anchor to span
+multiple bins.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Create an example GInteractions object</span></span>
+<span><span class="va">gi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/InteractionSet/man/GInteractions-class.html" class="external-link">GInteractions</a></span><span class="op">(</span></span>
+<span>    anchor1 <span class="op">=</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></span><span class="op">(</span><span class="st">"chr1:1-15"</span><span class="op">)</span>,</span>
+<span>        <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></span><span class="op">(</span><span class="st">"chr1:1-11"</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    anchor2 <span class="op">=</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></span><span class="op">(</span><span class="st">"chr1:25-31"</span><span class="op">)</span>,</span>
+<span>        <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></span><span class="op">(</span><span class="st">"chr1:19-31"</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Original interactions</span></span>
+<span><span class="va">gi</span></span>
+<span></span>
+<span><span class="co">## Snap to bins with different binSizes</span></span>
+<span><span class="fu"><a href="../reference/snapToBins.html">snapToBins</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">gi</span>, binSize<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/snapToBins.html">snapToBins</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">gi</span>, binSize<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## GInteractions object with 2 interactions and 0 metadata columns:</span></span>
+<span><span class="co">##       seqnames1   ranges1     seqnames2   ranges2</span></span>
+<span><span class="co">##           &lt;Rle&gt; &lt;IRanges&gt;         &lt;Rle&gt; &lt;IRanges&gt;</span></span>
+<span><span class="co">##   [1]      chr1      1-15 ---      chr1     25-31</span></span>
+<span><span class="co">##   [2]      chr1      1-11 ---      chr1     19-31</span></span>
+<span><span class="co">##   -------</span></span>
+<span><span class="co">##   regions: 4 ranges and 0 metadata columns</span></span>
+<span><span class="co">##   seqinfo: 1 sequence from an unspecified genome; no seqlengths</span></span>
+<span><span class="co">## GInteractions object with 2 interactions and 0 metadata columns:</span></span>
+<span><span class="co">##       seqnames1   ranges1     seqnames2   ranges2</span></span>
+<span><span class="co">##           &lt;Rle&gt; &lt;IRanges&gt;         &lt;Rle&gt; &lt;IRanges&gt;</span></span>
+<span><span class="co">##   [1]      chr1      0-15 ---      chr1     25-30</span></span>
+<span><span class="co">##   [2]      chr1      0-10 ---      chr1     20-30</span></span>
+<span><span class="co">##   -------</span></span>
+<span><span class="co">##   regions: 4 ranges and 0 metadata columns</span></span>
+<span><span class="co">##   seqinfo: 1 sequence from an unspecified genome; no seqlengths</span></span>
+<span><span class="co">## GInteractions object with 2 interactions and 0 metadata columns:</span></span>
+<span><span class="co">##       seqnames1   ranges1     seqnames2   ranges2</span></span>
+<span><span class="co">##           &lt;Rle&gt; &lt;IRanges&gt;         &lt;Rle&gt; &lt;IRanges&gt;</span></span>
+<span><span class="co">##   [1]      chr1      0-20 ---      chr1     20-30</span></span>
+<span><span class="co">##   [2]      chr1      0-10 ---      chr1     20-30</span></span>
+<span><span class="co">##   -------</span></span>
+<span><span class="co">##   regions: 3 ranges and 0 metadata columns</span></span>
+<span><span class="co">##   seqinfo: 1 sequence from an unspecified genome; no seqlengths</span></span></code></pre>
+<p>The following figure summarizes the differences between binning and
+snapping.</p>
+<p><img src="figures/binningFigure.png" width="75%" style="display: block; margin: auto;"></p>
+</div>
 </div>
 <div class="section level3">
-<h3 id="including-plots">Including Plots<a class="anchor" aria-label="anchor" href="#including-plots"></a>
+<h3 id="clustering-merging-interactions">Clustering &amp; Merging Interactions<a class="anchor" aria-label="anchor" href="#clustering-merging-interactions"></a>
 </h3>
-<p>You can also embed plots, for example:</p>
-<p><img src="introduction_to_mariner_files/figure-html/pressure-1.png" width="700"></p>
-<p>Note that the <code>echo = FALSE</code> parameter was added to the
-code chunk to prevent printing of the R code that generated the
-plot.</p>
+<p>Group nearby interactions and select one as representative.</p>
+<p>When combining BEDPE files, it is often important to recognize and
+reduce duplicate or near duplicate interactions.
+<code><a href="../reference/mergePairs.html">mergePairs()</a></code> allows users to cluster interactions within a
+specified genomic radius and select a representative interaction for the
+group.</p>
+<p>Here, two example BEDPE files are imported as a list of
+<code>GInteractions</code> objects.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://ericscottdavis.com/mariner/">mariner</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">marinerData</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## BEDPE-formatted files</span></span>
+<span><span class="va">bedpeFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="fu">marinerData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/marinerData/man/FS_5kbLoops.txt.html" class="external-link">FS_5kbLoops.txt</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    <span class="fu">marinerData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/marinerData/man/WT_5kbLoops.txt.html" class="external-link">WT_5kbLoops.txt</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">bedpeFiles</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FS"</span>, <span class="st">"WT"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Read as list of GInteractions</span></span>
+<span><span class="va">giList</span> <span class="op">&lt;-</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">bedpeFiles</span>, <span class="va">read.table</span>, header<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">as_ginteractions</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">giList</span>, <span class="va">summary</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## $FS</span></span>
+<span><span class="co">## [1] "GInteractions object of length 8566 with 9 metadata columns"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $WT</span></span>
+<span><span class="co">## [1] "GInteractions object of length 12095 with 9 metadata columns"</span></span></code></pre>
+<p>Then cluster and merge with <code><a href="../reference/mergePairs.html">mergePairs()</a></code>.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mgi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mergePairs.html">mergePairs</a></span><span class="op">(</span></span>
+<span>    x<span class="op">=</span><span class="va">giList</span>,</span>
+<span>    radius<span class="op">=</span><span class="fl">10e3</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">mgi</span></span></code></pre></div>
+<pre><code><span><span class="co">## MergedGInteractions object with 16716 interactions and 0 metadata columns:</span></span>
+<span><span class="co">##           seqnames1             ranges1     seqnames2             ranges2</span></span>
+<span><span class="co">##               &lt;Rle&gt;           &lt;IRanges&gt;         &lt;Rle&gt;           &lt;IRanges&gt;</span></span>
+<span><span class="co">##       [1]      chr9 118645000-118650000 ---      chr9 119330000-119335000</span></span>
+<span><span class="co">##       [2]      chr9   15280000-15285000 ---      chr9   15405000-15410000</span></span>
+<span><span class="co">##       [3]      chr9 110180000-110185000 ---      chr9 111520000-111525000</span></span>
+<span><span class="co">##       [4]      chr9   80375000-80380000 ---      chr9   80650000-80655000</span></span>
+<span><span class="co">##       [5]      chr9 108380000-108385000 ---      chr9 108475000-108480000</span></span>
+<span><span class="co">##       ...       ...                 ... ...       ...                 ...</span></span>
+<span><span class="co">##   [16712]     chr17   71422500-71427500 ---     chr17   72170000-72175000</span></span>
+<span><span class="co">##   [16713]     chr17   28450000-28455000 ---     chr17   28657500-28662500</span></span>
+<span><span class="co">##   [16714]     chr17   65375000-65380000 ---     chr17   65685000-65690000</span></span>
+<span><span class="co">##   [16715]     chr17   77712500-77717500 ---     chr17   77965000-77970000</span></span>
+<span><span class="co">##   [16716]     chr17   46880000-46885000 ---     chr17   46955000-46960000</span></span>
+<span><span class="co">##   -------</span></span>
+<span><span class="co">##   regions: 28189 ranges and 0 metadata columns</span></span>
+<span><span class="co">##   seqinfo: 23 sequences from an unspecified genome; no seqlengths</span></span></code></pre>
+<div style="
+padding: .5em 1em;
+margin-bottom: 10px;
+border-radius:5px;
+border-left: 5px solid #2780e3;
+border-right: 1px solid #dee2e6;
+border-top: 1px solid #dee2e6;
+border-bottom: 1px solid #dee2e6;
+">
+<div style="font-weight: 600; opacity: 75%;">
+<p style="margin:0px">
+Note
+</p>
+</div>
+<p>The metadata is missing from these interactions. Since no
+<code>column</code> was provided, each interaction may be an average of
+one or more interaction. The user can decide how metadata from each
+cluster should be aggregated with <code><a href="../reference/aggPairMcols.html">aggPairMcols()</a></code>.</p>
+</div>
+<p>The resulting object is <code>MergedGInteractions</code> class, where
+each of these interactions is a representative cluster of one or more
+interactions. This class behaves like <code>GInteractions</code> but
+contains additional information about the clustered interactions.</p>
+<p>To view the clusters of specific interactions, use the
+<code><a href="../reference/getPairClusters.html">getPairClusters()</a></code> accessor.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mgi</span><span class="op">[</span><span class="fl">12772</span><span class="op">]</span></span>
+<span><span class="fu"><a href="../reference/getPairClusters.html">getPairClusters</a></span><span class="op">(</span><span class="va">mgi</span><span class="op">[</span><span class="fl">12772</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## MergedGInteractions object with 1 interaction and 0 metadata columns:</span></span>
+<span><span class="co">##       seqnames1           ranges1     seqnames2           ranges2</span></span>
+<span><span class="co">##           &lt;Rle&gt;         &lt;IRanges&gt;         &lt;Rle&gt;         &lt;IRanges&gt;</span></span>
+<span><span class="co">##   [1]      chr9 90302500-90307500 ---      chr9 90430000-90435000</span></span>
+<span><span class="co">##   -------</span></span>
+<span><span class="co">##   regions: 28189 ranges and 0 metadata columns</span></span>
+<span><span class="co">##   seqinfo: 23 sequences from an unspecified genome; no seqlengths</span></span>
+<span><span class="co">## [[1]]</span></span>
+<span><span class="co">##    seqnames1   start1     end1 width1 strand1 seqnames2   start2     end2</span></span>
+<span><span class="co">## 1:      chr9 90300000 90305000   5001       *      chr9 90430000 90435000</span></span>
+<span><span class="co">## 2:      chr9 90305000 90310000   5001       *      chr9 90430000 90435000</span></span>
+<span><span class="co">##    width2 strand2 color APScoreAvg ProbabilityofEnrichment RegAPScoreAvg</span></span>
+<span><span class="co">## 1:   5001       * 0,0,0   2.543816               0.9444922      1.887968</span></span>
+<span><span class="co">## 2:   5001       * 0,0,0   2.718088               0.9531689      1.922928</span></span>
+<span><span class="co">##    Avg_diffMaxNeihgboor_1 Avg_diffMaxNeihgboor_2      avg       std    value</span></span>
+<span><span class="co">## 1:              0.7340446              0.7978164 2.239048 0.4049837 2.891532</span></span>
+<span><span class="co">## 2:              0.7962394              1.0013034 2.353757 0.5259836 3.061525</span></span>
+<span><span class="co">##    src</span></span>
+<span><span class="co">## 1:  FS</span></span>
+<span><span class="co">## 2:  WT</span></span></code></pre>
+<p>When no <code>column</code> argument is provided the most frequently
+occurring interaction is selected. In the pair above, the average of the
+two interactions is selected since neither is more frequent.</p>
+<p>Alternatively, users can specify the <code>column</code> argument to
+use a custom metric for selecting a representative interaction.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mgi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mergePairs.html">mergePairs</a></span><span class="op">(</span></span>
+<span>    x<span class="op">=</span><span class="va">giList</span>,</span>
+<span>    radius<span class="op">=</span><span class="fl">10e3</span>,</span>
+<span>    column<span class="op">=</span><span class="st">"APScoreAvg"</span>,</span>
+<span>    selectMax<span class="op">=</span><span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">mgi</span></span></code></pre></div>
+<pre><code><span><span class="co">## MergedGInteractions object with 16716 interactions and 9 metadata columns:</span></span>
+<span><span class="co">##           seqnames1             ranges1     seqnames2             ranges2 |</span></span>
+<span><span class="co">##               &lt;Rle&gt;           &lt;IRanges&gt;         &lt;Rle&gt;           &lt;IRanges&gt; |</span></span>
+<span><span class="co">##       [1]      chr9 118645000-118650000 ---      chr9 119330000-119335000 |</span></span>
+<span><span class="co">##       [2]      chr9   15280000-15285000 ---      chr9   15405000-15410000 |</span></span>
+<span><span class="co">##       [3]      chr9 110180000-110185000 ---      chr9 111520000-111525000 |</span></span>
+<span><span class="co">##       [4]      chr9   80375000-80380000 ---      chr9   80650000-80655000 |</span></span>
+<span><span class="co">##       [5]      chr9 108380000-108385000 ---      chr9 108475000-108480000 |</span></span>
+<span><span class="co">##       ...       ...                 ... ...       ...                 ... .</span></span>
+<span><span class="co">##   [16712]     chr17   71425000-71430000 ---     chr17   72170000-72175000 |</span></span>
+<span><span class="co">##   [16713]     chr17   28450000-28455000 ---     chr17   28660000-28665000 |</span></span>
+<span><span class="co">##   [16714]     chr17   65375000-65380000 ---     chr17   65685000-65690000 |</span></span>
+<span><span class="co">##   [16715]     chr17   77710000-77715000 ---     chr17   77965000-77970000 |</span></span>
+<span><span class="co">##   [16716]     chr17   46880000-46885000 ---     chr17   46955000-46960000 |</span></span>
+<span><span class="co">##                 color APScoreAvg ProbabilityofEnrichment RegAPScoreAvg</span></span>
+<span><span class="co">##           &lt;character&gt;  &lt;numeric&gt;               &lt;numeric&gt;     &lt;numeric&gt;</span></span>
+<span><span class="co">##       [1]       0,0,0    2.61103                0.986044       1.41438</span></span>
+<span><span class="co">##       [2]       0,0,0    2.45301                0.982802       1.54370</span></span>
+<span><span class="co">##       [3]       0,0,0    3.40635                0.996545       1.80221</span></span>
+<span><span class="co">##       [4]       0,0,0    2.09352                0.946897       1.40194</span></span>
+<span><span class="co">##       [5]       0,0,0    2.14182                0.936547       1.41005</span></span>
+<span><span class="co">##       ...         ...        ...                     ...           ...</span></span>
+<span><span class="co">##   [16712]       0,0,0    4.05887                0.997252       2.12187</span></span>
+<span><span class="co">##   [16713]       0,0,0    4.47565                0.995379       2.49118</span></span>
+<span><span class="co">##   [16714]       0,0,0    3.91395                0.996974       2.83091</span></span>
+<span><span class="co">##   [16715]       0,0,0    3.39028                0.979869       2.42961</span></span>
+<span><span class="co">##   [16716]       0,0,0    3.89043                0.982768       2.73390</span></span>
+<span><span class="co">##           Avg_diffMaxNeihgboor_1 Avg_diffMaxNeihgboor_2       avg       std</span></span>
+<span><span class="co">##                        &lt;numeric&gt;              &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;</span></span>
+<span><span class="co">##       [1]               1.875585                2.12164   2.60512  0.794220</span></span>
+<span><span class="co">##       [2]               1.491568                1.60777   2.73756  0.856876</span></span>
+<span><span class="co">##       [3]               3.768934                3.89112   4.49898  1.492786</span></span>
+<span><span class="co">##       [4]               0.818514                1.10611   2.20826  0.589976</span></span>
+<span><span class="co">##       [5]               0.907892                1.01824   1.95072  0.543293</span></span>
+<span><span class="co">##       ...                    ...                    ...       ...       ...</span></span>
+<span><span class="co">##   [16712]               2.484298                3.15533   3.68911  1.144096</span></span>
+<span><span class="co">##   [16713]               2.181075                2.63508   3.43889  0.827104</span></span>
+<span><span class="co">##   [16714]               1.091847                1.96232   4.83071  0.753955</span></span>
+<span><span class="co">##   [16715]               1.139229                1.15973   2.89326  0.589743</span></span>
+<span><span class="co">##   [16716]               0.906871                1.43305   3.25531  0.368257</span></span>
+<span><span class="co">##               value</span></span>
+<span><span class="co">##           &lt;numeric&gt;</span></span>
+<span><span class="co">##       [1]   4.27231</span></span>
+<span><span class="co">##       [2]   4.06339</span></span>
+<span><span class="co">##       [3]   7.84915</span></span>
+<span><span class="co">##       [4]   2.93583</span></span>
+<span><span class="co">##       [5]   2.75773</span></span>
+<span><span class="co">##       ...       ...</span></span>
+<span><span class="co">##   [16712]   5.89737</span></span>
+<span><span class="co">##   [16713]   5.37762</span></span>
+<span><span class="co">##   [16714]   5.80124</span></span>
+<span><span class="co">##   [16715]   3.90591</span></span>
+<span><span class="co">##   [16716]   4.06142</span></span>
+<span><span class="co">##   -------</span></span>
+<span><span class="co">##   regions: 27152 ranges and 0 metadata columns</span></span>
+<span><span class="co">##   seqinfo: 23 sequences from an unspecified genome; no seqlengths</span></span></code></pre>
+<p>The interaction with the higher value (<code>selectMax=TRUE</code>)
+for “APScoreAvg” has been selected.</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mgi</span><span class="op">[</span><span class="fl">12772</span><span class="op">]</span></span>
+<span><span class="fu"><a href="../reference/getPairClusters.html">getPairClusters</a></span><span class="op">(</span><span class="va">mgi</span><span class="op">[</span><span class="fl">12772</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## MergedGInteractions object with 1 interaction and 9 metadata columns:</span></span>
+<span><span class="co">##       seqnames1           ranges1     seqnames2           ranges2 |       color</span></span>
+<span><span class="co">##           &lt;Rle&gt;         &lt;IRanges&gt;         &lt;Rle&gt;         &lt;IRanges&gt; | &lt;character&gt;</span></span>
+<span><span class="co">##   [1]      chr9 90305000-90310000 ---      chr9 90430000-90435000 |       0,0,0</span></span>
+<span><span class="co">##       APScoreAvg ProbabilityofEnrichment RegAPScoreAvg Avg_diffMaxNeihgboor_1</span></span>
+<span><span class="co">##        &lt;numeric&gt;               &lt;numeric&gt;     &lt;numeric&gt;              &lt;numeric&gt;</span></span>
+<span><span class="co">##   [1]    2.71809                0.953169       1.92293               0.796239</span></span>
+<span><span class="co">##       Avg_diffMaxNeihgboor_2       avg       std     value</span></span>
+<span><span class="co">##                    &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;</span></span>
+<span><span class="co">##   [1]                 1.0013   2.35376  0.525984   3.06153</span></span>
+<span><span class="co">##   -------</span></span>
+<span><span class="co">##   regions: 27152 ranges and 0 metadata columns</span></span>
+<span><span class="co">##   seqinfo: 23 sequences from an unspecified genome; no seqlengths</span></span>
+<span><span class="co">## [[1]]</span></span>
+<span><span class="co">##    seqnames1   start1     end1 width1 strand1 seqnames2   start2     end2</span></span>
+<span><span class="co">## 1:      chr9 90300000 90305000   5001       *      chr9 90430000 90435000</span></span>
+<span><span class="co">## 2:      chr9 90305000 90310000   5001       *      chr9 90430000 90435000</span></span>
+<span><span class="co">##    width2 strand2 color APScoreAvg ProbabilityofEnrichment RegAPScoreAvg</span></span>
+<span><span class="co">## 1:   5001       * 0,0,0   2.543816               0.9444922      1.887968</span></span>
+<span><span class="co">## 2:   5001       * 0,0,0   2.718088               0.9531689      1.922928</span></span>
+<span><span class="co">##    Avg_diffMaxNeihgboor_1 Avg_diffMaxNeihgboor_2      avg       std    value</span></span>
+<span><span class="co">## 1:              0.7340446              0.7978164 2.239048 0.4049837 2.891532</span></span>
+<span><span class="co">## 2:              0.7962394              1.0013034 2.353757 0.5259836 3.061525</span></span>
+<span><span class="co">##    src</span></span>
+<span><span class="co">## 1:  FS</span></span>
+<span><span class="co">## 2:  WT</span></span></code></pre>
+<p>The <code><a href="../reference/subsetBySource.html">subsetBySource()</a></code> accessor allows users to find which
+interactions are shared or exclusive between sets of interactions in the
+giList.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## List the input sources</span></span>
+<span><span class="fu"><a href="../reference/sources.html">sources</a></span><span class="op">(</span><span class="va">mgi</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "FS" "WT"</span></span></code></pre>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Interactions unique to each source</span></span>
+<span><span class="fu"><a href="../reference/subsetBySource.html">subsetBySource</a></span><span class="op">(</span><span class="va">mgi</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">summary</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## $FS</span></span>
+<span><span class="co">## [1] "MergedGInteractions object of length 4621 with 9 metadata columns"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $WT</span></span>
+<span><span class="co">## [1] "MergedGInteractions object of length 8150 with 9 metadata columns"</span></span></code></pre>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Interactions shared by both sources</span></span>
+<span><span class="fu"><a href="../reference/subsetBySource.html">subsetBySource</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mgi</span>, include<span class="op">=</span><span class="fu"><a href="../reference/sources.html">sources</a></span><span class="op">(</span><span class="va">mgi</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## MergedGInteractions object with 3945 interactions and 9 metadata columns:</span></span>
+<span><span class="co">##          seqnames1             ranges1     seqnames2             ranges2 |</span></span>
+<span><span class="co">##              &lt;Rle&gt;           &lt;IRanges&gt;         &lt;Rle&gt;           &lt;IRanges&gt; |</span></span>
+<span><span class="co">##      [1]      chr9   90305000-90310000 ---      chr9   90430000-90435000 |</span></span>
+<span><span class="co">##      [2]      chr9   17810000-17815000 ---      chr9   18210000-18215000 |</span></span>
+<span><span class="co">##      [3]      chr9   14615000-14620000 ---      chr9   14765000-14770000 |</span></span>
+<span><span class="co">##      [4]      chr9 123640000-123645000 ---      chr9 123690000-123695000 |</span></span>
+<span><span class="co">##      [5]      chr9 116350000-116355000 ---      chr9 116415000-116420000 |</span></span>
+<span><span class="co">##      ...       ...                 ... ...       ...                 ... .</span></span>
+<span><span class="co">##   [3941]     chr17   71425000-71430000 ---     chr17   72170000-72175000 |</span></span>
+<span><span class="co">##   [3942]     chr17   28450000-28455000 ---     chr17   28660000-28665000 |</span></span>
+<span><span class="co">##   [3943]     chr17   65375000-65380000 ---     chr17   65685000-65690000 |</span></span>
+<span><span class="co">##   [3944]     chr17   77710000-77715000 ---     chr17   77965000-77970000 |</span></span>
+<span><span class="co">##   [3945]     chr17   46880000-46885000 ---     chr17   46955000-46960000 |</span></span>
+<span><span class="co">##                color APScoreAvg ProbabilityofEnrichment RegAPScoreAvg</span></span>
+<span><span class="co">##          &lt;character&gt;  &lt;numeric&gt;               &lt;numeric&gt;     &lt;numeric&gt;</span></span>
+<span><span class="co">##      [1]       0,0,0    2.71809                0.953169       1.92293</span></span>
+<span><span class="co">##      [2]       0,0,0    6.67809                0.999825       3.09492</span></span>
+<span><span class="co">##      [3]       0,0,0    4.03621                0.990983       1.88137</span></span>
+<span><span class="co">##      [4]       0,0,0    1.80119                0.915252       1.30425</span></span>
+<span><span class="co">##      [5]       0,0,0    3.98045                0.993344       2.34677</span></span>
+<span><span class="co">##      ...         ...        ...                     ...           ...</span></span>
+<span><span class="co">##   [3941]       0,0,0    4.05887                0.997252       2.12187</span></span>
+<span><span class="co">##   [3942]       0,0,0    4.47565                0.995379       2.49118</span></span>
+<span><span class="co">##   [3943]       0,0,0    3.91395                0.996974       2.83091</span></span>
+<span><span class="co">##   [3944]       0,0,0    3.39028                0.979869       2.42961</span></span>
+<span><span class="co">##   [3945]       0,0,0    3.89043                0.982768       2.73390</span></span>
+<span><span class="co">##          Avg_diffMaxNeihgboor_1 Avg_diffMaxNeihgboor_2       avg       std</span></span>
+<span><span class="co">##                       &lt;numeric&gt;              &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;</span></span>
+<span><span class="co">##      [1]               0.796239               1.001303   2.35376  0.525984</span></span>
+<span><span class="co">##      [2]               4.171168               5.166137   4.94208  1.538564</span></span>
+<span><span class="co">##      [3]               1.987963               2.934255   2.94201  0.802044</span></span>
+<span><span class="co">##      [4]               0.674690               0.726729   1.86861  0.317171</span></span>
+<span><span class="co">##      [5]               1.527367               2.450921   3.65504  0.677612</span></span>
+<span><span class="co">##      ...                    ...                    ...       ...       ...</span></span>
+<span><span class="co">##   [3941]               2.484298                3.15533   3.68911  1.144096</span></span>
+<span><span class="co">##   [3942]               2.181075                2.63508   3.43889  0.827104</span></span>
+<span><span class="co">##   [3943]               1.091847                1.96232   4.83071  0.753955</span></span>
+<span><span class="co">##   [3944]               1.139229                1.15973   2.89326  0.589743</span></span>
+<span><span class="co">##   [3945]               0.906871                1.43305   3.25531  0.368257</span></span>
+<span><span class="co">##              value</span></span>
+<span><span class="co">##          &lt;numeric&gt;</span></span>
+<span><span class="co">##      [1]   3.06153</span></span>
+<span><span class="co">##      [2]   8.64979</span></span>
+<span><span class="co">##      [3]   4.70909</span></span>
+<span><span class="co">##      [4]   2.46833</span></span>
+<span><span class="co">##      [5]   5.01270</span></span>
+<span><span class="co">##      ...       ...</span></span>
+<span><span class="co">##   [3941]   5.89737</span></span>
+<span><span class="co">##   [3942]   5.37762</span></span>
+<span><span class="co">##   [3943]   5.80124</span></span>
+<span><span class="co">##   [3944]   3.90591</span></span>
+<span><span class="co">##   [3945]   4.06142</span></span>
+<span><span class="co">##   -------</span></span>
+<span><span class="co">##   regions: 27152 ranges and 0 metadata columns</span></span>
+<span><span class="co">##   seqinfo: 23 sequences from an unspecified genome; no seqlengths</span></span></code></pre>
+<p>This is particularly useful for identifying <em>de novo</em>, shared
+or transient interactions. For more information see
+<code>?subsetBySource()</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="extracting-aggregating-interactions">Extracting &amp; Aggregating Interactions<a class="anchor" aria-label="anchor" href="#extracting-aggregating-interactions"></a>
+</h3>
+<p>Pull Hi-C pixels or matrices, then aggregate by files or
+interactions.</p>
+<p><code>mariner</code> provides two functions for extracting contacts
+from <code>.hic</code> files, <code><a href="../reference/pullHicPixels.html">pullHicPixels()</a></code> and
+<code><a href="../reference/pullHicMatrices.html">pullHicMatrices()</a></code>, which use the <code>binSize</code>
+argument to determine how the data should be returned. In short,
+<code><a href="../reference/pullHicPixels.html">pullHicPixels()</a></code> returns a matrix of contact frequency for
+each interaction and <code>.hic</code> file, while
+<code><a href="../reference/pullHicMatrices.html">pullHicMatrices()</a></code> returns an array of contact matrices. The
+following sections describe when and how to use each of these
+functions.</p>
+<div class="section level4">
+<h4 id="pulling-pixels">Pulling pixels<a class="anchor" aria-label="anchor" href="#pulling-pixels"></a>
+</h4>
+<p>Pixels are defined as paired-ranges with widths equal to their
+<code>binSize</code>. When all interactions are pixels,
+<code><a href="../reference/pullHicPixels.html">pullHicPixels()</a></code> returns an <code>InteractionMatrix</code>
+object containing a matrix of contact frequency for each interaction
+(row) and <code>.hic</code> file (column).</p>
+<p>As described in previous sections, BEDPE files containing the
+locations of chromatin loops can be read in and merged.</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://ericscottdavis.com/mariner/">mariner</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">marinerData</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## BEDPE-formatted files</span></span>
+<span><span class="co">## BEDPE-formatted files</span></span>
+<span><span class="va">bedpeFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="fu">marinerData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/marinerData/man/FS_5kbLoops.txt.html" class="external-link">FS_5kbLoops.txt</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    <span class="fu">marinerData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/marinerData/man/WT_5kbLoops.txt.html" class="external-link">WT_5kbLoops.txt</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">bedpeFiles</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FS"</span>, <span class="st">"WT"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Read as list of GInteractions</span></span>
+<span><span class="va">giList</span> <span class="op">&lt;-</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">bedpeFiles</span>, <span class="va">read.table</span>, header<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">as_ginteractions</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Merge</span></span>
+<span><span class="va">mgi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mergePairs.html">mergePairs</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">giList</span>, radius<span class="op">=</span><span class="fl">10e3</span>, column<span class="op">=</span><span class="st">"APScoreAvg"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mgi</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "MergedGInteractions object of length 16716 with 9 metadata columns"</span></span></code></pre>
+<p>The <code>marinerData</code> <code>ExperimentHub</code> package
+includes some small <code>.hic</code> files that can be downloaded for
+testing.</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">marinerData</span><span class="op">)</span></span>
+<span><span class="va">hicFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/marinerData/man/LEUK_HEK_PJA27_inter_30.hic.html" class="external-link">LEUK_HEK_PJA27_inter_30.hic</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/marinerData/man/LEUK_HEK_PJA30_inter_30.hic.html" class="external-link">LEUK_HEK_PJA30_inter_30.hic</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">hicFiles</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FS"</span>, <span class="st">"WT"</span><span class="op">)</span></span>
+<span><span class="va">hicFiles</span></span></code></pre></div>
+<pre><code><span><span class="co">##                                                      FS </span></span>
+<span><span class="co">## "/home/rstudio/.cache/R/ExperimentHub/5dd6e33079f_8147" </span></span>
+<span><span class="co">##                                                      WT </span></span>
+<span><span class="co">## "/home/rstudio/.cache/R/ExperimentHub/5dd374c2d4e_8148"</span></span></code></pre>
+<p>The <code>strawr</code> package includes functions for visualizing
+the available chromosomes, resolutions (<code>binSizes</code>), and
+normalizations in the <code>.hic</code> files.</p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/aidenlab/straw/tree/master/R" class="external-link">strawr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Normalizations</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">hicFiles</span>, <span class="va">readHicNormTypes</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## $FS</span></span>
+<span><span class="co">## [1] "VC_SQRT" "VC"      "NONE"    "KR"     </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $WT</span></span>
+<span><span class="co">## [1] "VC_SQRT" "VC"      "NONE"    "KR"</span></span></code></pre>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Resolutions</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">hicFiles</span>, <span class="va">readHicBpResolutions</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## $FS</span></span>
+<span><span class="co">## [1] 2500000 1000000  500000  250000  100000   50000   25000   10000    5000</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $WT</span></span>
+<span><span class="co">## [1] 2500000 1000000  500000  250000  100000   50000   25000   10000    5000</span></span></code></pre>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Chromosomes</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">hicFiles</span>, <span class="va">readHicChroms</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">head</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## $FS</span></span>
+<span><span class="co">##   index              name    length</span></span>
+<span><span class="co">## 1     1                 1 248956422</span></span>
+<span><span class="co">## 2    12                10 133797422</span></span>
+<span><span class="co">## 3   174 10_GL383545V1_ALT    179254</span></span>
+<span><span class="co">## 4    79 10_GL383546V1_ALT    309802</span></span>
+<span><span class="co">## 5   168 10_KI270824V1_ALT    181496</span></span>
+<span><span class="co">## 6   150 10_KI270825V1_ALT    188315</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $WT</span></span>
+<span><span class="co">##   index              name    length</span></span>
+<span><span class="co">## 1     1                 1 248956422</span></span>
+<span><span class="co">## 2    12                10 133797422</span></span>
+<span><span class="co">## 3   174 10_GL383545V1_ALT    179254</span></span>
+<span><span class="co">## 4    79 10_GL383546V1_ALT    309802</span></span>
+<span><span class="co">## 5   168 10_KI270824V1_ALT    181496</span></span>
+<span><span class="co">## 6   150 10_KI270825V1_ALT    188315</span></span></code></pre>
+<p>Since the chromosomes in the <code>.hic</code> files have been
+processed without the “chr” prefix, it is important to change the
+<code>seqLevelsStyle</code> of the interactions to match.</p>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">GenomeInfoDb</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqlevelsStyle.html" class="external-link">seqlevelsStyle</a></span><span class="op">(</span><span class="va">mgi</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">'ENSEMBL'</span></span></code></pre></div>
+<p>These interactions can then be binned to the desired resolution with
+the <code><a href="../reference/binPairs.html">binPairs()</a></code> function.</p>
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Assign interactions to 100Kb bins</span></span>
+<span><span class="va">binned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/binPairs.html">binPairs</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mgi</span>, binSize<span class="op">=</span><span class="fl">100e3</span><span class="op">)</span></span></code></pre></div>
+<p>Contact frequency can then be extracted with
+<code><a href="../reference/pullHicPixels.html">pullHicPixels()</a></code>. Here only the first 1000 pixels are pulled
+for demonstration purposes.</p>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">imat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pullHicPixels.html">pullHicPixels</a></span><span class="op">(</span></span>
+<span>    x<span class="op">=</span><span class="va">binned</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">]</span>,</span>
+<span>    files<span class="op">=</span><span class="va">hicFiles</span>,</span>
+<span>    binSize<span class="op">=</span><span class="fl">100e3</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">imat</span></span></code></pre></div>
+<pre><code><span><span class="co">## class: InteractionMatrix </span></span>
+<span><span class="co">## dim: count matrix with 1000 interactions and 2 file(s)</span></span>
+<span><span class="co">## metadata(3): binSize norm matrix</span></span>
+<span><span class="co">## assays(1): counts</span></span>
+<span><span class="co">## rownames: NULL</span></span>
+<span><span class="co">## rowData names(9): color APScoreAvg ... std value</span></span>
+<span><span class="co">## colnames(2): FS WT</span></span>
+<span><span class="co">## colData names(2): files fileNames</span></span>
+<span><span class="co">## type: MergedGInteractions</span></span>
+<span><span class="co">## regions: 13923</span></span></code></pre>
+<div style="
+padding: .5em 1em;
+margin-bottom: 10px;
+border-radius:5px;
+border-left: 5px solid #2780e3;
+border-right: 1px solid #dee2e6;
+border-top: 1px solid #dee2e6;
+border-bottom: 1px solid #dee2e6;
+">
+<div style="font-weight: 600; opacity: 75%;">
+<p style="margin:0px">
+Note
+</p>
+</div>
+<p>There are many parameters in the <code><a href="../reference/pullHicPixels.html">pullHicPixels()</a></code>
+function. Users can change the normalization, the type of matrix pulled
+(e.g. “observed” vs “expected”), and where/how the on-disk data is
+stored. Users can also decrease the amount of data read into memory by
+decreasing the <code>blockSize</code>. For more information see
+<code>?pullHicPixels()</code> or <code>?pullHicMatrices()</code>.</p>
+</div>
+<p>The count matrix can be extracted from the
+<code>InteractionMatrix</code> class with the <code><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">counts()</a></code>
+function.</p>
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">counts</a></span><span class="op">(</span><span class="va">imat</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## &lt;1000 x 2&gt; matrix of class DelayedMatrix and type "double":</span></span>
+<span><span class="co">##         FS WT</span></span>
+<span><span class="co">##    [1,]  4  1</span></span>
+<span><span class="co">##    [2,]  8  5</span></span>
+<span><span class="co">##    [3,]  3  2</span></span>
+<span><span class="co">##    [4,]  3  3</span></span>
+<span><span class="co">##    [5,] 14  8</span></span>
+<span><span class="co">##     ...  .  .</span></span>
+<span><span class="co">##  [996,]  6 10</span></span>
+<span><span class="co">##  [997,]  5  4</span></span>
+<span><span class="co">##  [998,]  0  0</span></span>
+<span><span class="co">##  [999,] 11  5</span></span>
+<span><span class="co">## [1000,]  0  0</span></span></code></pre>
+<div style="
+padding: .5em 1em;
+margin-bottom: 10px;
+border-radius:5px;
+border-left: 5px solid #2780e3;
+border-right: 1px solid #dee2e6;
+border-top: 1px solid #dee2e6;
+border-bottom: 1px solid #dee2e6;
+">
+<div style="font-weight: 600; opacity: 75%;">
+<p style="margin:0px">
+Note
+</p>
+</div>
+<p>The <code>InteractionMatrix</code> class extends
+<code>InteractionSet</code> and <code>SummarizedExperiment</code>
+classes. See the documentation for these classes for instructions on how
+to extract different parts of the <code>InteractionMatrix</code>
+object.</p>
+</div>
+</div>
+<div class="section level4">
+<h4 id="pulling-submatrices">Pulling submatrices<a class="anchor" aria-label="anchor" href="#pulling-submatrices"></a>
+</h4>
+<p>When the widths of paired-ranges are greater than the
+<code>binSize</code>, <code><a href="../reference/pullHicMatrices.html">pullHicMatrices()</a></code> returns an
+<code>InteractionArray</code> object containing an array of contact
+matrices for each interaction and <code>.hic</code> file.</p>
+<p>Using the example above, reducing the <code>binSize</code> to 25Kb
+when the data is binned at 100Kb results in 4x4 count matrices for each
+interaction instead of a single value.</p>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">iarr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pullHicMatrices.html">pullHicMatrices</a></span><span class="op">(</span></span>
+<span>    x<span class="op">=</span><span class="va">binned</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">]</span>,</span>
+<span>    file<span class="op">=</span><span class="va">hicFiles</span>,</span>
+<span>    binSize <span class="op">=</span> <span class="fl">25e3</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">iarr</span></span></code></pre></div>
+<pre><code><span><span class="co">## class: InteractionArray </span></span>
+<span><span class="co">## dim: 1000 interaction(s), 2 file(s), 4x4 count matrix(es)</span></span>
+<span><span class="co">## metadata(3): binSize norm matrix</span></span>
+<span><span class="co">## assays(3): counts rownames colnames</span></span>
+<span><span class="co">## rownames: NULL</span></span>
+<span><span class="co">## rowData names(9): color APScoreAvg ... std value</span></span>
+<span><span class="co">## colnames(2): FS WT</span></span>
+<span><span class="co">## colData names(2): files fileNames</span></span>
+<span><span class="co">## type: MergedGInteractions</span></span>
+<span><span class="co">## regions: 13923</span></span></code></pre>
+<p>This results in an <code>InteractionArray</code> with 1000
+interactions, each with 4x4 count matrices across 2 <code>.hic</code>
+files. These data can be accessed with the same <code><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">counts()</a></code>
+accessor.</p>
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">counts</a></span><span class="op">(</span><span class="va">iarr</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## &lt;4 x 4 x 1000 x 2&gt; array of class DelayedArray and type "double":</span></span>
+<span><span class="co">## ,,1,FS</span></span>
+<span><span class="co">##      [,1] [,2] [,3] [,4]</span></span>
+<span><span class="co">## [1,]    0    0    0    0</span></span>
+<span><span class="co">## [2,]    0    0    0    1</span></span>
+<span><span class="co">## [3,]    0    1    0    1</span></span>
+<span><span class="co">## [4,]    0    1    0    0</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ...</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ,,1000,WT</span></span>
+<span><span class="co">##      [,1] [,2] [,3] [,4]</span></span>
+<span><span class="co">## [1,]    0    0    0    0</span></span>
+<span><span class="co">## [2,]    0    0    0    0</span></span>
+<span><span class="co">## [3,]    0    0    0    0</span></span>
+<span><span class="co">## [4,]    0    0    0    0</span></span></code></pre>
+<p>The start bins for each interaction can be shown by setting
+<code>showDimnames=TRUE</code>.</p>
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">counts</a></span><span class="op">(</span><span class="va">iarr</span>, showDimnames<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## &lt;4 x 4 x 1000 x 2&gt; array of class DelayedArray and type "double":</span></span>
+<span><span class="co">## ,,1,FS</span></span>
+<span><span class="co">##           119300000 119325000 119350000 119375000</span></span>
+<span><span class="co">## 118600000         0         0         0         0</span></span>
+<span><span class="co">## 118625000         0         0         0         1</span></span>
+<span><span class="co">## 118650000         0         1         0         1</span></span>
+<span><span class="co">## 118675000         0         1         0         0</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ...</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ,,1000,WT</span></span>
+<span><span class="co">##           108700000 108725000 108750000 108775000</span></span>
+<span><span class="co">## 107900000         0         0         0         0</span></span>
+<span><span class="co">## 107925000         0         0         0         0</span></span>
+<span><span class="co">## 107950000         0         0         0         0</span></span>
+<span><span class="co">## 107975000         0         0         0         0</span></span></code></pre>
+<div style="
+padding: .5em 1em;
+margin-bottom: 10px;
+border-radius:5px;
+border-left: 5px solid #2780e3;
+border-right: 1px solid #dee2e6;
+border-top: 1px solid #dee2e6;
+border-bottom: 1px solid #dee2e6;
+">
+<div style="font-weight: 600; opacity: 75%;">
+<p style="margin:0px">
+Note
+</p>
+</div>
+<p>These functions utilize the <code>DelayedArray</code> and
+<code>HDF5Array</code> framework to efficiently store extracted data
+on-disk, freeing up RAM, and allowing users to work with large contact
+data seamlessly.</p>
+</div>
+<p>The <code><a href="../reference/pixelsToMatrices.html">pixelsToMatrices()</a></code> function helps prepare regions
+surrounding a central pixel. For example, the code below shows how to
+pull 3x3 matrices surrounding a 100Kb pixel.</p>
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Define region with 1-pixel buffer</span></span>
+<span><span class="va">regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pixelsToMatrices.html">pixelsToMatrices</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">binned</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">]</span>, buffer<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Pull 3x3 matrices from 1000 interactions and 2 hic files</span></span>
+<span><span class="va">iarr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pullHicMatrices.html">pullHicMatrices</a></span><span class="op">(</span></span>
+<span>    x<span class="op">=</span><span class="va">regions</span>,</span>
+<span>    files<span class="op">=</span><span class="va">hicFiles</span>,</span>
+<span>    binSize<span class="op">=</span><span class="fl">100e3</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## See count matrices</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">counts</a></span><span class="op">(</span><span class="va">iarr</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## &lt;3 x 3 x 1000 x 2&gt; array of class DelayedArray and type "double":</span></span>
+<span><span class="co">## ,,1,FS</span></span>
+<span><span class="co">##      [,1] [,2] [,3]</span></span>
+<span><span class="co">## [1,]    1    3    2</span></span>
+<span><span class="co">## [2,]    1    4    4</span></span>
+<span><span class="co">## [3,]    3    0    4</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ,,2,FS</span></span>
+<span><span class="co">##      [,1] [,2] [,3]</span></span>
+<span><span class="co">## [1,]    3    4    3</span></span>
+<span><span class="co">## [2,]   11    8    2</span></span>
+<span><span class="co">## [3,]   40    8    5</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ,,3,FS</span></span>
+<span><span class="co">##      [,1] [,2] [,3]</span></span>
+<span><span class="co">## [1,]    0    1    1</span></span>
+<span><span class="co">## [2,]    1    3    0</span></span>
+<span><span class="co">## [3,]    2    2    2</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ...</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ,,998,WT</span></span>
+<span><span class="co">##      [,1] [,2] [,3]</span></span>
+<span><span class="co">## [1,]    0    1    1</span></span>
+<span><span class="co">## [2,]    0    0    0</span></span>
+<span><span class="co">## [3,]    2    1    2</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ,,999,WT</span></span>
+<span><span class="co">##      [,1] [,2] [,3]</span></span>
+<span><span class="co">## [1,]    8    3    2</span></span>
+<span><span class="co">## [2,]   13    5    2</span></span>
+<span><span class="co">## [3,]   42   10    5</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ,,1000,WT</span></span>
+<span><span class="co">##      [,1] [,2] [,3]</span></span>
+<span><span class="co">## [1,]    3    0    0</span></span>
+<span><span class="co">## [2,]    0    0    0</span></span>
+<span><span class="co">## [3,]    0    1    2</span></span></code></pre>
+<p>This also works on rectangular selections.</p>
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Bin at two different resolutions</span></span>
+<span><span class="va">binned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/binPairs.html">binPairs</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mgi</span>, binSize<span class="op">=</span><span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100e3</span>, <span class="fl">250e3</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Pull 10x25 matrices from 1000 interactions and 2 hic files</span></span>
+<span><span class="va">iarr2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pullHicMatrices.html">pullHicMatrices</a></span><span class="op">(</span></span>
+<span>    x<span class="op">=</span><span class="va">binned</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">]</span>,</span>
+<span>    files<span class="op">=</span><span class="va">hicFiles</span>,</span>
+<span>    binSize<span class="op">=</span><span class="fl">10e3</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## See count matrices</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">counts</a></span><span class="op">(</span><span class="va">iarr2</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## &lt;10 x 25 x 1000 x 2&gt; array of class DelayedArray and type "double":</span></span>
+<span><span class="co">## ,,1,FS</span></span>
+<span><span class="co">##        [,1]  [,2]  [,3] ... [,24] [,25]</span></span>
+<span><span class="co">##  [1,]     0     0     0   .     0     0</span></span>
+<span><span class="co">##  [2,]     0     0     0   .     0     0</span></span>
+<span><span class="co">##   ...     .     .     .   .     .     .</span></span>
+<span><span class="co">##  [9,]     0     0     0   .     0     0</span></span>
+<span><span class="co">## [10,]     0     0     0   .     0     0</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ...</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ,,1000,WT</span></span>
+<span><span class="co">##        [,1]  [,2]  [,3] ... [,24] [,25]</span></span>
+<span><span class="co">##  [1,]     0     0     0   .     0     0</span></span>
+<span><span class="co">##  [2,]     0     0     0   .     0     0</span></span>
+<span><span class="co">##   ...     .     .     .   .     .     .</span></span>
+<span><span class="co">##  [9,]     0     0     0   .     0     0</span></span>
+<span><span class="co">## [10,]     0     0     0   .     0     0</span></span></code></pre>
+</div>
+<div class="section level4">
+<h4 id="aggregating-count-matrices">Aggregating count matrices<a class="anchor" aria-label="anchor" href="#aggregating-count-matrices"></a>
+</h4>
+<p>The <code><a href="../reference/aggHicMatrices.html">aggHicMatrices()</a></code> function allows flexible
+aggregation of <code>InteractionArray</code> objects by interactions,
+Hi-C files, or both (default). The <code>FUN</code> argument controls
+how these contacts should be aggregated (the default is
+<code>sum</code>).</p>
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## One matrix per interaction</span></span>
+<span><span class="fu"><a href="../reference/aggHicMatrices.html">aggHicMatrices</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">iarr</span>, by<span class="op">=</span><span class="st">"interactions"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## / Reading and realizing block 1/5 ... OK</span></span>
+<span><span class="co">## \ Processing it ... OK</span></span>
+<span><span class="co">## / Reading and realizing block 2/5 ... OK</span></span>
+<span><span class="co">## \ Processing it ... OK</span></span>
+<span><span class="co">## / Reading and realizing block 3/5 ... OK</span></span>
+<span><span class="co">## \ Processing it ... OK</span></span>
+<span><span class="co">## / Reading and realizing block 4/5 ... OK</span></span>
+<span><span class="co">## \ Processing it ... OK</span></span>
+<span><span class="co">## / Reading and realizing block 5/5 ... OK</span></span>
+<span><span class="co">## \ Processing it ... OK</span></span></code></pre>
+<pre><code><span><span class="co">## &lt;3 x 3 x 1000&gt; array of class DelayedArray and type "double":</span></span>
+<span><span class="co">## ,,1</span></span>
+<span><span class="co">##      [,1] [,2] [,3]</span></span>
+<span><span class="co">## [1,]    1    4    2</span></span>
+<span><span class="co">## [2,]    4    5    7</span></span>
+<span><span class="co">## [3,]    4    3    6</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ,,2</span></span>
+<span><span class="co">##      [,1] [,2] [,3]</span></span>
+<span><span class="co">## [1,]    7    5    7</span></span>
+<span><span class="co">## [2,]   15   13    3</span></span>
+<span><span class="co">## [3,]   63   19    9</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ,,3</span></span>
+<span><span class="co">##      [,1] [,2] [,3]</span></span>
+<span><span class="co">## [1,]    1    1    2</span></span>
+<span><span class="co">## [2,]    4    5    2</span></span>
+<span><span class="co">## [3,]    3    6    2</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ...</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ,,998</span></span>
+<span><span class="co">##      [,1] [,2] [,3]</span></span>
+<span><span class="co">## [1,]    0    1    2</span></span>
+<span><span class="co">## [2,]    1    0    0</span></span>
+<span><span class="co">## [3,]    5    2    3</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ,,999</span></span>
+<span><span class="co">##      [,1] [,2] [,3]</span></span>
+<span><span class="co">## [1,]   18    8    7</span></span>
+<span><span class="co">## [2,]   29   16    5</span></span>
+<span><span class="co">## [3,]   97   31    9</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ,,1000</span></span>
+<span><span class="co">##      [,1] [,2] [,3]</span></span>
+<span><span class="co">## [1,]    4    1    2</span></span>
+<span><span class="co">## [2,]    1    0    1</span></span>
+<span><span class="co">## [3,]    3    2    2</span></span></code></pre>
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## One matrix per file</span></span>
+<span><span class="fu"><a href="../reference/aggHicMatrices.html">aggHicMatrices</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">iarr</span>, by<span class="op">=</span><span class="st">"files"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## &lt;3 x 3 x 2&gt; array of class DelayedArray and type "double":</span></span>
+<span><span class="co">## ,,FS</span></span>
+<span><span class="co">##       [,1]  [,2]  [,3]</span></span>
+<span><span class="co">## [1,]  6803  3789  2709</span></span>
+<span><span class="co">## [2,] 11212  6874  3776</span></span>
+<span><span class="co">## [3,] 13871 11029  6562</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ,,WT</span></span>
+<span><span class="co">##       [,1]  [,2]  [,3]</span></span>
+<span><span class="co">## [1,]  5645  3180  2240</span></span>
+<span><span class="co">## [2,]  8964  5678  2996</span></span>
+<span><span class="co">## [3,] 11282  9085  5614</span></span></code></pre>
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## One matrix total</span></span>
+<span><span class="fu"><a href="../reference/aggHicMatrices.html">aggHicMatrices</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">iarr</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## &lt;3 x 3&gt; matrix of class DelayedMatrix and type "double":</span></span>
+<span><span class="co">##       [,1]  [,2]  [,3]</span></span>
+<span><span class="co">## [1,] 12448  6969  4949</span></span>
+<span><span class="co">## [2,] 20176 12552  6772</span></span>
+<span><span class="co">## [3,] 25153 20114 12176</span></span></code></pre>
+<div style="
+padding: .5em 1em;
+margin-bottom: 10px;
+border-radius:5px;
+border-left: 5px solid #2780e3;
+border-right: 1px solid #dee2e6;
+border-top: 1px solid #dee2e6;
+border-bottom: 1px solid #dee2e6;
+">
+<div style="font-weight: 600; opacity: 75%;">
+<p style="margin:0px">
+Note
+</p>
+</div>
+<p>The <code><a href="../reference/aggHicMatrices.html">aggHicMatrices()</a></code> function uses block processing to
+operate on the <code>DelayedArray</code> count matrices. The
+<code>nBlocks</code> argument controls how many blocks the data should
+be split into for processing. This can be conducted in parallel by
+setting <code>BPPARAM</code>. See <code>?aggHicMatrices()</code> for
+more information.</p>
+</div>
+</div>
+<div class="section level4">
+<h4 id="visualizing-aggregated-matrices">Visualizing aggregated matrices<a class="anchor" aria-label="anchor" href="#visualizing-aggregated-matrices"></a>
+</h4>
+<p><code>mariner</code> provides the <code><a href="../reference/plotMatrix.html">plotMatrix()</a></code> function
+for visualizing the aggregated <code>.hic</code> matrices, such as in an
+aggregate peak analysis.</p>
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/aggHicMatrices.html">aggHicMatrices</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">iarr</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotMatrix.html">plotMatrix</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mat</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## MatrixPlot[MatrixPlot1]</span></span></code></pre>
+<p><img src="introduction_to_mariner_files/figure-html/plotMatrix-1.png"><!-- --></p>
+<p>This function is compatible with <code>plotgardener</code>, an
+R/Bioconductor genomic visualization package. <code>plotgardener</code>
+gives precise control over the size and placement of plots on a page,
+making it suitable for complex, publication-ready figure building. For
+more information about <code>plotgardener</code> visit <a href="https://phanstiellab.github.io/plotgardener/" class="external-link uri">https://phanstiellab.github.io/plotgardener/</a>.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="calculating-loop-enrichment">Calculating Loop Enrichment<a class="anchor" aria-label="anchor" href="#calculating-loop-enrichment"></a>
+</h3>
+<p>Determine loop enrichment to local background with <em>selection
+functions</em> to flexibility select foreground and background.</p>
+<p>The <code><a href="../reference/calcLoopEnrichment.html">calcLoopEnrichment()</a></code> function combines many of the
+steps described in the previous sections into a single function that
+pulls Hi-C pixels and calculates the enrichment of a selected
+<em>foreground</em> compared to a selected <em>background</em>.</p>
+<p><code>mariner</code> provides several different selection functions
+for easily and flexibly selecting different parts of a matrix. The code
+below shows a few examples of how these functions can be used and
+combined to select virtually any part of a square matrix.</p>
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Define the buffer</span></span>
+<span><span class="va">buffer</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
+<span></span>
+<span><span class="co">## Select center pixel</span></span>
+<span><span class="fu"><a href="../reference/selection-functions.html">selectCenterPixel</a></span><span class="op">(</span>mhDist<span class="op">=</span><span class="fl">0</span>, buffer<span class="op">=</span><span class="va">buffer</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## '0' = selected; '-' = unselected</span></span>
+<span><span class="co">##                      </span></span>
+<span><span class="co">##  -  -  -  -  -  -  - </span></span>
+<span><span class="co">##  -  -  -  -  -  -  - </span></span>
+<span><span class="co">##  -  -  -  -  -  -  - </span></span>
+<span><span class="co">##  -  -  -  0  -  -  - </span></span>
+<span><span class="co">##  -  -  -  -  -  -  - </span></span>
+<span><span class="co">##  -  -  -  -  -  -  - </span></span>
+<span><span class="co">##  -  -  -  -  -  -  -</span></span></code></pre>
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## With a radial distance</span></span>
+<span><span class="fu"><a href="../reference/selection-functions.html">selectCenterPixel</a></span><span class="op">(</span>mhDist<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, buffer<span class="op">=</span><span class="va">buffer</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## '0' = selected; '-' = unselected</span></span>
+<span><span class="co">##                      </span></span>
+<span><span class="co">##  -  -  -  -  -  -  - </span></span>
+<span><span class="co">##  -  -  -  -  -  -  - </span></span>
+<span><span class="co">##  -  -  -  0  -  -  - </span></span>
+<span><span class="co">##  -  -  0  0  0  -  - </span></span>
+<span><span class="co">##  -  -  -  0  -  -  - </span></span>
+<span><span class="co">##  -  -  -  -  -  -  - </span></span>
+<span><span class="co">##  -  -  -  -  -  -  -</span></span></code></pre>
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Select all corners</span></span>
+<span><span class="fu"><a href="../reference/selection-functions.html">selectCorners</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">2</span>, buffer<span class="op">=</span><span class="va">buffer</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## '0' = selected; '-' = unselected</span></span>
+<span><span class="co">##                      </span></span>
+<span><span class="co">##  0  0  -  -  -  0  0 </span></span>
+<span><span class="co">##  0  0  -  -  -  0  0 </span></span>
+<span><span class="co">##  -  -  -  -  -  -  - </span></span>
+<span><span class="co">##  -  -  -  -  -  -  - </span></span>
+<span><span class="co">##  -  -  -  -  -  -  - </span></span>
+<span><span class="co">##  0  0  -  -  -  0  0 </span></span>
+<span><span class="co">##  0  0  -  -  -  0  0</span></span></code></pre>
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Combine functions</span></span>
+<span><span class="fu"><a href="../reference/selection-functions.html">selectTopLeft</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">2</span>, buffer<span class="op">=</span><span class="va">buffer</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="../reference/selection-functions.html">selectBottomRight</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">2</span>, buffer<span class="op">=</span><span class="va">buffer</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## '0' = selected; '-' = unselected</span></span>
+<span><span class="co">##                      </span></span>
+<span><span class="co">##  0  0  -  -  -  -  - </span></span>
+<span><span class="co">##  0  0  -  -  -  -  - </span></span>
+<span><span class="co">##  -  -  -  -  -  -  - </span></span>
+<span><span class="co">##  -  -  -  -  -  -  - </span></span>
+<span><span class="co">##  -  -  -  -  -  -  - </span></span>
+<span><span class="co">##  -  -  -  -  -  0  0 </span></span>
+<span><span class="co">##  -  -  -  -  -  0  0</span></span></code></pre>
+<p>These selection functions can be passed into
+<code><a href="../reference/calcLoopEnrichment.html">calcLoopEnrichment()</a></code> along with a
+<code>GInteractions</code> object defining the loop pixels to calculate
+enrichment for each <code>.hic</code> file.</p>
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://ericscottdavis.com/mariner/">mariner</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">marinerData</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Define hicFiles</span></span>
+<span><span class="va">hicFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/marinerData/man/LEUK_HEK_PJA27_inter_30.hic.html" class="external-link">LEUK_HEK_PJA27_inter_30.hic</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/marinerData/man/LEUK_HEK_PJA30_inter_30.hic.html" class="external-link">LEUK_HEK_PJA30_inter_30.hic</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FS"</span>, <span class="st">"WT"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Read in loops</span></span>
+<span><span class="va">loops</span> <span class="op">&lt;-</span> </span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/marinerData/man/WT_5kbLoops.txt.html" class="external-link">WT_5kbLoops.txt</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="st">"WT"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span>header<span class="op">=</span><span class="cn">TRUE</span>, nrows<span class="op">=</span><span class="fl">1000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/as_ginteractions.html">as_ginteractions</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/binPairs.html">binPairs</a></span><span class="op">(</span>binSize<span class="op">=</span><span class="fl">100e3</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">GenomeInfoDb</span><span class="fu">::</span><span class="fu">`seqlevelsStyle&lt;-`</span><span class="op">(</span><span class="st">'ENSEMBL'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Define foreground &amp; background</span></span>
+<span><span class="va">buffer</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
+<span><span class="va">fg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/selection-functions.html">selectCenterPixel</a></span><span class="op">(</span>mhDist<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, buffer<span class="op">=</span><span class="va">buffer</span><span class="op">)</span></span>
+<span><span class="va">bg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/selection-functions.html">selectTopLeft</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">2</span>, buffer<span class="op">=</span><span class="va">buffer</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="../reference/selection-functions.html">selectBottomRight</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">2</span>, buffer<span class="op">=</span><span class="va">buffer</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Calculate loop enrichment</span></span>
+<span><span class="va">enrich</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calcLoopEnrichment.html">calcLoopEnrichment</a></span><span class="op">(</span></span>
+<span>    x<span class="op">=</span><span class="va">loops</span>,</span>
+<span>    files<span class="op">=</span><span class="va">hicFiles</span>,</span>
+<span>    fg<span class="op">=</span><span class="va">fg</span>,</span>
+<span>    bg<span class="op">=</span><span class="va">bg</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">enrich</span></span></code></pre></div>
+<pre><code><span><span class="co">## &lt;1000 x 2&gt; matrix of class DelayedMatrix and type "double":</span></span>
+<span><span class="co">##                FS        WT</span></span>
+<span><span class="co">##    [1,] 1.1111111 1.2500000</span></span>
+<span><span class="co">##    [2,] 0.6250000 1.1666667</span></span>
+<span><span class="co">##    [3,] 0.9090909 1.5294118</span></span>
+<span><span class="co">##    [4,] 0.8888889 0.6666667</span></span>
+<span><span class="co">##    [5,] 0.6363636 0.9333333</span></span>
+<span><span class="co">##     ...         .         .</span></span>
+<span><span class="co">##  [996,] 0.8372093 0.5714286</span></span>
+<span><span class="co">##  [997,] 0.9795918 1.1034483</span></span>
+<span><span class="co">##  [998,] 1.3333333 1.2000000</span></span>
+<span><span class="co">##  [999,] 1.6000000 0.6666667</span></span>
+<span><span class="co">## [1000,] 1.5000000 1.0000000</span></span></code></pre>
+<p>This results in a <code>DelayedMatrix</code> with rows for each
+interaction and columns corresponding to each <code>.hic</code>
+file.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.2.3 (2023-03-15)</span></span>
+<pre><code><span><span class="co">## R Under development (unstable) (2023-02-01 r83747)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
-<span><span class="co">## Running under: Ubuntu 22.04.2 LTS</span></span>
+<span><span class="co">## Running under: Ubuntu 22.04.1 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
-<span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3</span></span>
-<span><span class="co">## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.20.so</span></span>
+<span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
+<span><span class="co">## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.20.so;  LAPACK version 3.10.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## locale:</span></span>
-<span><span class="co">##  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       </span></span>
-<span><span class="co">##  [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   </span></span>
-<span><span class="co">##  [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          </span></span>
-<span><span class="co">## [10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   </span></span>
+<span><span class="co">##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span></span>
+<span><span class="co">##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    </span></span>
+<span><span class="co">##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   </span></span>
+<span><span class="co">##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 </span></span>
+<span><span class="co">##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span></span>
+<span><span class="co">## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## time zone: Etc/UTC</span></span>
+<span><span class="co">## tzcode source: system (glibc)</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attached base packages:</span></span>
-<span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
+<span><span class="co">## [1] stats4    stats     graphics  grDevices utils     datasets  methods  </span></span>
+<span><span class="co">## [8] base     </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## other attached packages:</span></span>
+<span><span class="co">##  [1] strawr_0.0.91               InteractionSet_1.27.0      </span></span>
+<span><span class="co">##  [3] SummarizedExperiment_1.29.1 Biobase_2.59.0             </span></span>
+<span><span class="co">##  [5] MatrixGenerics_1.11.1       matrixStats_0.63.0         </span></span>
+<span><span class="co">##  [7] GenomicRanges_1.51.4        GenomeInfoDb_1.35.16       </span></span>
+<span><span class="co">##  [9] IRanges_2.33.1              S4Vectors_0.37.5           </span></span>
+<span><span class="co">## [11] BiocGenerics_0.45.3         marinerData_0.99.9         </span></span>
+<span><span class="co">## [13] mariner_0.99.7             </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] knitr_1.42        magrittr_2.0.3    R6_2.5.1          ragg_1.2.5       </span></span>
-<span><span class="co">##  [5] rlang_1.1.0       fastmap_1.1.1     highr_0.10        stringr_1.5.0    </span></span>
-<span><span class="co">##  [9] tools_4.2.3       xfun_0.38         cli_3.6.1         jquerylib_0.1.4  </span></span>
-<span><span class="co">## [13] systemfonts_1.0.4 htmltools_0.5.5   yaml_2.3.7        digest_0.6.31    </span></span>
-<span><span class="co">## [17] rprojroot_2.0.3   lifecycle_1.0.3   pkgdown_2.0.7     textshaping_0.3.6</span></span>
-<span><span class="co">## [21] purrr_1.0.1       sass_0.4.5        vctrs_0.6.1       fs_1.6.1         </span></span>
-<span><span class="co">## [25] memoise_2.0.1     glue_1.6.2        cachem_1.0.7      evaluate_0.20    </span></span>
-<span><span class="co">## [29] rmarkdown_2.21    stringi_1.7.12    compiler_4.2.3    bslib_0.4.2      </span></span>
-<span><span class="co">## [33] desc_1.4.2        jsonlite_1.8.4</span></span></code></pre>
+<span><span class="co">##   [1] RColorBrewer_1.1-3            rstudioapi_0.14              </span></span>
+<span><span class="co">##   [3] jsonlite_1.8.4                magrittr_2.0.3               </span></span>
+<span><span class="co">##   [5] rmarkdown_2.21                fs_1.6.1                     </span></span>
+<span><span class="co">##   [7] BiocIO_1.9.2                  zlibbioc_1.45.0              </span></span>
+<span><span class="co">##   [9] ragg_1.2.5                    vctrs_0.6.1                  </span></span>
+<span><span class="co">##  [11] memoise_2.0.1                 Rsamtools_2.15.3             </span></span>
+<span><span class="co">##  [13] RCurl_1.98-1.12               htmltools_0.5.5              </span></span>
+<span><span class="co">##  [15] progress_1.2.2                AnnotationHub_3.7.4          </span></span>
+<span><span class="co">##  [17] curl_5.0.0                    Rhdf5lib_1.21.0              </span></span>
+<span><span class="co">##  [19] rhdf5_2.43.4                  gridGraphics_0.5-1           </span></span>
+<span><span class="co">##  [21] sass_0.4.5                    bslib_0.4.2                  </span></span>
+<span><span class="co">##  [23] desc_1.4.2                    cachem_1.0.7                 </span></span>
+<span><span class="co">##  [25] GenomicAlignments_1.35.1      mime_0.12                    </span></span>
+<span><span class="co">##  [27] lifecycle_1.0.3               pkgconfig_2.0.3              </span></span>
+<span><span class="co">##  [29] Matrix_1.5-3                  R6_2.5.1                     </span></span>
+<span><span class="co">##  [31] fastmap_1.1.1                 GenomeInfoDbData_1.2.10      </span></span>
+<span><span class="co">##  [33] shiny_1.7.4                   digest_0.6.31                </span></span>
+<span><span class="co">##  [35] colorspace_2.1-0              AnnotationDbi_1.61.2         </span></span>
+<span><span class="co">##  [37] rprojroot_2.0.3               ExperimentHub_2.7.1          </span></span>
+<span><span class="co">##  [39] textshaping_0.3.6             RSQLite_2.3.1                </span></span>
+<span><span class="co">##  [41] filelock_1.0.2                fansi_1.0.4                  </span></span>
+<span><span class="co">##  [43] httr_1.4.5                    abind_1.4-5                  </span></span>
+<span><span class="co">##  [45] compiler_4.3.0                bit64_4.0.5                  </span></span>
+<span><span class="co">##  [47] withr_2.5.0                   BiocParallel_1.33.12         </span></span>
+<span><span class="co">##  [49] DBI_1.1.3                     highr_0.10                   </span></span>
+<span><span class="co">##  [51] HDF5Array_1.27.0              rappdirs_0.3.3               </span></span>
+<span><span class="co">##  [53] DelayedArray_0.25.0           rjson_0.2.21                 </span></span>
+<span><span class="co">##  [55] tools_4.3.0                   interactiveDisplayBase_1.37.0</span></span>
+<span><span class="co">##  [57] httpuv_1.6.9                  glue_1.6.2                   </span></span>
+<span><span class="co">##  [59] restfulr_0.0.15               dbscan_1.1-11                </span></span>
+<span><span class="co">##  [61] rhdf5filters_1.11.2           promises_1.2.0.1             </span></span>
+<span><span class="co">##  [63] grid_4.3.0                    generics_0.1.3               </span></span>
+<span><span class="co">##  [65] gtable_0.3.3                  data.table_1.14.8            </span></span>
+<span><span class="co">##  [67] hms_1.1.3                     utf8_1.2.3                   </span></span>
+<span><span class="co">##  [69] XVector_0.39.0                BiocVersion_3.17.1           </span></span>
+<span><span class="co">##  [71] pillar_1.9.0                  stringr_1.5.0                </span></span>
+<span><span class="co">##  [73] yulab.utils_0.0.6             later_1.3.0                  </span></span>
+<span><span class="co">##  [75] dplyr_1.1.1                   BiocFileCache_2.7.2          </span></span>
+<span><span class="co">##  [77] lattice_0.20-45               rtracklayer_1.59.1           </span></span>
+<span><span class="co">##  [79] bit_4.0.5                     tidyselect_1.2.0             </span></span>
+<span><span class="co">##  [81] Biostrings_2.67.2             knitr_1.42                   </span></span>
+<span><span class="co">##  [83] xfun_0.38                     colourvalues_0.3.9           </span></span>
+<span><span class="co">##  [85] stringi_1.7.12                yaml_2.3.7                   </span></span>
+<span><span class="co">##  [87] evaluate_0.20                 codetools_0.2-19             </span></span>
+<span><span class="co">##  [89] tibble_3.2.1                  BiocManager_1.30.20          </span></span>
+<span><span class="co">##  [91] ggplotify_0.1.0               cli_3.6.1                    </span></span>
+<span><span class="co">##  [93] xtable_1.8-4                  systemfonts_1.0.4            </span></span>
+<span><span class="co">##  [95] munsell_0.5.0                 jquerylib_0.1.4              </span></span>
+<span><span class="co">##  [97] Rcpp_1.0.10                   dbplyr_2.3.2                 </span></span>
+<span><span class="co">##  [99] png_0.1-8                     XML_3.99-0.14                </span></span>
+<span><span class="co">## [101] parallel_4.3.0                ellipsis_0.3.2               </span></span>
+<span><span class="co">## [103] pkgdown_2.0.7                 ggplot2_3.4.2                </span></span>
+<span><span class="co">## [105] assertthat_0.2.1              blob_1.2.4                   </span></span>
+<span><span class="co">## [107] prettyunits_1.1.1             plyranges_1.19.0             </span></span>
+<span><span class="co">## [109] bitops_1.0-7                  scales_1.2.1                 </span></span>
+<span><span class="co">## [111] plotgardener_1.5.3            purrr_1.0.1                  </span></span>
+<span><span class="co">## [113] crayon_1.5.2                  rlang_1.1.0                  </span></span>
+<span><span class="co">## [115] KEGGREST_1.39.0</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

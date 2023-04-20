@@ -20,7 +20,7 @@ as `length(interactions(x))/nBlocks`."><!-- mathjax --><script src="https://cdnj
     
     <a class="navbar-brand me-2" href="../index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.7</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -152,17 +152,29 @@ processing.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Read .hic file paths</span></span></span>
-<span class="r-in"><span><span class="va">hicFiles</span> <span class="op">&lt;-</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/test_hic"</span>, package<span class="op">=</span><span class="st">"mariner"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span>pattern<span class="op">=</span><span class="st">".hic"</span>, full.names<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Load marinerData</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"marinerData"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"marinerData"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Read .hic file paths</span></span></span>
+<span class="r-in"><span><span class="va">hicFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu">marinerData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/marinerData/man/LEUK_HEK_PJA27_inter_30.hic.html" class="external-link">LEUK_HEK_PJA27_inter_30.hic</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu">marinerData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/marinerData/man/LEUK_HEK_PJA30_inter_30.hic.html" class="external-link">LEUK_HEK_PJA30_inter_30.hic</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?marinerData and browseVignettes('marinerData') for documentation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> loading from cache</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?marinerData and browseVignettes('marinerData') for documentation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> loading from cache</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">hicFiles</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FS"</span>, <span class="st">"WT"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Read in loops as GInteractions object</span></span></span>
 <span class="r-in"><span><span class="va">loops</span> <span class="op">&lt;-</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package<span class="op">=</span><span class="st">"mariner"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span>pattern<span class="op">=</span><span class="st">"WT.*Loops.txt"</span>, full.names<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/pkg/marinerData/man/WT_5kbLoops.txt.html" class="external-link">WT_5kbLoops.txt</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="st">"WT"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span>header<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="as_ginteractions.html">as_ginteractions</a></span><span class="op">(</span>keep.extra.columns<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?marinerData and browseVignettes('marinerData') for documentation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> loading from cache</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Removes the "chr" prefix for compatibility</span></span></span>
 <span class="r-in"><span><span class="co">## with the preprocessed hic files</span></span></span>
@@ -181,26 +193,6 @@ processing.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Aggregate all, by files, or by interactions</span></span></span>
 <span class="r-in"><span><span class="fu">aggHicMatrices</span><span class="op">(</span>x<span class="op">=</span><span class="va">iarr</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> / Reading and realizing block 1/5 ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> \ Processing it ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> / Reading and realizing block 2/5 ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> \ Processing it ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> / Reading and realizing block 3/5 ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> \ Processing it ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> / Reading and realizing block 4/5 ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> \ Processing it ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> / Reading and realizing block 5/5 ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> \ Processing it ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;11 x 11&gt; matrix of class DelayedMatrix and type "double":</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]  [,2]  [,3] ... [,10] [,11]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]   250    85    44   .     9    27</span>
@@ -215,28 +207,8 @@ processing.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [10,]    42    53   114   .   175    85</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [11,]    34    46    46   .   200   190</span>
 <span class="r-in"><span><span class="fu">aggHicMatrices</span><span class="op">(</span>x<span class="op">=</span><span class="va">iarr</span>, by<span class="op">=</span><span class="st">"files"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> / Reading and realizing block 1/5 ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> \ Processing it ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> / Reading and realizing block 2/5 ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> \ Processing it ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> / Reading and realizing block 3/5 ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> \ Processing it ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> / Reading and realizing block 4/5 ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> \ Processing it ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> / Reading and realizing block 5/5 ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> \ Processing it ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;11 x 11 x 2&gt; array of class DelayedArray and type "double":</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ,,LEUK_HEK_PJA27_inter_30.hic</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ,,FS</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]  [,2]  [,3] ... [,10] [,11]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]   143    51    27   .     6    13</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]   108   110    44   .     8    15</span>
@@ -244,7 +216,7 @@ processing.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [10,]    25    26    63   .    71    54</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [11,]    11    24    18   .    95    97</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ,,LEUK_HEK_PJA30_inter_30.hic</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ,,WT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]  [,2]  [,3] ... [,10] [,11]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]   107    34    17   .     3    14</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]    95    91    43   .     6     8</span>

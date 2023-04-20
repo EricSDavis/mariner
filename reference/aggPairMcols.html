@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.7</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,29 +82,35 @@ aggregate.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Load required packages</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span>, include.only <span class="op">=</span> <span class="st">"fread"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Load marinerData</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"marinerData"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"marinerData"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Reference BEDPE files</span></span></span>
-<span class="r-in"><span><span class="va">bedpeFiles</span> <span class="op">&lt;-</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"mariner"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"Loops.txt"</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">bedpeFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu">marinerData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/marinerData/man/FS_5kbLoops.txt.html" class="external-link">FS_5kbLoops.txt</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu">marinerData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/marinerData/man/WT_5kbLoops.txt.html" class="external-link">WT_5kbLoops.txt</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?marinerData and browseVignettes('marinerData') for documentation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> loading from cache</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?marinerData and browseVignettes('marinerData') for documentation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> loading from cache</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">bedpeFiles</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FS"</span>, <span class="st">"WT"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Read in bedpeFiles as a list of GInteractions</span></span></span>
 <span class="r-in"><span><span class="co">## Use only first 1000 rows for fast example</span></span></span>
 <span class="r-in"><span><span class="va">giList</span> <span class="op">&lt;-</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">bedpeFiles</span>, <span class="va">fread</span>, nrows<span class="op">=</span><span class="fl">1000</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">as_ginteractions</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">bedpeFiles</span>, <span class="va">read.table</span>, header<span class="op">=</span><span class="cn">TRUE</span>, nrows<span class="op">=</span><span class="fl">1000</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">as_ginteractions</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"^.*extdata/(.{2}).*$"</span>, <span class="st">"\\1"</span>, <span class="va">bedpeFiles</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Add names describing the source and loop</span></span></span>
-<span class="r-in"><span><span class="va">giList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">giList</span><span class="op">)</span>, \<span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">giList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">giList</span><span class="op">)</span>, \<span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>    <span class="va">x</span> <span class="op">&lt;-</span> <span class="va">giList</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-in"><span>    <span class="va">x</span><span class="op">$</span><span class="va">name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">giList</span><span class="op">)</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, <span class="st">"_loop_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Merge pairs</span></span></span>
+<span class="r-in"><span><span class="co">## Cluster &amp; merge pairs</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="mergePairs.html">mergePairs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">giList</span>,</span></span>
 <span class="r-in"><span>                radius <span class="op">=</span> <span class="fl">5e03</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -124,25 +130,25 @@ aggregate.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1784]      chr7   86567500-86572500 ---      chr7   86775000-86780000 |</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1785]      chr7 116622500-116627500 ---      chr7 116760000-116765000 |</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1786]      chr7 140215000-140220000 ---      chr7 140347500-140352500 |</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                          list.name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             &lt;list&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [1]              FS_loop_1000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [2]              FS_loop_1000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [3]              FS_loop_1000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [4]              FS_loop_1000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [5]              FS_loop_1000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      ...                       ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1782] FS_loop_1000,WT_loop_1000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1783] FS_loop_1000,WT_loop_1000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1784] FS_loop_1000,WT_loop_1000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1785] FS_loop_1000,WT_loop_1000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1786] FS_loop_1000,WT_loop_1000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                              list.name</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 &lt;list&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [1]                        /home/rstudio/.cache..</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [2]                        /home/rstudio/.cache..</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [3]                        /home/rstudio/.cache..</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [4]                        /home/rstudio/.cache..</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [5]                        /home/rstudio/.cache..</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      ...                                           ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1782] /home/rstudio/.cache..,/home/rstudio/.cache..</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1783] /home/rstudio/.cache..,/home/rstudio/.cache..</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1784] /home/rstudio/.cache..,/home/rstudio/.cache..</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1785] /home/rstudio/.cache..,/home/rstudio/.cache..</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1786] /home/rstudio/.cache..,/home/rstudio/.cache..</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   -------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   regions: 2962 ranges and 0 metadata columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   seqinfo: 3 sequences from an unspecified genome; no seqlengths</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Aggregate values</span></span></span>
-<span class="r-in"><span><span class="fu">aggPairMcols</span><span class="op">(</span><span class="va">x</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"APScoreAvg"</span><span class="op">)</span>, fun <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">aggPairMcols</span><span class="op">(</span><span class="va">x</span>, columns <span class="op">=</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"APScoreAvg"</span><span class="op">)</span>, fun <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MergedGInteractions object with 1786 interactions and 1 metadata column:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          seqnames1             ranges1     seqnames2             ranges2 |</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              &lt;Rle&gt;           &lt;IRanges&gt;         &lt;Rle&gt;           &lt;IRanges&gt; |</span>
@@ -173,7 +179,7 @@ aggregate.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   -------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   regions: 2962 ranges and 0 metadata columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   seqinfo: 3 sequences from an unspecified genome; no seqlengths</span>
-<span class="r-in"><span><span class="fu">aggPairMcols</span><span class="op">(</span><span class="va">x</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"APScoreAvg"</span>, <span class="st">"avg"</span><span class="op">)</span>, fun <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">aggPairMcols</span><span class="op">(</span><span class="va">x</span>, columns <span class="op">=</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"APScoreAvg"</span>, <span class="st">"avg"</span><span class="op">)</span>, fun <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MergedGInteractions object with 1786 interactions and 2 metadata columns:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          seqnames1             ranges1     seqnames2             ranges2 |</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              &lt;Rle&gt;           &lt;IRanges&gt;         &lt;Rle&gt;           &lt;IRanges&gt; |</span>
@@ -204,7 +210,7 @@ aggregate.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   -------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   regions: 2962 ranges and 0 metadata columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   seqinfo: 3 sequences from an unspecified genome; no seqlengths</span>
-<span class="r-in"><span><span class="fu">aggPairMcols</span><span class="op">(</span><span class="va">x</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"APScoreAvg"</span><span class="op">)</span>, fun <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"median"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">aggPairMcols</span><span class="op">(</span><span class="va">x</span>, columns <span class="op">=</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"APScoreAvg"</span><span class="op">)</span>, fun <span class="op">=</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"median"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MergedGInteractions object with 1786 interactions and 2 metadata columns:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          seqnames1             ranges1     seqnames2             ranges2 |</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              &lt;Rle&gt;           &lt;IRanges&gt;         &lt;Rle&gt;           &lt;IRanges&gt; |</span>
@@ -237,8 +243,8 @@ aggregate.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   seqinfo: 3 sequences from an unspecified genome; no seqlengths</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Custom functions</span></span></span>
-<span class="r-in"><span><span class="fu">aggPairMcols</span><span class="op">(</span><span class="va">x</span>, columns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"APScoreAvg"</span><span class="op">)</span>, fun <span class="op">=</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>, <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">aggPairMcols</span><span class="op">(</span><span class="va">x</span>, columns <span class="op">=</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"APScoreAvg"</span><span class="op">)</span>, fun <span class="op">=</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="fu">sd</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>, <span class="fl">0</span>, <span class="fu">sd</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MergedGInteractions object with 1786 interactions and 1 metadata column:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          seqnames1             ranges1     seqnames2             ranges2 |</span>

@@ -85,6 +85,9 @@
     <loc>http://ericscottdavis.com/mariner/reference/initialize-MergedGInteractions-method.html</loc>
   </url>
   <url>
+    <loc>http://ericscottdavis.com/mariner/reference/mariner-package.html</loc>
+  </url>
+  <url>
     <loc>http://ericscottdavis.com/mariner/reference/mergePairs.html</loc>
   </url>
   <url>
@@ -104,6 +107,9 @@
   </url>
   <url>
     <loc>http://ericscottdavis.com/mariner/reference/pullHicPixels.html</loc>
+  </url>
+  <url>
+    <loc>http://ericscottdavis.com/mariner/reference/removeShortPairs.html</loc>
   </url>
   <url>
     <loc>http://ericscottdavis.com/mariner/reference/selectPixel.html</loc>

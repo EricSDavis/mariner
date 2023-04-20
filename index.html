@@ -38,7 +38,7 @@
     
     <a class="navbar-brand me-2" href="index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.7</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,29 +81,49 @@
 </h2>
 <p>Disruption or aberrant formation of chromatin interactions can result in developmental abnormalities and disease. Therefore, deriving biological insights from 3D chromatin structure experiments, such as Hi-C or Micro-C, is essential for understanding and correcting human disease.</p>
 <p><code>mariner</code> is an R/Bioconductor package for exploring Hi-C data. It enables users to flexibly manipulate, extract, and aggregate chromatin interaction data quickly and efficiently.</p>
-<p><strong>One ecosystem:</strong> <code>mariner</code> extends common Bioconductor classes, leveraging the thousands of existing tools for analyzing and visualizing genomic data.</p>
-<p><strong>Modular design:</strong> <code>mariner's</code> functions can be combined and chained in various ways to produce custom workflows.</p>
-<p><strong>Fast and efficient:</strong> <code>mariner</code> leverages HDF5 to store large results and uses block processing to minimize hardware requirements.</p>
+<div class="row">
+<div class="col-md-4">
+<p><b>One ecosystem</b><br><code>mariner</code> extends common Bioconductor classes, leveraging the thousands of existing tools for analyzing and visualizing genomic data.</p>
+</div>
+<div class="col-md-4">
+<p><b>Modular design</b><br><code>mariner’s</code> functions can be combined and chained in various ways to produce custom workflows.</p>
+</div>
+<div class="col-md-4">
+<p><b>Fast and efficient</b><br><code>mariner</code> leverages HDF5 to store large results and uses block processing to minimize hardware requirements.</p>
+</div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="key-features">Key features<a class="anchor" aria-label="anchor" href="#key-features"></a>
 </h2>
-<p><strong>Extracting &amp; Aggregating Interactions</strong></p>
-<p>Pull Hi-C pixels or matrices, then aggregate by files or interactions</p>
-<p><strong>Clustering &amp; Merging Interactions</strong></p>
-<p>Group nearby interactions and select one as representative</p>
-<p><strong>Manipulating Pairs</strong></p>
-<p>Convert, bin, and shift paired genomic ranges</p>
-<p><strong>Calculating Loop Enrichment</strong></p>
-<p>Determine loop enrichment to local background with <em>selection functions</em> to flexibiliy select foreground and background.</p>
+<div class="row">
+<div class="col-md-6" style="margin-bottom:20px; max-width:500px">
+<p><b>Manipulating Paired Ranges</b><br><i>Convert, bin, and shift paired genomic ranges</i> <img src="reference/figures/binningFigure2.png" style="padding-top:20px;"></p>
+</div>
+<div class="col-md-6" style="margin-bottom:20px; max-width:500px">
+<p><b>Clustering &amp; Merging Interactions</b><br><i>Group nearby interactions and select one as representative</i> <img src="reference/figures/mergingFigure.png" style="padding-top:20px;"></p>
+</div>
+</div>
+<div class="row">
+<div class="col-md-6" style="margin-bottom:20px; max-width:500px">
+<p><b>Extracting &amp; Aggregating Interactions</b><br><i>Pull Hi-C pixels or matrices, then aggregate by files or interactions</i> <img src="reference/figures/aggregateFigure.png" style="padding-top:20px;"></p>
+</div>
+<div class="col-md-6" style="margin-bottom:20px; max-width:500px">
+<p><b>Calculating Loop Enrichment</b><br><i>Determine loop enrichment to local background with selection functions to flexibility select foreground and background.</i> <img src="reference/figures/enrichmentFigure.png" style="padding-top:20px;"></p>
+</div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>This package can be installed via github:</p>
+<p>This package can be installed through Bioconductor:</p>
+<pre class="{r}"><code><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"mariner"</span><span class="op">)</span></span></code></pre>
+<p>Or the development version can be installed via GitHub:</p>
 <pre class="{r}"><code><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"EricSDavis/mariner"</span><span class="op">)</span></span></code></pre>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"EricSDavis/mariner"</span><span class="op">)</span></span></code></pre>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
@@ -131,6 +151,7 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
+<li><a href="https://codecov.io/gh/EricSDavis/mariner?branch=dev" class="external-link"><img src="https://codecov.io/gh/EricSDavis/mariner/branch/dev/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://zenodo.org/badge/latestdoi/475953890" class="external-link"><img src="https://zenodo.org/badge/475953890.svg" alt="DOI"></a></li>
 </ul>
 </div>

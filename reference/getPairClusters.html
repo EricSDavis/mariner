@@ -16,7 +16,7 @@ object."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mat
     
     <a class="navbar-brand me-2" href="../index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.7</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,12 +89,23 @@ object.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Load required packages</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span>, include.only<span class="op">=</span><span class="st">"fread"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Reference BEDPE files (loops called with SIP)</span></span></span>
-<span class="r-in"><span><span class="va">bedpeFiles</span> <span class="op">&lt;-</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"mariner"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"Loops.txt"</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## Load marinerData</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"marinerData"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"marinerData"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Read in the first 1000 rows of bedpeFiles</span></span></span>
+<span class="r-in"><span><span class="co">## Reference BEDPE files (loops called with SIP)</span></span></span>
+<span class="r-in"><span><span class="va">bedpeFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu">marinerData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/marinerData/man/FS_5kbLoops.txt.html" class="external-link">FS_5kbLoops.txt</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu">marinerData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/marinerData/man/WT_5kbLoops.txt.html" class="external-link">WT_5kbLoops.txt</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?marinerData and browseVignettes('marinerData') for documentation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> loading from cache</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?marinerData and browseVignettes('marinerData') for documentation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> loading from cache</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">bedpeFiles</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FS"</span>, <span class="st">"WT"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Read in bedpeFiles as a list of GInteractions</span></span></span>
+<span class="r-in"><span><span class="co">## Use only first 1000 rows for fast example</span></span></span>
 <span class="r-in"><span><span class="va">giList</span> <span class="op">&lt;-</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">bedpeFiles</span>, <span class="va">fread</span>, nrows <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">as_ginteractions</span><span class="op">)</span></span></span>
@@ -114,7 +125,7 @@ object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Avg_diffMaxNeihgboor_1 Avg_diffMaxNeihgboor_2      avg       std    value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:               1.875585               2.121637 2.605124 0.7942202 4.272311</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    src</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:  FS</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    seqnames1   start1     end1 width1 strand1 seqnames2   start2     end2</span>
@@ -122,7 +133,7 @@ object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    width2 strand2 color APScoreAvg ProbabilityofEnrichment RegAPScoreAvg</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:   5001       * 0,0,0   2.453013               0.9828022      1.543698</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Avg_diffMaxNeihgboor_1 Avg_diffMaxNeihgboor_2      avg      std    value src</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:               1.491568               1.607766 2.737556 0.856876 4.063394   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:               1.491568               1.607766 2.737556 0.856876 4.063394  FS</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    seqnames1    start1      end1 width1 strand1 seqnames2    start2      end2</span>
@@ -130,7 +141,7 @@ object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    width2 strand2 color APScoreAvg ProbabilityofEnrichment RegAPScoreAvg</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:   5001       * 0,0,0   3.406346               0.9965453      1.802207</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Avg_diffMaxNeihgboor_1 Avg_diffMaxNeihgboor_2      avg      std    value src</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:               3.768934               3.891115 4.498982 1.492786 7.849146   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:               3.768934               3.891115 4.498982 1.492786 7.849146  FS</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">getPairClusters</span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">3</span><span class="op">:</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
@@ -139,7 +150,7 @@ object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    width2 strand2 color APScoreAvg ProbabilityofEnrichment RegAPScoreAvg</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:   5001       * 0,0,0   3.406346               0.9965453      1.802207</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Avg_diffMaxNeihgboor_1 Avg_diffMaxNeihgboor_2      avg      std    value src</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:               3.768934               3.891115 4.498982 1.492786 7.849146   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:               3.768934               3.891115 4.498982 1.492786 7.849146  FS</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    seqnames1   start1     end1 width1 strand1 seqnames2   start2     end2</span>
@@ -147,7 +158,7 @@ object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    width2 strand2 color APScoreAvg ProbabilityofEnrichment RegAPScoreAvg</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:   5001       * 0,0,0   2.453013               0.9828022      1.543698</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Avg_diffMaxNeihgboor_1 Avg_diffMaxNeihgboor_2      avg      std    value src</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:               1.491568               1.607766 2.737556 0.856876 4.063394   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:               1.491568               1.607766 2.737556 0.856876 4.063394  FS</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    seqnames1    start1      end1 width1 strand1 seqnames2    start2      end2</span>
@@ -157,16 +168,16 @@ object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Avg_diffMaxNeihgboor_1 Avg_diffMaxNeihgboor_2      avg       std    value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:               1.875585               2.121637 2.605124 0.7942202 4.272311</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    src</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:  FS</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="fu">getPairClusters</span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">getPairClusters</span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    seqnames1    start1      end1 width1 strand1 seqnames2    start2      end2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:      chr9 110180000 110185000   5001       *      chr9 111520000 111525000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    width2 strand2 color APScoreAvg ProbabilityofEnrichment RegAPScoreAvg</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:   5001       * 0,0,0   3.406346               0.9965453      1.802207</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Avg_diffMaxNeihgboor_1 Avg_diffMaxNeihgboor_2      avg      std    value src</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:               3.768934               3.891115 4.498982 1.492786 7.849146   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:               3.768934               3.891115 4.498982 1.492786 7.849146  FS</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    seqnames1    start1      end1 width1 strand1 seqnames2    start2      end2</span>
@@ -176,7 +187,7 @@ object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Avg_diffMaxNeihgboor_1 Avg_diffMaxNeihgboor_2      avg       std    value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:               1.875585               2.121637 2.605124 0.7942202 4.272311</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    src</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:  FS</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    seqnames1   start1     end1 width1 strand1 seqnames2   start2     end2</span>
@@ -184,7 +195,7 @@ object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    width2 strand2 color APScoreAvg ProbabilityofEnrichment RegAPScoreAvg</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1:   5001       * 0,0,0   2.453013               0.9828022      1.543698</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Avg_diffMaxNeihgboor_1 Avg_diffMaxNeihgboor_2      avg      std    value src</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1:               1.491568               1.607766 2.737556 0.856876 4.063394   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:               1.491568               1.607766 2.737556 0.856876 4.063394  FS</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">getPairClusters</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1681</span>
