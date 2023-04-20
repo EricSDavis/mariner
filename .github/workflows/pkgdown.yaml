@@ -29,15 +29,6 @@ jobs:
           r-version: next
           use-public-rspm: true
 
-      ## Install marinerData from github (temp)
-      - name: Install marinerData from github
-        run: |
-          install.packages("remotes")
-          remotes::install_cran("BiocManager")
-          BiocManager::install("ExperimentHub", version="devel")
-          remotes::install_github("EricSDavis/marinerData")
-        shell: Rscript {0}
-
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::pkgdown, local::.

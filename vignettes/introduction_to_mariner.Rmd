@@ -201,6 +201,13 @@ interactions. `mergePairs()` allows users to cluster
 interactions within a specified genomic radius and
 select a representative interaction for the group.
 
+This is particularly helpful in analysis of chromatin
+loop where multiple Hi-C replicates often identify the
+same loop but assign it to a different (but often 
+neighboring) pixel. To avoid redundancy, `mergePairs()`
+identifies and merges these into a unified non-redundant
+loop set.
+
 Here, two example BEDPE files are imported as a list of
 `GInteractions` objects.
 
@@ -268,9 +275,8 @@ getPairClusters(mgi[12772])
 
 When no `column` argument is provided the most
 frequently occurring interaction is selected.
-In the pair above, the average of the two 
-interactions is selected since neither is more
-frequent.
+In the pair above, the mean position of both 
+anchors is returned since neither is more frequent.
 
 Alternatively, users can specify the `column`
 argument to use a custom metric for selecting
