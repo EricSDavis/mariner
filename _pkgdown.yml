@@ -9,6 +9,9 @@ figures:
   fig.retina: 1
 
 reference:
+  - title: "About mariner"
+    contents:
+      - mariner-package
   - title: "Manipulating Paired Ranges"
     desc: "Convert, bin, and shift paired genomic ranges"
     contents:
