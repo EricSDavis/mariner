@@ -2,7 +2,7 @@
 
 <!-- badges: start -->
 ![GitHub R package version](https://img.shields.io/github/r-package/v/EricSDavis/mariner?style=plastic)
-[![Codecov test coverage](https://codecov.io/gh/EricSDavis/mariner/branch/dev/graph/badge.svg)](https://codecov.io/gh/EricSDavis/mariner?branch=dev)
+[![codecov](https://codecov.io/gh/EricSDavis/mariner/branch/main/graph/badge.svg?token=4ENGMZD4FR)](https://codecov.io/gh/EricSDavis/mariner)
 [![DOI](https://zenodo.org/badge/475953890.svg)](https://zenodo.org/badge/latestdoi/475953890)
 <!-- badges: end -->
 
