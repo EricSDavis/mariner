@@ -656,10 +656,10 @@ testing.</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">hicFiles</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FS"</span>, <span class="st">"WT"</span><span class="op">)</span></span>
 <span><span class="va">hicFiles</span></span></code></pre></div>
-<pre><code><span><span class="co">##                                                       FS </span></span>
-<span><span class="co">## "/home/runner/.cache/R/ExperimentHub/105754f9fbe38_8147" </span></span>
-<span><span class="co">##                                                       WT </span></span>
-<span><span class="co">## "/home/runner/.cache/R/ExperimentHub/105751a50fcbc_8148"</span></span></code></pre>
+<pre><code><span><span class="co">##                                                      FS </span></span>
+<span><span class="co">## "/home/runner/.cache/R/ExperimentHub/14f11306d69f_8147" </span></span>
+<span><span class="co">##                                                      WT </span></span>
+<span><span class="co">##  "/home/runner/.cache/R/ExperimentHub/14f16a625d9_8148"</span></span></code></pre>
 <p>The <code>strawr</code> package includes functions for visualizing
 the available chromosomes, resolutions (<code>binSizes</code>), and
 normalizations in the <code>.hic</code> files.</p>
@@ -669,10 +669,10 @@ normalizations in the <code>.hic</code> files.</p>
 <span><span class="co">## Normalizations</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">hicFiles</span>, <span class="va">readHicNormTypes</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $FS</span></span>
-<span><span class="co">## [1] "VC_SQRT" "NONE"    "VC"      "KR"     </span></span>
+<span><span class="co">## [1] "NONE"    "KR"      "VC"      "VC_SQRT"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $WT</span></span>
-<span><span class="co">## [1] "VC_SQRT" "NONE"    "VC"      "KR"</span></span></code></pre>
+<span><span class="co">## [1] "NONE"    "KR"      "VC"      "VC_SQRT"</span></span></code></pre>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Resolutions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">hicFiles</span>, <span class="va">readHicBpResolutions</span><span class="op">)</span></span></code></pre></div>
