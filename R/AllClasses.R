@@ -294,6 +294,49 @@ setValidity("InteractionMatrix", function(object) {
 
 })
 
+## JaggedArray & InteractionJaggedArray ----------------------------------------
+
+#' JaggedArray Class
+#'
+#' The `JaggedArray` class creates
+#' a container for storing irregular or
+#' jagged array data. This allows the
+#' storage of matrices with different
+#' dimensions on-disk using HDF5.
+#'
+#' @returns A JaggedArray
+#' @rdname JaggedArray-class
+#' @export
+JaggedArray <- setClass(
+    Class="JaggedArray",
+    slots=list(
+        h5File="character",
+        dim="integer"
+    )
+)
+
+#' InteractionJaggedArray Class
+#'
+#' The `InteractionJaggedArray` class creates
+#' a container for storing interaction data
+#' alongside irregular arrays. This allows the
+#' storage of matrices with different dimensions
+#' on-disk using HDF5.
+#'
+#' @returns An InteractionJaggedArray
+#'
+#' @rdname InteractionJaggedArray-class
+#' @export
+InteractionJaggedArray <- setClass(
+    Class="InteractionJaggedArray",
+    slots=list(
+        interactions="GInteractions",
+        colData="DFrame",
+        counts="JaggedArray",
+        metadata="list"
+    )
+)
+
 ## MatrixSelection Class -------------------------------------------------------
 
 #' MatrixSelection Class

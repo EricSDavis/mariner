@@ -542,6 +542,125 @@
     return(iset)
 }
 
+## TODO
+.pullJaggedArray <- function(x, files, binSize, h5File, half, norm,
+                             matrix, blockSize, onDisk, compressionLevel,
+                             chunkSize, mDim1, mDim2, blocks, chrSwapped) {
+
+    ## TODO ignore onDisk argument
+    if (!onDisk) stop("Jagged arrays must be stored onDisk.")
+
+    ## Create hdf5 for storage
+    h5createFile(h5File)
+
+    ## Generate & write slice data
+    offset2 <- cumsum(mDim1*mDim2)
+    offset1 <- c(0L, offset2[-length(offset2)])+1
+    slices <- data.table(mDim1, mDim2, offset1, offset2)
+    slices <- as.matrix(slices)
+    h5write(slices, h5File, "slices")
+
+    ## Storage for count data (column for each file)
+    h5createDataset(file = h5File,
+                    dataset = "counts",
+                    dims = c(sum(mDim1*mDim2), length(files)),
+                    chunk = c(1L, 1L),
+                    storage.mode = "double",
+                    fillValue = NA_real_,
+                    level = compressionLevel)
+
+    ## Start progress bar
+    pb <- progress_bar$new(
+        format = "  :step [:bar] :percent elapsed: :elapsedfull",
+        clear = FALSE, total = nrow(blocks)*length(files)+1)
+    pb$tick(0)
+
+    ## Begin extraction for each file and block
+    for(j in seq_len(length(files))) {
+        for(i in seq_len(nrow(blocks))) {
+
+            ## Update progress
+            pb$tick(tokens=list(step=sprintf(
+                'Pulling block %s of %s from file %s of %s',
+                i, nrow(blocks), j, length(files)
+            )))
+
+            ## Extract block data from file
+            sparseMat <-
+                straw(norm = norm,
+                      fname = files[j],
+                      chr1loc = blocks$chr1loc[i],
+                      chr2loc = blocks$chr2loc[i],
+                      unit = "BP",
+                      binsize = binSize,
+                      matrix = matrix) |>
+                as.data.table()
+
+            ## Select interactions belonging to block
+            xIndices <- blocks$xIndex[[i]]
+            g <- as.data.table(x[xIndices])
+            g$xIndices <- xIndices
+
+            ## Create submatrix bins for each range
+            ## with a fast cross-join
+            longMat <- g[,{
+                x <- seq(start1, end1-binSize, binSize);
+                y <- seq(start2, end2-binSize, binSize);
+                x <- as.integer(x) #seq sometimes returns double
+                y <- as.integer(y)
+                CJ(x, y, sorted=FALSE)
+            },
+            by=.(grp=xIndices)]
+
+            ## Assign counts
+            longMat <- .assignCounts(g, longMat,
+                                     sparseMat,
+                                     chrSwapped,
+                                     half)
+
+            ## Enumerate indices for writing
+            ## from the slices
+            slice <- slices[xIndices,,drop=FALSE]
+            idx <- mapply(
+                FUN=seq,
+                from=slice[,"offset1"],
+                to=slice[,"offset2"],
+                by=1L,
+                SIMPLIFY=FALSE
+            )
+            idx <- unlist(idx)
+
+            ## Write data to hdf5 file
+            h5write(obj=longMat$counts,
+                    file=h5File,
+                    name="counts",
+                    index=list(idx, j))
+        }
+    }
+
+    ## Close progress bar
+    pb$tick(tokens = list(step = "Done!"))
+    if(pb$finished) pb$terminate()
+
+    ## Build colData and metadata
+    colData <- DataFrame(files=files, fileNames=basename(files))
+    metadata <- list(
+        binSize=binSize,
+        norm=norm,
+        matrix=matrix
+    )
+
+    ## Create InteractionJaggedArray
+    iset <- InteractionJaggedArray(
+        interactions=x,
+        colData=colData,
+        counts=JaggedArray(h5File=h5File, dim=c(length(x), length(files))),
+        metadata=metadata
+    )
+    return(iset)
+
+}
+
 #' Preprocessing before pulling Hi-C data
 #' @inheritParams pullHicMatrices
 #' @returns Updated `x` and `blocks` describing
@@ -629,15 +748,21 @@
                            matrix, blockSize, onDisk, compressionLevel,
                            chunkSize, mDim1, mDim2, dat$blocks,
                            dat$chrSwapped)
-        return(iset)
 
     } else {
-        abort(c(glue("Variable sized anchors \\
-                      are not currently supported.") ,
-                "i"=glue("Check this with `width(first(x))` \\
-                          and `width(second(x))`.")))
-    }
 
+        ## Set matrix dimensions
+        mDim1 <- ceiling((width(first(x)) - 1)/binSize)
+        mDim2 <- ceiling((width(second(x)) - 1)/binSize)
+
+        ## Dispatch .pullJaggedArray for
+        ## irregular dimensions
+        iset <- .pullJaggedArray(dat$x, files, binSize, h5File, half, norm,
+                                 matrix, blockSize, onDisk, compressionLevel,
+                                 chunkSize, mDim1, mDim2, dat$blocks,
+                                 dat$chrSwapped)
+    }
+    return(iset)
 }
 
 #' Pull submatrices from `.hic` files

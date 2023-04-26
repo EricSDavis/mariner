@@ -613,14 +613,38 @@ test_that("pullHicMatrices for rectangular, regular arrays", {
 })
 
 
-test_that("Error when trying to pull irregular arrays", {
+test_that("Pull irregular arrays", {
 
     gi <- read.table(text="
             1 51000000 51300000 1 51000000 51500000
-            1 150000000 150500000 1 150000000 150300000") |>
+            2 52000000 52300000 3 52000000 52500000
+            1 150000000 150500000 1 150000000 150300000
+            2 52000000 52300000 2 52000000 52800000") |>
         as_ginteractions()
 
-    pullHicMatrices(gi, hicFiles[1], 100e03, half="both") |>
-        expect_error("Variable sized anchors.*")
+    tmp <- pullHicMatrices(gi, hicFiles, 100e03, half="both")
+    tmp
+    counts(tmp)
+    counts(tmp)[1,]
+    counts(tmp)[,1]
+    counts(tmp)[]
+    counts(tmp)[1:2, 1]
+    counts(tmp)[2:1, 1]
+
+    show(tmp)
+    interactions(tmp)
+    metadata(tmp)
+    colData(tmp)
+    dim(tmp)
+
+
+    rhdf5::h5ls(tmp@counts@h5File)
+    rhdf5::h5read(tmp@counts@h5File, 'slices')
+    rhdf5::h5read(tmp@counts@h5File, 'counts')
+
+})
+
+## Move these tests to test_InteractionJaggedArray
+test_that("Show method for InteractionJaggedArray", {
 
 })
