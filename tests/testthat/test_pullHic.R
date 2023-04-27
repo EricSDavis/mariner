@@ -622,13 +622,44 @@ test_that("Pull irregular arrays", {
             2 52000000 52300000 2 52000000 52800000") |>
         as_ginteractions()
 
-    tmp <- pullHicMatrices(gi, hicFiles, 100e03, half="both")
-    tmp
-    counts(tmp)
+    tmp <- pullHicMatrices(gi[1:3], hicFiles[1], 100e03, half="both")
+
+    ## Top 53 bottom 63
+    tmp2 <- counts(tmp)
+    tmp2@subsetTree
+    tmp2@dim
+    tmp2
+    as.list(tmp2)
+
+    ## Top 63 bottom 53
+    tmp3 <- counts(tmp)[3:1, 1]
+    tmp3@subsetTree
+    tmp3@dim
+    tmp3
+    as.list(tmp3)
+
+    ## Top 53 bottom 63
+    tmp4 <- tmp3[3:1, 1]
+    tmp4@subsetTree
+    tmp4
+    as.list(tmp4)
+
+    counts(tmp)[,1]
+    counts(tmp)[1,]
+
+    ## Maybe write method to auto
+    ## convert this to a DelayedArray?
+    counts(tmp)[1:2,]
+
+
+
+
+
     counts(tmp)[1,]
     counts(tmp)[,1]
     counts(tmp)[]
     counts(tmp)[1:2, 1]
+    counts(tmp)[2:1, 1]
     counts(tmp)[2:1, 1]
 
     show(tmp)

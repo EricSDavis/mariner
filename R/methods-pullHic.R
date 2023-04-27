@@ -650,11 +650,18 @@
         matrix=matrix
     )
 
+    ## Create JaggedArray
+    ja <- JaggedArray(
+        h5File=h5File,
+        dim=c(length(x), length(files)),
+        subsetTree=vector("list", 2L)
+    )
+
     ## Create InteractionJaggedArray
     iset <- InteractionJaggedArray(
         interactions=x,
         colData=colData,
-        counts=JaggedArray(h5File=h5File, dim=c(length(x), length(files))),
+        counts=ja,
         metadata=metadata
     )
     return(iset)

@@ -311,7 +311,8 @@ JaggedArray <- setClass(
     Class="JaggedArray",
     slots=list(
         h5File="character",
-        dim="integer"
+        dim="integer",
+        subsetTree="list"
     )
 )
 
