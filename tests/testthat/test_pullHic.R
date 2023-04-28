@@ -622,60 +622,52 @@ test_that("Pull irregular arrays", {
             2 52000000 52300000 2 52000000 52800000") |>
         as_ginteractions()
 
-    tmp <- pullHicMatrices(gi[1:3], hicFiles[1], 100e03, half="both")
+    iset <- pullHicMatrices(gi, hicFiles, 100e03, half="both")
 
-    ## Top 53 bottom 63
-    tmp2 <- counts(tmp)
-    tmp2@subsetTree
-    tmp2@dim
-    tmp2
-    as.list(tmp2)
-
-    ## Top 63 bottom 53
-    tmp3 <- counts(tmp)[3:1, 1]
-    tmp3@subsetTree
-    tmp3@dim
-    tmp3
-    as.list(tmp3)
-
-    ## Top 53 bottom 63
-    tmp4 <- tmp3[3:1, 1]
-    tmp4@subsetTree
-    tmp4
-    as.list(tmp4)
-
-    counts(tmp)[,1]
-    counts(tmp)[1,]
-
-    ## Maybe write method to auto
-    ## convert this to a DelayedArray?
-    counts(tmp)[1:2,]
+    ## InteractionJaggedArray Accessors ####
+    show(iset)
+    expect_s4_class(interactions(iset), "GInteractions")
+    expect_identical(metadata(iset),
+                     list(binSize=1e5, norm="NONE", matrix="observed"))
+    expect_identical(nrow(colData(iset)), 2L)
+    expect_identical(length(dim(iset)), 4L)
 
 
+    ## Extracting & subsetting counts for JaggedArray ####
+    ## Possible to extract counts
+    cnts <- counts(iset)
+    expect_snapshot(cnts)
+    expect_identical(as.list(cnts)[[1]][[1]][1,1], 53)
+    expect_identical(as.list(cnts)[[1]][[4]][1,1], 29)
 
+    ## Reversing by subsetting works
+    cnts <- counts(iset)[4:1, 1]
+    expect_snapshot(cnts)
+    expect_identical(as.list(cnts)[[1]][[1]][1,1], 29)
+    expect_identical(as.list(cnts)[[1]][[4]][1,1], 53)
 
+    ## Successive subsetting works
+    cnts2 <- cnts[4:1, 1]
+    expect_snapshot(cnts2)
+    expect_identical(as.list(cnts2)[[1]][[1]][1,1], 53)
+    expect_identical(as.list(cnts2)[[1]][[4]][1,1], 29)
 
-    counts(tmp)[1,]
-    counts(tmp)[,1]
-    counts(tmp)[]
-    counts(tmp)[1:2, 1]
-    counts(tmp)[2:1, 1]
-    counts(tmp)[2:1, 1]
+    ## These should auto convert to DelayedArray
+    expect_s4_class(counts(iset)[1:2,], "DelayedArray")
+    expect_s4_class(counts(iset)[1,], "DelayedArray")
 
-    show(tmp)
-    interactions(tmp)
-    metadata(tmp)
-    colData(tmp)
-    dim(tmp)
+    ## Are counts pulled & accessed correctly?
+    iset1 <- pullHicMatrices(gi[1], hicFiles[1], 50e03, half="both")
+    iset2 <- pullHicMatrices(gi, hicFiles[1], 50e03, half="both")
+    exp <- counts(iset1) |> as.matrix()
+    expect_identical(counts(iset2)[1,1] |> as.matrix(), exp)
+    expect_identical(as.list(counts(iset2))[[1]][[1]], exp)
 
-
-    rhdf5::h5ls(tmp@counts@h5File)
-    rhdf5::h5read(tmp@counts@h5File, 'slices')
-    rhdf5::h5read(tmp@counts@h5File, 'counts')
-
-})
-
-## Move these tests to test_InteractionJaggedArray
-test_that("Show method for InteractionJaggedArray", {
+    ## None of these should error
+    expect_s4_class(counts(iset)[1,], "DelayedArray")
+    expect_s4_class(counts(iset)[,1], "JaggedArray")
+    expect_s4_class(counts(iset)[], "JaggedArray")
+    expect_s4_class(counts(iset)[1:2, 1], "DelayedArray")
+    expect_s4_class(counts(iset)[2:1, 1], "DelayedArray")
 
 })
