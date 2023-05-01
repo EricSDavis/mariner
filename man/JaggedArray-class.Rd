@@ -6,17 +6,40 @@
 \alias{JaggedArray}
 \alias{show,JaggedArray-method}
 \alias{[,JaggedArray,ANY,ANY,ANY-method}
+\alias{as.list,JaggedArray-method}
+\alias{path,JaggedArray-method}
 \title{JaggedArray Class}
 \usage{
 \S4method{show}{JaggedArray}(object)
 
 \S4method{[}{JaggedArray,ANY,ANY,ANY}(x, i, j)
+
+\S4method{as.list}{JaggedArray}(x)
+
+\S4method{path}{JaggedArray}(object)
 }
 \arguments{
 \item{object}{JaggedArray object.}
+
+\item{x}{JaggedArray object.}
+
+\item{i}{Numeric vector indicating the indices
+of interactions to extract.}
+
+\item{j}{Numeric vector indicating the indices
+of files to extract.}
 }
 \value{
-A JaggedArray
+`JaggedArray()` creates a JaggedArray
+ object.
+
+Subsetting returns a JaggedArray or DelayedArray object
+ (see Details).
+
+`as.list()` returns a list of matrices.
+
+`path()` returns a character vector with the path to
+ the HDF5 file with the JaggedArray data.
 }
 \description{
 The `JaggedArray` class creates
@@ -24,4 +47,57 @@ a container for storing irregular or
 jagged array data. This allows the
 storage of matrices with different
 dimensions on-disk using HDF5.
+
+Subset a JaggedArray by its interactions
+([i,]) or its Hi-C files ([,j]).
+
+`as.list` reads the on-disk data and returns it
+as an in-memory list of matrices.
+}
+\details{
+The object returned will be a JaggedArray
+if the submatrices contain different dimensions.
+However, the returned object will automatically
+be coerced into a DelayedArray if possible (i.e.
+the dimensions of the rows and columns are the same.)
+
+The JaggedArray data is still stored on-disk in
+an HDF5 file until it is coerced into a DelayedArray
+or realized as a list of matrices.
+}
+\examples{
+## Load marinerData
+if (!require("marinerData", quietly = TRUE))
+    BiocManager::install("marinerData")
+
+## Read .hic file paths
+hicFiles <- c(
+    marinerData::LEUK_HEK_PJA27_inter_30.hic(),
+    marinerData::LEUK_HEK_PJA30_inter_30.hic()
+)
+names(hicFiles) <- c("FS", "WT")
+
+## Create test interactions
+gi <- read.table(text="
+            1 51000000 51300000 1 51000000 51500000
+            2 52000000 52300000 3 52000000 52500000
+            1 150000000 150500000 1 150000000 150300000
+            2 52000000 52300000 2 52000000 52800000") |>
+    as_ginteractions()
+
+## InteractionJaggedArray object
+iarr <- pullHicMatrices(gi, hicFiles, 100e03, half="both")
+arr <- counts(iarr)
+arr
+
+## Subsetting
+arr[1,] # DelayedArray
+arr[,1] # JaggedArray
+
+## Realize as list
+as.list(arr)
+
+## Find the data path
+path(arr)
+
 }

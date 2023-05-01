@@ -1,8 +1,36 @@
-#' Internal show function for JaggedArray
-#' @inheritParams show,JaggedArray
+## Show method -----------------------------------------------------------------
+
+#' show for JaggedArray
+#' @param object JaggedArray object.
 #' @importFrom DelayedArray DelayedArray
-#' @noRd
-.showJaggedArray <- function(object) {
+#' @examples
+#' ## Load marinerData
+#' if (!require("marinerData", quietly = TRUE))
+#'     BiocManager::install("marinerData")
+#'
+#' ## Read .hic file paths
+#' hicFiles <- c(
+#'     marinerData::LEUK_HEK_PJA27_inter_30.hic(),
+#'     marinerData::LEUK_HEK_PJA30_inter_30.hic()
+#' )
+#' names(hicFiles) <- c("FS", "WT")
+#'
+#' ## Create test interactions
+#' gi <- read.table(text="
+#'             1 51000000 51300000 1 51000000 51500000
+#'             2 52000000 52300000 3 52000000 52500000
+#'             1 150000000 150500000 1 150000000 150300000
+#'             2 52000000 52300000 2 52000000 52800000") |>
+#'     as_ginteractions()
+#'
+#' ## InteractionJaggedArray object
+#' iarr <- pullHicMatrices(gi, hicFiles, 100e03, half="both")
+#' arr <- counts(iarr)
+#' arr
+#'
+#' @rdname JaggedArray-class
+#' @export
+setMethod("show", "JaggedArray", function(object) {
     dims <- object@dim
 
     ## Show first in set
@@ -30,13 +58,7 @@
         ans <- c(ans, capture.output(last)[-c(1,2)])
     }
     cat(ans, sep='\n')
-}
-
-#' show for JaggedArray
-#' @param object JaggedArray object.
-#' @rdname JaggedArray-class
-#' @export
-setMethod("show", "JaggedArray", .showJaggedArray)
+})
 
 
 ## Subsetting ------------------------------------------------------------------
@@ -71,9 +93,6 @@ setMethod("show", "JaggedArray", .showJaggedArray)
             })
         })
 
-    # if (length(i) == 1 & length(j) == 1) {
-    #     ans <- unlist(ans, recursive=FALSE)[[1]]
-    # }
     ans
 }
 
@@ -144,7 +163,32 @@ setMethod("show", "JaggedArray", .showJaggedArray)
 }
 
 #' Indexing for JaggedArray
-#' @param object JaggedArray object.
+#'
+#' Subset a JaggedArray by its interactions
+#' ([i,]) or its Hi-C files ([,j]).
+#'
+#' The object returned will be a JaggedArray
+#' if the submatrices contain different dimensions.
+#' However, the returned object will automatically
+#' be coerced into a DelayedArray if possible (i.e.
+#' the dimensions of the rows and columns are the same.)
+#'
+#' The JaggedArray data is still stored on-disk in
+#' an HDF5 file until it is coerced into a DelayedArray
+#' or realized as a list of matrices.
+#'
+#' @param x A JaggedArray object.
+#' @param i Numeric vector indicating the indices
+#'  of interactions to extract.
+#' @param j Numeric vector indicating the indices
+#'  of files to extract.
+#' @returns Subsetting returns a JaggedArray or DelayedArray object
+#'  (see Details).
+#' @examples
+#' ## Subsetting
+#' arr[1,] # DelayedArray
+#' arr[,1] # JaggedArray
+#'
 #' @rdname JaggedArray-class
 #' @export
 setMethod("[", "JaggedArray", function(x, i, j) {
@@ -153,11 +197,38 @@ setMethod("[", "JaggedArray", function(x, i, j) {
     .subsetJaggedArray(x, i, j)
 })
 
+## Accessors -------------------------------------------------------------------
+
 #' Realize as list for JaggedArray
-#' @param object JaggedArray object.
+#'
+#' `as.list` reads the on-disk data and returns it
+#' as an in-memory list of matrices.
+#'
+#' @param x JaggedArray object.
+#' @returns `as.list()` returns a list of matrices.
+#' @examples
+#' ## Realize as list
+#' as.list(arr)
+#'
 #' @rdname JaggedArray-class
 #' @export
 setMethod("as.list", "JaggedArray", function(x) {
     .accessJaggedArray(x, NULL, NULL)
 })
+
+#' Access HDF5 path for JaggedArray
+#' @param object JaggedArray object.
+#' @returns `path()` returns a character vector with the path to
+#'  the HDF5 file with the JaggedArray data.
+#'
+#' @examples
+#' ## Find the data path
+#' path(arr)
+#'
+#' @rdname JaggedArray-class
+#' @export
+setMethod("path", "JaggedArray", function(object) {
+    object@h5File
+})
+
 

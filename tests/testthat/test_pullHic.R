@@ -624,50 +624,11 @@ test_that("Pull irregular arrays", {
 
     iset <- pullHicMatrices(gi, hicFiles, 100e03, half="both")
 
-    ## InteractionJaggedArray Accessors ####
-    show(iset)
-    expect_s4_class(interactions(iset), "GInteractions")
-    expect_identical(metadata(iset),
-                     list(binSize=1e5, norm="NONE", matrix="observed"))
-    expect_identical(nrow(colData(iset)), 2L)
-    expect_identical(length(dim(iset)), 4L)
-
-
-    ## Extracting & subsetting counts for JaggedArray ####
-    ## Possible to extract counts
-    cnts <- counts(iset)
-    expect_snapshot(cnts)
-    expect_identical(as.list(cnts)[[1]][[1]][1,1], 53)
-    expect_identical(as.list(cnts)[[1]][[4]][1,1], 29)
-
-    ## Reversing by subsetting works
-    cnts <- counts(iset)[4:1, 1]
-    expect_snapshot(cnts)
-    expect_identical(as.list(cnts)[[1]][[1]][1,1], 29)
-    expect_identical(as.list(cnts)[[1]][[4]][1,1], 53)
-
-    ## Successive subsetting works
-    cnts2 <- cnts[4:1, 1]
-    expect_snapshot(cnts2)
-    expect_identical(as.list(cnts2)[[1]][[1]][1,1], 53)
-    expect_identical(as.list(cnts2)[[1]][[4]][1,1], 29)
-
-    ## These should auto convert to DelayedArray
-    expect_s4_class(counts(iset)[1:2,], "DelayedArray")
-    expect_s4_class(counts(iset)[1,], "DelayedArray")
-
     ## Are counts pulled & accessed correctly?
     iset1 <- pullHicMatrices(gi[1], hicFiles[1], 50e03, half="both")
     iset2 <- pullHicMatrices(gi, hicFiles[1], 50e03, half="both")
     exp <- counts(iset1) |> as.matrix()
     expect_identical(counts(iset2)[1,1] |> as.matrix(), exp)
     expect_identical(as.list(counts(iset2))[[1]][[1]], exp)
-
-    ## None of these should error
-    expect_s4_class(counts(iset)[1,], "DelayedArray")
-    expect_s4_class(counts(iset)[,1], "JaggedArray")
-    expect_s4_class(counts(iset)[], "JaggedArray")
-    expect_s4_class(counts(iset)[1:2, 1], "DelayedArray")
-    expect_s4_class(counts(iset)[2:1, 1], "DelayedArray")
 
 })

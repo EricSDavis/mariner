@@ -5,21 +5,52 @@
 \name{InteractionJaggedArray-class}
 \alias{InteractionJaggedArray-class}
 \alias{InteractionJaggedArray}
-\alias{dim,InteractionJaggedArray-method}
 \alias{show,InteractionJaggedArray-method}
+\alias{dim,InteractionJaggedArray-method}
+\alias{interactions,InteractionJaggedArray-method}
+\alias{metadata,InteractionJaggedArray-method}
+\alias{colData,InteractionJaggedArray-method}
+\alias{counts,InteractionJaggedArray-method}
+\alias{path,InteractionJaggedArray-method}
 \title{InteractionJaggedArray Class}
 \usage{
+\S4method{show}{InteractionJaggedArray}(object)
+
 \S4method{dim}{InteractionJaggedArray}(x)
 
-\S4method{show}{InteractionJaggedArray}(object)
+\S4method{interactions}{InteractionJaggedArray}(x)
+
+\S4method{metadata}{InteractionJaggedArray}(x)
+
+\S4method{colData}{InteractionJaggedArray}(x)
+
+\S4method{counts}{InteractionJaggedArray}(object)
+
+\S4method{path}{InteractionJaggedArray}(object)
 }
 \arguments{
-\item{x}{InteractionJaggedArray object.}
+\item{object}{JaggedArray object.}
 
-\item{object}{InteractionJaggedArray object.}
+\item{x}{InteractionJaggedArray object.}
 }
 \value{
-An InteractionJaggedArray
+`InteractionJaggedArray()` creates
+ an InteractionJaggedArray object.
+
+`dim()` returns a list of the dimensions
+ of the interactions, files, and count matrices.
+
+`interactions()` returns the interactions.
+
+`metadata()` returns the metadata.
+
+`colData()` returns the column data.
+
+`counts()` returns the JaggedArray object
+ containing count matrix information.
+
+`path()` returns a character vector with
+ the path to the HDF5 file with the JaggedArray data.
 }
 \description{
 The `InteractionJaggedArray` class creates
@@ -27,4 +58,47 @@ a container for storing interaction data
 alongside irregular arrays. This allows the
 storage of matrices with different dimensions
 on-disk using HDF5.
+}
+\examples{
+## Load marinerData
+if (!require("marinerData", quietly = TRUE))
+    BiocManager::install("marinerData")
+
+## Read .hic file paths
+hicFiles <- c(
+    marinerData::LEUK_HEK_PJA27_inter_30.hic(),
+    marinerData::LEUK_HEK_PJA30_inter_30.hic()
+)
+names(hicFiles) <- c("FS", "WT")
+
+## Create test interactions
+gi <- read.table(text="
+            1 51000000 51300000 1 51000000 51500000
+            2 52000000 52300000 3 52000000 52500000
+            1 150000000 150500000 1 150000000 150300000
+            2 52000000 52300000 2 52000000 52800000") |>
+    as_ginteractions()
+
+## InteractionJaggedArray object
+iarr <- pullHicMatrices(gi, hicFiles, 100e03, half="both")
+iarr
+
+## Show dimensions
+dim(iarr)
+
+## Access interactions
+interactions(iarr)
+
+## Access metadata
+metadata(iarr)
+
+## Access colData
+colData(iarr)
+
+## Access count matrices
+counts(iarr)
+
+## Access path to HDF5 data
+path(iarr)
+
 }

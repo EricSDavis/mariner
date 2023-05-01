@@ -336,3 +336,20 @@ setGeneric("adjustEnrichment",
 setGeneric("removeShortPairs",
            function(x, padding=0)
                standardGeneric("removeShortPairs"))
+
+#' @rdname makeRandomGInteractions
+#' @export
+setGeneric("makeRandomGRanges",
+           function(seqinfo,
+                    n=100,
+                    ...)
+               standardGeneric("makeRandomGRanges"))
+
+#' @rdname makeRandomGInteractions
+#' @export
+setGeneric("makeRandomGInteractions",
+           function(seqinfo,
+                    n=100,
+                    interchromosomal=TRUE,
+                    ...)
+               standardGeneric("makeRandomGInteractions"))

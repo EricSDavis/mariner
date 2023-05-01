@@ -304,7 +304,8 @@ setValidity("InteractionMatrix", function(object) {
 #' storage of matrices with different
 #' dimensions on-disk using HDF5.
 #'
-#' @returns A JaggedArray
+#' @returns `JaggedArray()` creates a JaggedArray
+#'  object.
 #' @rdname JaggedArray-class
 #' @export
 JaggedArray <- setClass(
@@ -324,7 +325,8 @@ JaggedArray <- setClass(
 #' storage of matrices with different dimensions
 #' on-disk using HDF5.
 #'
-#' @returns An InteractionJaggedArray
+#' @returns `InteractionJaggedArray()` creates
+#'  an InteractionJaggedArray object.
 #'
 #' @rdname InteractionJaggedArray-class
 #' @export

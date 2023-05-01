@@ -22,7 +22,8 @@ Suggests:
     dplyr,
     rmarkdown,
     ExperimentHub,
-    marinerData
+    marinerData,
+    TxDb.Hsapiens.UCSC.hg38.knownGene
 Imports:
     methods,
     S4Vectors,
@@ -85,6 +86,7 @@ Collate:
     'methods-calcLoopEnrichment.R'
     'methods-changePixelRes.R'
     'methods-hdf5BlockApply.R'
+    'methods-makeRandomGInteractions.R'
     'methods-mergePairs.R'
     'methods-pixelsToMatrices.R'
     'methods-plotBullseye.R'

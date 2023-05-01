@@ -542,7 +542,24 @@
     return(iset)
 }
 
-## TODO
+#' Pull data from files and return as
+#' InteractionJaggedArray
+#'
+#' @inheritParams pullHicMatrices
+#' @param mDim integer - dimensions for matrices (not equal)
+#' @param blocks
+#'
+#' @importFrom rhdf5 h5createFile h5createDataset h5write
+#' @importFrom progress progress_bar
+#' @importFrom strawr straw
+#' @importFrom data.table as.data.table setkeyv CJ
+#' @importFrom InteractionSet InteractionSet
+#' @importFrom DelayedArray DelayedArray
+#' @importFrom HDF5Array HDF5Array
+#'
+#' @returns InteractionJaggedArray Object.
+#'
+#' @noRd
 .pullJaggedArray <- function(x, files, binSize, h5File, half, norm,
                              matrix, blockSize, onDisk, compressionLevel,
                              chunkSize, mDim1, mDim2, blocks, chrSwapped) {
@@ -774,6 +791,14 @@
 
 #' Pull submatrices from `.hic` files
 #'
+#' The dimensions of the pulled submatrix is
+#' defined by dividing the widths of anchors in
+#' `x` by the `binSize`. When the anchor widths
+#' are the same for each interaction, an
+#' InteractionArray is returned. However, if the
+#' anchor widths differ in `x`, an
+#' InteractionJaggedArray is returned instead.
+#'
 #' @param x GInteractions object containing interactions
 #'  to extract from Hi-C files.
 #' @param files Character file paths to `.hic` files.
@@ -872,6 +897,19 @@
 #' ## interaction in the count
 #' ## matrices
 #' counts(iarr, showDimnames=TRUE)
+#'
+#' ## InteractionJaggedArray example
+#' gi <- read.table(text="
+#'             1 51000000 51300000 1 51000000 51500000
+#'             2 52000000 52300000 3 52000000 52500000
+#'             1 150000000 150500000 1 150000000 150300000
+#'             2 52000000 52300000 2 52000000 52800000") |>
+#'     as_ginteractions()
+#'
+#' iarr <- pullHicMatrices(gi, hicFiles, 100e03, half="both")
+#' iarr
+#'
+#' counts(iarr)
 #'
 #' @rdname pullHicMatrices
 #' @export
