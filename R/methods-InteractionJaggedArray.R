@@ -86,7 +86,13 @@ setMethod("dim", "InteractionJaggedArray", function(x) {
     names(dims) <- c("interactions", "files", "rows", "cols")
 
     ## Extract dimensions of each matrix
-    slices <- h5read(x@counts@h5File, 'slices')
+    if (!is.null(x@counts@subsetTree[[1]])) {
+        i <- x@counts@subsetTree[[1]]
+        slices <- h5read(x@counts@h5File, 'slices',
+                         index=list(i, seq_len(4)))
+    } else {
+        slices <- h5read(x@counts@h5File, 'slices')
+    }
 
     ## Assign dimensions
     dims[[1]] <- length(interactions(x))
@@ -163,6 +169,71 @@ setMethod("path", "InteractionJaggedArray", function(object) {
     object@counts@h5File
 })
 
+## Subsetting ------------------------------------------------------------------
 
+#' Internal subsetting for InteractionJaggedArray
+#' @noRd
+.subsetInteractionJaggedArray <- function(x, i, j) {
+    dims <- dim(x)
 
+    ## Catch NULL indices
+    if (is.null(i)) i <- seq_len(dims$interactions)
+    if (is.null(j)) j <- seq_len(dims$files)
 
+    ## Update interactions
+    x@interactions <- x@interactions[i,]
+
+    ## Update colData
+    x@colData <- x@colData[j,]
+
+    ## Update counts
+    cnts <- x@counts[i,j]
+
+    ## Convert to InteractionArray if possible
+    if (is(cnts, "JaggedArray")) {
+        x@counts <- x@counts[i,j]
+    }
+    if (is(cnts, "DelayedArray")) {
+        iarr <- InteractionArray(
+            interactions = x@interactions,
+            assays = list(
+                counts = aperm(cnts, c(3,4,1,2))
+            ),
+            colData = x@colData,
+            metadata = x@metadata
+        )
+        return(iarr)
+    }
+
+    return(x)
+}
+
+#' Indexing for InteractionJaggedArray
+#'
+#' Subset an InteractionJaggedArray by its interactions
+#' ([i,]) or its Hi-C files ([,j]).
+#'
+#' The object returned will be a InteractionJaggedArray
+#' if the submatrices contain different dimensions.
+#' However, the returned object will automatically
+#' be coerced into a InteractionArray if possible (i.e.
+#' the dimensions of the rows and columns of
+#' submatrices are the same.)
+#'
+#' @param x An InteractionJaggedArray object.
+#' @param i Numeric vector indicating the indices
+#'  of interactions to extract.
+#' @param j Numeric vector indicating the indices
+#'  of files to extract.
+#' @returns Subsetting returns an InteractionJaggedArray
+#'  or InteractionArray object (see Details).
+#' @examples
+#' ## TODO Example
+#'
+#' @rdname InteractionJaggedArray-class
+#' @export
+setMethod("[", "InteractionJaggedArray", function(x, i, j) {
+    if (missing(i)) i <- NULL
+    if (missing(j)) j <- NULL
+    .subsetInteractionJaggedArray(x, i, j)
+})

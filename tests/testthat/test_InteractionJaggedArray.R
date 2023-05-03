@@ -31,3 +31,73 @@ test_that("InteractionJaggedArray accessors", {
     expect_error(path(iarr), NA)
 
 })
+
+test_that("InteractionJaggedArray subsetting", {
+
+    ## i
+    sub <- iarr[1:3,]
+    expect_identical(counts(sub), counts(iarr)[1:3,])
+    expect_identical(dim(sub), list(
+        interactions=3L,
+        files=2L,
+        rows=c(3, 3, 5),
+        cols=c(5, 5, 3)
+    ))
+    expect_identical(
+        interactions(sub),
+        interactions(iarr)[1:3,]
+    )
+
+    ## i reversed
+    sub2 <- iarr[3:1,]
+    expect_identical(counts(sub2), counts(iarr)[3:1,])
+    expect_identical(dim(sub2), list(
+        interactions=3L,
+        files=2L,
+        rows=c(5,3,3),
+        cols=c(3,5,5)
+    ))
+    expect_identical(
+        interactions(sub2),
+        interactions(iarr)[3:1,]
+    )
+
+    ## missing i and j
+    expect_identical(
+        as.list(counts(iarr)),
+        as.list(counts(iarr[]))
+    )
+
+    ## both i and j
+    sub2 <- iarr[3:1,1]
+    expect_identical(counts(sub2), counts(iarr)[3:1,1])
+    expect_identical(dim(sub2), list(
+        interactions=3L,
+        files=1L,
+        rows=c(5,3,3),
+        cols=c(3,5,5)
+    ))
+    expect_identical(
+        interactions(sub2),
+        interactions(iarr)[3:1,]
+    )
+
+    ## Multiple subsets
+    sub2 <- iarr[3:1,]
+    sub3 <- sub2[3:1,]
+    expect_identical(dim(sub3), dim(iarr[1:3,]))
+    expect_identical(counts(sub3), counts(iarr)[1:3,])
+
+    ## Returns InteractionArray
+    sub <- iarr[1:2,] # return InteractionArray
+    expect_s4_class(sub, "InteractionArray")
+    expect_identical(
+        as.matrix(counts(iarr)[1,1]),
+        as.matrix(counts(sub)[,,1,1])
+    )
+
+    ## TODO build row/col names into
+    ## InteractionJaggedArray
+    expect_error(counts(iarr[1,], showDimnames=TRUE), NA)
+
+})

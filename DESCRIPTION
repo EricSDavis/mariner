@@ -96,4 +96,7 @@ Collate:
     'methods-shiftRanges.R'
     'methods-snapToBins.R'
     'zzz.R'
-URL: http://ericscottdavis.com/mariner/
+URL: 
+    https://ericscottdavis.com/mariner/,
+    https://github.com/EricSDavis/mariner
+
