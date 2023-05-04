@@ -8,15 +8,18 @@
 \alias{[,JaggedArray,ANY,ANY,ANY-method}
 \alias{as.list,JaggedArray-method}
 \alias{path,JaggedArray-method}
+\alias{dim,JaggedArray-method}
 \title{JaggedArray Class}
 \usage{
 \S4method{show}{JaggedArray}(object)
 
-\S4method{[}{JaggedArray,ANY,ANY,ANY}(x, i, j)
+\S4method{[}{JaggedArray,ANY,ANY,ANY}(x, i, j, ..., drop = TRUE)
 
 \S4method{as.list}{JaggedArray}(x)
 
 \S4method{path}{JaggedArray}(object)
+
+\S4method{dim}{JaggedArray}(x)
 }
 \arguments{
 \item{object}{JaggedArray object.}
@@ -40,6 +43,10 @@ Subsetting returns a JaggedArray or DelayedArray object
 
 `path()` returns a character vector with the path to
  the HDF5 file with the JaggedArray data.
+
+`dim()` returns a list of dimensions
+ of the JaggedArray of rows, cols, interactions
+ and files.
 }
 \description{
 The `JaggedArray` class creates
@@ -91,13 +98,16 @@ arr <- counts(iarr)
 arr
 
 ## Subsetting
-arr[1,] # DelayedArray
-arr[,1] # JaggedArray
+arr[,,1,] # DelayedArray
+arr[,,,1] # JaggedArray
 
 ## Realize as list
 as.list(arr)
 
 ## Find the data path
 path(arr)
+
+## Find the data path
+dim(arr)
 
 }

@@ -36,7 +36,7 @@ test_that("InteractionJaggedArray subsetting", {
 
     ## i
     sub <- iarr[1:3,]
-    expect_identical(counts(sub), counts(iarr)[1:3,])
+    expect_identical(counts(sub), counts(iarr)[,,1:3,])
     expect_identical(dim(sub), list(
         interactions=3L,
         files=2L,
@@ -50,7 +50,7 @@ test_that("InteractionJaggedArray subsetting", {
 
     ## i reversed
     sub2 <- iarr[3:1,]
-    expect_identical(counts(sub2), counts(iarr)[3:1,])
+    expect_identical(counts(sub2), counts(iarr)[,,3:1,])
     expect_identical(dim(sub2), list(
         interactions=3L,
         files=2L,
@@ -70,7 +70,7 @@ test_that("InteractionJaggedArray subsetting", {
 
     ## both i and j
     sub2 <- iarr[3:1,1]
-    expect_identical(counts(sub2), counts(iarr)[3:1,1])
+    expect_identical(counts(sub2), counts(iarr)[,,3:1,1])
     expect_identical(dim(sub2), list(
         interactions=3L,
         files=1L,
@@ -86,13 +86,13 @@ test_that("InteractionJaggedArray subsetting", {
     sub2 <- iarr[3:1,]
     sub3 <- sub2[3:1,]
     expect_identical(dim(sub3), dim(iarr[1:3,]))
-    expect_identical(counts(sub3), counts(iarr)[1:3,])
+    expect_identical(counts(sub3), counts(iarr)[,,1:3,])
 
     ## Returns InteractionArray
     sub <- iarr[1:2,] # return InteractionArray
     expect_s4_class(sub, "InteractionArray")
     expect_identical(
-        as.matrix(counts(iarr)[1,1]),
+        as.matrix(counts(iarr)[,,1,1]),
         as.matrix(counts(sub)[,,1,1])
     )
 

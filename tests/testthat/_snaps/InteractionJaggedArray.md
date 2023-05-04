@@ -3,8 +3,8 @@
     Code
       counts(iarr)
     Output
-      <4 x 2 x n x m> JaggedArray:
-      1, 1,
+      <n x m x 4 x 2> JaggedArray:
+      ,,1,1
       <3 x 5> matrix
            [,1] [,2] [,3] [,4] [,5]
       [1,]   53   15    5    1    4
@@ -13,7 +13,7 @@
       
       ...
       
-      4, 2,
+      ,,4,2
       <3 x 8> matrix
            [,1] [,2] [,3] ... [,7] [,8]
       [1,]   31    7    2   .    0    0

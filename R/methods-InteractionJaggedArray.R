@@ -81,25 +81,17 @@ setMethod("show", "InteractionJaggedArray", function(object) {
 #' @rdname InteractionJaggedArray-class
 #' @export
 setMethod("dim", "InteractionJaggedArray", function(x) {
-    ## Create list to hold dimensions
-    dims <- vector("list", 4)
-    names(dims) <- c("interactions", "files", "rows", "cols")
+    ## Initialize list
+    ans <- vector("list", 4L)
+    names(ans) <- c("interactions", "files", "rows", "cols")
 
-    ## Extract dimensions of each matrix
-    if (!is.null(x@counts@subsetTree[[1]])) {
-        i <- x@counts@subsetTree[[1]]
-        slices <- h5read(x@counts@h5File, 'slices',
-                         index=list(i, seq_len(4)))
-    } else {
-        slices <- h5read(x@counts@h5File, 'slices')
-    }
-
-    ## Assign dimensions
-    dims[[1]] <- length(interactions(x))
-    dims[[2]] <- nrow(colData(x))
-    dims[[3]] <- slices[,1]
-    dims[[4]] <- slices[,2]
-    dims
+    ## Rearrange dimensions of JaggedArray
+    dims <- dim(x@counts)
+    ans[[1]] <- dims[[3]]
+    ans[[2]] <- dims[[4]]
+    ans[[3]] <- dims[[1]]
+    ans[[4]] <- dims[[2]]
+    ans
 })
 
 #' interactions
@@ -187,11 +179,11 @@ setMethod("path", "InteractionJaggedArray", function(object) {
     x@colData <- x@colData[j,]
 
     ## Update counts
-    cnts <- x@counts[i,j]
+    cnts <- x@counts[,,i,j]
 
     ## Convert to InteractionArray if possible
     if (is(cnts, "JaggedArray")) {
-        x@counts <- x@counts[i,j]
+        x@counts <- x@counts[,,i,j]
     }
     if (is(cnts, "DelayedArray")) {
         iarr <- InteractionArray(

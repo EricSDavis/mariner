@@ -34,29 +34,32 @@ setMethod("show", "JaggedArray", function(object) {
     dims <- object@dim
 
     ## Show first in set
-    first <- object[1,1]
+    first <- object[,,1,1]
     fd <- dim(first)
     ans <- sprintf(
         "<%i x %i x %i x %i> %s:",
         dims[1], dims[2], fd[1], fd[2], class(object)
     )
-    ans <- c(ans, "1, 1,")
+    ans <- c(ans, ",,1,1")
     ans <- c(ans, sprintf("<%i x %i> matrix", fd[1], fd[2]))
     ans <- c(ans, capture.output(first)[-c(1,2)])
 
-    ## Show last if not the same as first
-    if (any(dims != 1L)) {
-        ans[1] <- sprintf(
-            "<%i x %i x n x m> %s:",
-            dims[1], dims[2], class(object)
-        )
-        last <- object[dims[1], dims[2]]
-        ld <- dim(last)
-        ans <- c(ans, "...\n")
-        ans <- c(ans, sprintf("%i, %i,", dims[1], dims[2]))
-        ans <- c(ans, sprintf("<%i x %i> matrix", ld[1], ld[2]))
-        ans <- c(ans, capture.output(last)[-c(1,2)])
-    }
+    ## Show last. Since length-one JaggedArrays
+    ## are automatically converted to DelayedArrays,
+    ## this method will only execute if it is 2 or
+    ## more in length. No need to make the following
+    ## code conditional.
+    ans[1] <- sprintf(
+        "<n x m x %i x %i> %s:",
+        dims[1], dims[2], class(object)
+    )
+    last <- object[,,dims[1], dims[2]]
+    ld <- dim(last)
+    ## Only show break if more than 2 matrices
+    if (prod(dims) > 2) ans <- c(ans, "...\n")
+    ans <- c(ans, sprintf(",,%i,%i", dims[1], dims[2]))
+    ans <- c(ans, sprintf("<%i x %i> matrix", ld[1], ld[2]))
+    ans <- c(ans, capture.output(last)[-c(1,2)])
     cat(ans, sep='\n')
 })
 
@@ -68,9 +71,16 @@ setMethod("show", "JaggedArray", function(object) {
 #' @inheritParams [
 #' @importFrom rhdf5 h5read
 #' @noRd
-.accessJaggedArray <- function(x, i, j, ...) {
+.accessJaggedArray <- function(x, Nindex) {
     # i=interactions, j=files
-    dims <- dim(x)
+    # n <- Nindex[[1]]
+    # m <- Nindex[[2]]
+    i <- Nindex[[3]]
+    j <- Nindex[[4]]
+
+    dims <- x@dim
+    # if (missing(n) | is.null(n)) n <- seq_len(dims[[1]])
+    # if (missing(m) | is.null(m)) m <- seq_len(dims[[2]])
     if (missing(i) | is.null(i)) i <- seq_len(dims[[1]])
     if (missing(j) | is.null(j)) j <- seq_len(dims[[2]])
 
@@ -84,12 +94,13 @@ setMethod("show", "JaggedArray", function(object) {
             lapply(seq_len(nrow(slices)), \(s) {
                 slice <- seq(slices[s,3], slices[s,4])
                 cnts <- h5read(x@h5File, 'counts', index=list(slice, m))
-                matrix(
+                mat <- matrix(
                     data=cnts,
                     nrow=slices[s,1],
                     ncol=slices[s,2],
                     byrow=TRUE
                 )
+                mat# mat[n,m]
             })
         })
 
@@ -120,7 +131,7 @@ setMethod("show", "JaggedArray", function(object) {
     ## Otherwise build a DelayedArray.
     ## Since arrays fill from first dimension in R
     ## we need fill columns first then permute.
-    cnts <- .accessJaggedArray(x, NULL, NULL) |> unlist()
+    cnts <- .accessJaggedArray(x, vector("list", 4L)) |> unlist()
     a <- array(data=as.vector(cnts),
                dim=c(unique(slices[,1]),
                      unique(slices[,2]),
@@ -134,8 +145,11 @@ setMethod("show", "JaggedArray", function(object) {
 #' @inheritParams [
 #' @importFrom rhdf5 h5read h5write
 #' @noRd
-.subsetJaggedArray <- function(x, i=NULL, j=NULL) {
+.subsetJaggedArray <- function(x, Nindex) {
     # i=interactions, j=files
+    i <- Nindex[[3]]
+    j <- Nindex[[4]]
+
     ## Handle missing dims
     dims <- x@dim
     if (missing(i) | is.null(i)) i <- seq_len(dims[[1]])
@@ -186,15 +200,14 @@ setMethod("show", "JaggedArray", function(object) {
 #'  (see Details).
 #' @examples
 #' ## Subsetting
-#' arr[1,] # DelayedArray
-#' arr[,1] # JaggedArray
+#' arr[,,1,] # DelayedArray
+#' arr[,,,1] # JaggedArray
 #'
 #' @rdname JaggedArray-class
 #' @export
-setMethod("[", "JaggedArray", function(x, i, j) {
-    if (missing(i)) i <- NULL
-    if (missing(j)) j <- NULL
-    .subsetJaggedArray(x, i, j)
+setMethod("[", "JaggedArray", function(x, i, j, ...) {
+    Nindex <- .getNindexFromSyscall(sys.call(), parent.frame())
+    .subsetJaggedArray(x, Nindex)
 })
 
 ## Accessors -------------------------------------------------------------------
@@ -213,7 +226,7 @@ setMethod("[", "JaggedArray", function(x, i, j) {
 #' @rdname JaggedArray-class
 #' @export
 setMethod("as.list", "JaggedArray", function(x) {
-    .accessJaggedArray(x, NULL, NULL)
+    .accessJaggedArray(x, vector("list", 4L))
 })
 
 #' Access HDF5 path for JaggedArray
@@ -229,6 +242,40 @@ setMethod("as.list", "JaggedArray", function(x) {
 #' @export
 setMethod("path", "JaggedArray", function(object) {
     object@h5File
+})
+
+#' Access dimensions for JaggedArray
+#' @param x JaggedArray object.
+#' @returns `dim()` returns a list of dimensions
+#'  of the JaggedArray of rows, cols, interactions
+#'  and files.
+#'
+#' @examples
+#' ## Find the data path
+#' dim(arr)
+#'
+#' @rdname JaggedArray-class
+#' @export
+setMethod("dim", "JaggedArray", function(x) {
+    ## Create list to hold dimensions
+    dims <- vector("list", 4)
+    names(dims) <- c("rows", "cols", "interactions", "files")
+
+    ## Extract dimensions of each matrix
+    if (!is.null(x@subsetTree[[1]])) {
+        i <- x@subsetTree[[1]]
+        slices <- h5read(x@h5File, 'slices',
+                         index=list(i, seq_len(4)))
+    } else {
+        slices <- h5read(x@h5File, 'slices')
+    }
+
+    ## Assign dimensions
+    dims[[1]] <- slices[,1]
+    dims[[2]] <- slices[,2]
+    dims[[3]] <- x@dim[1]
+    dims[[4]] <- x@dim[2]
+    dims
 })
 
 

@@ -12,6 +12,7 @@
 \alias{colData,InteractionJaggedArray-method}
 \alias{counts,InteractionJaggedArray-method}
 \alias{path,InteractionJaggedArray-method}
+\alias{[,InteractionJaggedArray,ANY,ANY,ANY-method}
 \title{InteractionJaggedArray Class}
 \usage{
 \S4method{show}{InteractionJaggedArray}(object)
@@ -27,11 +28,19 @@
 \S4method{counts}{InteractionJaggedArray}(object)
 
 \S4method{path}{InteractionJaggedArray}(object)
+
+\S4method{[}{InteractionJaggedArray,ANY,ANY,ANY}(x, i, j)
 }
 \arguments{
 \item{object}{JaggedArray object.}
 
-\item{x}{InteractionJaggedArray object.}
+\item{x}{An InteractionJaggedArray object.}
+
+\item{i}{Numeric vector indicating the indices
+of interactions to extract.}
+
+\item{j}{Numeric vector indicating the indices
+of files to extract.}
 }
 \value{
 `InteractionJaggedArray()` creates
@@ -51,6 +60,9 @@
 
 `path()` returns a character vector with
  the path to the HDF5 file with the JaggedArray data.
+
+Subsetting returns an InteractionJaggedArray
+ or InteractionArray object (see Details).
 }
 \description{
 The `InteractionJaggedArray` class creates
@@ -58,6 +70,17 @@ a container for storing interaction data
 alongside irregular arrays. This allows the
 storage of matrices with different dimensions
 on-disk using HDF5.
+
+Subset an InteractionJaggedArray by its interactions
+([i,]) or its Hi-C files ([,j]).
+}
+\details{
+The object returned will be a InteractionJaggedArray
+if the submatrices contain different dimensions.
+However, the returned object will automatically
+be coerced into a InteractionArray if possible (i.e.
+the dimensions of the rows and columns of
+submatrices are the same.)
 }
 \examples{
 ## Load marinerData
@@ -100,5 +123,7 @@ counts(iarr)
 
 ## Access path to HDF5 data
 path(iarr)
+
+## TODO Example
 
 }

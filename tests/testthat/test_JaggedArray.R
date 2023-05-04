@@ -21,9 +21,17 @@ iarr <- pullHicMatrices(gi, hicFiles, 100e03, half="both")
 
 test_that("JaggedArray accessors", {
 
-    ## Path accessor
+    ## path accessor
     cnts <- counts(iarr)
     path(cnts)
+
+    ## dim accessor
+    cnts <- counts(iarr)
+    dim(cnts)
+
+    ## Only show break for more than 2 matrices
+    ja <- counts(iarr)
+    expect_snapshot(ja[,,c(1,3),1])
 
     ## Extracting & subsetting counts for JaggedArray ####
     ## Possible to extract counts
@@ -33,26 +41,33 @@ test_that("JaggedArray accessors", {
     expect_identical(as.list(cnts)[[1]][[4]][1,1], 29)
 
     ## Reversing by subsetting works
-    cnts <- counts(iarr)[4:1, 1]
+    cnts <- counts(iarr)[,,4:1, 1]
     expect_snapshot(cnts)
     expect_identical(as.list(cnts)[[1]][[1]][1,1], 29)
     expect_identical(as.list(cnts)[[1]][[4]][1,1], 53)
 
     ## Successive subsetting works
-    cnts2 <- cnts[4:1, 1]
+    cnts2 <- cnts[,,4:1, 1]
     expect_snapshot(cnts2)
     expect_identical(as.list(cnts2)[[1]][[1]][1,1], 53)
     expect_identical(as.list(cnts2)[[1]][[4]][1,1], 29)
 
     ## These should auto convert to DelayedArray
-    expect_s4_class(counts(iarr)[1:2,], "DelayedArray")
-    expect_s4_class(counts(iarr)[1,], "DelayedArray")
+    expect_s4_class(counts(iarr)[,,1:2,], "DelayedArray")
+    expect_s4_class(counts(iarr)[,,1,], "DelayedArray")
 
     ## None of these should error
-    expect_s4_class(counts(iarr)[1,], "DelayedArray")
-    expect_s4_class(counts(iarr)[,1], "JaggedArray")
+    expect_s4_class(counts(iarr)[,,1,], "DelayedArray")
+    expect_s4_class(counts(iarr)[,,,1], "JaggedArray")
     expect_s4_class(counts(iarr)[], "JaggedArray")
-    expect_s4_class(counts(iarr)[1:2, 1], "DelayedArray")
-    expect_s4_class(counts(iarr)[2:1, 1], "DelayedArray")
+    expect_s4_class(counts(iarr)[,,1:2, 1], "DelayedArray")
+    expect_s4_class(counts(iarr)[,,2:1, 1], "DelayedArray")
+
+    ## Test for correct subscripting
+    ja <- counts(iarr)
+    expect_error(ja[,], "incorrect.*subscripts")
+    expect_error(ja[,,], "incorrect.*subscripts")
+    expect_error(ja[,,], "incorrect.*subscripts")
+    expect_error(ja[,,,], NA)
 
 })
