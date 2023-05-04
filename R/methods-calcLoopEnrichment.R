@@ -1,4 +1,38 @@
-#' Internal for calcLoopEnrichment
+#' Internal for applyEnrichment
+#' @inheritParams calcLoopEnrichment
+#' @importFrom DelayedArray RegularArrayGrid DelayedArray blockApply
+#' @importFrom utils capture.output
+#' @importFrom stats median
+#' @noRd
+.applyEnrichment <- function(x, fg, bg, FUN, nBlocks, verbose,
+                                BPPARAM, ...) {
+  cnts <- counts(x)
+  
+  ## Build array grid
+  spacings <- dims <- dim(cnts)
+  spacings[3] <- ceiling(spacings[3]/nBlocks)
+  grid <- RegularArrayGrid(dims, spacings)
+  
+  ## Define functions to apply
+  newBody <-
+    gsub("fg", "x[fg]", deparse1(body(FUN))) |>
+    gsub("bg", "x[bg]", x=_)
+  newFUN <- eval(parse(text=paste0("function(x, fg, bg) ", newBody)))
+  blockApplyFUN <- \(x) apply(x, c(3,4), \(x) newFUN(x, fg, bg))
+  combineFUN <- \(x) do.call("rbind", args=x)
+  
+  ## Apply in blocks
+  blocks <- blockApply(x=cnts,
+                       FUN=blockApplyFUN,
+                       grid=grid,
+                       verbose=verbose,
+                       BPPARAM=BPPARAM)
+  
+  ans <- DelayedArray(combineFUN(blocks))
+  return(ans)
+}
+
+#' Internal for calcLoopEnrichmentFromFiles
 #' @inheritParams calcLoopEnrichment
 #' @importFrom rlang abort inform
 #' @importFrom glue glue
@@ -6,7 +40,7 @@
 #' @importFrom utils capture.output
 #' @importFrom stats median
 #' @noRd
-.calcLoopEnrichment <- function(x, files, fg, bg, FUN, nBlocks, verbose,
+.calcLoopEnrichmentFromFiles <- function(x, files, fg, bg, FUN, nBlocks, verbose,
                                 BPPARAM, ...) {
 
     ## Parameter parsing
@@ -35,33 +69,46 @@
     ## Pull count matrices
     ## Use nBlocks to set blockSize if not provided?
     iarr <- pullHicMatrices(mr, files, binSize, ...)
-    cnts <- counts(iarr)
 
-    ## Subset the center pixel of matrix
-    cp <- cnts[(buffer+1), (buffer+1),,]
-
-    ## Build array grid
-    spacings <- dims <- dim(cnts)
-    spacings[3] <- ceiling(spacings[3]/nBlocks)
-    grid <- RegularArrayGrid(dims, spacings)
-
-    ## Define functions to apply
-    newBody <-
-        gsub("fg", "x[fg]", deparse1(body(FUN))) |>
-        gsub("bg", "x[bg]", x=_)
-    newFUN <- eval(parse(text=paste0("function(x, fg, bg) ", newBody)))
-    blockApplyFUN <- \(x) apply(x, c(3,4), \(x) newFUN(x, fg, bg))
-    combineFUN <- \(x) do.call("rbind", args=x)
-
-    ## Apply in blocks
-    blocks <- blockApply(x=cnts,
-                         FUN=blockApplyFUN,
-                         grid=grid,
-                         verbose=verbose,
-                         BPPARAM=BPPARAM)
-
-    ans <- DelayedArray(combineFUN(blocks))
+    ## Call apply enrichment to calculate scores on iarr
+    ans <- .applyEnrichment(iarr, fg, bg, FUN, nBlocks, verbose, BPPARAM)
     return(ans)
+}
+
+#' Internal for calcLoopEnrichmentFromIA
+#' @inheritParams calcLoopEnrichment
+#' @importFrom rlang abort inform
+#' @importFrom DelayedArray RegularArrayGrid DelayedArray blockApply
+#' @importFrom utils capture.output
+#' @importFrom stats median
+#' @noRd
+.calcLoopEnrichmentFromIA <- function(x, fg, bg, FUN, nBlocks, verbose,
+                                BPPARAM, ...) {
+  ## Parameter parsing
+  if (nBlocks <= 0) abort("`nBlocks` must be > 0.")
+
+  ## If no foreground or background supplied,
+  ## set to match buffer of count matrices
+  buffer <- defaultBuffer(x)
+  
+  if(missing(fg)){
+    fg <- selectCenterPixel(mhDist=1, buffer=defaultBuffer(x))  
+  } 
+  if(missing(bg)){
+    bg <- selectTopLeft(n=4, buffer=defaultBuffer(x)) +
+      selectBottomRight(n=4, buffer=defaultBuffer(x))
+  }
+  
+  ## Check buffer & show selection
+  .checkBuffer(buffer, fg$buffer)
+  .checkBuffer(fg$buffer, bg$buffer)
+  
+  fg <- fg$x
+  bg <- bg$x
+  .showMultiSelection(fg=fg, bg=bg, buffer=buffer)
+  
+  ans <- .applyEnrichment(x, fg, bg, FUN, nBlocks, verbose, BPPARAM)
+  return(ans)
 }
 
 #' Calculate loop enrichment over background.
@@ -70,8 +117,9 @@
 #' the selected foreground (`fg`) over the selected
 #' background (`bg`).
 #'
-#' @param x GInteractions object.
-#' @param files Character file paths to `.hic` files.
+#' @param x GInteractions object or an InteractionArray object.
+#' @param files Character file paths to `.hic` files. Required only if
+#'  GInteractions object is supplied for x.
 #' @param fg Integer vector of matrix indices for the foreground.
 #' @param bg Integer vector of matrix indices for the background.
 #' @param FUN Function taking two parameters (i.e., `fg`, `bg`)
@@ -129,6 +177,8 @@
 #' fg <- selectCenterPixel(mhDist=seq(0,4), buffer=buffer)
 #' bg <- selectCorners(n=6, buffer=buffer) +
 #'     selectOuter(n=2, buffer=buffer)
+#' 
+#' ## Calculate loop enrichment
 #' calcLoopEnrichment(x=loops[1:10],
 #'                    files=hicFiles,
 #'                    fg=fg,
@@ -139,4 +189,24 @@
 setMethod("calcLoopEnrichment",
           signature(x="GInteractions",
                     files="character"),
-          definition=.calcLoopEnrichment)
+          definition=.calcLoopEnrichmentFromFiles)
+
+#' Calculate loop enrichment over background.
+#'
+#' @examples
+#' ## Extract count matrices first
+#' mats <- binPairs(loops[1:10],100e3) |>
+#'   pixelsToMatrices(buffer=10) |>
+#'     pullHicMatrices(
+#'     files=hicFiles,
+#'     binSize=100e3)
+#' 
+#' ## Calculate loop enrichment from count matrices 
+#' calcLoopEnrichment(x = mats)
+#'
+#' @rdname calcLoopEnrichment
+#' @export
+setMethod("calcLoopEnrichment",
+          signature(x="InteractionArray",
+                    files="missing"),
+          definition=.calcLoopEnrichmentFromIA)
