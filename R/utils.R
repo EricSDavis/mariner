@@ -231,3 +231,54 @@
     }
     return(widths)
 }
+
+#' Stop if matrices are not odd and square
+#' @param x InteractionArray
+#' @importFrom rlang abort
+#' @importFrom glue glue
+#' @return NULL or error message if not odd and square.
+#' @noRd
+.checkOddSquareMatrices <- function(x){
+  dims <- dim(counts(x))
+  
+  ## Check that input is a square matrix
+  if(dims[1] != dims[2]){
+    abort(c("`x` must have square count matrices.",
+            "i"="Dimensions of count matrices must be equal.",
+            "x"=glue("`dim(counts(x))[1] != dim(counts(x))[2]`",
+                     ", {dims[1]} != {dims[2]}."),
+            "i"="See `?pullHicMatrices` for more information."))
+  }
+  
+  ## Check that buffer for InteractionArray is odd
+  if((dims[1] %% 2) == 0){
+    abort(c(glue("Enrichment scores can only be calculated for matrices",
+                 " with a center pixel."),
+            "i"="Dimensions of count matrices must be odd.",
+            "i"=glue("Dimensions of count matrices are {dims[1]} x {dims[2]}."),
+            "x"= glue("{dims[1]} is not odd."),
+            "i"="See `?pixelsToMatrices` for help."))
+  }
+}
+
+#' Return default buffer
+#' If InteractionArray is supplied,
+#' it uses the counts matrices to
+#' set the buffer dimensions.
+#' @param x InteractionArray
+#' @return 5 (set default), 
+#'  the buffer of the provided InteractionArray,
+#'  or an error message if the InteractionArray 
+#'  is not odd and square (no buffer)
+#' @rdname defaultBuffer
+#' @export
+defaultBuffer <- function(x) {
+  if (missing(x)) {
+    return(5)
+  }
+  .checkOddSquareMatrices(x)
+  buffer <- (dim(counts(x))[1] - 1) /2
+  buffer
+}
+
+

@@ -309,9 +309,9 @@ setGeneric("selectOuter",
 #' @export
 setGeneric("calcLoopEnrichment",
            function(x, files,
-                    fg=selectCenterPixel(mhDist=1, buffer=5),
-                    bg=selectTopLeft(n=4, buffer=5) +
-                        selectBottomRight(n=4, buffer=5),
+                    fg=selectCenterPixel(mhDist=1, buffer=defaultBuffer()),
+                    bg=selectTopLeft(n=4, buffer=defaultBuffer()) +
+                        selectBottomRight(n=4, buffer=defaultBuffer()),
                     FUN=\(fg, bg) median(fg+1) / median(bg+1),
                     nBlocks=5,
                     verbose=TRUE,
