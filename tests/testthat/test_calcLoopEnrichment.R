@@ -527,7 +527,6 @@ test_that("selection helper functions work", {
 
 test_that("calcLoopEnrichment", {
 
-
     ## Doesn't accept loops of variable resolution
     loops |>
         binPairs(c(5e03, 10e03)) |>
@@ -561,7 +560,7 @@ test_that("calcLoopEnrichment", {
                               files=hicFiles)
     expect_equal(res, exp)
     expect_s4_class(res, "DelayedMatrix")
-    expect_equal(dim(res), c(10, 2))
+    expect_equal(dim(res), dim(exp))
 
 
     ## Selection concatenation
@@ -580,6 +579,106 @@ test_that("calcLoopEnrichment", {
     (selectRadius(x=1, buffer=3) + selectRadius(x=2, buffer=4)) |>
         expect_error("`buffer` must be the same")
 
+})
+
+test_that("InteractionArray method for calcLoopEnrichment",{
+ 
+   ## Test non-square matrices 
+  mats <- 
+    binPairs(loops[1:100],binSize = c(100e3, 50e3)) |>
+    pullHicMatrices(
+      files=hicFiles,
+      binSize=10e3,
+      half="upper",
+      norm = "KR"
+    )
+  
+  expect_error(calcLoopEnrichment(mats), "must have square")
+  
+  ## Test even matrices
+  mats <- 
+    binPairs(loops[1:100],binSize = 100e3) |>
+    pullHicMatrices(
+      files=hicFiles,
+      binSize=50e3,
+      half="upper",
+      norm = "KR"
+    )
+  
+  expect_error(calcLoopEnrichment(mats), "must be odd")
+  
+  ## Test non-matching buffers
+  mats <- 
+    binPairs(loops[1:100],100e3) |>
+    pixelsToMatrices(buffer=5) |>
+    pullHicMatrices(
+      files=hicFiles,
+      binSize=100e3,
+      half="upper",
+      norm = "KR"
+    )
+  
+  calcLoopEnrichment(
+    x = mats,
+    fg = selectCenterPixel(mhDist=1, buffer = 10)
+  ) |> expect_error("`buffer` must be the same")
+  
+  mats <- 
+    binPairs(loops[1:100],100e3) |>
+    pixelsToMatrices(buffer=10) |>
+    pullHicMatrices(
+      files=hicFiles,
+      binSize=100e3,
+      half="upper",
+      norm = "KR"
+    )
+  
+  calcLoopEnrichment(
+    x = mats,
+    fg = selectCenterPixel(mhDist=1, buffer = 5)
+  ) |> expect_error("`buffer` must be the same")
+  
+  ## Test auto-matching buffers
+  ## no foreground
+  expect_s4_class(calcLoopEnrichment(x = mats,
+                                    bg = selectTopLeft(n=4, buffer=10) +
+                                      selectBottomRight(n=4, buffer=10)),
+                  "DelayedMatrix")
+  
+  ## no background
+  expect_s4_class(
+    calcLoopEnrichment(x = mats, 
+                       fg = selectCenterPixel(mhDist=1, buffer = 10)),
+    "DelayedMatrix")
+  
+  ## no foreground & no background
+  expect_s4_class(calcLoopEnrichment(mats), "DelayedMatrix")
+  
+  ## Test whole function
+  exp <- new("DelayedMatrix",
+             seed = structure(
+               c(1, 1, 1.57894736842105, 1.33333333333333,
+                 0.736842105263158, 1.33333333333333, 0.75,
+                 1.76470588235294, 0.818181818181818,
+                 0.333333333333333, 1.66666666666667, 1.4,
+                 2.16666666666667, 1, 0.777777777777778, 1,
+                 1, 1.44827586206897, 0.909090909090909, 0.8),
+               dim = c(10L, 2L),
+               dimnames = list(NULL, c("FS","WT"))
+             ))
+  
+  mats <- 
+    binPairs(loops[1:10],100e3) |>
+    pixelsToMatrices(buffer=5) |>
+    pullHicMatrices(
+      files=hicFiles,
+      binSize=100e3
+    )
+  
+  res <- calcLoopEnrichment(mats)
+  expect_equal(res, exp)
+  expect_s4_class(res, "DelayedMatrix")
+  expect_equal(dim(res), dim(exp))
 })
 
 

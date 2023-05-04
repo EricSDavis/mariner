@@ -181,3 +181,46 @@ test_that("Getting binSize", {
         expect_identical(10000)
 
 })
+
+## Test defaultBuffer ----------------------------------------------------------
+
+test_that("defaultBuffer returns correct result", {
+  ## Check that double is returned 
+  ## if no parameter provided
+  expect_type(defaultBuffer(), "double")
+  
+  ## Read .hic file paths
+  hicFiles <- c(
+    LEUK_HEK_PJA27_inter_30.hic(),
+    LEUK_HEK_PJA30_inter_30.hic()
+  )
+  names(hicFiles) <- c("FS", "WT")
+  
+  ## Read in loops as GInteractions object
+  loops <-
+    WT_5kbLoops.txt() |>
+    setNames("WT") |>
+    read.table(header=TRUE) |>
+    as_ginteractions(keep.extra.columns=FALSE)
+  
+  ## Removes the "chr" prefix for compatibility
+  ## with the preprocessed hic files
+  GenomeInfoDb::seqlevelsStyle(loops) <- 'ENSEMBL'  
+  
+  ## Make sure test buffer is not default
+  testBuffer <- defaultBuffer()+1
+  
+  ## Extract count matrices
+  mats <- 
+    binPairs(loops[1:10],100e3) |>
+    pixelsToMatrices(buffer=testBuffer) |>
+    pullHicMatrices(
+      files=hicFiles,
+      binSize=100e3
+    )
+  
+  ## Check that the buffer of InteractionArray is returned
+  expect_equal(defaultBuffer(mats), testBuffer)
+  expect_type(defaultBuffer(mats), "double")
+
+})
