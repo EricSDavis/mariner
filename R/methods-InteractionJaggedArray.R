@@ -148,7 +148,7 @@ setMethod("counts", "InteractionJaggedArray", function(object) {
 })
 
 #' Access HDF5 path for InteractionJaggedArray
-#' @param object JaggedArray object.
+#' @param object InteractionJaggedArray object.
 #' @returns `path()` returns a character vector with
 #'  the path to the HDF5 file with the JaggedArray data.
 #' @examples
@@ -159,6 +159,21 @@ setMethod("counts", "InteractionJaggedArray", function(object) {
 #' @export
 setMethod("path", "InteractionJaggedArray", function(object) {
     object@counts@h5File
+})
+
+#' length (number of interactions) for
+#' InteractionJaggedArray
+#' @param x InteractionJaggedArray object.
+#' @returns `length()` returns an integer with the
+#'  number of interactions in an InteractionJaggedArray object.
+#' @examples
+#' ## length
+#' length(iarr)
+#'
+#' @rdname InteractionJaggedArray-class
+#' @export
+setMethod("length", "InteractionJaggedArray", function(x) {
+    length(x@interactions)
 })
 
 ## Subsetting ------------------------------------------------------------------
@@ -220,7 +235,8 @@ setMethod("path", "InteractionJaggedArray", function(object) {
 #' @returns Subsetting returns an InteractionJaggedArray
 #'  or InteractionArray object (see Details).
 #' @examples
-#' ## TODO Example
+#' ## Subsetting
+#' iarr[1:3,1]
 #'
 #' @rdname InteractionJaggedArray-class
 #' @export
@@ -229,3 +245,148 @@ setMethod("[", "InteractionJaggedArray", function(x, i, j) {
     if (missing(j)) j <- NULL
     .subsetInteractionJaggedArray(x, i, j)
 })
+
+## Overlaps --------------------------------------------------------------------
+
+#' Overlap methods for InteractionJaggedArray
+#'
+#' @param query,subject An InteractionJaggedArray, Vector,
+#'  GInteractions or InteractionSet object, depending on
+#'  the specified method. At least one of these must be a
+#'  `subject` can be missing if query is an
+#'  InteractionJaggedArray object.
+#' @param ... see ?`findOverlaps` in InteractionSet package
+#'  for more information
+#'
+#' @importMethodsFrom IRanges findOverlaps countOverlaps
+#'  overlapsAny subsetByOverlaps
+#' @importFrom S4Vectors countQueryHits
+#' @importFrom IRanges overlapsAny
+#' @examples
+#' ## Load marinerData
+#' if (!require("marinerData", quietly = TRUE))
+#'     BiocManager::install("marinerData")
+#'
+#' ## Read .hic file paths
+#' hicFiles <- c(
+#'     marinerData::LEUK_HEK_PJA27_inter_30.hic(),
+#'     marinerData::LEUK_HEK_PJA30_inter_30.hic()
+#' )
+#' names(hicFiles) <- c("FS", "WT")
+#'
+#' ## Create test interactions
+#' gi <- read.table(text="
+#'             1 51000000 51300000 1 51000000 51500000
+#'             2 52000000 52300000 3 52000000 52500000
+#'             1 150000000 150500000 1 150000000 150300000
+#'             2 52000000 52300000 2 52000000 52800000") |>
+#'     as_ginteractions()
+#'
+#' ## InteractionJaggedArray object
+#' iarr <- pullHicMatrices(gi, hicFiles, 100e03, half="both")
+#'
+#' ## Shift first two ranges out of range
+#' gi2 <- c(binPairs(gi[1:2], binSize=100e3, pos1=-200e3), gi[3:4])
+#'
+#' ## Find overlaps
+#' findOverlaps(iarr, gi2)
+#' countOverlaps(iarr, gi2)
+#' countOverlaps(iarr, gi2, maxgap=100e3)
+#' overlapsAny(iarr, gi2)
+#' subsetByOverlaps(iarr, gi2)
+#' subsetByOverlaps(iarr, gi2, invert=TRUE)
+#'
+#' @name findOverlaps
+#' @rdname InteractionJaggedArray-overlaps
+NULL
+
+for (sig in c("InteractionJaggedArray", "Vector", "missing")) {
+
+    #' @exportMethod findOverlaps
+    setMethod(
+        "findOverlaps",
+        signature(query="InteractionJaggedArray", subject=sig),
+        function(query, subject, maxgap=-1L, minoverlap=0L,
+                 type=c("any", "start", "end", "within", "equal"),
+                 select=c("all", "first", "last", "arbitrary"),
+                 ignore.strand=TRUE, ..., use.region="both"){
+            call <- as.list(match.call(expand.dots=TRUE))[-1]
+            call$query <- interactions(query)
+            if (missing(subject)){
+                call[["subject"]] <- NULL
+            }
+            else if (is(subject, class(query))) {
+                call$subject <- interactions(subject)
+            }
+            do.call(findOverlaps, call)
+        }
+    )
+
+    #' @exportMethod countOverlaps
+    setMethod(
+        "countOverlaps",
+        signature(query="InteractionJaggedArray", subject=sig),
+        function(query, subject, maxgap=-1L, minoverlap=0L,
+                 type=c("any", "start", "end", "within", "equal"),
+                 select=c("all", "first", "last", "arbitrary"),
+                 ignore.strand=TRUE, ..., use.region="both"){
+            call <- as.list(match.call(expand.dots=TRUE))[-1]
+            call$query <- interactions(query)
+            if (missing(subject)){
+                call[["subject"]] <- NULL
+            }
+            else if (is(subject, class(query))) {
+                call$subject <- interactions(subject)
+            }
+            hits <- do.call(findOverlaps, call)
+            ans <- countQueryHits(hits)
+            names(ans) <- names(call$query)
+            ans
+        }
+    )
+
+    #' @exportMethod overlapsAny
+    setMethod(
+        "overlapsAny",
+        signature(query="InteractionJaggedArray", subject=sig),
+        function(query, subject, maxgap=-1L, minoverlap=0L,
+                 type=c("any", "start", "end", "within", "equal"),
+                 ..., use.region="both") {
+            call <- as.list(match.call(expand.dots=TRUE))[-1]
+            call$query <- interactions(query)
+            if (missing(subject)){
+                call[["subject"]] <- NULL
+            }
+            else if (is(subject, class(query))) {
+                call$subject <- interactions(subject)
+            }
+            do.call(overlapsAny, call)
+        }
+    )
+
+    #' @exportMethod subsetByOverlaps
+    setMethod(
+        "subsetByOverlaps",
+        signature(x="InteractionJaggedArray", ranges=sig),
+        function(x, ranges, maxgap=-1L, minoverlap=0L,
+                 type=c("any", "start", "end", "within", "equal"),
+                 invert=FALSE, ..., use.region="both") {
+            call <- as.list(match.call(expand.dots=TRUE))[-1]
+            call$x <- interactions(x)
+            if (missing(ranges)){
+                call[["ranges"]] <- NULL
+            }
+            else if (is(ranges, class(x))) {
+                call$ranges <- interactions(ranges)
+            }
+            names(call)[names(call)=="x"] <- "query"
+            names(call)[names(call)=="ranges"] <- "subject"
+            call[["invert"]] <- NULL
+            ov_any <- do.call(overlapsAny, call)
+            if (invert) ov_any <- !ov_any
+            x[which(ov_any),]
+        }
+    )
+}
+
+

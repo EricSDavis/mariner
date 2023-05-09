@@ -671,7 +671,7 @@
     ja <- JaggedArray(
         h5File=h5File,
         dim=c(length(x), length(files)),
-        subsetTree=vector("list", 2L)
+        subList=vector("list", 2L)
     )
 
     ## Create InteractionJaggedArray

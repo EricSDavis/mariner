@@ -73,20 +73,16 @@ setMethod("show", "JaggedArray", function(object) {
 #' @noRd
 .accessJaggedArray <- function(x, Nindex) {
     # i=interactions, j=files
-    # n <- Nindex[[1]]
-    # m <- Nindex[[2]]
     i <- Nindex[[3]]
     j <- Nindex[[4]]
 
     dims <- x@dim
-    # if (missing(n) | is.null(n)) n <- seq_len(dims[[1]])
-    # if (missing(m) | is.null(m)) m <- seq_len(dims[[2]])
     if (missing(i) | is.null(i)) i <- seq_len(dims[[1]])
     if (missing(j) | is.null(j)) j <- seq_len(dims[[2]])
 
     ## Apply delayed subset operation
-    if (!is.null(x@subsetTree[[1]])) i <- x@subsetTree[[1]][i]
-    if (!is.null(x@subsetTree[[2]])) j <- x@subsetTree[[2]][j]
+    if (!is.null(x@subList[[1]])) i <- x@subList[[1]][i]
+    if (!is.null(x@subList[[2]])) j <- x@subList[[2]][j]
 
     slices <- h5read(x@h5File, 'slices', index=list(i, seq_len(4)))
     ans <-
@@ -94,13 +90,12 @@ setMethod("show", "JaggedArray", function(object) {
             lapply(seq_len(nrow(slices)), \(s) {
                 slice <- seq(slices[s,3], slices[s,4])
                 cnts <- h5read(x@h5File, 'counts', index=list(slice, m))
-                mat <- matrix(
+                matrix(
                     data=cnts,
                     nrow=slices[s,1],
                     ncol=slices[s,2],
                     byrow=TRUE
                 )
-                mat# mat[n,m]
             })
         })
 
@@ -118,7 +113,7 @@ setMethod("show", "JaggedArray", function(object) {
     slices <- h5read(
         file=x@h5File,
         name='slices',
-        index=list(x@subsetTree[[1]], seq_len(4))
+        index=list(x@subList[[1]], seq_len(4))
     )
 
     ## Return jagged array if dimensions
@@ -156,15 +151,15 @@ setMethod("show", "JaggedArray", function(object) {
     if (missing(j) | is.null(j)) j <- seq_len(dims[[2]])
 
     ## Record subset operation
-    if (is.null(x@subsetTree[[1]])) {
-        x@subsetTree[[1]] <- i
+    if (is.null(x@subList[[1]])) {
+        x@subList[[1]] <- i
     } else {
-        x@subsetTree[[1]] <- x@subsetTree[[1]][i]
+        x@subList[[1]] <- x@subList[[1]][i]
     }
-    if (is.null(x@subsetTree[[2]])) {
-        x@subsetTree[[2]] <- j
+    if (is.null(x@subList[[2]])) {
+        x@subList[[2]] <- j
     } else {
-        x@subsetTree[[2]] <- x@subsetTree[[2]][j]
+        x@subList[[2]] <- x@subList[[2]][j]
     }
 
     ## Update outer dims
@@ -198,6 +193,7 @@ setMethod("show", "JaggedArray", function(object) {
 #'  of files to extract.
 #' @returns Subsetting returns a JaggedArray or DelayedArray object
 #'  (see Details).
+#' @importFrom rlang abort
 #' @examples
 #' ## Subsetting
 #' arr[,,1,] # DelayedArray
@@ -207,6 +203,10 @@ setMethod("show", "JaggedArray", function(object) {
 #' @export
 setMethod("[", "JaggedArray", function(x, i, j, ...) {
     Nindex <- .getNindexFromSyscall(sys.call(), parent.frame())
+    if (!is.null(Nindex[[1]]) | !is.null(Nindex[[2]])) {
+        m <- "Indexing by the first two positions is not supported."
+        abort(m)
+    }
     .subsetJaggedArray(x, Nindex)
 })
 
@@ -262,8 +262,8 @@ setMethod("dim", "JaggedArray", function(x) {
     names(dims) <- c("rows", "cols", "interactions", "files")
 
     ## Extract dimensions of each matrix
-    if (!is.null(x@subsetTree[[1]])) {
-        i <- x@subsetTree[[1]]
+    if (!is.null(x@subList[[1]])) {
+        i <- x@subList[[1]]
         slices <- h5read(x@h5File, 'slices',
                          index=list(i, seq_len(4)))
     } else {

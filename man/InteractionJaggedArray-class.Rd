@@ -12,6 +12,7 @@
 \alias{colData,InteractionJaggedArray-method}
 \alias{counts,InteractionJaggedArray-method}
 \alias{path,InteractionJaggedArray-method}
+\alias{length,InteractionJaggedArray-method}
 \alias{[,InteractionJaggedArray,ANY,ANY,ANY-method}
 \title{InteractionJaggedArray Class}
 \usage{
@@ -29,10 +30,12 @@
 
 \S4method{path}{InteractionJaggedArray}(object)
 
+\S4method{length}{InteractionJaggedArray}(x)
+
 \S4method{[}{InteractionJaggedArray,ANY,ANY,ANY}(x, i, j)
 }
 \arguments{
-\item{object}{JaggedArray object.}
+\item{object}{InteractionJaggedArray object.}
 
 \item{x}{An InteractionJaggedArray object.}
 
@@ -61,6 +64,9 @@ of files to extract.}
 `path()` returns a character vector with
  the path to the HDF5 file with the JaggedArray data.
 
+`length()` returns an integer with the
+ number of interactions in an InteractionJaggedArray object.
+
 Subsetting returns an InteractionJaggedArray
  or InteractionArray object (see Details).
 }
@@ -82,6 +88,19 @@ be coerced into a InteractionArray if possible (i.e.
 the dimensions of the rows and columns of
 submatrices are the same.)
 }
+\section{Slots}{
+
+\describe{
+\item{\code{interactions}}{A GInteractions object.}
+
+\item{\code{colData}}{Column data describing Hi-C files.}
+
+\item{\code{counts}}{A JaggedArray object with data.}
+
+\item{\code{metadata}}{List of metadata describing the
+object.}
+}}
+
 \examples{
 ## Load marinerData
 if (!require("marinerData", quietly = TRUE))
@@ -124,6 +143,10 @@ counts(iarr)
 ## Access path to HDF5 data
 path(iarr)
 
-## TODO Example
+## length
+length(iarr)
+
+## Subsetting
+iarr[1:3,1]
 
 }

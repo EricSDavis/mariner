@@ -304,6 +304,26 @@ setValidity("InteractionMatrix", function(object) {
 #' storage of matrices with different
 #' dimensions on-disk using HDF5.
 #'
+#' NOTE: This class is designed specifically
+#' for holding a 4-dimensional JaggedArray
+#' <n x m x i x j> where n x m are rows and
+#' cols of count matrices, i is interactions,
+#' and j is Hi-C files.
+#'
+#' @slot h5File path to file for creating
+#'  and storing data as an HDF5 file.
+#' @slot dim dimensions describing the
+#'  number of matrices contained. dim[1]
+#'  is the number of interactions, dim[2]
+#'  is the number of files.
+#' @slot subList is a list of length 2
+#'  where the first position refers to
+#'  interactions and the second refers to
+#'  files. This list is used to record
+#'  subsetting operations which are then
+#'  later applied when accessing data
+#'  stored in the HDF5 file.
+#'
 #' @returns `JaggedArray()` creates a JaggedArray
 #'  object.
 #' @rdname JaggedArray-class
@@ -313,7 +333,7 @@ JaggedArray <- setClass(
     slots=list(
         h5File="character",
         dim="integer",
-        subsetTree="list"
+        subList="list"
     )
 )
 
@@ -324,6 +344,12 @@ JaggedArray <- setClass(
 #' alongside irregular arrays. This allows the
 #' storage of matrices with different dimensions
 #' on-disk using HDF5.
+#'
+#' @slot interactions A GInteractions object.
+#' @slot colData Column data describing Hi-C files.
+#' @slot counts A JaggedArray object with data.
+#' @slot metadata List of metadata describing the
+#'  object.
 #'
 #' @returns `InteractionJaggedArray()` creates
 #'  an InteractionJaggedArray object.

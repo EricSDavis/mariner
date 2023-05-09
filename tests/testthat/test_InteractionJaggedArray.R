@@ -29,6 +29,7 @@ test_that("InteractionJaggedArray accessors", {
     expect_identical(length(dim(iarr)), 4L)
     expect_snapshot(counts(iarr))
     expect_error(path(iarr), NA)
+    expect_identical(length(iarr), 4L)
 
 })
 
@@ -99,5 +100,59 @@ test_that("InteractionJaggedArray subsetting", {
     ## TODO build row/col names into
     ## InteractionJaggedArray
     expect_error(counts(iarr[1,], showDimnames=TRUE), NA)
+
+})
+
+test_that("InteractionJaggedArray subsetByOverlaps", {
+
+
+    ## Shift first two ranges out of range
+    gi2 <- c(binPairs(gi[1:2], binSize=100e3, pos1=-200e3), gi[3:4])
+
+    ## findOverlaps
+    expect_identical(length(findOverlaps(iarr, iarr)), 4L)
+    expect_identical(length(findOverlaps(iarr, gi2)), 2L)
+    expect_identical(length(findOverlaps(iarr)), 4L)
+
+    ## countOverlaps
+    expect_identical(countOverlaps(iarr), rep(1L, 4))
+    expect_identical(countOverlaps(iarr, gi), rep(1L, 4))
+    expect_identical(
+        countOverlaps(iarr, gi2),
+        c(rep(0L, 2), rep(1L, 2))
+    )
+
+    ## overlapsAny
+    expect_identical(
+        overlapsAny(iarr, gi2),
+        c(rep(FALSE, 2), rep(TRUE,2))
+    )
+    expect_identical(overlapsAny(iarr, iarr), rep(TRUE, 4L))
+    expect_identical(overlapsAny(iarr), rep(TRUE, 4L))
+
+    ## subsetByOverlaps
+    expect_identical(length(subsetByOverlaps(iarr, gi2)), 2L)
+    expect_identical(
+        length(subsetByOverlaps(iarr, gi2, maxgap=100e3)),
+        4L
+    )
+    expect_identical(
+        subsetByOverlaps(iarr[,1], gi2) |> counts(),
+        counts(iarr)[,,3:4,1]
+    )
+    expect_s4_class(
+        subsetByOverlaps(iarr, gi2, invert=TRUE),
+        "InteractionArray"
+    )
+    expect_identical(
+        subsetByOverlaps(iarr, gi2, invert=TRUE),
+        iarr[1:2]
+    )
+
+    ## Works with vector subclass (GRanges)
+    expect_error(findOverlaps(iarr, first(gi2)), NA)
+    expect_error(subsetByOverlaps(iarr, first(gi2)), NA)
+    expect_error(countOverlaps(iarr, first(gi2)), NA)
+
 
 })

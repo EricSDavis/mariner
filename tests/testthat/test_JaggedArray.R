@@ -70,4 +70,10 @@ test_that("JaggedArray accessors", {
     expect_error(ja[,,], "incorrect.*subscripts")
     expect_error(ja[,,,], NA)
 
+    ## Error for trying to subset the first two dimensions
+    ja <- counts(iarr)
+    expect_error(ja[1,1,1,1], "Indexing.*not supported")
+    expect_error(ja[1,,1,1], "Indexing.*not supported")
+    expect_error(ja[,1,1,1], "Indexing.*not supported")
+
 })
