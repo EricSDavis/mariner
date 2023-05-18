@@ -581,7 +581,7 @@ test_that("calcLoopEnrichment", {
 
 })
 
-test_that("InteractionArray method for calcLoopEnrichment",{
+test_that("InteractionArray method for calcLoopEnrichment runs correctly",{
  
    ## Test non-square matrices 
   mats <- 
@@ -651,6 +651,14 @@ test_that("InteractionArray method for calcLoopEnrichment",{
                        fg = selectCenterPixel(mhDist=1, buffer = 10)),
     "DelayedMatrix")
   
+  ## fg is not a selection
+  expect_error(calcLoopEnrichment(x = mats, fg = 20),
+               "`fg` must be a MatrixSelection")
+  
+  ## bg is not a selection
+  expect_error(calcLoopEnrichment(x = mats, bg = "hello"),
+               "`bg` must be a MatrixSelection")
+  
   ## no foreground & no background
   expect_s4_class(calcLoopEnrichment(mats), "DelayedMatrix")
   
@@ -674,11 +682,101 @@ test_that("InteractionArray method for calcLoopEnrichment",{
       files=hicFiles,
       binSize=100e3
     )
-  
+
   res <- calcLoopEnrichment(mats)
   expect_equal(res, exp)
   expect_s4_class(res, "DelayedMatrix")
   expect_equal(dim(res), dim(exp))
+})
+
+test_that("calcLoopEnrichment function can use local environment objects",{
+    
+  simpleFun <- function(x, y, z=5) { x + y + z }
+  ## test defaults
+  testFun1 <- deparse1(.modifyEnrichFun(simpleFun, eframe=parent.frame()))
+  expFun1 <- deparse1(function(x1, x, y, z) {x1[x] + x1[y] + 5})
+  expect_equal(testFun1, expFun1)
+  
+  ## test custom environment
+  en <- new_environment(data=list(z=15))
+  testFun2 <- deparse1(.modifyEnrichFun(simpleFun, eframe=en))
+  expFun2 <- deparse1(function(x1, x, y, z) {x1[x] + x1[y] + 15})
+  expect_equal(testFun2, expFun2)
+  
+  ## test current environment
+  z <- 10
+  testFun3 <- deparse1(.modifyEnrichFun(simpleFun, eframe=parent.frame()))
+  expFun3 <- deparse1(function(x1, x, y, z) {x1[x] + x1[y] + 10})
+  expect_equal(testFun3, expFun3)
+  
+  ## test within a function
+  testModifyFun <- function(f){
+    z <- 35
+    .modifyEnrichFun(f, environment()) # use environment instead of parent frame
+  }
+  testFun4 <- deparse1(testModifyFun(simpleFun))
+  expFun4 <- deparse1(function(x1, x, y, z) {x1[x] + x1[y] + 35})
+  expect_equal(testFun4, expFun4)
+  
+  ## test with a non-function
+  expect_error(.modifyEnrichFun(12), "`FUN` must be a function")
+  
+  ## using a function name as a function argument
+  f <- function(x, y, sum) { sum(x,y) + sum }
+  expect_error(.modifyEnrichFun(f),"share name.*with a function")
+  
+  ## no default and not in environment
+  simpleFun <- function(x, y, z, w) { x + y + z }
+  rm(z)
+  expect_error(.modifyEnrichFun(simpleFun), "object.*not found")
+  
+  mats <- 
+    binPairs(loops[1:10],100e3) |>
+    pixelsToMatrices(buffer=5) |>
+    pullHicMatrices(
+      files=hicFiles,
+      binSize=100e3
+    )
+  
+  ## User defined function that returns more than one value
+  customFun <- function(fg, bg, pseudo=10) {
+    (fg + pseudo) / (bg + pseudo)
+  }
+  expect_warning(calcLoopEnrichment(mats, FUN = customFun, verbose = F),
+                 "return more than one value")
+  
+  ## User defined function with default
+  scoringFunction <- function(fg,bg, pseudo=10){
+    median((fg + 1 + pseudo)) / median((bg + 1 + pseudo))
+  }
+  
+  scores10 <- calcLoopEnrichment(mats, FUN = scoringFunction)
+  expect_s4_class(scores10, "DelayedMatrix")
+  expect_equal(dim(mats), dim(scores10))
+  
+  ## overwrite default value for pseudo with local variable
+  pseudo <- 25
+  scores25 <- calcLoopEnrichment(mats, FUN = scoringFunction)
+  expect_s4_class(scores25, "DelayedMatrix")
+  expect_equal(dim(mats), dim(scores25))
+  
+  ## User defined function that calls calcLoopEnrichment
+  scoreLoops <- function(pseudo = 45){
+    calcLoopEnrichment(mats, FUN = scoringFunction, verbose = F)
+  }
+  
+  scoresDefault <- scoreLoops() # using default  pseudo <- 10
+  expect_s4_class(scoresDefault, "DelayedMatrix")
+  expect_equal(dim(mats), dim(scoresDefault))
+  
+  scoresLocal <- scoreLoops() # using local variable to overwrite default
+  expect_s4_class(scoresLocal, "DelayedMatrix")
+  expect_equal(dim(mats), dim(scoresLocal))
+  
+  # setting pseudo for function overwrites local variable and default
+  scoresSet <- scoreLoops(pseudo = 50) 
+  expect_s4_class(scoresSet, "DelayedMatrix")
+  expect_equal(dim(mats), dim(scoresSet))
 })
 
 

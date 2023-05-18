@@ -1,8 +1,80 @@
+#' Internal for modifyEnrichFun
+#' @param FUN custom function to modify
+#' @param eframe environment with local variables to use in the function
+#' @importFrom rlang parse_expr abort inform
+#' @importFrom glue glue
+#' @return function with parameters x, fg, and bg. All other parameters
+#'  are converted to either default values or local variable values
+#' @noRd
+.modifyEnrichFun <- function(FUN, eframe=parent.frame(2)) {
+  ## check that FUN is a function
+  if(!is.function(FUN)){
+    abort(c("`FUN` must be a function.",
+            "x"=glue("`class(FUN)` is {class(FUN)}.")))
+  }
+  
+  ## get argument names of function
+  argNames <- formalArgs(FUN) 
+  
+  ## check if any arguments are function names
+  areFunNames <- vapply(argNames, function(x) {
+    exists(x) && is.function(get(x))
+  }, logical(1))
+  
+  if(sum(areFunNames)>0){
+    funNames <- glue_collapse(glue("`{argNames[areFunNames]}`"), sep = ", ")
+    abort(c("`FUN` arguments cannot be the same as any function name.",
+            "x"=glue("{funNames} share name(s) with a function.")))
+  }
+  
+  ## rename arguments to avoid conflict
+  x <- reconcileArgs("x", argNames)
+  
+  ## extract arguments and argument names from given function
+  args <- formals(FUN)
+  fg <- argNames[1]
+  bg <- argNames[2]
+  extraArgs <- args[-seq_len(2L)]
+  
+  ## Define functions to apply
+  a <- parse(text=deparse1(FUN))
+  subFg <- parse_expr(paste0(x,"[",fg,"]"))
+  subBg <- parse_expr(paste0(x,"[",bg,"]"))
+  subList <- list(subFg,subBg)
+  names(subList) <- c(fg,bg)
+  newFUN <- do.call("substitute", list(a[[1]], subList))
+  
+  ## Get missing args
+  margs <- names(extraArgs) %in% ls(envir = eframe)
+  extraArgs[margs] <- 
+    lapply(names(extraArgs[margs]), get, envir=eframe)
+  
+  missingArgs <- vapply(extraArgs, is, class="name", logical(1L))
+  if(sum(missingArgs) > 0){
+    missingArgNames <- glue_collapse(glue("`{names(missingArgs)}`"), sep = ", ")
+    abort(glue("object(s) {missingArgNames} not found"))
+  }
+  
+  ## substitute user-supplied variables
+  b <- parse(text=deparse1(newFUN))
+  newFUN <- do.call("substitute", list(b[[1]], extraArgs))
+  newFUN <- as.function(eval(newFUN))
+  extraArgNames <- paste(names(extraArgs), collapse=", ")
+  header <- ifelse(length(extraArgs) > 0,
+    sprintf("function(%s, %s, %s, %s)", x, fg, bg, extraArgNames),
+    sprintf("function(%s, %s, %s)", x, fg, bg))
+  body <- deparse1(body(newFUN))
+  
+  newFUN <- eval(parse(text=paste(header,body)))
+  return(newFUN)
+}
+
 #' Internal for applyEnrichment
 #' @inheritParams calcLoopEnrichment
 #' @importFrom DelayedArray RegularArrayGrid DelayedArray blockApply
 #' @importFrom utils capture.output
 #' @importFrom stats median
+#' @importFrom rlang inform
 #' @noRd
 .applyEnrichment <- function(x, fg, bg, FUN, nBlocks, verbose,
                                 BPPARAM, ...) {
@@ -14,11 +86,7 @@
   grid <- RegularArrayGrid(dims, spacings)
   
   ## Define functions to apply
-  newBody <-
-    gsub("fg", "x[fg]", deparse1(body(FUN))) |>
-    gsub("bg", "x[bg]", x=_)
-  newFUN <- eval(parse(text=paste0("function(x, fg, bg) ", newBody)))
-  blockApplyFUN <- \(x) apply(x, c(3,4), \(x) newFUN(x, fg, bg))
+  blockApplyFUN <- \(x) apply(x, c(3,4), \(x) FUN(x, fg, bg))
   combineFUN <- \(x) do.call("rbind", args=x)
   
   ## Apply in blocks
@@ -29,6 +97,14 @@
                        BPPARAM=BPPARAM)
   
   ans <- DelayedArray(combineFUN(blocks))
+  
+  if(!identical(dim(x),dim(ans))){
+    dimExp <- glue_collapse(glue("{dim(x)}"), sep = " x ")
+    dimAns <- glue_collapse(glue("{dim(ans)}"), sep = " x ")
+    warn(c("Dimensions of output are not as expected.",
+           "i"=glue("Expected dim: {dimExp}. Actual dim: {dimAns}."),
+           "*"="Does `FUN` return more than one value?"))
+  }
   return(ans)
 }
 
@@ -41,38 +117,50 @@
 #' @importFrom stats median
 #' @noRd
 .calcLoopEnrichmentFromFiles <- function(x, files, fg, bg, FUN, nBlocks, verbose,
-                                BPPARAM, ...) {
-
-    ## Parameter parsing
-    if (nBlocks <= 0) abort("`nBlocks` must be > 0.")
-
-    ## Determine resolution from x
-    ## and ensure all pixels are same res.
-    binSize <- .getBinSize(x)
-    if (length(binSize) != 1L) {
-        abort(c(glue("All interactions in `x` must be \\
+                                         BPPARAM, ...) {
+  
+  ## Parameter parsing
+  if (nBlocks <= 0) abort("`nBlocks` must be > 0.")
+  
+  if(class(fg)[1] != "MatrixSelection") {
+    abort(c("`fg` must be a MatrixSelection object.",
+            "x"=glue("`class(fg)` is {class(fg)}.")))
+  }
+  if(class(bg)[1] != "MatrixSelection") {
+    abort(c("`bg` must be a MatrixSelection object.",
+            "x"=glue("`class(bg)` is {class(bg)}")))
+  }
+  
+  ## Determine resolution from x
+  ## and ensure all pixels are same res.
+  binSize <- .getBinSize(x)
+  if (length(binSize) != 1L) {
+    abort(c(glue("All interactions in `x` must be \\
                      the same width."),
-                "i"="Check this with `width(x)`.",
-                "i"="Set binSize with `binPairs(x, binSize)`."))
-    }
-
-    ## Check & show selection
-    .checkBuffer(fg$buffer, bg$buffer)
-    buffer <- fg$buffer
-    fg <- fg$x
-    bg <- bg$x
+            "i"="Check this with `width(x)`.",
+            "i"="Set binSize with `binPairs(x, binSize)`."))
+  }
+  
+  ## Check & show selection
+  .checkBuffer(fg$buffer, bg$buffer)
+  buffer <- fg$buffer
+  fg <- fg$x
+  bg <- bg$x
+  if(verbose){ 
     .showMultiSelection(fg=fg, bg=bg, buffer=buffer)
-
-    ## Pull Hi-C matrices
-    mr <- pixelsToMatrices(x, buffer)
-
-    ## Pull count matrices
-    ## Use nBlocks to set blockSize if not provided?
-    iarr <- pullHicMatrices(mr, files, binSize, ...)
-
-    ## Call apply enrichment to calculate scores on iarr
-    ans <- .applyEnrichment(iarr, fg, bg, FUN, nBlocks, verbose, BPPARAM)
-    return(ans)
+  }
+  
+  ## Pull Hi-C matrices
+  mr <- pixelsToMatrices(x, buffer)
+  
+  ## Pull count matrices
+  ## Use nBlocks to set blockSize if not provided?
+  iarr <- pullHicMatrices(mr, files, binSize, ...)
+  
+  ## Call apply enrichment to calculate scores on iarr
+  newFun <- .modifyEnrichFun(FUN, eframe = parent.frame())
+  ans <- .applyEnrichment(iarr, fg, bg, newFUN, nBlocks, verbose, BPPARAM)
+  return(ans)
 }
 
 #' Internal for calcLoopEnrichmentFromIA
@@ -83,10 +171,19 @@
 #' @importFrom stats median
 #' @noRd
 .calcLoopEnrichmentFromIA <- function(x, fg, bg, FUN, nBlocks, verbose,
-                                BPPARAM, ...) {
+                                      BPPARAM, ...) {
   ## Parameter parsing
   if (nBlocks <= 0) abort("`nBlocks` must be > 0.")
-
+  
+  if(class(fg)[1] != "MatrixSelection") {
+    abort(c("`fg` must be a MatrixSelection object.",
+            "x"=glue("`class(fg)` is {class(fg)}.")))
+  }
+  if(class(bg)[1] != "MatrixSelection") {
+    abort(c("`bg` must be a MatrixSelection object.",
+          "x"=glue("`class(bg)` is {class(bg)}")))
+  }
+  
   ## If no foreground or background supplied,
   ## set to match buffer of count matrices
   buffer <- defaultBuffer(x)
@@ -102,12 +199,14 @@
   ## Check buffer & show selection
   .checkBuffer(buffer, fg$buffer)
   .checkBuffer(fg$buffer, bg$buffer)
-  
   fg <- fg$x
   bg <- bg$x
-  .showMultiSelection(fg=fg, bg=bg, buffer=buffer)
+  if(verbose){
+    .showMultiSelection(fg=fg, bg=bg, buffer=buffer)
+  }
   
-  ans <- .applyEnrichment(x, fg, bg, FUN, nBlocks, verbose, BPPARAM)
+  newFun <- .modifyEnrichFun(FUN)
+  ans <- .applyEnrichment(x, fg, bg, FUN=newFun, nBlocks, verbose, BPPARAM)
   return(ans)
 }
 
@@ -120,11 +219,13 @@
 #' @param x GInteractions object or an InteractionArray object.
 #' @param files Character file paths to `.hic` files. Required only if
 #'  GInteractions object is supplied for x.
-#' @param fg Integer vector of matrix indices for the foreground.
-#' @param bg Integer vector of matrix indices for the background.
-#' @param FUN Function taking two parameters (i.e., `fg`, `bg`)
-#'  defining how enrichment should be calculated. Must produce
-#'  a single value (numeric of length one).
+#' @param fg MatrixSelection object of matrix indices for the foreground.
+#' @param bg MatrixSelection object of matrix indices for the background.
+#' @param FUN Function with at least two parameters (i.e., `fg`, `bg`)
+#'  defining how enrichment should be calculated. 
+#'  Must produce a single value (numeric of length one).
+#'  The first and second parameters must represent 
+#'  fg and bg, respectively.
 #' @param nBlocks Number of blocks for block-processing
 #'  arrays. Default is 5. Increase this for large
 #'  datasets. To read and process all data at once, set
@@ -210,3 +311,6 @@ setMethod("calcLoopEnrichment",
           signature(x="InteractionArray",
                     files="missing"),
           definition=.calcLoopEnrichmentFromIA)
+
+
+

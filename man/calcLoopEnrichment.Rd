@@ -51,13 +51,15 @@ calcLoopEnrichment(
 \item{files}{Character file paths to `.hic` files. Required only if
 GInteractions object is supplied for x.}
 
-\item{fg}{Integer vector of matrix indices for the foreground.}
+\item{fg}{MatrixSelection object of matrix indices for the foreground.}
 
-\item{bg}{Integer vector of matrix indices for the background.}
+\item{bg}{MatrixSelection object of matrix indices for the background.}
 
-\item{FUN}{Function taking two parameters (i.e., `fg`, `bg`)
-defining how enrichment should be calculated. Must produce
-a single value (numeric of length one).}
+\item{FUN}{Function with at least two parameters (i.e., `fg`, `bg`)
+defining how enrichment should be calculated. 
+Must produce a single value (numeric of length one).
+The first and second parameters must represent 
+fg and bg, respectively.}
 
 \item{nBlocks}{Number of blocks for block-processing
 arrays. Default is 5. Increase this for large
