@@ -4,8 +4,8 @@
 \alias{defaultBuffer}
 \title{Return default buffer
 If InteractionArray is supplied,
-it uses the counts matrices to
-set the buffer dimensions.}
+it uses the dimensions of counts matrices 
+to set the buffer dimensions.}
 \usage{
 defaultBuffer(x)
 }
@@ -17,12 +17,10 @@ defaultBuffer(x)
  the buffer of the provided InteractionArray,
  or an error message if the InteractionArray 
  is not odd and square (no buffer)
- @rdname defaultBuffer
- @export
 }
 \description{
 Return default buffer
 If InteractionArray is supplied,
-it uses the counts matrices to
-set the buffer dimensions.
+it uses the dimensions of counts matrices 
+to set the buffer dimensions.
 }

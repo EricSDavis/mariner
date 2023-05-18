@@ -224,12 +224,12 @@
 #' @importFrom rlang abort
 #' @noRd
 .getBinSize <- function(x) {
-    widths <- unique(width(regions(x))) - 1
-    if (length(widths) != 1L) {
-        abort(c("All ranges in `x` must be equal widths.",
-                "i"="Use `binPairs()` to bin into equal widths."))
-    }
-    return(widths)
+  widths <- unique(width(regions(x))) - 1
+  if (length(widths) != 1L) {
+    abort(c("All ranges in `x` must be equal widths.",
+            "i"="Use `binPairs()` to bin into equal widths."))
+  }
+  return(widths)
 }
 
 #' Stop if matrices are not odd and square
@@ -263,8 +263,8 @@
 
 #' Return default buffer
 #' If InteractionArray is supplied,
-#' it uses the counts matrices to
-#' set the buffer dimensions.
+#' it uses the dimensions of counts matrices 
+#' to set the buffer dimensions.
 #' @param x InteractionArray
 #' @return 5 (set default), 
 #'  the buffer of the provided InteractionArray,
@@ -279,6 +279,25 @@ defaultBuffer <- function(x) {
   .checkOddSquareMatrices(x)
   buffer <- (dim(counts(x))[1] - 1) /2
   buffer
+}
+
+
+#' Return non-conflicting variable name 
+#' @param x string (character vector of length 1) 
+#'  of the variable name to check for and change
+#' @param argNames character vector of arguments 
+#'  to check against 
+#' @return a non-conflicting name for `x`. Either `x`
+#'  if `x` is not in the lsit of arguments, or `x` 
+#'  followed by a number 
+reconcileArgs <- function(x, argNames){
+  if(x %in% argNames){
+    xNums <- grep(paste0("^",x,"\\d+$"), argNames, value=T)
+    nums <- as.numeric(gsub(x, "", xNums))
+    xNew <- paste0(x, ifelse(length(nums)>0, max(nums)+1, 1))
+    return(xNew)
+  } 
+  return(x)
 }
 
 
