@@ -31,6 +31,11 @@ of interactions to extract.}
 
 \item{j}{Numeric vector indicating the indices
 of files to extract.}
+
+\item{...}{Additional indices for subsetting
+multidimensional arrays.}
+
+\item{drop}{Not accepted for JaggedArray objects.}
 }
 \value{
 `JaggedArray()` creates a JaggedArray

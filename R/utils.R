@@ -237,6 +237,7 @@
 #' "extract_Nindex_from_syscall"
 #' @param call sys.call()
 #' @param eframe environment frame (i.e. `parent.frame()`)
+#' @importFrom utils tail
 #' @returns Nindex, a list of user supplied subscripts.
 #'  Missing subscripts are set to `NULL`.
 #' @noRd

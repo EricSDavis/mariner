@@ -628,7 +628,7 @@ test_that("Pull irregular arrays", {
     iset1 <- pullHicMatrices(gi[1], hicFiles[1], 50e03, half="both")
     iset2 <- pullHicMatrices(gi, hicFiles[1], 50e03, half="both")
     exp <- counts(iset1) |> as.matrix()
-    expect_identical(counts(iset2)[1,1] |> as.matrix(), exp)
+    expect_identical(counts(iset2)[,,1,1] |> as.matrix(), exp)
     expect_identical(as.list(counts(iset2))[[1]][[1]], exp)
 
 })

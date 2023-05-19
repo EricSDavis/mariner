@@ -102,6 +102,7 @@ setMethod("show", "JaggedArray", function(object) {
     ans
 }
 
+
 #' Coerce JaggedArray to DelayedArray
 #' @param x JaggedArray
 #' @returns A DelayedArray object if the conversion
@@ -191,8 +192,13 @@ setMethod("show", "JaggedArray", function(object) {
 #'  of interactions to extract.
 #' @param j Numeric vector indicating the indices
 #'  of files to extract.
+#' @param ... Additional indices for subsetting
+#'  multidimensional arrays.
+#' @param drop Not accepted for JaggedArray objects.
+#'
 #' @returns Subsetting returns a JaggedArray or DelayedArray object
 #'  (see Details).
+#'
 #' @importFrom rlang abort
 #' @examples
 #' ## Subsetting

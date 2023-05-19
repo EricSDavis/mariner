@@ -23,7 +23,8 @@ Suggests:
     rmarkdown,
     ExperimentHub,
     marinerData,
-    TxDb.Hsapiens.UCSC.hg38.knownGene
+    TxDb.Hsapiens.UCSC.hg38.knownGene,
+    fields
 Imports:
     methods,
     S4Vectors,
@@ -92,6 +93,7 @@ Collate:
     'methods-plotBullseye.R'
     'methods-plotMatrix.R'
     'methods-pullHic.R'
+    'methods-regularize.R'
     'methods-removeShortPairs.R'
     'methods-shiftRanges.R'
     'methods-snapToBins.R'
@@ -99,4 +101,3 @@ Collate:
 URL: 
     https://ericscottdavis.com/mariner/,
     https://github.com/EricSDavis/mariner
-

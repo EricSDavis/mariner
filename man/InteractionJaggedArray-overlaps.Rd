@@ -2,16 +2,188 @@
 % Please edit documentation in R/methods-InteractionJaggedArray.R
 \name{findOverlaps}
 \alias{findOverlaps}
+\alias{findOverlaps,InteractionJaggedArray,InteractionJaggedArray-method}
+\alias{findOverlaps,InteractionJaggedArray,Vector-method}
+\alias{findOverlaps,InteractionJaggedArray,missing-method}
+\alias{countOverlaps}
+\alias{countOverlaps,InteractionJaggedArray,InteractionJaggedArray-method}
+\alias{countOverlaps,InteractionJaggedArray,Vector-method}
+\alias{countOverlaps,InteractionJaggedArray,missing-method}
+\alias{overlapsAny}
+\alias{overlapsAny,InteractionJaggedArray,InteractionJaggedArray-method}
+\alias{overlapsAny,InteractionJaggedArray,Vector-method}
+\alias{overlapsAny,InteractionJaggedArray,missing-method}
+\alias{subsetByOverlaps}
+\alias{subsetByOverlaps,InteractionJaggedArray,InteractionJaggedArray-method}
+\alias{subsetByOverlaps,InteractionJaggedArray,Vector-method}
+\alias{subsetByOverlaps,InteractionJaggedArray,missing-method}
 \title{Overlap methods for InteractionJaggedArray}
+\usage{
+\S4method{findOverlaps}{InteractionJaggedArray,InteractionJaggedArray}(
+  query,
+  subject,
+  maxgap = -1L,
+  minoverlap = 0L,
+  type = c("any", "start", "end", "within", "equal"),
+  select = c("all", "first", "last", "arbitrary"),
+  ignore.strand = TRUE,
+  ...,
+  use.region = "both"
+)
+
+\S4method{findOverlaps}{InteractionJaggedArray,Vector}(
+  query,
+  subject,
+  maxgap = -1L,
+  minoverlap = 0L,
+  type = c("any", "start", "end", "within", "equal"),
+  select = c("all", "first", "last", "arbitrary"),
+  ignore.strand = TRUE,
+  ...,
+  use.region = "both"
+)
+
+\S4method{findOverlaps}{InteractionJaggedArray,missing}(
+  query,
+  subject,
+  maxgap = -1L,
+  minoverlap = 0L,
+  type = c("any", "start", "end", "within", "equal"),
+  select = c("all", "first", "last", "arbitrary"),
+  ignore.strand = TRUE,
+  ...,
+  use.region = "both"
+)
+
+\S4method{countOverlaps}{InteractionJaggedArray,InteractionJaggedArray}(
+  query,
+  subject,
+  maxgap = -1L,
+  minoverlap = 0L,
+  type = c("any", "start", "end", "within", "equal"),
+  select = c("all", "first", "last", "arbitrary"),
+  ignore.strand = TRUE,
+  ...,
+  use.region = "both"
+)
+
+\S4method{countOverlaps}{InteractionJaggedArray,Vector}(
+  query,
+  subject,
+  maxgap = -1L,
+  minoverlap = 0L,
+  type = c("any", "start", "end", "within", "equal"),
+  select = c("all", "first", "last", "arbitrary"),
+  ignore.strand = TRUE,
+  ...,
+  use.region = "both"
+)
+
+\S4method{countOverlaps}{InteractionJaggedArray,missing}(
+  query,
+  subject,
+  maxgap = -1L,
+  minoverlap = 0L,
+  type = c("any", "start", "end", "within", "equal"),
+  select = c("all", "first", "last", "arbitrary"),
+  ignore.strand = TRUE,
+  ...,
+  use.region = "both"
+)
+
+\S4method{overlapsAny}{InteractionJaggedArray,InteractionJaggedArray}(
+  query,
+  subject,
+  maxgap = -1L,
+  minoverlap = 0L,
+  type = c("any", "start", "end", "within", "equal"),
+  ...,
+  use.region = "both"
+)
+
+\S4method{overlapsAny}{InteractionJaggedArray,Vector}(
+  query,
+  subject,
+  maxgap = -1L,
+  minoverlap = 0L,
+  type = c("any", "start", "end", "within", "equal"),
+  ...,
+  use.region = "both"
+)
+
+\S4method{overlapsAny}{InteractionJaggedArray,missing}(
+  query,
+  subject,
+  maxgap = -1L,
+  minoverlap = 0L,
+  type = c("any", "start", "end", "within", "equal"),
+  ...,
+  use.region = "both"
+)
+
+\S4method{subsetByOverlaps}{InteractionJaggedArray,InteractionJaggedArray}(
+  x,
+  ranges,
+  maxgap = -1L,
+  minoverlap = 0L,
+  type = c("any", "start", "end", "within", "equal"),
+  invert = FALSE,
+  ...,
+  use.region = "both"
+)
+
+\S4method{subsetByOverlaps}{InteractionJaggedArray,Vector}(
+  x,
+  ranges,
+  maxgap = -1L,
+  minoverlap = 0L,
+  type = c("any", "start", "end", "within", "equal"),
+  invert = FALSE,
+  ...,
+  use.region = "both"
+)
+
+\S4method{subsetByOverlaps}{InteractionJaggedArray,missing}(
+  x,
+  ranges,
+  maxgap = -1L,
+  minoverlap = 0L,
+  type = c("any", "start", "end", "within", "equal"),
+  invert = FALSE,
+  ...,
+  use.region = "both"
+)
+}
 \arguments{
-\item{query, subject}{An InteractionJaggedArray, Vector,
+\item{query, subject, x, ranges}{An InteractionJaggedArray, Vector,
 GInteractions or InteractionSet object, depending on
 the specified method. At least one of these must be a
 `subject` can be missing if query is an
 InteractionJaggedArray object.}
 
+\item{maxgap, minoverlap, type, select}{see ?`findOverlaps` in
+the GenomicRanges package.}
+
+\item{ignore.strand}{see ?`findOverlaps` in InteractionSet
+package for more information.}
+
 \item{...}{see ?`findOverlaps` in InteractionSet package
 for more information}
+
+\item{use.region}{see ?`findOverlaps` in InteractionSet
+package for more information.}
+
+\item{invert}{Boolean (TRUE/FALSE) to invert selection.
+Default is TRUE.}
+}
+\value{
+`findOverlaps` returns a Hits object.
+ `countOverlaps` returns an integer vector of
+ overlaps for each interaction in `query`.
+ `overlapsAny` returns a logical vector of
+ overlaps for each interaction in `query`.
+ `subsetByOverlaps` returns overlapping
+ interactions as an InteractionJaggedArray.
 }
 \description{
 Overlap methods for InteractionJaggedArray
