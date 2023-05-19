@@ -158,7 +158,7 @@
   iarr <- pullHicMatrices(mr, files, binSize, ...)
   
   ## Call apply enrichment to calculate scores on iarr
-  newFun <- .modifyEnrichFun(FUN, eframe = parent.frame())
+  newFUN <- .modifyEnrichFun(FUN, eframe = parent.frame())
   ans <- .applyEnrichment(iarr, fg, bg, newFUN, nBlocks, verbose, BPPARAM)
   return(ans)
 }
@@ -205,8 +205,8 @@
     .showMultiSelection(fg=fg, bg=bg, buffer=buffer)
   }
   
-  newFun <- .modifyEnrichFun(FUN)
-  ans <- .applyEnrichment(x, fg, bg, FUN=newFun, nBlocks, verbose, BPPARAM)
+  newFUN <- .modifyEnrichFun(FUN)
+  ans <- .applyEnrichment(x, fg, bg, FUN=newFUN, nBlocks, verbose, BPPARAM)
   return(ans)
 }
 

@@ -698,14 +698,14 @@ test_that("calcLoopEnrichment function can use local environment objects",{
   expect_equal(testFun1, expFun1)
   
   ## test custom environment
-  en <- new_environment(data=list(z=15))
+  en <- rlang::new_environment(data=list(z=15))
   testFun2 <- deparse1(.modifyEnrichFun(simpleFun, eframe=en))
   expFun2 <- deparse1(function(x1, x, y, z) {x1[x] + x1[y] + 15})
   expect_equal(testFun2, expFun2)
   
   ## test current environment
   z <- 10
-  testFun3 <- deparse1(.modifyEnrichFun(simpleFun, eframe=parent.frame()))
+  testFun3 <- deparse1(.modifyEnrichFun(simpleFun, eframe=environment()))
   expFun3 <- deparse1(function(x1, x, y, z) {x1[x] + x1[y] + 10})
   expect_equal(testFun3, expFun3)
   
