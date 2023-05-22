@@ -22,7 +22,7 @@ jobs:
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     - name: Build the Docker image
       run: |
-        docker build . --file Dockerfile --tag ericsdavis/r-mariner:$(date +%s)
+        docker build . --file Dockerfile --tag ${{secrets.DOCKER_USER}}/r-mariner:$(date +%s)
     - name: Docker Push
       run: |
-        docker push ericsdavis/r-mariner
+        docker push ${{secrets.DOCKER_USER}}/r-mariner:$(date +%s)
