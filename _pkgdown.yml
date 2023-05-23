@@ -21,6 +21,7 @@ reference:
       - binPairs
       - snapToBins
       - seqnames1
+      - makeRandomGRanges
   - title: "Clustering & Merging Interactions"
     desc: >
       Group nearby interactions and select one as
@@ -45,6 +46,8 @@ reference:
       - InteractionArray
       - counts,InteractionArray-method
       - path,InteractionMatrix-method
+      - InteractionJaggedArray-class
+      - JaggedArray-class
       - aggHicMatrices
       - hdf5BlockApply
       - plotMatrix

@@ -78,8 +78,8 @@
 #'
 #' ## Create example GRanges
 #' gr1 <- GRanges(seqnames = "chr1",
-#'                ranges = IRanges(start = rep(5000,3),
-#'                                 end = rep(6000,3)),
+#'                ranges = IRanges::IRanges(start = rep(5000,3),
+#'                                          end = rep(6000,3)),
 #'                strand = c('+', '-', '*'))
 #'
 #' gr2 <- gr1 |> promoters(upstream = 2000, downstream = 200)

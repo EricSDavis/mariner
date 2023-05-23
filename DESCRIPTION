@@ -22,7 +22,9 @@ Suggests:
     dplyr,
     rmarkdown,
     ExperimentHub,
-    marinerData
+    marinerData,
+    TxDb.Hsapiens.UCSC.hg38.knownGene,
+    fields
 Imports:
     methods,
     S4Vectors,
@@ -72,7 +74,9 @@ Collate:
     'methods-GInteractions.R'
     'utils.R'
     'methods-InteractionArray.R'
+    'methods-InteractionJaggedArray.R'
     'methods-InteractionMatrix.R'
+    'methods-JaggedArray.R'
     'methods-MatrixSelection.R'
     'methods-MergedGInteractions.R'
     'methods-adjustEnrichment.R'
@@ -83,13 +87,17 @@ Collate:
     'methods-calcLoopEnrichment.R'
     'methods-changePixelRes.R'
     'methods-hdf5BlockApply.R'
+    'methods-makeRandomGInteractions.R'
     'methods-mergePairs.R'
     'methods-pixelsToMatrices.R'
     'methods-plotBullseye.R'
     'methods-plotMatrix.R'
     'methods-pullHic.R'
+    'methods-regularize.R'
     'methods-removeShortPairs.R'
     'methods-shiftRanges.R'
     'methods-snapToBins.R'
     'zzz.R'
-URL: http://ericscottdavis.com/mariner/
+URL: 
+    https://ericscottdavis.com/mariner/,
+    https://github.com/EricSDavis/mariner

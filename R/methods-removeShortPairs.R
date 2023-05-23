@@ -21,12 +21,14 @@
             ## Check upper triangular (lower left corner)
             (seqnames1 == seqnames2 &
                  start1 < start2 &
-                 start2 - end1 + padding >= 0) |
+                 start2 > end1 & # ensure not overlapping
+                 start2 - (end1 + padding) >= 0) |
 
             ## Check lower triangular (upper right corner)
             (seqnames1 == seqnames2 &
                  start1 > start2 &
-                 start1 - end2 + padding >= 0),
+                 start1 > end2 & # ensure not overlapping
+                 start1 - (end2 + padding) >= 0),
         which=TRUE
     ]
 

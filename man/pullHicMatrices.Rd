@@ -104,7 +104,13 @@ InteractionSet object with a 4-dimensional array
  of `x` and columns correspond to anchor2 of `x`.
 }
 \description{
-Pull submatrices from `.hic` files
+The dimensions of the pulled submatrix is
+defined by dividing the widths of anchors in
+`x` by the `binSize`. When the anchor widths
+are the same for each interaction, an
+InteractionArray is returned. However, if the
+anchor widths differ in `x`, an
+InteractionJaggedArray is returned instead.
 }
 \examples{
 ## Load marinerData
@@ -148,5 +154,18 @@ counts(iarr)
 ## interaction in the count
 ## matrices
 counts(iarr, showDimnames=TRUE)
+
+## InteractionJaggedArray example
+gi <- read.table(text="
+            1 51000000 51300000 1 51000000 51500000
+            2 52000000 52300000 3 52000000 52500000
+            1 150000000 150500000 1 150000000 150300000
+            2 52000000 52300000 2 52000000 52800000") |>
+    as_ginteractions()
+
+iarr <- pullHicMatrices(gi, hicFiles, 100e03, half="both")
+iarr
+
+counts(iarr)
 
 }
