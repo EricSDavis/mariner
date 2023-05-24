@@ -225,22 +225,22 @@ test_that("defaultBuffer returns correct result", {
 
 })
 
-## Test reconcileArgs ----------------------------------------------------------
+## Test .reconcileArgs ----------------------------------------------------------
 
-test_that("reconcileArgs returns the correct result",{
-  reconcileArgs("x", c("a","b","c")) |> ## no x
+test_that(".reconcileArgs returns the correct result",{
+  .reconcileArgs("x", c("a","b","c")) |> ## no x
     expect_identical("x")
   
-  reconcileArgs("x", c("x")) |> ## only x
+  .reconcileArgs("x", c("x")) |> ## only x
     expect_identical("x1")
   
-  reconcileArgs("x", c("x","x1","x2")) |> ## multi x
+  .reconcileArgs("x", c("x","x1","x2")) |> ## multi x
     expect_identical("x3")
   
-  reconcileArgs("x", c("x", "x1", "x5", "x6a", "xray", "a", "b")) |> ## mixed x
+  .reconcileArgs("x", c("x", "x1", "x5", "x6a", "xray", "a", "b")) |> ## mixed x
     expect_identical("x6")
   
-  reconcileArgs("a", c("a","b","c","x")) |> ## a instead of x
+  .reconcileArgs("a", c("a","b","c","x")) |> ## a instead of x
     expect_identical("a1")
 })
 

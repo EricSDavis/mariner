@@ -1,3 +1,31 @@
+# mariner 1.1.0
+
+New features:
+
+* `JaggedArray` and `InteractionJaggedArray` classes
+for irregular matrices.
+
+* Functions for generating random `GRanges` and
+`GInteractions` objects.
+
+* `regularize` method for converting irregular (i.e. jagged)
+to regular arrays.
+
+* New `calcLoopEnrichment` method  for `InteractionArray`
+objects.
+
+* `defaultBuffer()` function for setting the buffer argument
+from an `InteractionArray`.
+
+Bug Fixes:
+
+* Fix bug in `removeShortPairs` where padding wasn't
+working as intended.
+
+* `FUN` argument of `calcLoopEnrichment` now accepts
+environmental variables and uses flexible argument names
+for `fg` and `bg`.
+
 # mariner 0.99.0
 
 Bug fixes and improvements:

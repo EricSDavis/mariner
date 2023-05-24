@@ -48,6 +48,8 @@ reference:
       - path,InteractionMatrix-method
       - InteractionJaggedArray-class
       - JaggedArray-class
+      - findOverlaps
+      - regularize
       - aggHicMatrices
       - hdf5BlockApply
       - plotMatrix
@@ -64,6 +66,7 @@ reference:
       - MatrixSelection
       - selectRadius
       - selectionMethod
+      - defaultBuffer
   - title: "Miscellaneous"
     contents:
       - changePixelRes

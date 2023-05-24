@@ -28,7 +28,7 @@
   }
   
   ## rename arguments to avoid conflict
-  x <- reconcileArgs("x", argNames)
+  x <- .reconcileArgs("x", argNames)
   
   ## extract arguments and argument names from given function
   args <- formals(FUN)
