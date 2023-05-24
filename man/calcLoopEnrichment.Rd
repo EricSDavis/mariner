@@ -3,13 +3,15 @@
 \name{calcLoopEnrichment}
 \alias{calcLoopEnrichment}
 \alias{calcLoopEnrichment,GInteractions,character-method}
+\alias{calcLoopEnrichment,InteractionArray,missing-method}
 \title{Calculate loop enrichment over background.}
 \usage{
 calcLoopEnrichment(
   x,
   files,
-  fg = selectCenterPixel(mhDist = 1, buffer = 5),
-  bg = selectTopLeft(n = 4, buffer = 5) + selectBottomRight(n = 4, buffer = 5),
+  fg = selectCenterPixel(mhDist = 1, buffer = defaultBuffer()),
+  bg = selectTopLeft(n = 4, buffer = defaultBuffer()) + selectBottomRight(n = 4, buffer =
+    defaultBuffer()),
   FUN = function(fg, bg) median(fg + 1)/median(bg + 1),
   nBlocks = 5,
   verbose = TRUE,
@@ -20,8 +22,22 @@ calcLoopEnrichment(
 \S4method{calcLoopEnrichment}{GInteractions,character}(
   x,
   files,
-  fg = selectCenterPixel(mhDist = 1, buffer = 5),
-  bg = selectTopLeft(n = 4, buffer = 5) + selectBottomRight(n = 4, buffer = 5),
+  fg = selectCenterPixel(mhDist = 1, buffer = defaultBuffer()),
+  bg = selectTopLeft(n = 4, buffer = defaultBuffer()) + selectBottomRight(n = 4, buffer =
+    defaultBuffer()),
+  FUN = function(fg, bg) median(fg + 1)/median(bg + 1),
+  nBlocks = 5,
+  verbose = TRUE,
+  BPPARAM = bpparam(),
+  ...
+)
+
+\S4method{calcLoopEnrichment}{InteractionArray,missing}(
+  x,
+  files,
+  fg = selectCenterPixel(mhDist = 1, buffer = defaultBuffer()),
+  bg = selectTopLeft(n = 4, buffer = defaultBuffer()) + selectBottomRight(n = 4, buffer =
+    defaultBuffer()),
   FUN = function(fg, bg) median(fg + 1)/median(bg + 1),
   nBlocks = 5,
   verbose = TRUE,
@@ -30,17 +46,20 @@ calcLoopEnrichment(
 )
 }
 \arguments{
-\item{x}{GInteractions object.}
+\item{x}{GInteractions object or an InteractionArray object.}
 
-\item{files}{Character file paths to `.hic` files.}
+\item{files}{Character file paths to `.hic` files. Required only if
+GInteractions object is supplied for x.}
 
-\item{fg}{Integer vector of matrix indices for the foreground.}
+\item{fg}{MatrixSelection object of matrix indices for the foreground.}
 
-\item{bg}{Integer vector of matrix indices for the background.}
+\item{bg}{MatrixSelection object of matrix indices for the background.}
 
-\item{FUN}{Function taking two parameters (i.e., `fg`, `bg`)
-defining how enrichment should be calculated. Must produce
-a single value (numeric of length one).}
+\item{FUN}{Function with at least two parameters (i.e., `fg`, `bg`)
+defining how enrichment should be calculated. 
+Must produce a single value (numeric of length one).
+The first and second parameters must represent 
+fg and bg, respectively.}
 
 \item{nBlocks}{Number of blocks for block-processing
 arrays. Default is 5. Increase this for large
@@ -104,9 +123,21 @@ buffer <- 10 # choose pixel radius around center
 fg <- selectCenterPixel(mhDist=seq(0,4), buffer=buffer)
 bg <- selectCorners(n=6, buffer=buffer) +
     selectOuter(n=2, buffer=buffer)
+
+## Calculate loop enrichment
 calcLoopEnrichment(x=loops[1:10],
                    files=hicFiles,
                    fg=fg,
                    bg=bg)
+
+## Extract count matrices first
+mats <- binPairs(loops[1:10],100e3) |>
+  pixelsToMatrices(buffer=10) |>
+    pullHicMatrices(
+    files=hicFiles,
+    binSize=100e3)
+
+## Calculate loop enrichment from count matrices 
+calcLoopEnrichment(x = mats)
 
 }
