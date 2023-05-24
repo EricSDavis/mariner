@@ -613,14 +613,22 @@ test_that("pullHicMatrices for rectangular, regular arrays", {
 })
 
 
-test_that("Error when trying to pull irregular arrays", {
+test_that("Pull irregular arrays", {
 
     gi <- read.table(text="
             1 51000000 51300000 1 51000000 51500000
-            1 150000000 150500000 1 150000000 150300000") |>
+            2 52000000 52300000 3 52000000 52500000
+            1 150000000 150500000 1 150000000 150300000
+            2 52000000 52300000 2 52000000 52800000") |>
         as_ginteractions()
 
-    pullHicMatrices(gi, hicFiles[1], 100e03, half="both") |>
-        expect_error("Variable sized anchors.*")
+    iset <- pullHicMatrices(gi, hicFiles, 100e03, half="both")
+
+    ## Are counts pulled & accessed correctly?
+    iset1 <- pullHicMatrices(gi[1], hicFiles[1], 50e03, half="both")
+    iset2 <- pullHicMatrices(gi, hicFiles[1], 50e03, half="both")
+    exp <- counts(iset1) |> as.matrix()
+    expect_identical(counts(iset2)[,,1,1] |> as.matrix(), exp)
+    expect_identical(as.list(counts(iset2))[[1]][[1]], exp)
 
 })

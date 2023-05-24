@@ -232,6 +232,35 @@
   return(widths)
 }
 
+#' Function to extract Nindex from system call
+#' Modified from S4Arrays/DelayedArray
+#' "extract_Nindex_from_syscall"
+#' @param call sys.call()
+#' @param eframe environment frame (i.e. `parent.frame()`)
+#' @importFrom utils tail
+#' @returns Nindex, a list of user supplied subscripts.
+#'  Missing subscripts are set to `NULL`.
+#' @noRd
+.getNindexFromSyscall <- function(call, eframe) {
+    Nindex <- lapply(seq_len(length(call) - 2L), \(i) {
+        subscript <- call[[2L + i]]
+        if (missing(subscript))
+            return(NULL)
+        subscript <- eval(subscript, envir=eframe, enclos=eframe)
+        if (is.null(subscript))
+            return(integer(0))
+        subscript
+    })
+    argnames <- tail(names(call), n=-2L)
+    if (!is.null(argnames))
+        Nindex <- Nindex[!(argnames %in% c("drop", "exact", "value"))]
+    if (length(Nindex) == 1L && is.null(Nindex[[1L]]))
+        Nindex <- vector("list", 4L)
+    if (length(Nindex) < 4)
+        stop("incorrect number of subscripts", call.=FALSE)
+    Nindex
+}
+
 #' Stop if matrices are not odd and square
 #' @param x InteractionArray
 #' @importFrom rlang abort
@@ -299,5 +328,3 @@ reconcileArgs <- function(x, argNames){
   } 
   return(x)
 }
-
-

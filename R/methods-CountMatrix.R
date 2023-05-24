@@ -64,6 +64,11 @@ setMethod("show", "CountMatrix", function(object) {
     object <- object@object
 
     ## Row/colnames
+    if (!all(c("rownames", "colnames") %in%
+             names(assays(object)))) {
+        abort(c("Dimnames not available for this object.",
+                "*"="Try again with `showDimnames=FALSE`."))
+    }
     rows <- assay(object, 'rownames')
     cols <- assay(object, 'colnames')
 

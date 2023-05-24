@@ -336,3 +336,33 @@ setGeneric("adjustEnrichment",
 setGeneric("removeShortPairs",
            function(x, padding=0)
                standardGeneric("removeShortPairs"))
+
+#' @rdname makeRandomGInteractions
+#' @export
+setGeneric("makeRandomGRanges",
+           function(seqinfo,
+                    n=100,
+                    ...)
+               standardGeneric("makeRandomGRanges"))
+
+#' @rdname makeRandomGInteractions
+#' @export
+setGeneric("makeRandomGInteractions",
+           function(seqinfo,
+                    n=100,
+                    interchromosomal=TRUE,
+                    ...)
+               standardGeneric("makeRandomGInteractions"))
+
+#' @rdname regularize
+#' @export
+setGeneric("regularize",
+           function(x,
+                    ndim=c(10,10),
+                    h5File=tempfile(fileext=".h5"),
+                    scale=TRUE,
+                    nBlocks=5,
+                    chunkSize=1,
+                    compressionLevel=0,
+                    ...)
+               standardGeneric("regularize"))

@@ -34,7 +34,8 @@ the vignette: `browseVignettes(package="mariner")`
 \seealso{
 Useful links:
 \itemize{
-  \item \url{http://ericscottdavis.com/mariner/}
+  \item \url{https://ericscottdavis.com/mariner/}
+  \item \url{https://github.com/EricSDavis/mariner}
 }
 
 }
