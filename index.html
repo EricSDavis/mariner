@@ -38,7 +38,7 @@
     
     <a class="navbar-brand me-2" href="index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +64,14 @@
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
 </form>
 
-      <ul class="navbar-nav"></ul>
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/EricSDavis/mariner/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 
     
@@ -125,11 +132,89 @@
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"EricSDavis/mariner"</span><span class="op">)</span></span></code></pre>
 </div>
+<div class="section level2">
+<h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
+</h2>
+<p>This outlines how to propose a change to <code>mariner</code>. (Template adapted from tidyverse contribution guide).</p>
+<div class="section level3">
+<h3 id="setting-up-the-development-environment">Setting up the development environment<a class="anchor" aria-label="anchor" href="#setting-up-the-development-environment"></a>
+</h3>
+<p>Every push to the <code>dev</code> or <code>main</code> branch of this repository builds and pushes a development container to <a href="https://hub.docker.com/r/ericsdavis/r-mariner" class="external-link">dockerhub</a> with <code>mariner</code> and its dependencies pre-installed. If you don’t have docker, follow the installation instructions at <a href="https://www.docker.com/" class="external-link uri">https://www.docker.com/</a>. Follow the steps below to set up a reproducible development environment:</p>
+<ol style="list-style-type: decimal">
+<li>
+<p>In the terminal, clone this repository:</p>
+<pre class="{bash}"><code>git clone https://github.com/EricSDavis/mariner</code></pre>
+</li>
+<li>
+<p>Pull the latest image development image from dockerhub:</p>
+<pre class="{bash}"><code>docker pull ericsdavis/r-mariner</code></pre>
+</li>
+<li>
+<p>Run the container:</p>
+<pre class="{bash}"><code>docker run \
+    --name mariner \
+    -e PASSWORD=bioc \
+    -p 8787:8787 \
+    -v "$(pwd)/mariner:/home/rstudio/mariner" \
+    ericsdavis/r-mariner:latest</code></pre>
+<p>Then navigate to <a href="localhost:8787">localhost:8787</a> and sign into RStudio with username=rstudio and password=bioc.</p>
+<p>Alternatively, this <code>docker-compose up</code> can be run with this <code>yaml</code> file:</p>
+<pre class="{yaml}"><code>services:
+  mariner-devel:
+    container_name: mariner-devel
+    image: "ericsdavis/r-mariner"
+    ports:
+      - "8787:8787"
+    environment:
+      - PASSWORD=bioc
+    volumes:
+      - type: bind
+        source: ./mariner
+        target: /home/rstudio/mariner</code></pre>
+</li>
+</ol>
+</div>
+<div class="section level3">
+<h3 id="fixing-typos">Fixing typos<a class="anchor" aria-label="anchor" href="#fixing-typos"></a>
+</h3>
+<p>You can fix typos, spelling mistakes, or grammatical errors in the documentation directly using the GitHub web interface, as long as the changes are made in the <em>source</em> file. This generally means you’ll need to edit <a href="https://roxygen2.r-lib.org/articles/roxygen2.html" class="external-link">roxygen2 comments</a> in an <code>.R</code>, not a <code>.Rd</code> file. You can find the <code>.R</code> file that generates the <code>.Rd</code> by reading the comment in the first line.</p>
+</div>
+<div class="section level3">
+<h3 id="bigger-changes">Bigger changes<a class="anchor" aria-label="anchor" href="#bigger-changes"></a>
+</h3>
+<p>If you want to make a bigger change, it’s a good idea to first file an issue and make sure someone from the team agrees that it’s needed. If you’ve found a bug, please file an issue that illustrates the bug with a minimal <a href="https://www.tidyverse.org/help/#reprex" class="external-link">reprex</a> (this will also help you write a unit test, if needed).</p>
+</div>
+<div class="section level3">
+<h3 id="pull-request-process">Pull request process<a class="anchor" aria-label="anchor" href="#pull-request-process"></a>
+</h3>
+<ul>
+<li><p>Fork the package and clone onto your computer. If you haven’t done this before, we recommend using <code>usethis::create_from_github("EricSDavis/mariner", fork = TRUE)</code>.</p></li>
+<li><p>Install all development dependences with <code>devtools::install_dev_deps()</code>, and then make sure the package passes R CMD check by running <code>devtools::check()</code>. If R CMD check doesn’t pass cleanly, it’s a good idea to ask for help before continuing.</p></li>
+<li><p>Create a Git branch for your pull request (PR). We recommend using <code>usethis::pr_init("brief-description-of-change")</code>.</p></li>
+<li><p>Make your changes, commit to git, and then create a PR by running <code>usethis::pr_push()</code>, and following the prompts in your browser. The title of your PR should briefly describe the change. The body of your PR should contain <code>Fixes #issue-number</code>.</p></li>
+<li><p>For user-facing changes, add a bullet to the top of <code>NEWS.md</code> (i.e. just below the first header). Follow the style described in <a href="https://style.tidyverse.org/news.html" class="external-link uri">https://style.tidyverse.org/news.html</a>.</p></li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="code-style">Code style<a class="anchor" aria-label="anchor" href="#code-style"></a>
+</h3>
+<ul>
+<li><p>We use <a href="https://cran.r-project.org/package=roxygen2" class="external-link">roxygen2</a> for documentation.</p></li>
+<li><p>We use <a href="https://cran.r-project.org/package=testthat" class="external-link">testthat</a> for unit tests. Contributions with test cases included are easier to accept.</p></li>
+</ul>
+</div>
+</div>
+<div class="section level2">
+<h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>
+</h2>
+<p>Please note that the mariner project is released with a <a href="CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By contributing to this project you agree to abide by its terms.</p>
+</div>
 </div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li><a href="https://www.bioconductor.org/packages/mariner" class="external-link">View on Bioconductor</a></li>
+<li><a href="https://github.com/EricSDavis/mariner/" class="external-link">Browse source code</a></li>
 </ul>
 </div>
 
@@ -140,6 +225,12 @@
 </ul>
 </div>
 
+<div class="community">
+<h2 data-toc-skip>Community</h2>
+<ul class="list-unstyled">
+<li><a href="CODE_OF_CONDUCT.html">Code of conduct</a></li>
+</ul>
+</div>
 
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>
@@ -152,6 +243,7 @@
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Eric Davis <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-4051-3217" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Sarah Parker <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-2700-3979" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 </ul>
 </div>
 
@@ -169,7 +261,7 @@
 
     <footer><div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by Eric Davis.</p>
+<p>Developed by Eric Davis, Sarah Parker.</p>
 </div>
 
 <div class="pkgdown-footer-right">

@@ -4,6 +4,9 @@
     <loc>http://ericscottdavis.com/mariner/404.html</loc>
   </url>
   <url>
+    <loc>http://ericscottdavis.com/mariner/CODE_OF_CONDUCT.html</loc>
+  </url>
+  <url>
     <loc>http://ericscottdavis.com/mariner/articles/index.html</loc>
   </url>
   <url>
@@ -31,7 +34,16 @@
     <loc>http://ericscottdavis.com/mariner/reference/InteractionArray-class.html</loc>
   </url>
   <url>
+    <loc>http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-class.html</loc>
+  </url>
+  <url>
+    <loc>http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-overlaps.html</loc>
+  </url>
+  <url>
     <loc>http://ericscottdavis.com/mariner/reference/InteractionMatrix-class.html</loc>
+  </url>
+  <url>
+    <loc>http://ericscottdavis.com/mariner/reference/JaggedArray-class.html</loc>
   </url>
   <url>
     <loc>http://ericscottdavis.com/mariner/reference/MatrixSelection-class.html</loc>
@@ -70,6 +82,9 @@
     <loc>http://ericscottdavis.com/mariner/reference/counts.html</loc>
   </url>
   <url>
+    <loc>http://ericscottdavis.com/mariner/reference/defaultBuffer.html</loc>
+  </url>
+  <url>
     <loc>http://ericscottdavis.com/mariner/reference/getPairClusters.html</loc>
   </url>
   <url>
@@ -83,6 +98,9 @@
   </url>
   <url>
     <loc>http://ericscottdavis.com/mariner/reference/initialize-MergedGInteractions-method.html</loc>
+  </url>
+  <url>
+    <loc>http://ericscottdavis.com/mariner/reference/makeRandomGInteractions.html</loc>
   </url>
   <url>
     <loc>http://ericscottdavis.com/mariner/reference/mariner-package.html</loc>
@@ -107,6 +125,9 @@
   </url>
   <url>
     <loc>http://ericscottdavis.com/mariner/reference/pullHicPixels.html</loc>
+  </url>
+  <url>
+    <loc>http://ericscottdavis.com/mariner/reference/regularize.html</loc>
   </url>
   <url>
     <loc>http://ericscottdavis.com/mariner/reference/removeShortPairs.html</loc>

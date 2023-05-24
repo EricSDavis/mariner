@@ -20,7 +20,7 @@ Replace method for counts"><!-- mathjax --><script src="https://cdnjs.cloudflare
     
     <a class="navbar-brand me-2" href="../index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,7 +43,13 @@ Replace method for counts"><!-- mathjax --><script src="https://cdnjs.cloudflare
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"></ul></div>
+      <ul class="navbar-nav"><li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/EricSDavis/mariner/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div>
 
     
   </div>
@@ -52,7 +58,7 @@ Replace method for counts"><!-- mathjax --><script src="https://cdnjs.cloudflare
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Access count matrices from
 InteractionArray or InteractionMatrix</h1>
-      
+      <small class="dont-index">Source: <a href="https://github.com/EricSDavis/mariner/blob/HEAD/R/methods-InteractionArray.R" class="external-link"><code>R/methods-InteractionArray.R</code></a>, <a href="https://github.com/EricSDavis/mariner/blob/HEAD/R/methods-InteractionMatrix.R" class="external-link"><code>R/methods-InteractionMatrix.R</code></a></small>
       <div class="d-none name"><code>counts.Rd</code></div>
     </div>
 
@@ -148,7 +154,7 @@ InteractionArray objects.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Access count matrices</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">counts</a></span><span class="op">(</span><span class="va">iarr</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;11 x 11 x 3 x 2&gt; array of class DelayedArray and type "double":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;11 x 11 x 3 x 2&gt; DelayedArray object of type "double":</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ,,1,FS</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]  [,2]  [,3] ... [,10] [,11]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]     0     0     0   .     0     0</span>
@@ -168,7 +174,7 @@ InteractionArray objects.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [11,]     0     0     0   .     0     0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">counts</a></span><span class="op">(</span><span class="va">iarr</span>, <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;11 x 11 x 3 x 2&gt; array of class DelayedArray and type "double":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;11 x 11 x 3 x 2&gt; DelayedArray object of type "double":</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ,,1,FS</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]  [,2]  [,3] ... [,10] [,11]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]     0     0     0   .     0     0</span>
@@ -204,7 +210,7 @@ InteractionArray objects.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Access count matrix</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">counts</a></span><span class="op">(</span><span class="va">imat</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;3 x 2&gt; matrix of class DelayedMatrix and type "double":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;3 x 2&gt; DelayedMatrix object of type "double":</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       FS  WT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  49  38</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 314 300</span>
@@ -240,7 +246,7 @@ InteractionArray objects.</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Eric Davis.</p>
+  <p></p><p>Developed by Eric Davis, Sarah Parker.</p>
 </div>
 
 <div class="pkgdown-footer-right">

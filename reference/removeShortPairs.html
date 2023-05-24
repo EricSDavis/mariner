@@ -22,7 +22,7 @@ pairs are kept."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
     
     <a class="navbar-brand me-2" href="../index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +45,13 @@ pairs are kept."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"></ul></div>
+      <ul class="navbar-nav"><li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/EricSDavis/mariner/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div>
 
     
   </div>
@@ -55,7 +61,7 @@ pairs are kept."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
       <img src="" class="logo" alt=""><h1>Remove interactions that would cross
 the Hi-C diagonal or a specified
 distance from the diagonal.</h1>
-      
+      <small class="dont-index">Source: <a href="https://github.com/EricSDavis/mariner/blob/HEAD/R/AllGenerics.R" class="external-link"><code>R/AllGenerics.R</code></a>, <a href="https://github.com/EricSDavis/mariner/blob/HEAD/R/methods-removeShortPairs.R" class="external-link"><code>R/methods-removeShortPairs.R</code></a></small>
       <div class="d-none name"><code>removeShortPairs.Rd</code></div>
     </div>
 
@@ -124,14 +130,12 @@ from the diagonal.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Add 50bp of padding</span></span></span>
 <span class="r-in"><span><span class="fu">removeShortPairs</span><span class="op">(</span><span class="va">gi</span>, padding<span class="op">=</span><span class="fl">50</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GInteractions object with 5 interactions and 1 metadata column:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       seqnames1   ranges1     seqnames2   ranges2 |                 keep</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           &lt;Rle&gt; &lt;IRanges&gt;         &lt;Rle&gt; &lt;IRanges&gt; |          &lt;character&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1]      chr1   100-200 ---      chr1   300-400 |                  yes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [2]      chr1   300-400 ---      chr1   100-200 |                  yes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3]      chr1   300-400 ---      chr2   300-400 |                  yes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [4]      chr1   250-350 ---      chr1   300-400 | only_with_padding_50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [5]      chr1   300-400 ---      chr1   250-350 | only_with_padding_50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GInteractions object with 3 interactions and 1 metadata column:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       seqnames1   ranges1     seqnames2   ranges2 |        keep</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           &lt;Rle&gt; &lt;IRanges&gt;         &lt;Rle&gt; &lt;IRanges&gt; | &lt;character&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1]      chr1   100-200 ---      chr1   300-400 |         yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [2]      chr1   300-400 ---      chr1   100-200 |         yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [3]      chr1   300-400 ---      chr2   300-400 |         yes</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   -------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   regions: 4 ranges and 0 metadata columns</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   seqinfo: 2 sequences from an unspecified genome; no seqlengths</span>
@@ -143,7 +147,7 @@ from the diagonal.</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Eric Davis.</p>
+  <p></p><p>Developed by Eric Davis, Sarah Parker.</p>
 </div>
 
 <div class="pkgdown-footer-right">

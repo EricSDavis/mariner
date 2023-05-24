@@ -14,7 +14,7 @@ background (`bg`)."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aj
     
     <a class="navbar-brand me-2" href="../index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,7 +37,13 @@ background (`bg`)."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aj
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"></ul></div>
+      <ul class="navbar-nav"><li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/EricSDavis/mariner/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div>
 
     
   </div>
@@ -45,7 +51,7 @@ background (`bg`)."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aj
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Calculate loop enrichment over background.</h1>
-      
+      <small class="dont-index">Source: <a href="https://github.com/EricSDavis/mariner/blob/HEAD/R/AllGenerics.R" class="external-link"><code>R/AllGenerics.R</code></a>, <a href="https://github.com/EricSDavis/mariner/blob/HEAD/R/methods-calcLoopEnrichment.R" class="external-link"><code>R/methods-calcLoopEnrichment.R</code></a></small>
       <div class="d-none name"><code>calcLoopEnrichment.Rd</code></div>
     </div>
 
@@ -60,8 +66,9 @@ background (`bg`).</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">calcLoopEnrichment</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">files</span>,</span>
-<span>  fg <span class="op">=</span> <span class="fu"><a href="selection-functions.html">selectCenterPixel</a></span><span class="op">(</span>mhDist <span class="op">=</span> <span class="fl">1</span>, buffer <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,</span>
-<span>  bg <span class="op">=</span> <span class="fu"><a href="selection-functions.html">selectTopLeft</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, buffer <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="selection-functions.html">selectBottomRight</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, buffer <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,</span>
+<span>  fg <span class="op">=</span> <span class="fu"><a href="selection-functions.html">selectCenterPixel</a></span><span class="op">(</span>mhDist <span class="op">=</span> <span class="fl">1</span>, buffer <span class="op">=</span> <span class="fu"><a href="defaultBuffer.html">defaultBuffer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  bg <span class="op">=</span> <span class="fu"><a href="selection-functions.html">selectTopLeft</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, buffer <span class="op">=</span> <span class="fu"><a href="defaultBuffer.html">defaultBuffer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="selection-functions.html">selectBottomRight</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, buffer <span class="op">=</span></span>
+<span>    <span class="fu"><a href="defaultBuffer.html">defaultBuffer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  FUN <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">fg</span>, <span class="va">bg</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">fg</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">bg</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  nBlocks <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -73,8 +80,23 @@ background (`bg`).</p>
 <span><span class="fu">calcLoopEnrichment</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">files</span>,</span>
-<span>  fg <span class="op">=</span> <span class="fu"><a href="selection-functions.html">selectCenterPixel</a></span><span class="op">(</span>mhDist <span class="op">=</span> <span class="fl">1</span>, buffer <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,</span>
-<span>  bg <span class="op">=</span> <span class="fu"><a href="selection-functions.html">selectTopLeft</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, buffer <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="selection-functions.html">selectBottomRight</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, buffer <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,</span>
+<span>  fg <span class="op">=</span> <span class="fu"><a href="selection-functions.html">selectCenterPixel</a></span><span class="op">(</span>mhDist <span class="op">=</span> <span class="fl">1</span>, buffer <span class="op">=</span> <span class="fu"><a href="defaultBuffer.html">defaultBuffer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  bg <span class="op">=</span> <span class="fu"><a href="selection-functions.html">selectTopLeft</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, buffer <span class="op">=</span> <span class="fu"><a href="defaultBuffer.html">defaultBuffer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="selection-functions.html">selectBottomRight</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, buffer <span class="op">=</span></span>
+<span>    <span class="fu"><a href="defaultBuffer.html">defaultBuffer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  FUN <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">fg</span>, <span class="va">bg</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">fg</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">bg</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  nBlocks <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  BPPARAM <span class="op">=</span> <span class="fu">bpparam</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for InteractionArray,missing</span></span>
+<span><span class="fu">calcLoopEnrichment</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">files</span>,</span>
+<span>  fg <span class="op">=</span> <span class="fu"><a href="selection-functions.html">selectCenterPixel</a></span><span class="op">(</span>mhDist <span class="op">=</span> <span class="fl">1</span>, buffer <span class="op">=</span> <span class="fu"><a href="defaultBuffer.html">defaultBuffer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  bg <span class="op">=</span> <span class="fu"><a href="selection-functions.html">selectTopLeft</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, buffer <span class="op">=</span> <span class="fu"><a href="defaultBuffer.html">defaultBuffer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="selection-functions.html">selectBottomRight</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, buffer <span class="op">=</span></span>
+<span>    <span class="fu"><a href="defaultBuffer.html">defaultBuffer</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  FUN <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">fg</span>, <span class="va">bg</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">fg</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">bg</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  nBlocks <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -86,25 +108,28 @@ background (`bg`).</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
-<dd><p>GInteractions object.</p></dd>
+<dd><p>GInteractions object or an InteractionArray object.</p></dd>
 
 
 <dt>files</dt>
-<dd><p>Character file paths to `.hic` files.</p></dd>
+<dd><p>Character file paths to `.hic` files. Required only if
+GInteractions object is supplied for x.</p></dd>
 
 
 <dt>fg</dt>
-<dd><p>Integer vector of matrix indices for the foreground.</p></dd>
+<dd><p>MatrixSelection object of matrix indices for the foreground.</p></dd>
 
 
 <dt>bg</dt>
-<dd><p>Integer vector of matrix indices for the background.</p></dd>
+<dd><p>MatrixSelection object of matrix indices for the background.</p></dd>
 
 
 <dt>FUN</dt>
-<dd><p>Function taking two parameters (i.e., `fg`, `bg`)
-defining how enrichment should be calculated. Must produce
-a single value (numeric of length one).</p></dd>
+<dd><p>Function with at least two parameters (i.e., `fg`, `bg`)
+defining how enrichment should be calculated. 
+Must produce a single value (numeric of length one).
+The first and second parameters must represent 
+fg and bg, respectively.</p></dd>
 
 
 <dt>nBlocks</dt>
@@ -212,7 +237,7 @@ is not available when `by=interactions`.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> \ Processing it ... </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;10 x 2&gt; matrix of class DelayedMatrix and type "double":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;10 x 2&gt; DelayedMatrix object of type "double":</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              FS        WT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] 1.0000000 1.6666667</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] 1.0000000 1.4000000</span>
@@ -231,6 +256,8 @@ is not available when `by=interactions`.</p></dd>
 <span class="r-in"><span><span class="va">fg</span> <span class="op">&lt;-</span> <span class="fu"><a href="selection-functions.html">selectCenterPixel</a></span><span class="op">(</span>mhDist<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">4</span><span class="op">)</span>, buffer<span class="op">=</span><span class="va">buffer</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">bg</span> <span class="op">&lt;-</span> <span class="fu"><a href="selection-functions.html">selectCorners</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">6</span>, buffer<span class="op">=</span><span class="va">buffer</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="selection-functions.html">selectOuter</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">2</span>, buffer<span class="op">=</span><span class="va">buffer</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Calculate loop enrichment</span></span></span>
 <span class="r-in"><span><span class="fu">calcLoopEnrichment</span><span class="op">(</span>x<span class="op">=</span><span class="va">loops</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>                   files<span class="op">=</span><span class="va">hicFiles</span>,</span></span>
 <span class="r-in"><span>                   fg<span class="op">=</span><span class="va">fg</span>,</span></span>
@@ -281,7 +308,7 @@ is not available when `by=interactions`.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> \ Processing it ... </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;10 x 2&gt; matrix of class DelayedMatrix and type "double":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;10 x 2&gt; DelayedMatrix object of type "double":</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             FS       WT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] 2.500000 2.000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] 2.666667 3.500000</span>
@@ -294,6 +321,74 @@ is not available when `by=interactions`.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] 2.333333 1.250000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [10,] 1.000000 1.000000</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Extract count matrices first</span></span></span>
+<span class="r-in"><span><span class="va">mats</span> <span class="op">&lt;-</span> <span class="fu"><a href="binPairs.html">binPairs</a></span><span class="op">(</span><span class="va">loops</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span>,<span class="fl">100e3</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="pixelsToMatrices.html">pixelsToMatrices</a></span><span class="op">(</span>buffer<span class="op">=</span><span class="fl">10</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="pullHicMatrices.html">pullHicMatrices</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    files<span class="op">=</span><span class="va">hicFiles</span>,</span></span>
+<span class="r-in"><span>    binSize<span class="op">=</span><span class="fl">100e3</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Calculate loop enrichment from count matrices </span></span></span>
+<span class="r-in"><span><span class="fu">calcLoopEnrichment</span><span class="op">(</span>x <span class="op">=</span> <span class="va">mats</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> '0' = foreground;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 'X' = background;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> '*' = both;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> '-' = unselected</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>                                                                </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  X  X  X  X  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  X  X  X  X  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  X  X  X  X  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  X  X  X  X  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  -  -  -  -  -  -  -  -  -  -  0  -  -  -  -  -  -  -  -  -  - </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  -  -  -  -  -  -  -  -  -  0  0  0  -  -  -  -  -  -  -  -  - </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  -  -  -  -  -  -  -  -  -  -  0  -  -  -  -  -  -  -  -  -  - </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  X  X  X  X </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  X  X  X  X </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  X  X  X  X </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  X  X  X  X </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> / Reading and realizing block 1/5 ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> \ Processing it ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> / Reading and realizing block 2/5 ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> \ Processing it ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> / Reading and realizing block 3/5 ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> \ Processing it ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> / Reading and realizing block 4/5 ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> \ Processing it ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> / Reading and realizing block 5/5 ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> \ Processing it ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;10 x 2&gt; DelayedMatrix object of type "double":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              FS        WT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] 0.8333333 1.1111111</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] 0.7142857 1.1666667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] 1.7647059 2.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] 1.0000000 0.7500000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] 0.7000000 0.7000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] 1.5000000 1.3333333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] 1.0000000 1.2000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] 2.0689655 2.2105263</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] 0.6206897 0.7142857</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] 0.5000000 1.0000000</span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -301,7 +396,7 @@ is not available when `by=interactions`.</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Eric Davis.</p>
+  <p></p><p>Developed by Eric Davis, Sarah Parker.</p>
 </div>
 
 <div class="pkgdown-footer-right">

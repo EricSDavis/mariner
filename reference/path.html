@@ -22,7 +22,7 @@ the file path is broken."><!-- mathjax --><script src="https://cdnjs.cloudflare.
     
     <a class="navbar-brand me-2" href="../index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +45,13 @@ the file path is broken."><!-- mathjax --><script src="https://cdnjs.cloudflare.
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"></ul></div>
+      <ul class="navbar-nav"><li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/EricSDavis/mariner/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div>
 
     
   </div>
@@ -53,7 +59,7 @@ the file path is broken."><!-- mathjax --><script src="https://cdnjs.cloudflare.
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Accessor for h5File path from an InteractionMatrix</h1>
-      
+      <small class="dont-index">Source: <a href="https://github.com/EricSDavis/mariner/blob/HEAD/R/methods-InteractionMatrix.R" class="external-link"><code>R/methods-InteractionMatrix.R</code></a></small>
       <div class="d-none name"><code>path.Rd</code></div>
     </div>
 
@@ -139,7 +145,7 @@ if the original linked data no longer exists.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Access path</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/path.html" class="external-link">path</a></span><span class="op">(</span><span class="va">imat</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/Rtmpwip6CF/file150514d8268c.h5"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpU1d0Oi/file7ae46a91a435.h5"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#################################</span></span></span>
 <span class="r-in"><span><span class="co">## Updating path to HDF5 data ##</span></span></span>
@@ -164,7 +170,7 @@ if the original linked data no longer exists.</p>
 <span class="r-in"><span><span class="co">## Update path</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/path.html" class="external-link">path</a></span><span class="op">(</span><span class="va">imat</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">newFile</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/path.html" class="external-link">path</a></span><span class="op">(</span><span class="va">imat</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/Rtmpwip6CF/file150519ecccdf_new.h5"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpU1d0Oi/file7ae43d85e5b4_new.h5"</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -173,7 +179,7 @@ if the original linked data no longer exists.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Eric Davis.</p>
+  <p></p><p>Developed by Eric Davis, Sarah Parker.</p>
 </div>
 
 <div class="pkgdown-footer-right">

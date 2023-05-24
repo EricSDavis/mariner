@@ -18,7 +18,7 @@ and after distance adjustment."><!-- mathjax --><script src="https://cdnjs.cloud
     
     <a class="navbar-brand me-2" href="../index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,7 +41,13 @@ and after distance adjustment."><!-- mathjax --><script src="https://cdnjs.cloud
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"></ul></div>
+      <ul class="navbar-nav"><li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/EricSDavis/mariner/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div>
 
     
   </div>
@@ -50,7 +56,7 @@ and after distance adjustment."><!-- mathjax --><script src="https://cdnjs.cloud
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Adjust loop enrichment to remove distance-
 dependent effect.</h1>
-      
+      <small class="dont-index">Source: <a href="https://github.com/EricSDavis/mariner/blob/HEAD/R/AllGenerics.R" class="external-link"><code>R/AllGenerics.R</code></a>, <a href="https://github.com/EricSDavis/mariner/blob/HEAD/R/methods-adjustEnrichment.R" class="external-link"><code>R/methods-adjustEnrichment.R</code></a></small>
       <div class="d-none name"><code>adjustEnrichment.Rd</code></div>
     </div>
 
@@ -189,7 +195,7 @@ scores.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">adjustEnrichment</span><span class="op">(</span><span class="va">enrich</span>, <span class="va">loops</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;1000 x 2&gt; matrix of class DelayedMatrix and type "double":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;1000 x 2&gt; DelayedMatrix object of type "double":</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                FS        WT</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    [1,] 1.0374631 1.6937594</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    [2,] 0.9777110 1.4011917</span>
@@ -575,7 +581,7 @@ scores.</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Eric Davis.</p>
+  <p></p><p>Developed by Eric Davis, Sarah Parker.</p>
 </div>
 
 <div class="pkgdown-footer-right">

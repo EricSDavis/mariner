@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,13 @@
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"></ul></div>
+      <ul class="navbar-nav"><li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/EricSDavis/mariner/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div>
 
     
   </div>
@@ -41,9 +47,21 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Changelog</h1>
-      
+      <small>Source: <a href="https://github.com/EricSDavis/mariner/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.0" id="mariner-110">mariner 1.1.0<a class="anchor" aria-label="anchor" href="#mariner-110"></a></h2>
+<p>New features:</p>
+<ul><li><p><code>JaggedArray</code> and <code>InteractionJaggedArray</code> classes for irregular matrices.</p></li>
+<li><p>Functions for generating random <code>GRanges</code> and <code>GInteractions</code> objects.</p></li>
+<li><p><code>regularize</code> method for converting irregular (i.e. jagged) to regular arrays.</p></li>
+<li><p>New <code>calcLoopEnrichment</code> method for <code>InteractionArray</code> objects.</p></li>
+<li><p><code><a href="../reference/defaultBuffer.html">defaultBuffer()</a></code> function for setting the buffer argument from an <code>InteractionArray</code>.</p></li>
+</ul><p>Bug Fixes:</p>
+<ul><li><p>Fix bug in <code>removeShortPairs</code> where padding wasn’t working as intended.</p></li>
+<li><p><code>FUN</code> argument of <code>calcLoopEnrichment</code> now accepts environmental variables and uses flexible argument names for <code>fg</code> and <code>bg</code>.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.99.0" id="mariner-0990">mariner 0.99.0<a class="anchor" aria-label="anchor" href="#mariner-0990"></a></h2>
 <p>Bug fixes and improvements:</p>
@@ -150,7 +168,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Eric Davis.</p>
+  <p></p><p>Developed by Eric Davis, Sarah Parker.</p>
 </div>
 
 <div class="pkgdown-footer-right">

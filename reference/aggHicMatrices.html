@@ -20,7 +20,7 @@ as `length(interactions(x))/nBlocks`."><!-- mathjax --><script src="https://cdnj
     
     <a class="navbar-brand me-2" href="../index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,7 +43,13 @@ as `length(interactions(x))/nBlocks`."><!-- mathjax --><script src="https://cdnj
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"></ul></div>
+      <ul class="navbar-nav"><li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/EricSDavis/mariner/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div>
 
     
   </div>
@@ -52,7 +58,7 @@ as `length(interactions(x))/nBlocks`."><!-- mathjax --><script src="https://cdnj
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Aggregate count matrices from
 InteractionArray objects</h1>
-      
+      <small class="dont-index">Source: <a href="https://github.com/EricSDavis/mariner/blob/HEAD/R/AllGenerics.R" class="external-link"><code>R/AllGenerics.R</code></a>, <a href="https://github.com/EricSDavis/mariner/blob/HEAD/R/methods-aggHicMatrices.R" class="external-link"><code>R/methods-aggHicMatrices.R</code></a></small>
       <div class="d-none name"><code>aggHicMatrices.Rd</code></div>
     </div>
 
@@ -213,7 +219,7 @@ processing.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> \ Processing it ... </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;11 x 11&gt; matrix of class DelayedMatrix and type "double":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;11 x 11&gt; DelayedMatrix object of type "double":</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]  [,2]  [,3] ... [,10] [,11]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]   250    85    44   .     9    27</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]   203   201    87   .    14    23</span>
@@ -247,7 +253,7 @@ processing.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> \ Processing it ... </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;11 x 11 x 2&gt; array of class DelayedArray and type "double":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;11 x 11 x 2&gt; DelayedArray object of type "double":</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ,,FS</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]  [,2]  [,3] ... [,10] [,11]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]   143    51    27   .     6    13</span>
@@ -285,7 +291,7 @@ processing.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> \ Processing it ... </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;11 x 11 x 10&gt; array of class DelayedArray and type "double":</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;11 x 11 x 10&gt; DelayedArray object of type "double":</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ,,1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        [,1]  [,2]  [,3] ... [,10] [,11]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]     7     4     6   .     0     0</span>
@@ -312,7 +318,7 @@ processing.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Eric Davis.</p>
+  <p></p><p>Developed by Eric Davis, Sarah Parker.</p>
 </div>
 
 <div class="pkgdown-footer-right">

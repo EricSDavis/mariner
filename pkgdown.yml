@@ -3,7 +3,7 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   introduction_to_mariner: introduction_to_mariner.html
-last_built: 2023-04-21T17:37Z
+last_built: 2023-05-24T19:14Z
 urls:
   reference: http://ericscottdavis.com/mariner/reference
   article: http://ericscottdavis.com/mariner/articles
