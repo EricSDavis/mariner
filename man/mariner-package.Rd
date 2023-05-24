@@ -34,11 +34,17 @@ the vignette: `browseVignettes(package="mariner")`
 \seealso{
 Useful links:
 \itemize{
-  \item \url{http://ericscottdavis.com/mariner/}
+  \item \url{https://ericscottdavis.com/mariner/}
+  \item \url{https://github.com/EricSDavis/mariner}
 }
 
 }
 \author{
 \strong{Maintainer}: Eric Davis \email{ericscottdavis@outlook.com} (\href{https://orcid.org/0000-0003-4051-3217}{ORCID})
+
+Authors:
+\itemize{
+  \item Sarah Parker \email{smp3800@gmail.com} (\href{https://orcid.org/0000-0002-2700-3979}{ORCID})
+}
 
 }

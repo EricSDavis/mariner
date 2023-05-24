@@ -3,59 +3,60 @@ library(marinerData)
 
 test_that("removeShortPairs works as expected", {
 
-    ## Example GInteractions object
+    ## Better example
+    ## Overlapping or equal are always no
+    ## Padding should be less than or equal to
     gi <- as_ginteractions(read.table(
         text="
         seqnames1 start1 end1 seqnames2 start2 end2 keep
         chr1 300 400 chr1 300 400 'no'
-        chr1 100 200 chr1 300 400 'yes'
-        chr1 300 400 chr1 100 200 'yes'
+        chr1 100 200 chr1 300 400 'yes_padding<=100'
+        chr1 300 400 chr1 100 200 'yes_padding<=100'
         chr1 300 400 chr2 300 400 'yes'
-        chr1 250 350 chr1 300 400 'only_with_padding_50'
-        chr1 300 400 chr1 250 350 'only_with_padding_50'
+        chr1 250 350 chr1 300 400 'no'
+        chr1 300 400 chr1 250 350 'no'
+        chr1 300 400 chr1 700 800 'yes_padding<=300'
         ",
         header=TRUE
     ))
 
-    ## Test internal function
-    ans <- .removeShortPairs(gi, padding=0)
-    expect_identical(
-        object = ans$keep,
-        expected = rep("yes", 3)
-    )
 
-    ## Default of padding=0
+    ## Everything with no padding
     ans <- removeShortPairs(gi)
     expect_identical(
-        object = ans$keep,
-        expected = rep("yes", 3)
+        object=ans$keep,
+        expected=gi$keep[startsWith(gi$keep, "yes")]
     )
 
-    ## Not enough padding
-    ans <- removeShortPairs(gi, padding=10)
-    expect_identical(
-        object = ans$keep,
-        expected = rep("yes", 3)
-    )
-
-    ## Enough padding
-    ans <-removeShortPairs(gi, padding=50)
-    expect_identical(
-        object = ans$keep,
-        expected = c(
-            rep("yes", 3),
-            rep("only_with_padding_50", 2)
-        )
-    )
-
-    ## Plenty of padding
+    ## Accepts padding equal to break point
     ans <- removeShortPairs(gi, padding=100)
     expect_identical(
-        object = ans$keep,
-        expected = c(
-            rep("yes", 3),
-            rep("only_with_padding_50", 2)
-        )
+        object=ans$keep,
+        expected=gi$keep[startsWith(gi$keep, "yes")]
+    )
+    ans <- removeShortPairs(gi, padding=300)
+    expect_identical(
+        object=ans$keep,
+        expected=grep("yes$|.*300", gi$keep, value=TRUE)
+    )
+
+    ## Accepts padding less than break point
+    ans <- removeShortPairs(gi, padding=99)
+    expect_identical(
+        object=ans$keep,
+        expected=gi$keep[startsWith(gi$keep, "yes")]
+    )
+    ans <- removeShortPairs(gi, padding=299)
+    expect_identical(
+        object=ans$keep,
+        expected=grep("yes$|.*300", gi$keep, value=TRUE)
+    )
+
+    ## Removes pairs greater than all breakpoints
+    ans <- removeShortPairs(gi, padding=301)
+    expect_identical(
+        object=ans$keep,
+        expected="yes"
     )
 
 })
@@ -108,5 +109,13 @@ test_that("complex test for removeShortPairs", {
 
     ## Expect no NAs
     expect_false(anyNA(aggHicMatrices(filtered, verbose=FALSE)))
+
+    ## Loops are filtered out correctly
+    (
+        loops |> length() -
+            loops |> removeShortPairs(padding=40e3) |> length() ==
+            which(pairdist(loops, type="gap") <= 40e3) |> length()
+    ) |>
+        expect_true()
 
 })

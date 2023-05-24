@@ -1,11 +1,14 @@
 Package: mariner
 Type: Package
 Title: Mariner: Explore the Hi-Cs
-Version: 0.99.8
+Version: 1.1.0
 Authors@R: c(
     person("Eric", "Davis", role = c("aut", "cre"),
       email = "ericscottdavis@outlook.com",
-      comment = c(ORCID = "0000-0003-4051-3217"))
+      comment = c(ORCID = "0000-0003-4051-3217")),
+    person("Sarah", "Parker", role = c("aut"),
+      email = "smp3800@gmail.com",
+      comment = c(ORCID = "0000-0002-2700-3979"))
   )
 Description: Tools for manipulating paired ranges and
     working with Hi-C data in R. Functionality includes
@@ -22,7 +25,9 @@ Suggests:
     dplyr,
     rmarkdown,
     ExperimentHub,
-    marinerData
+    marinerData,
+    TxDb.Hsapiens.UCSC.hg38.knownGene,
+    fields
 Imports:
     methods,
     S4Vectors,
@@ -72,7 +77,9 @@ Collate:
     'methods-GInteractions.R'
     'utils.R'
     'methods-InteractionArray.R'
+    'methods-InteractionJaggedArray.R'
     'methods-InteractionMatrix.R'
+    'methods-JaggedArray.R'
     'methods-MatrixSelection.R'
     'methods-MergedGInteractions.R'
     'methods-adjustEnrichment.R'
@@ -83,13 +90,17 @@ Collate:
     'methods-calcLoopEnrichment.R'
     'methods-changePixelRes.R'
     'methods-hdf5BlockApply.R'
+    'methods-makeRandomGInteractions.R'
     'methods-mergePairs.R'
     'methods-pixelsToMatrices.R'
     'methods-plotBullseye.R'
     'methods-plotMatrix.R'
     'methods-pullHic.R'
+    'methods-regularize.R'
     'methods-removeShortPairs.R'
     'methods-shiftRanges.R'
     'methods-snapToBins.R'
     'zzz.R'
-URL: http://ericscottdavis.com/mariner/
+URL: 
+    https://ericscottdavis.com/mariner/,
+    https://github.com/EricSDavis/mariner

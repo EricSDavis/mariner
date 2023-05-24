@@ -224,10 +224,108 @@
 #' @importFrom rlang abort
 #' @noRd
 .getBinSize <- function(x) {
-    widths <- unique(width(regions(x))) - 1
-    if (length(widths) != 1L) {
-        abort(c("All ranges in `x` must be equal widths.",
-                "i"="Use `binPairs()` to bin into equal widths."))
-    }
-    return(widths)
+  widths <- unique(width(regions(x))) - 1
+  if (length(widths) != 1L) {
+    abort(c("All ranges in `x` must be equal widths.",
+            "i"="Use `binPairs()` to bin into equal widths."))
+  }
+  return(widths)
+}
+
+#' Function to extract Nindex from system call
+#' Modified from S4Arrays/DelayedArray
+#' "extract_Nindex_from_syscall"
+#' @param call sys.call()
+#' @param eframe environment frame (i.e. `parent.frame()`)
+#' @importFrom utils tail
+#' @returns Nindex, a list of user supplied subscripts.
+#'  Missing subscripts are set to `NULL`.
+#' @noRd
+.getNindexFromSyscall <- function(call, eframe) {
+    Nindex <- lapply(seq_len(length(call) - 2L), \(i) {
+        subscript <- call[[2L + i]]
+        if (missing(subscript))
+            return(NULL)
+        subscript <- eval(subscript, envir=eframe, enclos=eframe)
+        if (is.null(subscript))
+            return(integer(0))
+        subscript
+    })
+    argnames <- tail(names(call), n=-2L)
+    if (!is.null(argnames))
+        Nindex <- Nindex[!(argnames %in% c("drop", "exact", "value"))]
+    if (length(Nindex) == 1L && is.null(Nindex[[1L]]))
+        Nindex <- vector("list", 4L)
+    if (length(Nindex) < 4)
+        stop("incorrect number of subscripts", call.=FALSE)
+    Nindex
+}
+
+#' Stop if matrices are not odd and square
+#' @param x InteractionArray
+#' @importFrom rlang abort
+#' @importFrom glue glue
+#' @return NULL or error message if not odd and square.
+#' @noRd
+.checkOddSquareMatrices <- function(x){
+  dims <- dim(counts(x))
+
+  ## Check that input is a square matrix
+  if(dims[1] != dims[2]){
+    abort(c("`x` must have square count matrices.",
+            "i"="Dimensions of count matrices must be equal.",
+            "x"=glue("`dim(counts(x))[1] != dim(counts(x))[2]`",
+                     ", {dims[1]} != {dims[2]}."),
+            "i"="See `?pullHicMatrices` for more information."))
+  }
+
+  ## Check that buffer for InteractionArray is odd
+  if((dims[1] %% 2) == 0){
+    abort(c(glue("Enrichment scores can only be calculated for matrices",
+                 " with a center pixel."),
+            "i"="Dimensions of count matrices must be odd.",
+            "i"=glue("Dimensions of count matrices are {dims[1]} x {dims[2]}."),
+            "x"= glue("{dims[1]} is not odd."),
+            "i"="See `?pixelsToMatrices` for help."))
+  }
+}
+
+#' Return default buffer
+#' If InteractionArray is supplied,
+#' it uses the dimensions of counts matrices
+#' to set the buffer dimensions.
+#' @param x InteractionArray
+#' @return 5 (set default),
+#'  the buffer of the provided InteractionArray,
+#'  or an error message if the InteractionArray
+#'  is not odd and square (no buffer)
+#' @rdname defaultBuffer
+#' @export
+defaultBuffer <- function(x) {
+  if (missing(x)) {
+    return(5)
+  }
+  .checkOddSquareMatrices(x)
+  buffer <- (dim(counts(x))[1] - 1) /2
+  buffer
+}
+
+
+#' Return non-conflicting variable name
+#' @param x string (character vector of length 1)
+#'  of the variable name to check for and change
+#' @param argNames character vector of arguments
+#'  to check against
+#' @return a non-conflicting name for `x`. Either `x`
+#'  if `x` is not in the list of arguments, or `x`
+#'  followed by a number
+#' @noRd
+.reconcileArgs <- function(x, argNames){
+  if(x %in% argNames){
+    xNums <- grep(paste0("^",x,"\\d+$"), argNames, value=T)
+    nums <- as.numeric(gsub(x, "", xNums))
+    xNew <- paste0(x, ifelse(length(nums)>0, max(nums)+1, 1))
+    return(xNew)
+  }
+  return(x)
 }
