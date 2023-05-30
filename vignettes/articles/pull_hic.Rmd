@@ -1,0 +1,385 @@
+---
+title: "Pulling Hi-C data with mariner"
+author: "Eric Davis"
+date: '`r Sys.Date()`'
+output: rmarkdown::html_document
+toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+`mariner` offers 2 functions for extracting/pulling
+interactions from `.hic` files - `pullHicPixels()` and
+`pullHicMatrices()`. In this article, you will learn how
+to extract Hi-C pixels or count matrices and access them
+from the resulting objects.
+
+`pullHicPixels()` and `pullHicMatrices()` accept the same
+set of arguments, but return different outputs. Which
+function you choose depends on whether you want to extract
+a single value for each interaction or a matrix of values
+between a range of interactions.
+
+# When to use `pullHicPixels()`
+
+If you want a single value for each interaction and `.hic`
+file then you should use the `pullHicPixels()` function.
+We define a "pixel" as an interaction where both anchors
+are the same width. The `binSize` argument is used here
+to check that your desired pixel resolution matches your
+input interactions.
+
+```{r pixelFigure, fig.align='center', out.width='75%', echo=FALSE}
+# knitr::include_graphics("img/pixelFigure.png")
+```
+
+<div style="
+padding: .5em 1em;
+margin-bottom: 10px;
+border-radius:5px;
+border-left: 5px solid #2780e3;
+border-right: 1px solid #dee2e6;
+border-top: 1px solid #dee2e6;
+border-bottom: 1px solid #dee2e6;
+">
+<div style="font-weight: 600; opacity: 75%;">
+<p style="margin:0px">Note</p>
+</div>
+You can check your `.hic` file to see which resolutions
+are available for the `binSize` argument with the 
+`strawr::readHicBpResolutions()`. See the `binPairs()`
+to set your interactions to an acceptable resolution.
+</div>
+
+The following example pulls 100-Kb pixels from two
+`.hic` files:
+
+```{r pullPixels, message=FALSE}
+## Load mariner
+library(mariner)
+
+## Use example .hic files from ExperimentHub
+hicFiles <- c(
+    marinerData::LEUK_HEK_PJA27_inter_30.hic(),
+    marinerData::LEUK_HEK_PJA30_inter_30.hic()
+)
+names(hicFiles) <- c("hic1", "hic2")
+
+## Make some example interactions
+gi <- read.table(
+    text="
+    1 51000000 51100000 1 51000000 51100000
+    1 150000000	150100000 1	150000000 150100000
+    2 51000000 51100000 2 51000000 51100000
+    2 150000000	150100000 2	150000000 150100000
+    "
+)
+gi <- as_ginteractions(gi)
+
+## Pull Hi-C pixels
+pixels <- pullHicPixels(x=gi, files=hicFiles, binSize=100e3)
+pixels
+```
+
+This results in an `InteractionMatrix` object which
+contains the extracted Hi-C data, interactions, and
+metadata for the interactions and `.hic` files.
+
+The extracted Hi-C data is stored as a count matrix
+where every row is an interaction (i.e pixel) and
+each column in a `.hic` file. Use the `counts()` 
+function to access the count matrix from an
+`InteractionMatrix` object.
+
+```{r pullPixelsCounts}
+counts(pixels)
+```
+
+This count matrix is stored on-disk (if `onDisk=TRUE`)
+as an HDF5-backed `DelayedArray` object. The data is stored
+in the provided file path to the `h5File` argument. If a
+file path isn't provided, a temporary file is created
+in the current Rsession. To access or update the location of
+the HDF5 file after using the `pullHicPixels()` function,
+use the `path()` function.
+
+```{r}
+path(pixels)
+```
+
+<div style="
+padding: .5em 1em;
+margin-bottom: 10px;
+border-radius:5px;
+border-left: 5px solid #2780e3;
+border-right: 1px solid #dee2e6;
+border-top: 1px solid #dee2e6;
+border-bottom: 1px solid #dee2e6;
+">
+<div style="font-weight: 600; opacity: 75%;">
+<p style="margin:0px">Note</p>
+</div>
+Using a `DelayedArray` instead of a normal R matrix
+has a number of benefits, especially for users working
+with limited computer memory. See the `?DelayedArray`
+package documentation and vignettes for more information.
+</div>
+
+The count matrix can then be used for downstream
+analysis such as differential interaction analysis
+with `DESeq2`. Continue reading to learn more about
+how to access components of `InteractionMatrix`
+objects.
+
+# When to use `pullHicMatrices()`
+
+If you want a matrix of values for each interaction then
+you should use the `pullHicMatrices()` function. These
+matrices are made up of multiple "pixels", defined by
+dividing the range of each interaction by the supplied
+`binSize` parameter.
+
+```{r matricesFigure, fig.align='center', out.width='75%', echo=FALSE}
+# knitr::include_graphics("img/matricesFigure.png")
+```
+
+## Square matrices
+
+For example, if you define 500x500 Kb interactions by setting
+the width of both anchors to be 500 Kb
+
+```{r}
+## Create 500x500 Kb regions
+regions <- binPairs(x=gi, binSize=500e3, pos1="start", pos2="start")
+```
+
+Then set the `binSize` to 100 Kb
+
+```{r}
+## Pull Hi-C matrices
+matrices <- pullHicMatrices(x=regions, files=hicFiles, binSize=100e3)
+matrices
+```
+
+It produces count matrices each with 5 rows and 5 columns.
+These count matrices are stored in the `InteractionArray`
+class and are accessible with the `counts()` function.
+
+```{r}
+counts(matrices)
+```
+
+You can supply `showDimnames=TRUE` to display the start
+bin of each anchor.
+
+```{r}
+counts(matrices, showDimnames=TRUE)
+```
+
+These 4-dimensional arrays use the first and second
+dimensions as the rows and columns of the count matrices,
+the third dimension for each interaction, and the 
+fourth dimension for each `.hic` file.
+
+## Rectangular matrices
+
+The previous example returns square count matrices where
+the width of both anchors are the same for each interaction.
+`mariner` also supports rectangular count matrices where
+the rows and columns are not equal.
+
+For example, you can define 300x600 Kb interactions by setting
+the width of the first anchor to be 300 Kb and the second anchor
+to be 600 Kb.
+
+```{r}
+## Create 300x600 Kb regions
+regions <- binPairs(
+    x=gi,
+    binSize=c(300e3, 600e3),
+    pos1="start",
+    pos2="start"
+)
+```
+Then set the `binSize` to 100 Kb
+
+```{r}
+## Pull Hi-C matrices
+matrices <- pullHicMatrices(x=regions, files=hicFiles, binSize=100e3)
+matrices
+```
+
+It produces an `InteractionArray` object with
+count matrices each with 3 rows and 6 columns.
+
+```{r}
+counts(matrices, showDimnames=TRUE)
+```
+
+## Variable matrices
+
+`mariner` also supports extracting count matrices
+that are different dimensions for each interaction.
+
+For example, these three interactions have dimensions
+of 1x3, 3x3, and 3x2 after pulling matrices with a
+`binSize` of 100e3:
+
+```{r}
+## Interactions of diff
+regions <- read.table(
+    text="
+    1 51000000 51100000 1 51000000 51300000
+    1 150000000 150300000 1 150000000 150300000
+    2 51000000 51300000 2 51000000 51200000
+    "
+)
+regions <- as_ginteractions(regions)
+
+## Pull Hi-C matrices
+matrices <- pullHicMatrices(x=regions, files=hicFiles, binSize=100e3)
+matrices
+```
+
+The resulting object is of class
+`InteractionJaggedArray`. The class is different
+than the previous examples because the classes
+that `InteractionArray` inherits from are designed
+for regular, rectangular data types. A custom class
+is used to hold irregular, or jagged, arrays of data.
+
+The same `counts()` function returns these
+`JaggedArray` objects containing the Hi-C count data
+for each interaction and `.hic` file.
+
+```{r}
+counts(matrices)
+```
+
+Continue reading to learn more about accessing
+and transforming data from `InteractionArray`
+and `InteractionJaggedArray` objects.
+
+# `InteractionMatrix` class
+
+The `InteractionMatrix` class extends
+the `InteractionSet` and `SummarizedExperiment`
+classes. Therefore, it also inherits the accessors
+and methods of these objects. For example, you
+can access the original interactions, metadata about
+the experiment, row or column metadata, and subset
+or index slices of these objects. The following
+sections highlight some of the most useful accessors
+and methods for `InteractionMatrix`. Here is an example
+object:
+
+```{r, message=FALSE}
+## Load mariner
+library(mariner)
+
+## Use example .hic files from ExperimentHub
+hicFiles <- c(
+    marinerData::LEUK_HEK_PJA27_inter_30.hic(),
+    marinerData::LEUK_HEK_PJA30_inter_30.hic()
+)
+names(hicFiles) <- c("hic1", "hic2")
+
+## Make some example interactions
+gi <- read.table(
+    text="
+    1 51000000 51100000 1 51000000 51100000
+    1 150000000	150100000 1	150000000 150100000
+    2 51000000 51100000 2 51000000 51100000
+    2 150000000	150100000 2	150000000 150100000
+    "
+)
+gi <- as_ginteractions(gi)
+
+## InteractionMatrix
+imat <- pullHicPixels(x=gi, files=hicFiles, binSize=100e3)
+```
+## Common accessors
+
+```{r InteractionMatrixAccessors}
+## Show method
+imat
+
+## Dimensions
+dim(imat)
+
+## Metadata about Hi-C extraction
+metadata(imat)
+
+## Metadata about interactions
+SummarizedExperiment::rowData(imat)
+
+## Metadata about columns
+SummarizedExperiment::colData(imat)
+
+## Interactions
+interactions(imat)
+
+## Count matrices
+counts(imat)
+```
+
+## Indexing and subsetting
+
+You can subset the interactions and files of
+the object directly where the first position
+subsets interactions and the second subsets
+files.
+
+```{r}
+imat[1:3] |> counts()
+imat[3:1] |> counts()
+imat[,2] |> counts()
+imat[1,1] |> counts()
+```
+
+## Concatenating
+
+Use the `rbind()` or `cbind()` functions to
+combine interactions row-wise or column-wise,
+respectively.
+
+```{r}
+cbind(imat[,1], imat[,2])
+rbind(imat[1:2,], imat[3:4,])
+```
+
+Note that the column metadata must the same
+when using `rbind` and the row interactions
+must be the same when using `cbind`.
+
+```{r, error=TRUE}
+rbind(imat[1:2,1], imat[3:4,2])
+cbind(imat[1:2,1], imat[3:4,2])
+```
+
+# `InteractionArray` class
+
+## Common accessors
+
+## Indexing and subsetting
+
+## Concatenating
+
+# `InteractionJaggedArray` class
+
+## Common accessors
+
+## Indexing and subsetting
+
+## Concatenating
+
+# Other pullHic* arguments
+
+## The `half` parameter
+
+## Normalization and matrix type
+
+## Changing `blockSize` for large data
+

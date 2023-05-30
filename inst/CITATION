@@ -4,14 +4,15 @@ citEntry(
     entry = "Unpublished",
     title        = "Mariner: Explore the Hi-Cs",
     author       = personList(as.person("Eric S. Davis"),
+                              as.person("Sarah M. Parker"),
                               as.person("Douglas H. Phanstiel")),
     year         = "2022",
-    note         = "R package version 0.2.0",
+    note         = "R package version 1.1.0",
     doi          = "10.5281/zenodo.7514361",
 
     textVersion  =
-        paste("Eric S. Davis, Douglas H. Phanstiel (2022).",
+        paste("Eric S. Davis, Sarah M. Parker, Douglas H. Phanstiel (2022).",
               "Mariner: Explore the Hi-Cs.",
-              "R package version 0.2.0.",
+              "R package version 1.1.0.",
               "https://doi.org/10.5281/zenodo.7514362")
 )
