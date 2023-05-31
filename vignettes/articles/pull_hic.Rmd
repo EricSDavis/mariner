@@ -183,6 +183,17 @@ dimensions as the rows and columns of the count matrices,
 the third dimension for each interaction, and the 
 fourth dimension for each `.hic` file.
 
+If you want to convert pixels to square Hi-C regions,
+you can use the `pixelsToMatrices()` function, where the
+`buffer` argument describes the number of pixels to
+expand the ranges on either side of the center pixel.
+For example, since the `gi`...
+
+```{r}
+gi |> width()
+pixelsToMatrices(x=gi, buffer=2) |> width()
+```
+
 ## Rectangular matrices
 
 The previous example returns square count matrices where
@@ -272,7 +283,7 @@ can access the original interactions, metadata about
 the experiment, row or column metadata, and subset
 or index slices of these objects. The following
 sections highlight some of the most useful accessors
-and methods for `InteractionMatrix`. Here is an example
+and methods for `InteractionMatrix` using this example
 object:
 
 ```{r, message=FALSE}
@@ -350,7 +361,7 @@ cbind(imat[,1], imat[,2])
 rbind(imat[1:2,], imat[3:4,])
 ```
 
-Note that the column metadata must the same
+Note that the column metadata must be the same
 when using `rbind` and the row interactions
 must be the same when using `cbind`.
 
@@ -360,6 +371,52 @@ cbind(imat[1:2,1], imat[3:4,2])
 ```
 
 # `InteractionArray` class
+
+The `InteractionArray` class extends
+the `InteractionSet` and `SummarizedExperiment`
+classes. Therefore, it also inherits the accessors
+and methods of these objects. For example, you
+can access the original interactions, metadata about
+the experiment, row or column metadata, and subset
+or index slices of these objects. Unlike the
+the `InteractionMatrix` class which returns an 
+"interaction" by "Hi-C" matrix, the `InteractionArray`
+class returns count matrices for each interaction and
+`.hic` file. This results in a 4-dimensional array,
+where the first two dimensions are the rows and columns
+of the count matrices, the third dimension is the
+supplied interactions, and the fourth dimension is the
+supplied `.hic` files. This is stored as a `DelayedArray`
+which is accessible via the `counts()` accessor. The following
+sections highlight some of the most useful accessors
+and methods for `InteractionMatrix` using this example
+object:
+
+```{r, message=FALSE}
+## Load mariner
+library(mariner)
+
+## Use example .hic files from ExperimentHub
+hicFiles <- c(
+    marinerData::LEUK_HEK_PJA27_inter_30.hic(),
+    marinerData::LEUK_HEK_PJA30_inter_30.hic()
+)
+names(hicFiles) <- c("hic1", "hic2")
+
+## Make some example interactions
+gi <- read.table(
+    text="
+    1 51000000 51100000 1 51000000 51100000
+    1 150000000	150100000 1	150000000 150100000
+    2 51000000 51100000 2 51000000 51100000
+    2 150000000	150100000 2	150000000 150100000
+    "
+)
+gi <- as_ginteractions(gi)
+
+## InteractionMatrix
+imat <- pullHicPixels(x=gi, files=hicFiles, binSize=100e3)
+```
 
 ## Common accessors
 
