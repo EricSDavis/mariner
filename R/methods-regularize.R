@@ -1,4 +1,4 @@
-## .rescale and .resizeMat functions from
+## .rescale and .resizeMat functions adapted from
 ## https://stackoverflow.com/questions/11123152/\
 ## function-for-resizing-matrices-in-r
 
@@ -20,21 +20,24 @@
 #' @noRd
 .resizeMat <- function(x, ndim){
     if(!requireNamespace("fields")) stop("`fields` package required.")
-
-    ## input object
+    
     odim <- dim(x)
-    obj <- list(x=seq_len(odim[1]), y=seq_len(odim[2]), z=x)
 
-    ## initialize output object
+    ## Modify for single row/column matrices
+    z <- x
+    if (odim[1] == 1L) z <- rbind(z,z); odim[1] <- 2
+    if (odim[2] == 1L) z <- cbind(z,z); odim[2] <- 2
+
+    ## initialize input & output objects
+    obj <- list(x=seq_len(odim[1]), y=seq_len(odim[2]), z=z)
     ans <- matrix(NA, nrow=ndim[1], ncol=ndim[2])
-    ndim <- dim(ans)
 
     ## rescaling
-    ncord <- as.matrix(expand.grid(seq_len(ndim[1]), seq_len(ndim[2])))
-    loc <- ncord
+    loc <- ncord <- as.matrix(expand.grid(seq_len(ndim[1]),
+                                          seq_len(ndim[2])))
     loc[,1] <- .rescale(ncord[,1], c(1,odim[1]))
     loc[,2] <- .rescale(ncord[,2], c(1,odim[2]))
-
+    
     ## interpolation
     ans[ncord] <- fields::interp.surface(obj, loc)
     ans
@@ -82,7 +85,12 @@
             matList <- list()
             if (is(subArray, "DelayedArray")) {
                 if (length(block) == 1L) {
-                    matList <- list(as.matrix(subArray))
+                    sad <- dim(subArray)
+                    matList <- matrix(
+                        data=subArray,
+                        nrow=sad[1],
+                        ncol=sad[2]
+                    ) |> list()
                 } else {
                     matList <- lapply(asplit(subArray, 3), drop)
                 }
