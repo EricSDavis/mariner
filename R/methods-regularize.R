@@ -9,6 +9,7 @@
 .rescale <- function(x, newrange){
     xrange <- range(x)
     mfac <- (newrange[2]-newrange[1])/(xrange[2]-xrange[1])
+    if (is.infinite(mfac)) mfac <- 1
     newrange[1]+(x-xrange[1])*mfac
 }
 
@@ -25,8 +26,14 @@
 
     ## Modify for single row/column matrices
     z <- x
-    if (odim[1] == 1L) z <- rbind(z,z); odim[1] <- 2
-    if (odim[2] == 1L) z <- cbind(z,z); odim[2] <- 2
+    if (odim[1] == 1L) {
+        z <- rbind(z,z)
+        odim[1] <- 2
+    }
+    if (odim[2] == 1L) {
+        z <- cbind(z,z)
+        odim[2] <- 2
+    }
 
     ## initialize input & output objects
     obj <- list(x=seq_len(odim[1]), y=seq_len(odim[2]), z=z)

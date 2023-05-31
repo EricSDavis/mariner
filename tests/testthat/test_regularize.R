@@ -82,10 +82,22 @@ test_that("Interpolation works with single row/column", {
     gi <- as_ginteractions(gi)
     
     ## InteractionJaggedArray
-    ija <- pullHicMatrices(x=gi, files=hicFiles, binSize=100e3)
+    ija <- pullHicMatrices(x=gi, files=hicFiles[1], binSize=100e3)
     
     ## Internally this should create 2x3, 3x2, 2x2
     ## to avoid interpolation errors.
-    expect_s4_class(regularize(ija), "InteractionArray")
+    expect_s4_class(regularize(ija, ndim=c(3,3)), "InteractionArray")
+    
+    regularize(ija, ndim=c(3,3), scale=FALSE) |> counts() |>
+        expect_snapshot()
+    
+    ## Not sure what behavior we want, but this is
+    ## something...
+    regularize(ija, ndim=c(1,3), scale=FALSE) |>
+        counts() |>
+        expect_snapshot()
+    regularize(ija, ndim=c(3,1), scale=FALSE) |>
+        counts() |>
+        expect_snapshot()
     
 })
