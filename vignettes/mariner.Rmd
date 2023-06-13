@@ -349,7 +349,6 @@ library(mariner)
 library(marinerData)
 
 ## BEDPE-formatted files
-## BEDPE-formatted files
 bedpeFiles <- c(
     marinerData::FS_5kbLoops.txt(),
     marinerData::WT_5kbLoops.txt()
