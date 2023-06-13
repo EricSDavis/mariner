@@ -31,8 +31,8 @@ are the same width. The `binSize` argument is used here
 to check that your desired pixel resolution matches your
 input interactions.
 
-```{r pixelFigure, fig.align='center', out.width='75%', echo=FALSE}
-# knitr::include_graphics("img/pixelFigure.png")
+```{r pixelFigure, fig.align='center', out.width='50%', echo=FALSE}
+knitr::include_graphics("img/pixelFigure.png")
 ```
 
 <div style="
@@ -89,7 +89,7 @@ metadata for the interactions and `.hic` files.
 
 The extracted Hi-C data is stored as a count matrix
 where every row is an interaction (i.e pixel) and
-each column in a `.hic` file. Use the `counts()` 
+each column is a `.hic` file. Use the `counts()` 
 function to access the count matrix from an
 `InteractionMatrix` object.
 
@@ -129,9 +129,10 @@ package documentation and vignettes for more information.
 
 The count matrix can then be used for downstream
 analysis such as differential interaction analysis
-with `DESeq2`. Continue reading to learn more about
-how to access components of `InteractionMatrix`
-objects.
+with `DESeq2`. To learn more about how to access components of
+`InteractionMatrix` objects, see the
+[`InteractionMatrix` class](#interaction_matrix_class)
+section below.
 
 # When to use `pullHicMatrices()`
 
@@ -141,8 +142,8 @@ matrices are made up of multiple "pixels", defined by
 dividing the range of each interaction by the supplied
 `binSize` parameter.
 
-```{r matricesFigure, fig.align='center', out.width='75%', echo=FALSE}
-# knitr::include_graphics("img/matricesFigure.png")
+```{r matricesFigure, fig.align='center', out.width='50%', echo=FALSE}
+knitr::include_graphics("img/matricesFigure.png")
 ```
 
 ## Square matrices
@@ -198,7 +199,7 @@ additional 100 Kb pixels on both sides of the central
 
 ```{r}
 regions <- pixelsToMatrices(x=gi, buffer=2)
-width(regions)
+IRanges::width(regions)
 ```
 
 When pulled with `pullHicMatrices()` using `binSize=100e3`
@@ -213,7 +214,7 @@ pullHicMatrices(x=regions, files=hicFiles, binSize=100e3)
 The previous example returns square count matrices where
 the width of both anchors are the same for each interaction.
 `mariner` also supports rectangular count matrices where
-the rows and columns are not equal.
+the widths of the rows and columns are not equal.
 
 For example, you can define 300x600 Kb interactions by setting
 the width of the first anchor to be 300 Kb and the second anchor
@@ -236,12 +237,17 @@ matrices <- pullHicMatrices(x=regions, files=hicFiles, binSize=100e3)
 matrices
 ```
 
-It produces an `InteractionArray` object with
+Which produces an `InteractionArray` object with
 count matrices each with 3 rows and 6 columns.
 
 ```{r}
 counts(matrices, showDimnames=TRUE)
 ```
+
+Extracting square and rectangular matrices of data
+results in `InteractionArray` objects. See
+[`InteractionArray` class](#interaction_array_class)
+to learn more about accessing data from these objects.
 
 ## Variable matrices
 
@@ -273,7 +279,8 @@ The resulting object is of class
 than the previous examples because the classes
 that `InteractionArray` inherits from are designed
 for regular, rectangular data types. A custom class
-is used to hold irregular, or jagged, arrays of data.
+called `JaggedArray` is used to hold irregular, or jagged,
+arrays of data.
 
 The same `counts()` function returns these
 `JaggedArray` objects containing the Hi-C count data
@@ -283,11 +290,13 @@ for each interaction and `.hic` file.
 counts(matrices)
 ```
 
-Continue reading to learn more about accessing
-and transforming data from `InteractionArray`
-and `InteractionJaggedArray` objects.
+See the 
+[`InteractionJaggedArray` class](#interaction_jagged_array_class)
+section to learn more about accessing
+and transforming data from `InteractionJaggedArray`
+and `JaggedArray` objects.
 
-# `InteractionMatrix` class
+# `InteractionMatrix` class <a id="interaction_matrix_class" />
 
 The `InteractionMatrix` class extends
 the `InteractionSet` and `SummarizedExperiment`
@@ -393,7 +402,7 @@ See the documentation and vignettes of these packages
 for usage and behavior of these functions.
 
 
-# `InteractionArray` class
+# `InteractionArray` class <a id="interaction_array_class" />
 
 The `InteractionArray` class extends
 the `InteractionSet` and `SummarizedExperiment`
@@ -403,7 +412,7 @@ can access the original interactions, metadata about
 the experiment, row or column metadata, and subset
 or index slices of these objects. Unlike the
 the `InteractionMatrix` class which returns an 
-"interaction" by "Hi-C" matrix, the `InteractionArray`
+"interaction-by-Hi-C" matrix, the `InteractionArray`
 class returns count matrices for each interaction and
 `.hic` file. This results in a 4-dimensional array,
 where the first two dimensions are the rows and columns
@@ -522,7 +531,7 @@ See the documentation and vignettes of these packages
 for usage and behavior of these functions.
 
 
-# `InteractionJaggedArray` class
+# `InteractionJaggedArray` class <a id="interaction_jagged_array_class" />
 
 The `InteractionJaggedArray` class is a new class
 designed for holding irregularly sized count matrices,
@@ -678,9 +687,8 @@ to `ndim`. The function works on both `InteractionJaggedArray`
 and `JaggedArray` objects.
 
 ```{r}
-
-regularize(ija, ndim=c(3,3)) |> counts()
-regularize(ja, ndim=c(3,3))
+regularize(x=ija, ndim=c(3,3)) |> counts()
+regularize(x=ja, ndim=c(3,3))
 ```
 
 By using `regularize()` before extracting counts, you
@@ -688,15 +696,190 @@ can take advantage of the block and parallel processing
 functionality from aggregating with `aggHicMatrices()`:
 
 ```{r}
-regularize(ija, ndim=c(3,3), nBlocks=1) |>
+regularize(x=ija, ndim=c(3,3), nBlocks=1) |>
     aggHicMatrices(nBlocks=1)
 ```
 
 # Other pullHic* arguments
 
-## The `half` parameter
+The previous sections provided examples of
+using `pullHicPixels()` and `pullHicMatrices()`, 
+for extracting Hi-C pixels and count matrices,
+respectively. These functions require three
+mandatory arguments: `x` for interactions, 
+`files` for `.hic` file paths, and `binSize` for
+the Hi-C resolution.
+
+Additionally, the remaining arguments allow for 
+greater control over the Hi-C data extraction process.
+These arguments control the type of Hi-C data to be
+extracted, the efficiency of extraction, and specify
+the storage location for the extracted data.
+
+In this section we delve deeper into the utilization
+of these arguments to effectively extract Hi-C data.
 
 ## Normalization and matrix type
 
+The `norm` and `matrix` arguments are passed to
+`strawr` during the extraction step.
+
+`norm` refers to the Hi-C normalization and is 
+limited to pre-computed normalizations in the
+`.hic` file. Use the `readHicNormTypes()` function
+from the `strawr` package to see available normalizations.
+
+```{r, error=TRUE}
+pullHicPixels(x=gi, files=hicFiles, binSize=100e3, norm="none")
+```
+
+The `matrix` argument specifies the type of values
+to extract. The default is the "observed" contact
+frequency values. Other options include "expected"
+contact frequency and the "oe" or observed/expected
+values. For an in-depth description of these
+matrix types see 
+[Durand et al. 2016](https://doi.org/10.1016/j.cels.2016.07.002)
+
+```{r}
+pullHicPixels(x=gi, files=hicFiles, binSize=100e3, matrix="oe") |>
+    counts()
+```
+
+## The `half` parameter
+
+The Hi-C matrix is a square, symmetric matrix that captures
+the frequency of all pair-wise interactions between
+genomic loci. In other words, each point in a Hi-C 
+matrix represents the interaction frequency between
+a two pairs, or anchors, of genomic regions. 
+
+In `mariner`, the Hi-C matrix is oriented with the
+origin (lowest genomic coordinates) in the upper
+left corner with linear genomic position increasing
+down and to the right.
+
+```{r origin, fig.align='center', out.width='50%', echo=FALSE}
+knitr::include_graphics("img/origin.png")
+```
+
+The first anchor, or genomic locus, corresponds
+on the vertical axis (rows of matrix) while the
+second anchor corresponds to the horizontal axis
+(columns of the matrix). Together, these anchors
+specify a two-dimensional region on the Hi-C matrix.
+
+```{r anchors, fig.align='center', out.width='50%', echo=FALSE}
+knitr::include_graphics("img/anchors.png")
+```
+
+The relative positions of these anchors determines
+from which "half" of the matrix data is extracted. When
+the genomic position of the first anchor is less than
+the second anchor the region resides in the upper
+trianglar.
+
+```{r upper, fig.align='center', out.width='75%', echo=FALSE}
+knitr::include_graphics("img/upper.png")
+```
+
+When the genomic position of the first anchor is
+greater than the second anchor the region resides
+in the lower triangular.
+
+```{r lower, fig.align='center', out.width='75%', echo=FALSE}
+knitr::include_graphics("img/lower.png")
+```
+
+If the first and second anchors are equal then
+the region is on the diagonal and the values
+will be mirrored across the diagonal.
+
+```{r diagonal, fig.align='center', out.width='50%', echo=FALSE}
+knitr::include_graphics("img/diagonal.png")
+```
+
+To summarize:
+
+* first < second - upper triangular
+* first > second - lower triangular
+* first == second - mirrored diagonal
+
+The `half` parameter controls which portion of
+the Hi-C matrix is returned, regardless of
+anchor position. When `half="upper"` only
+upper-triangular data is returned. When
+`half="lower"` only lower-triangular data
+is returned. `half="both"` returns upper and
+lower triangular data. `NA` values are returned
+for portions of the matrix that do not match
+the region of the matrix specified with `half`.
+The figure and code below show how data are
+returned for a region that resides on the
+diagonal, crossing into both the upper and
+lower triangular of the Hi-C matrix.
+
+```{r diagonalHalf, fig.align='center', out.width='75%', echo=FALSE}
+knitr::include_graphics("img/diagonalHalf.png")
+```
+
+```{r diagonalCode, message=FALSE}
+## Hic file
+hic <- marinerData::LEUK_HEK_PJA27_inter_30.hic()
+
+## On-diagonal interaction
+diagonal <- as_ginteractions(read.table(text="
+    1 51000000 51300000 1 51000000 51300000
+"))
+
+## half="upper"
+pullHicMatrices(x=diagonal, files=hic, binSize=100e3, half="upper") |>
+    counts()
+
+## half="lower"
+pullHicMatrices(x=diagonal, files=hic, binSize=100e3, half="lower") |>
+    counts()
+
+## half="both"
+pullHicMatrices(x=diagonal, files=hic, binSize=100e3, half="both") |>
+    counts()
+```
+
+Since chromosomes have no inherent order in linear
+genomic space, the `half` parameter is ignored for
+interchromosomal interactions. `pullHicPixels()` behaves
+the same way with the `half` parameter.
+
 ## Changing `blockSize` for large data
 
+`pullHicPixels()` and `pullHicMatrices()` allow you to tune
+the efficiency and memory-usage of Hi-C data extraction by 
+grouping nearby interactions into blocks. The block data is
+then loaded into memory, assigned to interactions, and
+then written to back to disk as an HDF5 file. You can modify
+the `blockSize` (in base-pairs) to control the size and number
+of blocks that are extracted. Pulling larger blocks
+decreases run-time, but requires more RAM to store these
+data while smaller blocks increase run-time, but allows
+you to extract counts from large Hi-C files that may
+not otherwise fit into memory.
+
+Adjustments to `blockSize` can optimize the efficiency of
+extraction. There is a trade-off between the size of
+the block and the number of iterations required to extract
+all interactions. The size and placement of interactions on
+the genome also affects the `blockSize`. For example, a
+worst-case performance scenario would be extracting each
+interaction individually (setting `blockSize` to the width
+of the interaction). Generally, it is most efficient to
+extract the largest blocks possible. When your data is
+small enough, pulling whole chromosomes is usually most
+efficient. However, the optimal `blockSize` is highly
+dependent on both the interactions and `.hic` files, so
+you may want to experiment with this parameter to find
+the best trade-off for your data.
+
+The `compressionLevel` and `chunkSize` parameters control
+the way extracted data is written back to the HDF5-file.
+See `?pullHicMatrices` or `?pullHicPixels` for a more
+in-depth description of these parameters.
