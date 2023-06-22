@@ -1,3 +1,15 @@
+# mariner 1.1.1
+
+Bug fixes:
+
+* Fix in `pullHic` functions:
+After running `.prepareInputs()` which involves snapping ranges
+to bins, the adjusted ranges were not being used to calculate the
+expected matrix dimensions. This can sometimes cause a missmatch
+between the data used for enumerating bins, and the data that is
+extracted from the Hi-C file. Fixed by using the adjusted
+interactions to set the matrix dimensions.
+
 # mariner 1.1.0
 
 New features:
