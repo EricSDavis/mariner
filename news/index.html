@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,6 +53,11 @@
       <small>Source: <a href="https://github.com/EricSDavis/mariner/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.1" id="mariner-111">mariner 1.1.1<a class="anchor" aria-label="anchor" href="#mariner-111"></a></h2>
+<p>Bug fixes:</p>
+<ul><li>Fix in <code>pullHic</code> functions: After running <code>.prepareInputs()</code> which involves snapping ranges to bins, the adjusted ranges were not being used to calculate the expected matrix dimensions. This can sometimes cause a missmatch between the data used for enumerating bins, and the data that is extracted from the Hi-C file. Fixed by using the adjusted interactions to set the matrix dimensions.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.0" id="mariner-110">mariner 1.1.0<a class="anchor" aria-label="anchor" href="#mariner-110"></a></h2>
 <p>New features:</p>
