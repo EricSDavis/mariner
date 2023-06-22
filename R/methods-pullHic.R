@@ -758,8 +758,8 @@
 
     ## Use region widths to dispatch code for
     ## extracting equal or variable dimension slices
-    firstWidths <- unique(width(first(x))) - 1
-    secondWidths <- unique(width(second(x))) - 1
+    firstWidths <- unique(width(first(dat$x))) - 1
+    secondWidths <- unique(width(second(dat$x))) - 1
     if (length(firstWidths) == 1L & length(secondWidths) == 1L) {
 
         ## Set matrix dimensions
@@ -776,8 +776,8 @@
     } else {
 
         ## Set matrix dimensions
-        mDim1 <- ceiling((width(first(x)) - 1)/binSize)
-        mDim2 <- ceiling((width(second(x)) - 1)/binSize)
+        mDim1 <- ceiling((width(first(dat$x)) - 1)/binSize)
+        mDim2 <- ceiling((width(second(dat$x)) - 1)/binSize)
 
         ## Dispatch .pullJaggedArray for
         ## irregular dimensions
