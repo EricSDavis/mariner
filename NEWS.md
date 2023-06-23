@@ -1,3 +1,9 @@
+# mariner 1.1.2
+
+Bug fixes:
+
+* Fix id mapping in `aggPairMcols()`
+
 # mariner 1.1.1
 
 Bug fixes:
