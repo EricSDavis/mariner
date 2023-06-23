@@ -40,7 +40,7 @@
 #' @return `x` with aggregated metadata columns
 #' @noRd
 .aggPairMcols <- function(x, columns, funs){
-
+  
     ## Suppress NSE notes in R CMD check
     i.id <- NULL
 
@@ -82,16 +82,12 @@
         abort(msg)
     }
 
-    ## Add id's
-    aggregatedWithIds <-
-        cbind(aggregated, id = res[match(aggregated$i.id, res$i.id)]$id)
-
     ## Match to ids in x
     aggregatedColumns <-
-        aggregatedWithIds[match(x@ids, aggregatedWithIds$id)]
+        aggregated[match(x@ids, aggregated$i.id)]
 
     ## Remove excess columns
-    aggregatedColumns[, c("i.id", "id") := NULL]
+    aggregatedColumns[, "i.id" := NULL]
 
     ## Name columns
     colnames(aggregatedColumns) <- colNames
