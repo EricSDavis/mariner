@@ -366,3 +366,20 @@ setGeneric("regularize",
                     compressionLevel=0,
                     ...)
                standardGeneric("regularize"))
+
+#' @rdname calcApa
+#' @export
+setGeneric("calcApa",
+           function(x,
+                    files,
+                    binSize,
+                    buffer=5,
+                    removeShort=TRUE,
+                    minPairDist=0,
+                    normalize=TRUE,
+                    FUN=sum,
+                    nBlocks=5,
+                    verbose=TRUE,
+                    BPPARAM=bpparam(),
+                    ...)
+               standardGeneric("calcApa"))
