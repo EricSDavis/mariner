@@ -24,7 +24,7 @@ test_that("calcApa works", {
         x=loops,
         files=hicFiles[2],
         binSize=5e3,
-        minLoopSize=50e3,
+        minPairDist=50e3,
         normalize=FALSE
     )
     expect_equal(sum(mat), 1403)

@@ -24,14 +24,14 @@ calcApa(
   x,
   files,
   binSize,
-  buffer,
-  removeShort,
-  minLoopSize,
-  normalize,
-  FUN,
-  nBlocks,
-  verbose,
-  BPPARAM,
+  buffer = 5,
+  removeShort = TRUE,
+  minPairDist = 0,
+  normalize = TRUE,
+  FUN = sum,
+  nBlocks = 5,
+  verbose = TRUE,
+  BPPARAM = bpparam(),
   ...
 )
 }

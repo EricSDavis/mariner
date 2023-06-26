@@ -3,12 +3,12 @@
 #' @inheritParams calcApa
 #' @noRd
 .calcApa <- function(x, files, binSize, buffer,
-                     removeShort, minLoopSize, normalize,
+                     removeShort, minPairDist, normalize,
                      FUN, nBlocks, verbose, BPPARAM, ...) {
     
     ## Filter out short pairs
     if (removeShort) {
-        x <- removeShortPairs(x, padding=minLoopSize)
+        x <- removeShortPairs(x, padding=minPairDist)
     }
     n <- length(x)
     
