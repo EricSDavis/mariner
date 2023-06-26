@@ -103,7 +103,7 @@
 #'     x=loops,
 #'     files=hicFile,
 #'     binSize=5e3,
-#'     minLoopSize=50e3,
+#'     minPairDist=50e3,
 #'     normalize=FALSE
 #' )
 #' 
