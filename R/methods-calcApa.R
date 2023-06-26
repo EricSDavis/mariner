@@ -6,14 +6,14 @@
                      removeShort, minPairDist, normalize,
                      FUN, nBlocks, verbose, BPPARAM, ...) {
     
-    ## Filter out short pairs
-    if (removeShort) {
-        x <- removeShortPairs(x, padding=minPairDist)
-    }
-    n <- length(x)
-    
     ## Convert to matrix regions
     regions <- pixelsToMatrices(x, buffer)
+    
+    ## Filter out short pairs
+    if (removeShort) {
+        regions <- removeShortPairs(x=regions, padding=minPairDist)
+    }
+    n <- length(regions)
     
     ## Extract counts
     mats <- pullHicMatrices(x=regions, files=files, binSize=binSize, ...)
@@ -42,8 +42,12 @@
 #' extracted from Hi-C files then aggregated into
 #' a single matrix.
 #' 
+#' Note that pair distance filtering is done after
+#' expanding interactions to matrices.
+#' 
 #' @param x GInteractions object containing interactions
-#'  to extract from Hi-C files.
+#'  to extract from Hi-C files. These should be pixels
+#'  of a single `binSize` in width.
 #' @param files Character file paths to `.hic` files.
 #' @param binSize Integer (numeric) describing the
 #'  resolution (range widths) of the paired data.

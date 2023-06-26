@@ -37,7 +37,8 @@ calcApa(
 }
 \arguments{
 \item{x}{GInteractions object containing interactions
-to extract from Hi-C files.}
+to extract from Hi-C files. These should be pixels
+of a single `binSize` in width.}
 
 \item{files}{Character file paths to `.hic` files.}
 
@@ -85,6 +86,10 @@ that intersect the diagonal before converting
 the interactions into square regions that are
 extracted from Hi-C files then aggregated into
 a single matrix.
+}
+\details{
+Note that pair distance filtering is done after
+expanding interactions to matrices.
 }
 \examples{
 ## Load marinerData
