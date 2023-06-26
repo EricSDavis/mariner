@@ -87,6 +87,7 @@ Collate:
     'methods-as_ginteractions.R'
     'methods-binPairs.R'
     'methods-binRanges.R'
+    'methods-calcApa.R'
     'methods-calcLoopEnrichment.R'
     'methods-changePixelRes.R'
     'methods-hdf5BlockApply.R'

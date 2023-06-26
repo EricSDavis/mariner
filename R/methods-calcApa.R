@@ -1,5 +1,7 @@
 
 #' Internal calcApa function
+#' @inheritParams calcApa
+#' @noRd
 .calcApa <- function(x, files, binSize, buffer,
                      removeShort, minLoopSize, normalize,
                      FUN, nBlocks, verbose, BPPARAM, ...) {
