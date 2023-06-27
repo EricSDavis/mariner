@@ -232,7 +232,6 @@
 
         if (matrixPlot$draw){
             vp$name <- "MatrixPlot1"
-            grid.newpage()
         }
 
     } else {
