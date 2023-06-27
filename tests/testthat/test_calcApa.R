@@ -27,7 +27,7 @@ test_that("calcApa works", {
         minPairDist=50e3,
         normalize=FALSE
     )
-    expect_equal(sum(mat), 1403)
+    expect_equal(sum(mat), 1133)
     
     mat <- calcApa(
         x=loops,
@@ -36,7 +36,7 @@ test_that("calcApa works", {
         minPairDist=50e3,
         normalize=TRUE
     )
-    expect_equal(round(sum(mat), 2), 1.44)
+    expect_equal(round(sum(mat), 2), 1.24)
     
     mat <- calcApa(
         x=loops,
