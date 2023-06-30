@@ -1,8 +1,8 @@
 
-#' Internal calcApa function
-#' @inheritParams calcApa
+#' Internal aggInteractions function
+#' @inheritParams aggInteractions
 #' @noRd
-.calcApa <- function(x, files, binSize, buffer,
+.aggInteractions <- function(x, files, binSize, buffer,
                      removeShort, minPairDist, normalize,
                      FUN, nBlocks, verbose, BPPARAM, ...) {
     
@@ -36,7 +36,7 @@
 
 #' Conduct aggregate peak analysis
 #' 
-#' calcApa optionally removes short interactions
+#' aggInteractions optionally removes short interactions
 #' that intersect the diagonal before converting
 #' the interactions into square regions that are
 #' extracted from Hi-C files then aggregated into
@@ -99,7 +99,7 @@
 #' GenomeInfoDb::seqlevelsStyle(loops) <- 'ENSEMBL'
 #' 
 #' ## APA
-#' mat <- calcApa(
+#' mat <- aggInteractions(
 #'     x=loops,
 #'     files=hicFile,
 #'     binSize=5e3,
@@ -108,10 +108,10 @@
 #' )
 #' 
 #' 
-#' @rdname calcApa
+#' @rdname aggInteractions
 #' @export
-setMethod("calcApa",
+setMethod("aggInteractions",
           signature(x='GInteractions',
                     files='character',
                     binSize='numeric'),
-          definition=.calcApa)
+          definition=.aggInteractions)

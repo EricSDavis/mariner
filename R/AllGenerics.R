@@ -367,9 +367,9 @@ setGeneric("regularize",
                     ...)
                standardGeneric("regularize"))
 
-#' @rdname calcApa
+#' @rdname aggInteractions
 #' @export
-setGeneric("calcApa",
+setGeneric("aggInteractions",
            function(x,
                     files,
                     binSize,
@@ -382,4 +382,26 @@ setGeneric("calcApa",
                     verbose=TRUE,
                     BPPARAM=bpparam(),
                     ...)
-               standardGeneric("calcApa"))
+               standardGeneric("aggInteractions"))
+
+#' @rdname spanInteractions
+#' @export
+setGeneric("spanInteractions", 
+           function(x, buffer=0)
+               standardGeneric("spanInteractions"))
+
+#' @rdname aggRanges
+#' @export
+setGeneric("aggRanges",
+           function(x,
+                    files,
+                    binSize,
+                    buffer=0.5,
+                    scale=TRUE,
+                    normalize=TRUE,
+                    FUN=sum,
+                    nBlocks=5,
+                    verbose=TRUE,
+                    BPPARAM=bpparam(),
+                    ...)
+           standardGeneric("aggRanges"))
