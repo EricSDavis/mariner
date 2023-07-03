@@ -207,6 +207,8 @@
 #' @param nBlocks Number of blocks for block-processing JaggedArrays.
 #'  Default is 5. Increase this for large datasets. To read and process
 #'  all data at once, set this value to 1.
+#' @param verbose Boolean (TRUE or FALSE) describing
+#'  whether to report block-processing progress.
 #' @param chunkSize Number (length one numeric vector)
 #'  indicating how many values of `x` to chunk for each
 #'  write to HDF5 stored data. This has downstream
