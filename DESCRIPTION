@@ -84,6 +84,7 @@ Collate:
     'methods-MergedGInteractions.R'
     'methods-adjustEnrichment.R'
     'methods-aggHicMatrices.R'
+    'methods-aggInteractions.R'
     'methods-as_ginteractions.R'
     'methods-binPairs.R'
     'methods-binRanges.R'

@@ -80,8 +80,9 @@
 #' and adds an expansion buffer that is a fraction
 #' of the interaction distance.
 #'
-#' Note, this function does not handle interchromosomal
-#' interactions.
+#' Note, this function removes interchromosomal and
+#' ranges that would fall out of bounds of the
+#' sequence lengths.
 #'
 #' @param x GInteractions object.
 #' @param buffer Fraction (length one numeric vector)
