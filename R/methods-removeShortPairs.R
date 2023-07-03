@@ -39,6 +39,12 @@
 #' the Hi-C diagonal or a specified
 #' distance from the diagonal.
 #'
+#' Removes short interactions with some
+#' padding from the diagonal. If you are
+#' resizing the regions with a function
+#' like `pixelsToMatrices()`, make sure
+#' this function is run afterwards.
+#'
 #' Note this is only applies to
 #' intrachromosomal pairs, as pair distance
 #' is meaningless for interchromosomal

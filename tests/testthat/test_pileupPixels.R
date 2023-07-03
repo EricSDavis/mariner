@@ -1,4 +1,4 @@
-test_that("aggInteractions works", {
+test_that("pileupPixels works", {
     
     ## Read .hic file paths
     hicFiles <- c(
@@ -20,7 +20,7 @@ test_that("aggInteractions works", {
     GenomeInfoDb::seqlevelsStyle(loops) <- 'ENSEMBL'
 
     ## APA
-    mat <- aggInteractions(
+    mat <- pileupPixels(
         x=loops,
         files=hicFiles[2],
         binSize=5e3,
@@ -29,7 +29,7 @@ test_that("aggInteractions works", {
     )
     expect_equal(sum(mat), 1133)
     
-    mat <- aggInteractions(
+    mat <- pileupPixels(
         x=loops,
         files=hicFiles[2],
         binSize=5e3,
@@ -38,7 +38,7 @@ test_that("aggInteractions works", {
     )
     expect_equal(round(sum(mat), 2), 1.24)
     
-    mat <- aggInteractions(
+    mat <- pileupPixels(
         x=loops,
         files=hicFiles[2],
         binSize=5e3,

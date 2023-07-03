@@ -22,6 +22,13 @@ A GInteractions object with
  the short pairs removed.
 }
 \description{
+Removes short interactions with some
+padding from the diagonal. If you are
+resizing the regions with a function
+like `pixelsToMatrices()`, make sure
+this function is run afterwards.
+}
+\details{
 Note this is only applies to
 intrachromosomal pairs, as pair distance
 is meaningless for interchromosomal

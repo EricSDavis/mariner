@@ -1,8 +1,7 @@
-
-#' Internal aggInteractions function
-#' @inheritParams aggInteractions
+#' Internal pileupPixels function
+#' @inheritParams pileupPixels
 #' @noRd
-.aggInteractions <- function(x, files, binSize, buffer,
+.pileupPixels <- function(x, files, binSize, buffer,
                      removeShort, minPairDist, normalize,
                      FUN, nBlocks, verbose, BPPARAM, ...) {
     
@@ -34,13 +33,13 @@
     return(agg)
 }
 
-#' Conduct aggregate peak analysis
+#' Pileup Hi-C pixels
 #' 
-#' aggInteractions optionally removes short interactions
-#' that intersect the diagonal before converting
-#' the interactions into square regions that are
-#' extracted from Hi-C files then aggregated into
-#' a single matrix.
+#' pileupPixels optionally removes short interactions
+#' that intersect the diagonal before extracting
+#' then aggregating square regions around each
+#' pixel from Hi-C files. This is also known
+#' as aggregate peak analysis (APA)
 #' 
 #' Note that pair distance filtering is done after
 #' expanding interactions to matrices.
@@ -99,7 +98,7 @@
 #' GenomeInfoDb::seqlevelsStyle(loops) <- 'ENSEMBL'
 #' 
 #' ## APA
-#' mat <- aggInteractions(
+#' mat <- pileupPixels(
 #'     x=loops,
 #'     files=hicFile,
 #'     binSize=5e3,
@@ -108,10 +107,10 @@
 #' )
 #' 
 #' 
-#' @rdname aggInteractions
+#' @rdname pileupPixels
 #' @export
-setMethod("aggInteractions",
+setMethod("pileupPixels",
           signature(x='GInteractions',
                     files='character',
                     binSize='numeric'),
-          definition=.aggInteractions)
+          definition=.pileupPixels)

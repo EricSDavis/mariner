@@ -2,6 +2,19 @@
 
     Code
       counts(regularize(ija, ndim = c(3, 3), scale = FALSE))
+    Message <simpleMessage>
+      / Reading and realizing block 1/3 of file 1/1 ... 
+      OK
+      \ Processing it ... 
+      OK
+      / Reading and realizing block 2/3 of file 1/1 ... 
+      OK
+      \ Processing it ... 
+      OK
+      / Reading and realizing block 3/3 of file 1/1 ... 
+      OK
+      \ Processing it ... 
+      OK
     Output
       <3 x 3 x 3 x 1> DelayedArray object of type "double":
       ,,1,FS
@@ -26,7 +39,7 @@
 ---
 
     Code
-      counts(regularize(ija, ndim = c(1, 3), scale = FALSE))
+      counts(regularize(ija, ndim = c(1, 3), scale = FALSE, verbose = FALSE))
     Output
       <1 x 3 x 3 x 1> DelayedArray object of type "double":
       ,,1,FS
@@ -45,7 +58,7 @@
 ---
 
     Code
-      counts(regularize(ija, ndim = c(3, 1), scale = FALSE))
+      counts(regularize(ija, ndim = c(3, 1), scale = FALSE, verbose = FALSE))
     Output
       <3 x 1 x 3 x 1> DelayedArray object of type "double":
       ,,1,FS

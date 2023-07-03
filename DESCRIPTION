@@ -1,7 +1,7 @@
 Package: mariner
 Type: Package
 Title: Mariner: Explore the Hi-Cs
-Version: 1.1.2
+Version: 1.1.3
 Authors@R: c(
     person("Eric", "Davis", role = c("aut", "cre"),
       email = "ericscottdavis@outlook.com",
@@ -84,7 +84,6 @@ Collate:
     'methods-MergedGInteractions.R'
     'methods-adjustEnrichment.R'
     'methods-aggHicMatrices.R'
-    'methods-aggInteractions.R'
     'methods-as_ginteractions.R'
     'methods-binPairs.R'
     'methods-binRanges.R'
@@ -93,6 +92,8 @@ Collate:
     'methods-hdf5BlockApply.R'
     'methods-makeRandomGInteractions.R'
     'methods-mergePairs.R'
+    'methods-pileupDomains.R'
+    'methods-pileupPixels.R'
     'methods-pixelsToMatrices.R'
     'methods-plotBullseye.R'
     'methods-plotMatrix.R'
@@ -101,7 +102,6 @@ Collate:
     'methods-removeShortPairs.R'
     'methods-shiftRanges.R'
     'methods-snapToBins.R'
-    'methods-spanInteractions.R'
     'zzz.R'
 URL: 
     https://ericscottdavis.com/mariner/,

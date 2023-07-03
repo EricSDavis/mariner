@@ -362,14 +362,15 @@ setGeneric("regularize",
                     h5File=tempfile(fileext=".h5"),
                     scale=TRUE,
                     nBlocks=5,
+                    verbose=TRUE,
                     chunkSize=1,
                     compressionLevel=0,
                     ...)
                standardGeneric("regularize"))
 
-#' @rdname aggInteractions
+#' @rdname pileupPixels
 #' @export
-setGeneric("aggInteractions",
+setGeneric("pileupPixels",
            function(x,
                     files,
                     binSize,
@@ -382,26 +383,22 @@ setGeneric("aggInteractions",
                     verbose=TRUE,
                     BPPARAM=bpparam(),
                     ...)
-               standardGeneric("aggInteractions"))
+               standardGeneric("pileupPixels"))
 
-#' @rdname spanInteractions
+#' @rdname pileupDomains
 #' @export
-setGeneric("spanInteractions", 
-           function(x, buffer=0)
-               standardGeneric("spanInteractions"))
-
-#' @rdname aggRanges
-#' @export
-setGeneric("aggRanges",
+setGeneric("pileupDomains",
            function(x,
                     files,
                     binSize,
                     buffer=0.5,
+                    ndim=c(100, 100),
                     scale=TRUE,
                     normalize=TRUE,
                     FUN=sum,
-                    nBlocks=5,
+                    nBlocks=50,
                     verbose=TRUE,
                     BPPARAM=bpparam(),
+                    blockSize=1e6,
                     ...)
-           standardGeneric("aggRanges"))
+           standardGeneric("pileupDomains"))
