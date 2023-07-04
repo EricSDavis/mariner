@@ -60,7 +60,9 @@ Imports:
     utils,
     grDevices,
     graphics,
-    grid
+    grid,
+    tibble,
+    tidyr
 biocViews:
     FunctionalGenomics,
     Visualization,
