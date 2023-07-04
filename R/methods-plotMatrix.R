@@ -210,12 +210,6 @@
 
     ## Viewports ---------------------------
 
-    ## Get viewport name
-    currentViewports <- plotgardener:::current_viewports()
-    nVp <- length(grep("MatrixPlot", currentViewports))
-    vp_name <- paste0("MatrixPlot", nVp + 1)
-
-
     ## If placing information is provided but plot == TRUE,
     ## set up it's own viewport separate from pageCreate
 
@@ -228,14 +222,18 @@
                        width=unit(1, "snpc"),
                        clip="on",
                        just="center",
-                       name=vp_name)
+                       name="MatrixPlot1")
 
         if (matrixPlot$draw){
-            vp$name <- "MatrixPlot1"
             grid.newpage()
         }
 
     } else {
+        
+        ## Get viewport name
+        currentViewports <- plotgardener:::current_viewports()
+        nVp <- length(grep("MatrixPlot", currentViewports))
+        vp_name <- paste0("MatrixPlot", nVp + 1)
 
         ## Check that plotgardener page exists
         plotgardener:::check_page(
