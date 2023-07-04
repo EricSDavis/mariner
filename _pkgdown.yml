@@ -53,6 +53,13 @@ reference:
       - aggHicMatrices
       - hdf5BlockApply
       - plotMatrix
+  - title: "Pileup analysis"
+    desc: >
+      Wraps several mariner functions to facilitate
+      pileup analysis of Hi-C pixels or domains.
+    contents:
+      - pileupPixels
+      - pileupDomains
   - title: "Calculating Loop Enrichment"
     desc: >
       Determine loop enrichment to local background with

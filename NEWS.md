@@ -1,3 +1,27 @@
+# mariner 1.1.3
+
+New features:
+
+Wrapper functions for performing pileup
+analysis on pixels or domains.
+
+* `pileupPixels()` for extracting and aggregating
+Hi-C counts in square regions around pixels of
+interest (aggregate peak analysis).
+
+* `pileupDomains()` for extracting, resizing, and
+aggregating Hi-C counts in domain regions of
+interest (aggregate domain analysis).
+
+Changes:
+
+* Improve documentation for `removeShortPairs()`
+to make it more clear that it should be run after
+any function that resizes interactions.
+
+* Add `verbose` option to `regularize()` to update
+users on regularization of jagged arrays.
+
 # mariner 1.1.2
 
 Bug fixes:

@@ -362,7 +362,43 @@ setGeneric("regularize",
                     h5File=tempfile(fileext=".h5"),
                     scale=TRUE,
                     nBlocks=5,
+                    verbose=TRUE,
                     chunkSize=1,
                     compressionLevel=0,
                     ...)
                standardGeneric("regularize"))
+
+#' @rdname pileupPixels
+#' @export
+setGeneric("pileupPixels",
+           function(x,
+                    files,
+                    binSize,
+                    buffer=5,
+                    removeShort=TRUE,
+                    minPairDist=0,
+                    normalize=TRUE,
+                    FUN=sum,
+                    nBlocks=5,
+                    verbose=TRUE,
+                    BPPARAM=bpparam(),
+                    ...)
+               standardGeneric("pileupPixels"))
+
+#' @rdname pileupDomains
+#' @export
+setGeneric("pileupDomains",
+           function(x,
+                    files,
+                    binSize,
+                    buffer=0.5,
+                    ndim=c(100, 100),
+                    scale=TRUE,
+                    normalize=TRUE,
+                    FUN=sum,
+                    nBlocks=50,
+                    verbose=TRUE,
+                    BPPARAM=bpparam(),
+                    blockSize=1e6,
+                    ...)
+           standardGeneric("pileupDomains"))
