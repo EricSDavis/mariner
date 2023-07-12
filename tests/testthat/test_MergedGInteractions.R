@@ -40,11 +40,11 @@ giList <-
 
 test_that("selectionMethod accessor works", {
 
-    x <- mergePairs(x = giList, radius = 10e03)
+    x <- mergePairs(x=giList, radius=10e03)
     selectionMethod(x) |>
         expect_identical("Mean of modes")
 
-    x <- mergePairs(x = giList, radius = 10e03, column = "APScoreAvg")
+    x <- mergePairs(x=giList, radius=10e03, column="APScoreAvg")
     selectionMethod(x) |>
         expect_identical("Select by column 'APScoreAvg'")
 })
@@ -81,7 +81,8 @@ test_that("getPairClusters accessor works", {
 
 })
 
-
+## TODO: Modfiy subsetBySource to return all sets
+## by default
 test_that("subsetBySource method works (and sources accessor)", {
 
     ## LIMA loops test
@@ -103,6 +104,9 @@ test_that("subsetBySource method works (and sources accessor)", {
         lapply(loopFiles, fread) |>
         lapply(\(x) x[sample(1:nrow(x), nrow(x)/4, replace = FALSE)]) |>
         lapply(as_ginteractions)
+    
+    ## Add names to loops
+    names(loops) <- names(loopFiles)
 
     ## Merge loops
     x <- mergePairs(loops, radius = 25e03*5)
@@ -111,7 +115,7 @@ test_that("subsetBySource method works (and sources accessor)", {
     expect_identical(sources(x), names(loopFiles))
 
     ## subsetBySource method dispatch
-    expect_equal(subsetBySource(x) |> length(), 8)
+    expect_equal(subsetBySource(x) |> length(), 255)
     expect_equal(subsetBySource(x)[[sources(x)[1]]] |> length(), 846)
     expect_equal(subsetBySource(x, include = sources(x)[1]) |> length(), 3982)
     expect_equal(subsetBySource(x, exclude = sources(x)[1]) |> length(), 9890)
@@ -157,7 +161,7 @@ test_that("subsetBySource method works (and sources accessor)", {
                                exclude = sources(x)[2:8])))
 
     ## subsetBySource(x) produces same result as
-    ## include/exclude for all sources
+    ## include/exclude for the first 8 sources
     expect_equal(
         lapply(seq_along(sources(x)), \(i){
             j <- seq_along(sources(x))[-i]
@@ -167,9 +171,9 @@ test_that("subsetBySource method works (and sources accessor)", {
         }) |>
             lapply(length) |>
             unlist(),
-        subsetBySource(x) |> lapply(length) |> unlist() |> unname()
+        subsetBySource(x)[1:8] |> lapply(length) |> unlist() |> unname()
     )
-
+    
     ## Results track with getPairClusters(x)
     mgi <- subsetBySource(x,
                           include = sources(x)[1:2],
@@ -180,7 +184,6 @@ test_that("subsetBySource method works (and sources accessor)", {
                          unique() |>
                          as.character(),
                      sources(x)[1:2])
-
 })
 
 

@@ -275,17 +275,14 @@ setMethod("sources", "MergedGInteractions",
 
     ## Calculate the src matrix
     srcMat <- .makeSrcMatrix(x)
-
+    
     ## Include and exclude
-    inBool <- apply(srcMat[,include, drop=FALSE], 1, all)
-    exBool <- apply(!srcMat[,exclude, drop=FALSE], 1, all)
-
-    ## Use intersecting conditions to return mergedPairs
-    if (any(inBool & exBool)) {
-        x[inBool & exBool]
-    } else {
-        x[0]
-    }
+    inIdx <- which(rowSums(srcMat[, include, drop=FALSE]) == length(include))
+    exIdx <- which(rowSums(srcMat[, exclude, drop=FALSE]) == 0)
+    idx <- intersect(inIdx, exIdx)
+    
+    ## Use intersecting conditions
+    x[idx]
 }
 
 #' Find subset pairs using include sources
@@ -300,16 +297,12 @@ setMethod("sources", "MergedGInteractions",
 
     ## Calculate the src matrix
     srcMat <- .makeSrcMatrix(x)
-
-    ## Include
-    bool <- apply(srcMat[,include, drop=FALSE], 1, all)
-
+    
+    ## Exclude
+    idx <- which(rowSums(srcMat[, include, drop=FALSE]) == length(include))
+    
     ## Use intersecting conditions
-    if (any(bool)) {
-        x[bool]
-    } else {
-        x[0]
-    }
+    x[idx]
 }
 
 #' Find subset pairs using exclude sources
@@ -326,54 +319,67 @@ setMethod("sources", "MergedGInteractions",
     srcMat <- .makeSrcMatrix(x)
 
     ## Exclude
-    bool <- apply(!srcMat[,exclude, drop=FALSE], 1, all)
+    idx <- which(rowSums(srcMat[, exclude, drop=FALSE]) == 0)
 
     ## Use intersecting conditions
-    if (any(bool)) {
-        x[bool]
-    } else {
-        x[0]
-    }
+    x[idx]
 }
 
 #' Internal find de novo pairs
 #' @inheritParams selectionMethod
 #' @importFrom data.table data.table
+#' @importFrom utils combn
 #' @return A `MergedGInteractions` object of de novo pairs.
 #' @noRd
 .subsetBySource <- function(x) {
+    
+    ## Calculate the src matrix
+    srcMat <- .makeSrcMatrix(x)
+    
+    ## Get all combinations of sources. 
+    ## `combs` is a list of matrices where
+    ## each column describes the sources
+    ## to include in each combination.
+    cols <- ncol(srcMat)
+    combs <- lapply(seq_len(cols), \(m) {
+        combn(cols, m)
+    })
 
-    ## Suppress NSE notes in R CMD check
-    id <- grp <- clst <- src <- nDistinct <- NULL
-
-    ## Pull out all pairs
-    ap <- x@allPairs
-
-    ## Find ids of de novo pairs
-    ## All clst < 0 are new
-    single <- ap[clst < 0, .(grp, clst, id, src, nDistinct = 1)]
-
-    ## Only new if from the same source
-    double <- ap[clst > 0,
-                 .(id, src, nDistinct = length(unique(src))),
-                 by = .(grp, clst)]
-
-    ## Combine
-    united <- rbind(single, double)
-
-    ## Extract ids for each source
-    ids <-
-        split(united[nDistinct == 1], by = "src") |>
-        lapply(`[[`, "id")
-
-    ## Select merged pairs that are "de novo"
-    ## There will be extra ids when using mean of modes.
-    novo <- lapply(ids, \(y) x[x@ids %in% y])
-
-    return(novo)
+    ## This code finds the indices that
+    ## have interactions in the supplied combination
+    ## of sources in `combs` excluding all others.
+    idxList <- 
+        lapply(combs, \(m) {
+            apply(m, 2, FUN=\(inc) {
+                ## Subset matrix for include/exclude columns
+                includeMat <- srcMat[, inc, drop=FALSE]
+                excludeMat <- srcMat[, -inc, drop=FALSE]
+                
+                ## Find indices where include is TRUE & exclude is FALSE
+                inIdx <- which(rowSums(includeMat) == length(inc))
+                exIdx <- which(rowSums(excludeMat) == 0)
+                
+                ## Return intersecting indices
+                intersect(inIdx, exIdx)
+            }, simplify=FALSE)
+        }) |> unlist(recursive=FALSE)
+    
+    ## Generate names for each combination
+    ## of sources from the source names
+    srcs <- sources(x)
+    srcNames <- lapply(combs, \(m) {
+        apply(m, 2, FUN=\(inc) {
+            paste0(srcs[unique(inc)], collapse="_")
+        })
+    }) |> unlist()
+    names(idxList) <- srcNames
+    
+    ## Index the sets
+    sets <- lapply(idxList, \(i) x[i])
+    return(sets)
 }
 
-#' Subset MergedGInteractions by source
+#' Get each set from a MergedGInteractions object
 #'
 #' Returns the subset of MergedGInteractions that belong
 #' to each input source object (see these with `sources(x)`).

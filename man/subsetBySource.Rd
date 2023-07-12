@@ -6,7 +6,7 @@
 \alias{subsetBySource,MergedGInteractions,character_OR_missing,missing-method}
 \alias{subsetBySource,MergedGInteractions,missing,character_OR_missing-method}
 \alias{subsetBySource,MergedGInteractions,character_OR_missing,character_OR_missing-method}
-\title{Subset MergedGInteractions by source}
+\title{Get each set from a MergedGInteractions object}
 \usage{
 subsetBySource(x, include, exclude)
 
