@@ -1,3 +1,16 @@
+# mariner 1.2.0
+
+Breaking changes:
+
+* Function renaming:
+    * `subsetBySource()` -> `sets()`
+    * `getPairClusters()` -> `clusters()`
+    * `aggPairMcols()` -> `aggMetadata()`
+    * `binPairs()` -> `assignToBins()`
+
+* `sets()` function now returns all combinations
+of sets from a `MergedGInteractions` object.
+
 # mariner 1.1.3
 
 New features:
@@ -78,7 +91,7 @@ S4 method dispatch on all arguments to just `x` and
 
 * Fix bug in `mergePairs()` where all pairs are altered
 during mean of mode transformation. Now original pairs
-are preserved when accessed with `getPairClusters()`.
+are preserved when accessed with `clusters()`.
 
 * Set replace method for `counts<-` accessor for
 `InteractionMatrix` objects. Helpful for converting

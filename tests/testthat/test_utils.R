@@ -177,7 +177,7 @@ test_that("Getting binSize", {
     .getBinSize(x=loops) |>
         expect_identical(5000)
 
-    .getBinSize(x=binPairs(loops, 10e03)) |>
+    .getBinSize(x=assignToBins(loops, 10e03)) |>
         expect_identical(10000)
 
 })
@@ -212,7 +212,7 @@ test_that("defaultBuffer returns correct result", {
   
   ## Extract count matrices
   mats <- 
-    binPairs(loops[1:10],100e3) |>
+    assignToBins(loops[1:10],100e3) |>
     pixelsToMatrices(buffer=testBuffer) |>
     pullHicMatrices(
       files=hicFiles,

@@ -18,7 +18,7 @@ reference:
       - as_ginteractions
       - shiftRanges
       - binRanges
-      - binPairs
+      - assignToBins
       - snapToBins
       - seqnames1
       - makeRandomGRanges
@@ -29,10 +29,10 @@ reference:
     contents:
       - mergePairs
       - MergedGInteractions
-      - aggPairMcols
-      - getPairClusters
+      - aggMetadata
+      - clusters
       - sources
-      - subsetBySource
+      - sets
   - title: "Extracting & Aggregating Interactions"
     desc: >
       Pull Hi-C pixels or matrices, then aggregate by

@@ -16,15 +16,15 @@ setGeneric("makeGInteractionsFromDataFrame",
                     ...)
                standardGeneric("makeGInteractionsFromDataFrame"))
 
-#' @rdname binPairs
+#' @rdname assignToBins
 #' @export
-setGeneric("binPairs",
+setGeneric("assignToBins",
            function(x,
                     binSize,
                     pos1 = 'center',
                     pos2 = 'center',
                     ...)
-               standardGeneric("binPairs"))
+               standardGeneric("assignToBins"))
 
 #' @rdname binRanges
 #' @export
@@ -63,28 +63,28 @@ setGeneric("mergePairs",
 setGeneric("selectionMethod", function(x, ...)
     standardGeneric("selectionMethod"))
 
-#' @rdname getPairClusters
+#' @rdname clusters
 #' @export
-setGeneric("getPairClusters", function(x, ...)
-    standardGeneric("getPairClusters"))
+setGeneric("clusters", function(x, ...)
+    standardGeneric("clusters"))
 
 #' @rdname sources
 #' @export
 setGeneric("sources", function(x)
     standardGeneric("sources"))
 
-#' @rdname subsetBySource
+#' @rdname sets
 #' @export
-setGeneric("subsetBySource", function(x,
+setGeneric("sets", function(x,
                                       include,
                                       exclude)
-    standardGeneric("subsetBySource"))
+    standardGeneric("sets"))
 
-#' @rdname aggPairMcols
+#' @rdname aggMetadata
 #' @export
-setGeneric("aggPairMcols",
+setGeneric("aggMetadata",
            function(x, columns, funs)
-               standardGeneric("aggPairMcols"))
+               standardGeneric("aggMetadata"))
 
 #' @rdname pullHicMatrices
 #' @export

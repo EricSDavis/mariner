@@ -43,7 +43,7 @@
         x <- snapToBins(x, binSize)
         msg <- c("Pairs are not binned to `binSize`.",
                  'i' = glue("Snapping to binSize={binSize}, "),
-                 'i' = glue("Use `binPairs()` or `snapToBins()` ",
+                 'i' = glue("Use `assignToBins()` or `snapToBins()` ",
                             "for more binning options."))
         inform(msg)
     }
@@ -873,7 +873,7 @@
 #'   setNames("WT") |>
 #'   read.table(header=TRUE) |>
 #'   as_ginteractions(keep.extra.columns=FALSE) |>
-#'   binPairs(binSize=100e3)
+#'   assignToBins(binSize=100e3)
 #'
 #' ## Removes the "chr" prefix for compatibility
 #' ## with the preprocessed hic files
@@ -1097,7 +1097,7 @@ setMethod("pullHicMatrices",
         abort(c("`x` are not binned to `binSize`.",
                 'i' = glue("All ranges in `x` must be equal \\
                            widths for `pullHicPixels()`."),
-                'i' = glue("Use `binPairs()` to bin or use \\
+                'i' = glue("Use `assignToBins()` to bin or use \\
                            `pullHicMatrices()` instead.")))
     }
 
@@ -1184,7 +1184,7 @@ setMethod("pullHicMatrices",
 #'   setNames("WT") |>
 #'   read.table(header=TRUE) |>
 #'   as_ginteractions(keep.extra.columns=FALSE) |>
-#'   binPairs(binSize=100e3)
+#'   assignToBins(binSize=100e3)
 #'
 #' ## Removes the "chr" prefix for compatibility
 #' ## with the preprocessed hic files

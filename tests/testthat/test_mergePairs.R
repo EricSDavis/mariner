@@ -345,8 +345,8 @@ test_that("Mean of modes option doesn't alter original ranges", {
     mgi1 <- mergePairs(x=gi, radius=binSize*2, column='count')
     mgi2 <- mergePairs(x=gi, radius=binSize*2)
     expect_identical(
-        getPairClusters(mgi1),
-        getPairClusters(mgi2)
+        clusters(mgi1),
+        clusters(mgi2)
     )
 
 })

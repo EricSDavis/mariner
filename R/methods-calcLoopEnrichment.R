@@ -138,7 +138,7 @@
     abort(c(glue("All interactions in `x` must be \\
                      the same width."),
             "i"="Check this with `width(x)`.",
-            "i"="Set binSize with `binPairs(x, binSize)`."))
+            "i"="Set binSize with `assignToBins(x, binSize)`."))
   }
   
   ## Check & show selection
@@ -266,7 +266,7 @@
 #' GenomeInfoDb::seqlevelsStyle(loops) <- 'ENSEMBL'
 #'
 #' ## Expand binSize of loops
-#' loops <- binPairs(x=loops, binSize=100e3)
+#' loops <- assignToBins(x=loops, binSize=100e3)
 #'
 #' ## Calculate loop enrichment
 #' calcLoopEnrichment(x=loops[1:10],
@@ -296,7 +296,7 @@ setMethod("calcLoopEnrichment",
 #'
 #' @examples
 #' ## Extract count matrices first
-#' mats <- binPairs(loops[1:10],100e3) |>
+#' mats <- assignToBins(loops[1:10],100e3) |>
 #'   pixelsToMatrices(buffer=10) |>
 #'     pullHicMatrices(
 #'     files=hicFiles,
