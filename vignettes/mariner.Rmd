@@ -117,7 +117,7 @@ to differently sized bins.
 
 ```{r binning1, message=FALSE}
 ## Assign to 1Kb bins
-binned <- binPairs(x=gi, binSize = 1e3, pos1='center', pos2='center')
+binned <- assignToBins(x=gi, binSize = 1e3, pos1='center', pos2='center')
 
 ## Show that each anchor is 1Kb
 library(InteractionSet)
@@ -150,14 +150,14 @@ binned separately and from different reference points
 
 ```{r binning2}
 ## Assign anchor1 to 1Kb bins and anchor2 to 25Kb bins
-binned <- binPairs(x=gi, binSize=c(1e3, 25e3), pos1="start", pos2="center")
+binned <- assignToBins(x=gi, binSize=c(1e3, 25e3), pos1="start", pos2="center")
 
 ## Show that the first anchor is 1Kb and
 ## second anchor is 25Kb
 width(binned) |> lapply(unique)
 ```
 
-While `binPairs()` assigns each pair of ranges
+While `assignToBins()` assigns each pair of ranges
 to a single bin, the `snapToBins()` function 
 assigns the starts and ends of the ranges to
 their nearest bin. This allows each anchor to
@@ -256,7 +256,7 @@ The metadata is missing from these interactions.
 Since no `column` was provided, each interaction
 may be an average of one or more interaction.
 The user can decide how metadata from each cluster
-should be aggregated with `aggPairMcols()`.
+should be aggregated with `aggMetadata()`.
 </div>
 
 The resulting object is `MergedGInteractions` class,
@@ -266,11 +266,11 @@ behaves like `GInteractions` but contains additional
 information about the clustered interactions.
 
 To view the clusters of specific interactions, use
-the `getPairClusters()` accessor.
+the `clusters()` accessor.
 
-```{r getPairClusters, results='hold'}
+```{r clusters, results='hold'}
 mgi[12772]
-getPairClusters(mgi[12772])
+clusters(mgi[12772])
 ```
 
 When no `column` argument is provided the most
@@ -295,29 +295,29 @@ mgi
 The interaction with the higher value (`selectMax=TRUE`)
 for "APScoreAvg" has been selected.
 
-```{r getPairClusters2, results='hold'}
+```{r clusters2, results='hold'}
 mgi[12772]
-getPairClusters(mgi[12772])
+clusters(mgi[12772])
 ```
 
-The `subsetBySource()` accessor allows users to
+The `sets()` accessor allows users to
 find which interactions are shared or exclusive
 between sets of interactions in the giList.
 
-```{r subsetBySource}
+```{r sets}
 ## List the input sources
 sources(mgi)
 
 ## Interactions unique to each source
-subsetBySource(mgi) |> lapply(summary)
+sets(mgi) |> lapply(summary)
 
 ## Interactions shared by both sources
-subsetBySource(x=mgi, include=sources(mgi))
+sets(x=mgi, include=sources(mgi))
 ```
 
 This is particularly useful for identifying
 _de novo_, shared or transient interactions.
-For more information see `?subsetBySource()`.
+For more information see `?sets()`.
 
 ## Extracting & Aggregating Interactions
 
@@ -408,11 +408,11 @@ GenomeInfoDb::seqlevelsStyle(mgi) <- 'ENSEMBL'
 
 
 These interactions can then be binned to the desired
-resolution with the `binPairs()` function.
+resolution with the `assignToBins()` function.
 
 ```{r binPixels}
 ## Assign interactions to 100Kb bins
-binned <- binPairs(x=mgi, binSize=100e3)
+binned <- assignToBins(x=mgi, binSize=100e3)
 ```
 
 Contact frequency can then be extracted with
@@ -553,7 +553,7 @@ This also works on rectangular selections.
 ```{r pullMatrices3}
 
 ## Bin at two different resolutions
-binned <- binPairs(x=mgi, binSize=c(100e3, 250e3))
+binned <- assignToBins(x=mgi, binSize=c(100e3, 250e3))
 
 ## Pull 10x25 matrices from 1000 interactions and 2 hic files
 iarr2 <- pullHicMatrices(
@@ -682,7 +682,7 @@ loops <-
     setNames("WT") |>
     read.table(header=TRUE, nrows=1000) |>
     as_ginteractions() |>
-    binPairs(binSize=100e3) |>
+    assignToBins(binSize=100e3) |>
     GenomeInfoDb::`seqlevelsStyle<-`('ENSEMBL')
 
 ## Define foreground & background

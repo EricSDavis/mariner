@@ -75,7 +75,7 @@ loops <-
 GenomeInfoDb::seqlevelsStyle(loops) <- 'ENSEMBL'
 
 ## Rebin loops to 2.5e6 resolution
-loops <- binPairs(x=loops, binSize=2.5e06)
+loops <- assignToBins(x=loops, binSize=2.5e06)
 
 ## Pull 5x5 matrices
 iarr <- pullHicMatrices(x=loops[1:5],

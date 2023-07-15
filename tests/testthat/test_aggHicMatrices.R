@@ -23,7 +23,7 @@ GenomeInfoDb::seqlevelsStyle(loops) <- 'ENSEMBL'
 
 ## Expand pixel ranges with a 5 pixel buffer on either side
 loops <-
-    binPairs(loops, binSize=100e3) |>
+    assignToBins(loops, binSize=100e3) |>
     pixelsToMatrices(buffer=5)
 
 ## Extract 10, 11x11 count matrices from 2 hic files

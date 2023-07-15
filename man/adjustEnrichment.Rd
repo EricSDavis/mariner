@@ -72,7 +72,7 @@ GenomeInfoDb::seqlevelsStyle(loops) <- 'ENSEMBL'
 
 ## Calculate loop enrichment
 enrich <- calcLoopEnrichment(
-    x=binPairs(loops, 100e03),
+    x=assignToBins(loops, 100e03),
     files=hicFiles
 )
 

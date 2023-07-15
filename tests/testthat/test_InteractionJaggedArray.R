@@ -107,7 +107,7 @@ test_that("InteractionJaggedArray subsetByOverlaps", {
 
 
     ## Shift first two ranges out of range
-    gi2 <- c(binPairs(gi[1:2], binSize=100e3, pos1=-200e3), gi[3:4])
+    gi2 <- c(assignToBins(gi[1:2], binSize=100e3, pos1=-200e3), gi[3:4])
 
     ## findOverlaps
     expect_identical(length(findOverlaps(iarr, iarr)), 4L)

@@ -29,8 +29,8 @@
     return(res)
 }
 
-#' Internal aggPairMcols function
-#' @inheritParams aggPairMcols
+#' Internal aggMetadata function
+#' @inheritParams aggMetadata
 #' @importFrom purrr pmap
 #' @importFrom glue glue glue_collapse single_quote
 #' @importFrom S4Vectors mcols
@@ -39,7 +39,7 @@
 #'  except = c(between, shift, first, second, indices))
 #' @return `x` with aggregated metadata columns
 #' @noRd
-.aggPairMcols <- function(x, columns, funs){
+.aggMetadata <- function(x, columns, funs){
   
     ## Suppress NSE notes in R CMD check
     i.id <- NULL
@@ -136,33 +136,33 @@
 #'                 radius = 5e03)
 #'
 #' ## List loop names
-#' aggPairMcols(x, columns = "name", fun = "list")
+#' aggMetadata(x, columns = "name", fun = "list")
 #'
 #' ## Aggregate values
-#' aggPairMcols(x, columns = c("APScoreAvg"), fun = "mean")
-#' aggPairMcols(x, columns = c("APScoreAvg", "avg"), fun = "mean")
-#' aggPairMcols(x, columns = c("APScoreAvg"), fun = c("mean", "median"))
+#' aggMetadata(x, columns = c("APScoreAvg"), fun = "mean")
+#' aggMetadata(x, columns = c("APScoreAvg", "avg"), fun = "mean")
+#' aggMetadata(x, columns = c("APScoreAvg"), fun = c("mean", "median"))
 #'
 #' ## Custom functions
-#' aggPairMcols(x, columns = c("APScoreAvg"), fun = \(x) {
+#' aggMetadata(x, columns = c("APScoreAvg"), fun = \(x) {
 #'     ifelse(is.na(sd(x)), 0, sd(x))
 #' })
 #'
 #' @return `x` with aggregated metadata columns
 #'
-#' @rdname aggPairMcols
+#' @rdname aggMetadata
 #' @export
-setMethod("aggPairMcols", signature(x = "MergedGInteractions",
+setMethod("aggMetadata", signature(x = "MergedGInteractions",
                                     columns = "character",
                                     funs = "character_OR_function_OR_list"),
-          definition = .aggPairMcols)
+          definition = .aggMetadata)
 
 #' Accessor for sources
 #'
 #' Access the names or source files of
 #' a `MergedGInteractions` object.
 #'
-#' @inheritParams subsetBySource
+#' @inheritParams sets
 #' @return A character vector of names or source
 #'  files of a `MergedGInteractions` object.
 #' @examples
@@ -198,7 +198,7 @@ setMethod("sources", "MergedGInteractions",
           function(x) as.character(unique(x@allPairs$src)))
 
 #' Create logial matrix of sources for each merged pair
-#' @inheritParams subsetBySource
+#' @inheritParams sets
 #' @importFrom data.table data.table as.data.table
 #' @importFrom stats setNames
 #' @return A logical matrix with columns for each source
@@ -241,7 +241,7 @@ setMethod("sources", "MergedGInteractions",
 }
 
 #' Check source names
-#' @inheritParams subsetBySource
+#' @inheritParams sets
 #' @param vec Input character vector (i.e. include, exclude or both)
 #' @importFrom glue glue glue_collapse double_quote
 #' @importFrom rlang abort
@@ -264,60 +264,53 @@ setMethod("sources", "MergedGInteractions",
 }
 
 #' Find subset pairs using include and exclude sources
-#' @inheritParams subsetBySource
+#' @inheritParams sets
 #' @importFrom data.table data.table
 #' @return A `MergedGInteractions` object of subset pairs.
 #' @noRd
-.subsetBySourceIncludeExclude <- function(x, include, exclude) {
+.setsIncludeExclude <- function(x, include, exclude) {
 
     ## Check source names
     .checkSourceNames(x, vec = c(include, exclude))
 
     ## Calculate the src matrix
     srcMat <- .makeSrcMatrix(x)
-
+    
     ## Include and exclude
-    inBool <- apply(srcMat[,include, drop=FALSE], 1, all)
-    exBool <- apply(!srcMat[,exclude, drop=FALSE], 1, all)
-
-    ## Use intersecting conditions to return mergedPairs
-    if (any(inBool & exBool)) {
-        x[inBool & exBool]
-    } else {
-        x[0]
-    }
+    inIdx <- which(rowSums(srcMat[, include, drop=FALSE]) == length(include))
+    exIdx <- which(rowSums(srcMat[, exclude, drop=FALSE]) == 0)
+    idx <- intersect(inIdx, exIdx)
+    
+    ## Use intersecting conditions
+    x[idx]
 }
 
 #' Find subset pairs using include sources
-#' @inheritParams subsetBySource
+#' @inheritParams sets
 #' @importFrom data.table data.table
 #' @return A `MergedGInteractions` object of subset pairs.
 #' @noRd
-.subsetBySourceInclude <- function(x, include) {
+.setsInclude <- function(x, include) {
 
     ## Check source names
     .checkSourceNames(x, vec = include)
 
     ## Calculate the src matrix
     srcMat <- .makeSrcMatrix(x)
-
-    ## Include
-    bool <- apply(srcMat[,include, drop=FALSE], 1, all)
-
+    
+    ## Exclude
+    idx <- which(rowSums(srcMat[, include, drop=FALSE]) == length(include))
+    
     ## Use intersecting conditions
-    if (any(bool)) {
-        x[bool]
-    } else {
-        x[0]
-    }
+    x[idx]
 }
 
 #' Find subset pairs using exclude sources
-#' @inheritParams subsetBySource
+#' @inheritParams sets
 #' @importFrom data.table data.table
 #' @return A `MergedGInteractions` object of subset pairs.
 #' @noRd
-.subsetBySourceExclude <- function(x, exclude) {
+.setsExclude <- function(x, exclude) {
 
     ## Check source names
     .checkSourceNames(x, vec = exclude)
@@ -326,54 +319,67 @@ setMethod("sources", "MergedGInteractions",
     srcMat <- .makeSrcMatrix(x)
 
     ## Exclude
-    bool <- apply(!srcMat[,exclude, drop=FALSE], 1, all)
+    idx <- which(rowSums(srcMat[, exclude, drop=FALSE]) == 0)
 
     ## Use intersecting conditions
-    if (any(bool)) {
-        x[bool]
-    } else {
-        x[0]
-    }
+    x[idx]
 }
 
 #' Internal find de novo pairs
 #' @inheritParams selectionMethod
 #' @importFrom data.table data.table
+#' @importFrom utils combn
 #' @return A `MergedGInteractions` object of de novo pairs.
 #' @noRd
-.subsetBySource <- function(x) {
+.sets <- function(x) {
+    
+    ## Calculate the src matrix
+    srcMat <- .makeSrcMatrix(x)
+    
+    ## Get all combinations of sources. 
+    ## `combs` is a list of matrices where
+    ## each column describes the sources
+    ## to include in each combination.
+    cols <- ncol(srcMat)
+    combs <- lapply(seq_len(cols), \(m) {
+        combn(cols, m)
+    })
 
-    ## Suppress NSE notes in R CMD check
-    id <- grp <- clst <- src <- nDistinct <- NULL
-
-    ## Pull out all pairs
-    ap <- x@allPairs
-
-    ## Find ids of de novo pairs
-    ## All clst < 0 are new
-    single <- ap[clst < 0, .(grp, clst, id, src, nDistinct = 1)]
-
-    ## Only new if from the same source
-    double <- ap[clst > 0,
-                 .(id, src, nDistinct = length(unique(src))),
-                 by = .(grp, clst)]
-
-    ## Combine
-    united <- rbind(single, double)
-
-    ## Extract ids for each source
-    ids <-
-        split(united[nDistinct == 1], by = "src") |>
-        lapply(`[[`, "id")
-
-    ## Select merged pairs that are "de novo"
-    ## There will be extra ids when using mean of modes.
-    novo <- lapply(ids, \(y) x[x@ids %in% y])
-
-    return(novo)
+    ## This code finds the indices that
+    ## have interactions in the supplied combination
+    ## of sources in `combs` excluding all others.
+    idxList <- 
+        lapply(combs, \(m) {
+            apply(m, 2, FUN=\(inc) {
+                ## Subset matrix for include/exclude columns
+                includeMat <- srcMat[, inc, drop=FALSE]
+                excludeMat <- srcMat[, -inc, drop=FALSE]
+                
+                ## Find indices where include is TRUE & exclude is FALSE
+                inIdx <- which(rowSums(includeMat) == length(inc))
+                exIdx <- which(rowSums(excludeMat) == 0)
+                
+                ## Return intersecting indices
+                intersect(inIdx, exIdx)
+            }, simplify=FALSE)
+        }) |> unlist(recursive=FALSE)
+    
+    ## Generate names for each combination
+    ## of sources from the source names
+    srcs <- sources(x)
+    srcNames <- lapply(combs, \(m) {
+        apply(m, 2, FUN=\(inc) {
+            paste0(srcs[unique(inc)], collapse="_")
+        })
+    }) |> unlist()
+    names(idxList) <- srcNames
+    
+    ## Index the sets
+    sets <- lapply(idxList, \(i) x[i])
+    return(sets)
 }
 
-#' Subset MergedGInteractions by source
+#' Get each set from a MergedGInteractions object
 #'
 #' Returns the subset of MergedGInteractions that belong
 #' to each input source object (see these with `sources(x)`).
@@ -383,7 +389,7 @@ setMethod("sources", "MergedGInteractions",
 #' merged pair is not returned.
 #'
 #' Optional `include` and `exclude` parameters modulate
-#' the behaveior of `subsetBySource` to return different
+#' the behavior of `sets` to return different
 #' subsets of originating pairs. For example, `include` requires
 #' that the returned pairs be present in specific sources,
 #' while `exclude` requires that returned pairs be absent
@@ -429,47 +435,47 @@ setMethod("sources", "MergedGInteractions",
 #' ## Merge pairs
 #' x <- mergePairs(x = giList, radius = 20)
 #'
-#' subsetBySource(x)
+#' sets(x)
 #'
-#' @rdname subsetBySource
+#' @rdname sets
 #' @export
-setMethod("subsetBySource",
+setMethod("sets",
           signature(x = "MergedGInteractions",
                     include = "missing",
                     exclude = "missing"),
-          definition = .subsetBySource)
+          definition = .sets)
 
-#' @rdname subsetBySource
+#' @rdname sets
 #' @export
-setMethod("subsetBySource",
+setMethod("sets",
           signature(x = "MergedGInteractions",
                     include = "character_OR_missing",
                     exclude = "missing"),
-          definition = .subsetBySourceInclude)
+          definition = .setsInclude)
 
-#' @rdname subsetBySource
+#' @rdname sets
 #' @export
-setMethod("subsetBySource",
+setMethod("sets",
           signature(x = "MergedGInteractions",
                     include = "missing",
                     exclude = "character_OR_missing"),
-          definition = .subsetBySourceExclude)
+          definition = .setsExclude)
 
-#' @rdname subsetBySource
+#' @rdname sets
 #' @export
-setMethod("subsetBySource",
+setMethod("sets",
           signature(x = "MergedGInteractions",
                     include = "character_OR_missing",
                     exclude = "character_OR_missing"),
-          definition = .subsetBySourceIncludeExclude)
+          definition = .setsIncludeExclude)
 
 
 
-#' Internal accessor function for getPairClusters
-#' @inheritParams getPairClusters
+#' Internal accessor function for clusters
+#' @inheritParams clusters
 #' @importFrom data.table data.table
 #' @noRd
-.getPairClusters <- function(x) {
+.clusters <- function(x) {
 
     ## Suppress NSE notes in R CMD check
     i.id <- NULL
@@ -528,15 +534,15 @@ setMethod("subsetBySource",
 #'                 column = "APScoreAvg")
 #'
 #' ## Access pair clusters
-#' getPairClusters(x[1:3])
-#' getPairClusters(x[3:1])
-#' getPairClusters(x[c(3, 1, 2)])
-#' getPairClusters(x) |> length()
+#' clusters(x[1:3])
+#' clusters(x[3:1])
+#' clusters(x[c(3, 1, 2)])
+#' clusters(x) |> length()
 #'
-#' @rdname getPairClusters
+#' @rdname clusters
 #' @export
-setMethod("getPairClusters", signature(x = "MergedGInteractions"),
-          definition = .getPairClusters)
+setMethod("clusters", signature(x = "MergedGInteractions"),
+          definition = .clusters)
 
 #' Get selectionMethod from MergedGInteractions object
 #'

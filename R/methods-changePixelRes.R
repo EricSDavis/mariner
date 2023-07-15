@@ -113,7 +113,7 @@
 #' GenomeInfoDb::seqlevelsStyle(loops) <- 'ENSEMBL'
 #'
 #' ## Rebin loops to 2.5e6 resolution
-#' loops <- binPairs(x=loops, binSize=2.5e06)
+#' loops <- assignToBins(x=loops, binSize=2.5e06)
 #'
 #' ## Pull 5x5 matrices
 #' iarr <- pullHicMatrices(x=loops[1:5],
@@ -155,7 +155,7 @@ setMethod("selectPixel",
 
     ## Execute steps
     x |>
-        binPairs(binSize=from) |>
+        assignToBins(binSize=from) |>
         pullHicMatrices(binSize=to, files=files, norm=norm, ...) |>
         selectPixel(aggFUN, selectFUN, nBlocks, verbose)
 }
@@ -237,7 +237,7 @@ setMethod("selectPixel",
 #' GenomeInfoDb::seqlevelsStyle(loops) <- 'ENSEMBL'
 #'
 #' ## Rebin loops to 2.5e6 resolution
-#' loops <- binPairs(x=loops, binSize=2.5e06)
+#' loops <- assignToBins(x=loops, binSize=2.5e06)
 #'
 #' ## Change pixel resolution from 2.5e6 to 500e3
 #' changePixelRes(x=loops[1:5],
