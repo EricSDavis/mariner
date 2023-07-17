@@ -402,3 +402,19 @@ setGeneric("pileupDomains",
                     blockSize=1e6,
                     ...)
            standardGeneric("pileupDomains"))
+
+#' @rdname pileupBoundaries
+#' @export
+setGeneric("pileupBoundaries",
+           function(x,
+                    files,
+                    binSize,
+                    width=500e3,
+                    normalize=TRUE,
+                    FUN=sum,
+                    nBlocks=50,
+                    verbose=TRUE,
+                    BPPARAM=bpparam(),
+                    blockSize=1e6,
+                    ...)
+           standardGeneric("pileupBoundaries"))

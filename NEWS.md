@@ -1,3 +1,11 @@
+# mariner 1.2.1
+
+New features:
+
+Added `pileupBoundaries()` for visualizing pileup
+Hi-C contacts in regions around genomic loci/boundary
+elements.
+
 # mariner 1.2.0
 
 Breaking changes:

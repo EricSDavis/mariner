@@ -56,10 +56,12 @@ reference:
   - title: "Pileup analysis"
     desc: >
       Wraps several mariner functions to facilitate
-      pileup analysis of Hi-C pixels or domains.
+      pileup analysis of Hi-C pixels, domains or
+      boundaries.
     contents:
       - pileupPixels
       - pileupDomains
+      - pileupBoundaries
   - title: "Calculating Loop Enrichment"
     desc: >
       Determine loop enrichment to local background with

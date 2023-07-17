@@ -1,7 +1,7 @@
 Package: mariner
 Type: Package
 Title: Mariner: Explore the Hi-Cs
-Version: 1.2.0
+Version: 1.2.1
 Authors@R: c(
     person("Eric", "Davis", role = c("aut", "cre"),
       email = "ericscottdavis@outlook.com",
@@ -92,6 +92,7 @@ Collate:
     'methods-hdf5BlockApply.R'
     'methods-makeRandomGInteractions.R'
     'methods-mergePairs.R'
+    'methods-pileupBoundaries.R'
     'methods-pileupDomains.R'
     'methods-pileupPixels.R'
     'methods-pixelsToMatrices.R'
