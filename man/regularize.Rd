@@ -13,14 +13,33 @@ regularize(
   h5File = tempfile(fileext = ".h5"),
   scale = TRUE,
   nBlocks = 5,
+  verbose = TRUE,
   chunkSize = 1,
   compressionLevel = 0,
   ...
 )
 
-\S4method{regularize}{JaggedArray}(x, ndim, h5File, scale, nBlocks, chunkSize, compressionLevel)
+\S4method{regularize}{JaggedArray}(
+  x,
+  ndim,
+  h5File,
+  scale,
+  nBlocks,
+  verbose,
+  chunkSize,
+  compressionLevel
+)
 
-\S4method{regularize}{InteractionJaggedArray}(x, ndim, h5File, scale, nBlocks, chunkSize, compressionLevel)
+\S4method{regularize}{InteractionJaggedArray}(
+  x,
+  ndim,
+  h5File,
+  scale,
+  nBlocks,
+  verbose,
+  chunkSize,
+  compressionLevel
+)
 }
 \arguments{
 \item{x}{A JaggedArray or InteractionJaggedArray object.}
@@ -37,6 +56,9 @@ total signal in each matrix.}
 \item{nBlocks}{Number of blocks for block-processing JaggedArrays.
 Default is 5. Increase this for large datasets. To read and process
 all data at once, set this value to 1.}
+
+\item{verbose}{Boolean (TRUE or FALSE) describing
+whether to report block-processing progress.}
 
 \item{chunkSize}{Number (length one numeric vector)
 indicating how many values of `x` to chunk for each

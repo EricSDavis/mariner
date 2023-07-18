@@ -35,7 +35,7 @@
 #'     setNames("WT") |>
 #'     read.table(header=TRUE) |>
 #'     as_ginteractions(keep.extra.columns=FALSE) |>
-#'     binPairs(binSize=100e3)
+#'     assignToBins(binSize=100e3)
 #'
 #' ## Removes the "chr" prefix for compatibility
 #' ## with the preprocessed hic files

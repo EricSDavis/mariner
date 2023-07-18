@@ -16,15 +16,15 @@ setGeneric("makeGInteractionsFromDataFrame",
                     ...)
                standardGeneric("makeGInteractionsFromDataFrame"))
 
-#' @rdname binPairs
+#' @rdname assignToBins
 #' @export
-setGeneric("binPairs",
+setGeneric("assignToBins",
            function(x,
                     binSize,
                     pos1 = 'center',
                     pos2 = 'center',
                     ...)
-               standardGeneric("binPairs"))
+               standardGeneric("assignToBins"))
 
 #' @rdname binRanges
 #' @export
@@ -63,28 +63,28 @@ setGeneric("mergePairs",
 setGeneric("selectionMethod", function(x, ...)
     standardGeneric("selectionMethod"))
 
-#' @rdname getPairClusters
+#' @rdname clusters
 #' @export
-setGeneric("getPairClusters", function(x, ...)
-    standardGeneric("getPairClusters"))
+setGeneric("clusters", function(x, ...)
+    standardGeneric("clusters"))
 
 #' @rdname sources
 #' @export
 setGeneric("sources", function(x)
     standardGeneric("sources"))
 
-#' @rdname subsetBySource
+#' @rdname sets
 #' @export
-setGeneric("subsetBySource", function(x,
+setGeneric("sets", function(x,
                                       include,
                                       exclude)
-    standardGeneric("subsetBySource"))
+    standardGeneric("sets"))
 
-#' @rdname aggPairMcols
+#' @rdname aggMetadata
 #' @export
-setGeneric("aggPairMcols",
+setGeneric("aggMetadata",
            function(x, columns, funs)
-               standardGeneric("aggPairMcols"))
+               standardGeneric("aggMetadata"))
 
 #' @rdname pullHicMatrices
 #' @export
@@ -362,7 +362,59 @@ setGeneric("regularize",
                     h5File=tempfile(fileext=".h5"),
                     scale=TRUE,
                     nBlocks=5,
+                    verbose=TRUE,
                     chunkSize=1,
                     compressionLevel=0,
                     ...)
                standardGeneric("regularize"))
+
+#' @rdname pileupPixels
+#' @export
+setGeneric("pileupPixels",
+           function(x,
+                    files,
+                    binSize,
+                    buffer=5,
+                    removeShort=TRUE,
+                    minPairDist=0,
+                    normalize=TRUE,
+                    FUN=sum,
+                    nBlocks=5,
+                    verbose=TRUE,
+                    BPPARAM=bpparam(),
+                    ...)
+               standardGeneric("pileupPixels"))
+
+#' @rdname pileupDomains
+#' @export
+setGeneric("pileupDomains",
+           function(x,
+                    files,
+                    binSize,
+                    buffer=0.5,
+                    ndim=c(100, 100),
+                    scale=TRUE,
+                    normalize=TRUE,
+                    FUN=sum,
+                    nBlocks=50,
+                    verbose=TRUE,
+                    BPPARAM=bpparam(),
+                    blockSize=1e6,
+                    ...)
+           standardGeneric("pileupDomains"))
+
+#' @rdname pileupBoundaries
+#' @export
+setGeneric("pileupBoundaries",
+           function(x,
+                    files,
+                    binSize,
+                    width=500e3,
+                    normalize=TRUE,
+                    FUN=sum,
+                    nBlocks=50,
+                    verbose=TRUE,
+                    BPPARAM=bpparam(),
+                    blockSize=1e6,
+                    ...)
+           standardGeneric("pileupBoundaries"))

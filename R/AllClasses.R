@@ -44,6 +44,11 @@ setClassUnion("list_OR_SimpleList_OR_GInteractions",
 setClassUnion("GInteractions_OR_InteractionSet",
               c("GInteractions", "InteractionSet"))
 
+#' Class union for GRanges or GInteractions-like
+#' @importClassesFrom GenomicRanges GRanges
+#' @noRd
+setClassUnion("GRanges_OR_GInteractions",
+              c("GRanges", "GInteractions_OR_InteractionSet"))
 
 ## DelegatingGInteractions class -----------------------------------------------
 

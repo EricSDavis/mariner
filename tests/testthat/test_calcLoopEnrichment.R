@@ -529,7 +529,7 @@ test_that("calcLoopEnrichment", {
 
     ## Doesn't accept loops of variable resolution
     loops |>
-        binPairs(c(5e03, 10e03)) |>
+        assignToBins(c(5e03, 10e03)) |>
         calcLoopEnrichment(files=hicFiles) |>
         expect_error("All ranges.*must be equal widths.")
 
@@ -556,7 +556,7 @@ test_that("calcLoopEnrichment", {
                    dim = c(10L, 2L),
                    dimnames = list(NULL, c("FS","WT"))
                ))
-    res <- calcLoopEnrichment(x=loops[1:10] |> binPairs(100e03),
+    res <- calcLoopEnrichment(x=loops[1:10] |> assignToBins(100e03),
                               files=hicFiles)
     expect_equal(res, exp)
     expect_s4_class(res, "DelayedMatrix")
@@ -585,7 +585,7 @@ test_that("InteractionArray method for calcLoopEnrichment runs correctly",{
  
    ## Test non-square matrices 
   mats <- 
-    binPairs(loops[1:100],binSize = c(100e3, 50e3)) |>
+    assignToBins(loops[1:100],binSize = c(100e3, 50e3)) |>
     pullHicMatrices(
       files=hicFiles,
       binSize=10e3,
@@ -597,7 +597,7 @@ test_that("InteractionArray method for calcLoopEnrichment runs correctly",{
   
   ## Test even matrices
   mats <- 
-    binPairs(loops[1:100],binSize = 100e3) |>
+    assignToBins(loops[1:100],binSize = 100e3) |>
     pullHicMatrices(
       files=hicFiles,
       binSize=50e3,
@@ -609,7 +609,7 @@ test_that("InteractionArray method for calcLoopEnrichment runs correctly",{
   
   ## Test non-matching buffers
   mats <- 
-    binPairs(loops[1:100],100e3) |>
+    assignToBins(loops[1:100],100e3) |>
     pixelsToMatrices(buffer=5) |>
     pullHicMatrices(
       files=hicFiles,
@@ -624,7 +624,7 @@ test_that("InteractionArray method for calcLoopEnrichment runs correctly",{
   ) |> expect_error("`buffer` must be the same")
   
   mats <- 
-    binPairs(loops[1:100],100e3) |>
+    assignToBins(loops[1:100],100e3) |>
     pixelsToMatrices(buffer=10) |>
     pullHicMatrices(
       files=hicFiles,
@@ -676,7 +676,7 @@ test_that("InteractionArray method for calcLoopEnrichment runs correctly",{
              ))
   
   mats <- 
-    binPairs(loops[1:10],100e3) |>
+    assignToBins(loops[1:10],100e3) |>
     pixelsToMatrices(buffer=5) |>
     pullHicMatrices(
       files=hicFiles,
@@ -731,7 +731,7 @@ test_that("calcLoopEnrichment function can use local environment objects",{
   expect_error(.modifyEnrichFun(simpleFun), "object.*not found")
   
   mats <- 
-    binPairs(loops[1:10],100e3) |>
+    assignToBins(loops[1:10],100e3) |>
     pixelsToMatrices(buffer=5) |>
     pullHicMatrices(
       files=hicFiles,

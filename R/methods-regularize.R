@@ -60,8 +60,9 @@
 #' @importFrom HDF5Array HDF5Array
 #' @importFrom DelayedArray DelayedArray
 #' @noRd
-.regularizeJA <- function(x, ndim, h5File, scale, nBlocks,
-                                   chunkSize, compressionLevel){
+.regularizeJA <- function(x, ndim, h5File, scale,
+                          nBlocks, verbose,
+                          chunkSize, compressionLevel){
 
     ## Check params
     if (nBlocks <= 0) abort("`nBlocks` must be > 0.")
@@ -85,9 +86,17 @@
 
     ## Loop through each block and Hi-C file
     for (j in seq_len(x@dim[2])) {
+        bid <- 1
         for (block in blocks) {
 
             ## Subset array into list of matrices
+            if (verbose) {
+                message("/ Reading and realizing block ",
+                        bid, "/", length(blocks),
+                        " of file ",
+                        j, "/", x@dim[2], " ... ",
+                        appendLF=FALSE)
+            }
             subArray <- x[,,block,j]
             matList <- list()
             if (is(subArray, "DelayedArray")) {
@@ -105,8 +114,12 @@
             if (is(subArray, "JaggedArray")) {
                 matList <- as.list(subArray)[[1]]
             }
+            if (verbose) message("OK")
 
             ## Resize & normalize matrices
+            if (verbose) {
+                message("\\ Processing it ... ", appendLF=FALSE)
+            }
             ans <- lapply(matList, \(x) {
                 m <- .resizeMat(x, ndim=ndim)
                 ifelse(scale, m <- m/sum(m), m <- m)
@@ -128,6 +141,8 @@
                     block, j
                 )
             )
+            if (verbose) message("OK")
+            bid <- bid + 1
         }
     }
 
@@ -145,12 +160,12 @@
 #' @importFrom DelayedArray DelayedArray
 #' @noRd
 .regularizeIJA <- function(x, ndim, h5File, scale, nBlocks,
-                           chunkSize, compressionLevel) {
+                           verbose, chunkSize, compressionLevel) {
 
     ## Regularize the JaggedArray
     ja <- counts(x)
     da <- regularize(ja, ndim, h5File, scale, nBlocks,
-                     chunkSize, compressionLevel)
+                     verbose, chunkSize, compressionLevel)
     da <- aperm(da, c(3,4,1,2))
 
     ## Construct and return InteractionArray
@@ -192,6 +207,8 @@
 #' @param nBlocks Number of blocks for block-processing JaggedArrays.
 #'  Default is 5. Increase this for large datasets. To read and process
 #'  all data at once, set this value to 1.
+#' @param verbose Boolean (TRUE or FALSE) describing
+#'  whether to report block-processing progress.
 #' @param chunkSize Number (length one numeric vector)
 #'  indicating how many values of `x` to chunk for each
 #'  write to HDF5 stored data. This has downstream

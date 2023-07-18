@@ -20,7 +20,7 @@ loops <-
 GenomeInfoDb::seqlevelsStyle(loops) <- 'ENSEMBL'
 
 ## Rebin loops to 2.5e6 resolution
-loops <- binPairs(x=loops, binSize=2.5e06)
+loops <- assignToBins(x=loops, binSize=2.5e06)
 
 test_that("selectPixel chooses correctly", {
 

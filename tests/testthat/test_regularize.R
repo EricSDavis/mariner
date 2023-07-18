@@ -93,10 +93,10 @@ test_that("Interpolation works with single row/column", {
     
     ## Not sure what behavior we want, but this is
     ## something...
-    regularize(ija, ndim=c(1,3), scale=FALSE) |>
+    regularize(ija, ndim=c(1,3), scale=FALSE, verbose=FALSE) |>
         counts() |>
         expect_snapshot()
-    regularize(ija, ndim=c(3,1), scale=FALSE) |>
+    regularize(ija, ndim=c(3,1), scale=FALSE, verbose=FALSE) |>
         counts() |>
         expect_snapshot()
     

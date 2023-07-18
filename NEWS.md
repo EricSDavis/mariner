@@ -1,3 +1,54 @@
+# mariner 1.2.1
+
+New features:
+
+Added `pileupBoundaries()` for visualizing pileup
+Hi-C contacts in regions around genomic loci/boundary
+elements.
+
+# mariner 1.2.0
+
+Breaking changes:
+
+* Function renaming:
+    * `subsetBySource()` -> `sets()`
+    * `getPairClusters()` -> `clusters()`
+    * `aggPairMcols()` -> `aggMetadata()`
+    * `binPairs()` -> `assignToBins()`
+
+* `sets()` function now returns all combinations
+of sets from a `MergedGInteractions` object.
+
+# mariner 1.1.3
+
+New features:
+
+Wrapper functions for performing pileup
+analysis on pixels or domains.
+
+* `pileupPixels()` for extracting and aggregating
+Hi-C counts in square regions around pixels of
+interest (aggregate peak analysis).
+
+* `pileupDomains()` for extracting, resizing, and
+aggregating Hi-C counts in domain regions of
+interest (aggregate domain analysis).
+
+Changes:
+
+* Improve documentation for `removeShortPairs()`
+to make it more clear that it should be run after
+any function that resizes interactions.
+
+* Add `verbose` option to `regularize()` to update
+users on regularization of jagged arrays.
+
+# mariner 1.1.2
+
+Bug fixes:
+
+* Fix id mapping in `aggPairMcols()`
+
 # mariner 1.1.1
 
 Bug fixes:
@@ -48,7 +99,7 @@ S4 method dispatch on all arguments to just `x` and
 
 * Fix bug in `mergePairs()` where all pairs are altered
 during mean of mode transformation. Now original pairs
-are preserved when accessed with `getPairClusters()`.
+are preserved when accessed with `clusters()`.
 
 * Set replace method for `counts<-` accessor for
 `InteractionMatrix` objects. Helpful for converting
