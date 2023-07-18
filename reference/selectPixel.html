@@ -14,7 +14,7 @@ or weakest interaction in an InteractionArray"><!-- mathjax --><script src="http
     
     <a class="navbar-brand me-2" href="../index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -155,7 +155,7 @@ is TRUE.</p></dd>
 <span class="r-in"><span><span class="fu">GenomeInfoDb</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqlevelsStyle.html" class="external-link">seqlevelsStyle</a></span><span class="op">(</span><span class="va">loops</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">'ENSEMBL'</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Rebin loops to 2.5e6 resolution</span></span></span>
-<span class="r-in"><span><span class="va">loops</span> <span class="op">&lt;-</span> <span class="fu"><a href="binPairs.html">binPairs</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">loops</span>, binSize<span class="op">=</span><span class="fl">2.5e06</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">loops</span> <span class="op">&lt;-</span> <span class="fu"><a href="assignToBins.html">assignToBins</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">loops</span>, binSize<span class="op">=</span><span class="fl">2.5e06</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Pull 5x5 matrices</span></span></span>
 <span class="r-in"><span><span class="va">iarr</span> <span class="op">&lt;-</span> <span class="fu"><a href="pullHicMatrices.html">pullHicMatrices</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">loops</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>,</span></span>

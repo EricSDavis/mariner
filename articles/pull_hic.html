@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,7 +77,7 @@
       <img src="" class="logo" alt=""><h1>Pulling Hi-C data with mariner</h1>
                         <h4 data-toc-skip class="author">Eric Davis</h4>
             
-            <h4 data-toc-skip class="date">2023-06-22</h4>
+            <h4 data-toc-skip class="date">2023-07-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EricSDavis/mariner/blob/HEAD/vignettes/articles/pull_hic.Rmd" class="external-link"><code>vignettes/articles/pull_hic.Rmd</code></a></small>
       <div class="d-none name"><code>pull_hic.Rmd</code></div>
@@ -121,7 +121,7 @@ Note
 <p>You can check your <code>.hic</code> file to see which resolutions
 are available for the <code>binSize</code> argument with the
 <code><a href="https://rdrr.io/pkg/strawr/man/readHicBpResolutions.html" class="external-link">strawr::readHicBpResolutions()</a></code>. See the
-<code><a href="../reference/binPairs.html">binPairs()</a></code> to set your interactions to an acceptable
+<code><a href="../reference/assignToBins.html">assignToBins()</a></code> to set your interactions to an acceptable
 resolution.</p>
 </div>
 <p>The following example pulls 100-Kb pixels from two <code>.hic</code>
@@ -185,7 +185,7 @@ the <code><a href="../reference/pullHicPixels.html">pullHicPixels()</a></code> f
 function.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/path.html" class="external-link">path</a></span><span class="op">(</span><span class="va">pixels</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "/tmp/Rtmp4txOL1/file7d60325e3873.h5"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "/tmp/RtmpTMiTjw/file7f6c2157f818.h5"</span></span></code></pre>
 <div style="
 padding: .5em 1em;
 margin-bottom: 10px;
@@ -226,7 +226,7 @@ interaction by the supplied <code>binSize</code> parameter.</p>
 width of both anchors to be 500 Kb</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Create 500x500 Kb regions</span></span>
-<span><span class="va">regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/binPairs.html">binPairs</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">gi</span>, binSize<span class="op">=</span><span class="fl">500e3</span>, pos1<span class="op">=</span><span class="st">"start"</span>, pos2<span class="op">=</span><span class="st">"start"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assignToBins.html">assignToBins</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">gi</span>, binSize<span class="op">=</span><span class="fl">500e3</span>, pos1<span class="op">=</span><span class="st">"start"</span>, pos2<span class="op">=</span><span class="st">"start"</span><span class="op">)</span></span></code></pre></div>
 <p>Then set the <code>binSize</code> to 100 Kb</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Pull Hi-C matrices</span></span>
@@ -332,7 +332,7 @@ width of the first anchor to be 300 Kb and the second anchor to be 600
 Kb.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Create 300x600 Kb regions</span></span>
-<span><span class="va">regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/binPairs.html">binPairs</a></span><span class="op">(</span></span>
+<span><span class="va">regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assignToBins.html">assignToBins</a></span><span class="op">(</span></span>
 <span>    x<span class="op">=</span><span class="va">gi</span>,</span>
 <span>    binSize<span class="op">=</span><span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">300e3</span>, <span class="fl">600e3</span><span class="op">)</span>,</span>
 <span>    pos1<span class="op">=</span><span class="st">"start"</span>,</span>
@@ -401,7 +401,7 @@ and 3x2 after pulling matrices with a <code>binSize</code> of 100e3:</p>
 <span><span class="co">## metadata(3): binSize, norm, matrix</span></span>
 <span><span class="co">## colData: hic1, hic2</span></span>
 <span><span class="co">## colData names(2): files, fileNames</span></span>
-<span><span class="co">## HDF5: /tmp/Rtmp4txOL1/file7d606a38c792.h5</span></span></code></pre>
+<span><span class="co">## HDF5: /tmp/RtmpTMiTjw/file7f6c73b9e8fb.h5</span></span></code></pre>
 <p>The resulting object is of class <code>InteractionJaggedArray</code>.
 The class is different than the previous examples because the classes
 that <code>InteractionArray</code> inherits from are designed for
@@ -509,10 +509,10 @@ this example object:</p>
 <code class="sourceCode R"><span><span class="co">## Metadata about columns</span></span>
 <span><span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">imat</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## DataFrame with 2 rows and 2 columns</span></span>
-<span><span class="co">##                       files        fileNames</span></span>
-<span><span class="co">##                 &lt;character&gt;      &lt;character&gt;</span></span>
-<span><span class="co">## hic1 /home/runner/.cache/..  7a75258795_8147</span></span>
-<span><span class="co">## hic2 /home/runner/.cache/.. 7a752c14e92_8148</span></span></code></pre>
+<span><span class="co">##                       files         fileNames</span></span>
+<span><span class="co">##                 &lt;character&gt;       &lt;character&gt;</span></span>
+<span><span class="co">## hic1 /home/runner/.cache/.. 7c3b719baace_8147</span></span>
+<span><span class="co">## hic2 /home/runner/.cache/.. 7c3b73ca608e_8148</span></span></code></pre>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Interactions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/InteractionSet/man/interaction-accessors.html" class="external-link">interactions</a></span><span class="op">(</span><span class="va">imat</span><span class="op">)</span></span></code></pre></div>
@@ -706,10 +706,10 @@ using this example object:</p>
 <code class="sourceCode R"><span><span class="co">## Metadata about columns</span></span>
 <span><span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">ia</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## DataFrame with 2 rows and 2 columns</span></span>
-<span><span class="co">##                       files        fileNames</span></span>
-<span><span class="co">##                 &lt;character&gt;      &lt;character&gt;</span></span>
-<span><span class="co">## hic1 /home/runner/.cache/..  7a75258795_8147</span></span>
-<span><span class="co">## hic2 /home/runner/.cache/.. 7a752c14e92_8148</span></span></code></pre>
+<span><span class="co">##                       files         fileNames</span></span>
+<span><span class="co">##                 &lt;character&gt;       &lt;character&gt;</span></span>
+<span><span class="co">## hic1 /home/runner/.cache/.. 7c3b719baace_8147</span></span>
+<span><span class="co">## hic2 /home/runner/.cache/.. 7c3b73ca608e_8148</span></span></code></pre>
 <div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Interactions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/InteractionSet/man/interaction-accessors.html" class="external-link">interactions</a></span><span class="op">(</span><span class="va">ia</span><span class="op">)</span></span></code></pre></div>
@@ -958,7 +958,7 @@ the <code><a href="../reference/regularize.html">regularize()</a></code> functio
 <span><span class="co">## metadata(3): binSize, norm, matrix</span></span>
 <span><span class="co">## colData: hic1, hic2</span></span>
 <span><span class="co">## colData names(2): files, fileNames</span></span>
-<span><span class="co">## HDF5: /tmp/Rtmp4txOL1/file7d604a540d45.h5</span></span></code></pre>
+<span><span class="co">## HDF5: /tmp/RtmpTMiTjw/file7f6c1b14b5c3.h5</span></span></code></pre>
 <p>The variable dimensions of the jagged arrays can be accessed with the
 <code><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim()</a></code> function:</p>
 <div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
@@ -990,14 +990,14 @@ the <code><a href="../reference/regularize.html">regularize()</a></code> functio
 <code class="sourceCode R"><span><span class="co">## Metadata about columns</span></span>
 <span><span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">ija</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## DataFrame with 2 rows and 2 columns</span></span>
-<span><span class="co">##                       files        fileNames</span></span>
-<span><span class="co">##                 &lt;character&gt;      &lt;character&gt;</span></span>
-<span><span class="co">## hic1 /home/runner/.cache/..  7a75258795_8147</span></span>
-<span><span class="co">## hic2 /home/runner/.cache/.. 7a752c14e92_8148</span></span></code></pre>
+<span><span class="co">##                       files         fileNames</span></span>
+<span><span class="co">##                 &lt;character&gt;       &lt;character&gt;</span></span>
+<span><span class="co">## hic1 /home/runner/.cache/.. 7c3b719baace_8147</span></span>
+<span><span class="co">## hic2 /home/runner/.cache/.. 7c3b73ca608e_8148</span></span></code></pre>
 <div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Access HDF5 filepath</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/path.html" class="external-link">path</a></span><span class="op">(</span><span class="va">ija</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "/tmp/Rtmp4txOL1/file7d604a540d45.h5"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "/tmp/RtmpTMiTjw/file7f6c1b14b5c3.h5"</span></span></code></pre>
 <div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Interactions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/InteractionSet/man/interaction-accessors.html" class="external-link">interactions</a></span><span class="op">(</span><span class="va">ija</span><span class="op">)</span></span></code></pre></div>
@@ -1193,7 +1193,19 @@ dimensions supplied to <code>ndim</code>. The function works on both
 objects.</p>
 <div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/regularize.html">regularize</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">ija</span>, ndim<span class="op">=</span><span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">counts</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Loading required namespace: fields</span></span></code></pre>
+<pre><code><span><span class="co">## / Reading and realizing block 1/3 of file 1/2 ... OK</span></span>
+<span><span class="co">## \ Processing it ... Loading required namespace: fields</span></span>
+<span><span class="co">## OK</span></span>
+<span><span class="co">## / Reading and realizing block 2/3 of file 1/2 ... OK</span></span>
+<span><span class="co">## \ Processing it ... OK</span></span>
+<span><span class="co">## / Reading and realizing block 3/3 of file 1/2 ... OK</span></span>
+<span><span class="co">## \ Processing it ... OK</span></span>
+<span><span class="co">## / Reading and realizing block 1/3 of file 2/2 ... OK</span></span>
+<span><span class="co">## \ Processing it ... OK</span></span>
+<span><span class="co">## / Reading and realizing block 2/3 of file 2/2 ... OK</span></span>
+<span><span class="co">## \ Processing it ... OK</span></span>
+<span><span class="co">## / Reading and realizing block 3/3 of file 2/2 ... OK</span></span>
+<span><span class="co">## \ Processing it ... OK</span></span></code></pre>
 <pre><code><span><span class="co">## &lt;3 x 3 x 3 x 2&gt; DelayedArray object of type "double":</span></span>
 <span><span class="co">## ,,1,hic1</span></span>
 <span><span class="co">##            [,1]       [,2]       [,3]</span></span>
@@ -1232,6 +1244,18 @@ objects.</p>
 <span><span class="co">## [3,] 0.03636364 0.06060606 0.08484848</span></span></code></pre>
 <div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/regularize.html">regularize</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">ja</span>, ndim<span class="op">=</span><span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## / Reading and realizing block 1/3 of file 1/2 ... OK</span></span>
+<span><span class="co">## \ Processing it ... OK</span></span>
+<span><span class="co">## / Reading and realizing block 2/3 of file 1/2 ... OK</span></span>
+<span><span class="co">## \ Processing it ... OK</span></span>
+<span><span class="co">## / Reading and realizing block 3/3 of file 1/2 ... OK</span></span>
+<span><span class="co">## \ Processing it ... OK</span></span>
+<span><span class="co">## / Reading and realizing block 1/3 of file 2/2 ... OK</span></span>
+<span><span class="co">## \ Processing it ... OK</span></span>
+<span><span class="co">## / Reading and realizing block 2/3 of file 2/2 ... OK</span></span>
+<span><span class="co">## \ Processing it ... OK</span></span>
+<span><span class="co">## / Reading and realizing block 3/3 of file 2/2 ... OK</span></span>
+<span><span class="co">## \ Processing it ... OK</span></span></code></pre>
 <pre><code><span><span class="co">## &lt;3 x 3 x 3 x 2&gt; HDF5Array object of type "double":</span></span>
 <span><span class="co">## ,,1,1</span></span>
 <span><span class="co">##            [,1]       [,2]       [,3]</span></span>
@@ -1271,10 +1295,14 @@ objects.</p>
 <p>By using <code><a href="../reference/regularize.html">regularize()</a></code> before extracting counts, you can
 take advantage of the block and parallel processing functionality from
 aggregating with <code><a href="../reference/aggHicMatrices.html">aggHicMatrices()</a></code>:</p>
-<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/regularize.html">regularize</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">ija</span>, ndim<span class="op">=</span><span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">3</span><span class="op">)</span>, nBlocks<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/aggHicMatrices.html">aggHicMatrices</a></span><span class="op">(</span>nBlocks<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## / Reading and realizing block 1/1 ... OK</span></span>
+<pre><code><span><span class="co">## / Reading and realizing block 1/1 of file 1/2 ... OK</span></span>
+<span><span class="co">## \ Processing it ... OK</span></span>
+<span><span class="co">## / Reading and realizing block 1/1 of file 2/2 ... OK</span></span>
+<span><span class="co">## \ Processing it ... OK</span></span>
+<span><span class="co">## / Reading and realizing block 1/1 ... OK</span></span>
 <span><span class="co">## \ Processing it ... OK</span></span></code></pre>
 <pre><code><span><span class="co">## &lt;3 x 3&gt; DelayedMatrix object of type "double":</span></span>
 <span><span class="co">##           [,1]      [,2]      [,3]</span></span>
@@ -1307,10 +1335,10 @@ arguments to effectively extract Hi-C data.</p>
 pre-computed normalizations in the <code>.hic</code> file. Use the
 <code>readHicNormTypes()</code> function from the <code>strawr</code>
 package to see available normalizations.</p>
-<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pullHicPixels.html">pullHicPixels</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">gi</span>, files<span class="op">=</span><span class="va">hicFiles</span>, binSize<span class="op">=</span><span class="fl">100e3</span>, norm<span class="op">=</span><span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `.checkStrawArgs()`:</span></span></span>
-<span><span class="co">## <span style="color: #BBBB00;">!</span> `norm` must be one of "VC", "NONE", "KR", or "VC_SQRT", not "none".</span></span>
+<span><span class="co">## <span style="color: #BBBB00;">!</span> `norm` must be one of "VC", "VC_SQRT", "NONE", or "KR", not "none".</span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Did you mean "NONE"?</span></span></code></pre>
 <p>The <code>matrix</code> argument specifies the type of values to
 extract. The default is the “observed” contact frequency values. Other
@@ -1318,7 +1346,7 @@ options include “expected” contact frequency and the “oe” or
 observed/expected values. For an in-depth description of these matrix
 types see <a href="https://doi.org/10.1016/j.cels.2016.07.002" class="external-link">Durand et
 al. 2016</a></p>
-<div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pullHicPixels.html">pullHicPixels</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">gi</span>, files<span class="op">=</span><span class="va">hicFiles</span>, binSize<span class="op">=</span><span class="fl">100e3</span>, matrix<span class="op">=</span><span class="st">"oe"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">counts</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## &lt;4 x 2&gt; DelayedMatrix object of type "double":</span></span>
@@ -1372,7 +1400,7 @@ figure and code below show how data are returned for a region that
 resides on the diagonal, crossing into both the upper and lower
 triangular of the Hi-C matrix.</p>
 <p><img src="img/diagonalHalf.png" width="75%" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Hic file</span></span>
 <span><span class="va">hic</span> <span class="op">&lt;-</span> <span class="fu">marinerData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/marinerData/man/LEUK_HEK_PJA27_inter_30.hic.html" class="external-link">LEUK_HEK_PJA27_inter_30.hic</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -1390,7 +1418,7 @@ triangular of the Hi-C matrix.</p>
 <span><span class="co">## [1,]   53   15    5</span></span>
 <span><span class="co">## [2,]   NA   68   19</span></span>
 <span><span class="co">## [3,]   NA   NA   69</span></span></code></pre>
-<div class="sourceCode" id="cb140"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb141"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## half="lower"</span></span>
 <span><span class="fu"><a href="../reference/pullHicMatrices.html">pullHicMatrices</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">diagonal</span>, files<span class="op">=</span><span class="va">hic</span>, binSize<span class="op">=</span><span class="fl">100e3</span>, half<span class="op">=</span><span class="st">"lower"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">counts</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -1400,7 +1428,7 @@ triangular of the Hi-C matrix.</p>
 <span><span class="co">## [1,]   53   NA   NA</span></span>
 <span><span class="co">## [2,]   15   68   NA</span></span>
 <span><span class="co">## [3,]    5   19   69</span></span></code></pre>
-<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb143"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## half="both"</span></span>
 <span><span class="fu"><a href="../reference/pullHicMatrices.html">pullHicMatrices</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">diagonal</span>, files<span class="op">=</span><span class="va">hic</span>, binSize<span class="op">=</span><span class="fl">100e3</span>, half<span class="op">=</span><span class="st">"both"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">counts</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>

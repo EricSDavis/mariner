@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,7 +77,7 @@
       <img src="" class="logo" alt=""><h1>Introduction to mariner</h1>
                         <h4 data-toc-skip class="author">Eric Davis</h4>
             
-            <h4 data-toc-skip class="date">2023-06-22</h4>
+            <h4 data-toc-skip class="date">2023-07-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EricSDavis/mariner/blob/HEAD/vignettes/mariner.Rmd" class="external-link"><code>vignettes/mariner.Rmd</code></a></small>
       <div class="d-none name"><code>mariner.Rmd</code></div>
@@ -222,7 +222,7 @@ allowing users to extract each component of interactions as vectors.</p>
 <code>GInteractions</code> objects to differently sized bins.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Assign to 1Kb bins</span></span>
-<span><span class="va">binned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/binPairs.html">binPairs</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">gi</span>, binSize <span class="op">=</span> <span class="fl">1e3</span>, pos1<span class="op">=</span><span class="st">'center'</span>, pos2<span class="op">=</span><span class="st">'center'</span><span class="op">)</span></span>
+<span><span class="va">binned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assignToBins.html">assignToBins</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">gi</span>, binSize <span class="op">=</span> <span class="fl">1e3</span>, pos1<span class="op">=</span><span class="st">'center'</span>, pos2<span class="op">=</span><span class="st">'center'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Show that each anchor is 1Kb</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">InteractionSet</span><span class="op">)</span></span>
@@ -257,7 +257,7 @@ separately and from different reference points (e.g. <code>pos1</code>
 and <code>pos2</code>).</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Assign anchor1 to 1Kb bins and anchor2 to 25Kb bins</span></span>
-<span><span class="va">binned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/binPairs.html">binPairs</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">gi</span>, binSize<span class="op">=</span><span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1e3</span>, <span class="fl">25e3</span><span class="op">)</span>, pos1<span class="op">=</span><span class="st">"start"</span>, pos2<span class="op">=</span><span class="st">"center"</span><span class="op">)</span></span>
+<span><span class="va">binned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assignToBins.html">assignToBins</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">gi</span>, binSize<span class="op">=</span><span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1e3</span>, <span class="fl">25e3</span><span class="op">)</span>, pos1<span class="op">=</span><span class="st">"start"</span>, pos2<span class="op">=</span><span class="st">"center"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Show that the first anchor is 1Kb and</span></span>
 <span><span class="co">## second anchor is 25Kb</span></span>
@@ -267,10 +267,10 @@ and <code>pos2</code>).</p>
 <span><span class="co">## </span></span>
 <span><span class="co">## $second</span></span>
 <span><span class="co">## [1] 25001</span></span></code></pre>
-<p>While <code><a href="../reference/binPairs.html">binPairs()</a></code> assigns each pair of ranges to a single
-bin, the <code><a href="../reference/snapToBins.html">snapToBins()</a></code> function assigns the starts and ends
-of the ranges to their nearest bin. This allows each anchor to span
-multiple bins.</p>
+<p>While <code><a href="../reference/assignToBins.html">assignToBins()</a></code> assigns each pair of ranges to a
+single bin, the <code><a href="../reference/snapToBins.html">snapToBins()</a></code> function assigns the starts
+and ends of the ranges to their nearest bin. This allows each anchor to
+span multiple bins.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Create an example GInteractions object</span></span>
 <span><span class="va">gi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/InteractionSet/man/GInteractions-class.html" class="external-link">GInteractions</a></span><span class="op">(</span></span>
@@ -398,17 +398,17 @@ Note
 <p>The metadata is missing from these interactions. Since no
 <code>column</code> was provided, each interaction may be an average of
 one or more interaction. The user can decide how metadata from each
-cluster should be aggregated with <code><a href="../reference/aggPairMcols.html">aggPairMcols()</a></code>.</p>
+cluster should be aggregated with <code><a href="../reference/aggMetadata.html">aggMetadata()</a></code>.</p>
 </div>
 <p>The resulting object is <code>MergedGInteractions</code> class, where
 each of these interactions is a representative cluster of one or more
 interactions. This class behaves like <code>GInteractions</code> but
 contains additional information about the clustered interactions.</p>
 <p>To view the clusters of specific interactions, use the
-<code><a href="../reference/getPairClusters.html">getPairClusters()</a></code> accessor.</p>
+<code><a href="../reference/clusters.html">clusters()</a></code> accessor.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mgi</span><span class="op">[</span><span class="fl">12772</span><span class="op">]</span></span>
-<span><span class="fu"><a href="../reference/getPairClusters.html">getPairClusters</a></span><span class="op">(</span><span class="va">mgi</span><span class="op">[</span><span class="fl">12772</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/clusters.html">clusters</a></span><span class="op">(</span><span class="va">mgi</span><span class="op">[</span><span class="fl">12772</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## MergedGInteractions object with 1 interaction and 0 metadata columns:</span></span>
 <span><span class="co">##       seqnames1           ranges1     seqnames2           ranges2</span></span>
 <span><span class="co">##           &lt;Rle&gt;         &lt;IRanges&gt;         &lt;Rle&gt;         &lt;IRanges&gt;</span></span>
@@ -502,7 +502,7 @@ use a custom metric for selecting a representative interaction.</p>
 for “APScoreAvg” has been selected.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mgi</span><span class="op">[</span><span class="fl">12772</span><span class="op">]</span></span>
-<span><span class="fu"><a href="../reference/getPairClusters.html">getPairClusters</a></span><span class="op">(</span><span class="va">mgi</span><span class="op">[</span><span class="fl">12772</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/clusters.html">clusters</a></span><span class="op">(</span><span class="va">mgi</span><span class="op">[</span><span class="fl">12772</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## MergedGInteractions object with 1 interaction and 9 metadata columns:</span></span>
 <span><span class="co">##       seqnames1           ranges1     seqnames2           ranges2 |       color</span></span>
 <span><span class="co">##           &lt;Rle&gt;         &lt;IRanges&gt;         &lt;Rle&gt;         &lt;IRanges&gt; | &lt;character&gt;</span></span>
@@ -529,7 +529,7 @@ for “APScoreAvg” has been selected.</p>
 <span><span class="co">##    src</span></span>
 <span><span class="co">## 1:  FS</span></span>
 <span><span class="co">## 2:  WT</span></span></code></pre>
-<p>The <code><a href="../reference/subsetBySource.html">subsetBySource()</a></code> accessor allows users to find which
+<p>The <code><a href="../reference/sets.html">sets()</a></code> accessor allows users to find which
 interactions are shared or exclusive between sets of interactions in the
 giList.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
@@ -538,15 +538,18 @@ giList.</p>
 <pre><code><span><span class="co">## [1] "FS" "WT"</span></span></code></pre>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Interactions unique to each source</span></span>
-<span><span class="fu"><a href="../reference/subsetBySource.html">subsetBySource</a></span><span class="op">(</span><span class="va">mgi</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">summary</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/sets.html">sets</a></span><span class="op">(</span><span class="va">mgi</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">summary</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $FS</span></span>
 <span><span class="co">## [1] "MergedGInteractions object of length 4621 with 9 metadata columns"</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $WT</span></span>
-<span><span class="co">## [1] "MergedGInteractions object of length 8150 with 9 metadata columns"</span></span></code></pre>
+<span><span class="co">## [1] "MergedGInteractions object of length 8150 with 9 metadata columns"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $FS_WT</span></span>
+<span><span class="co">## [1] "MergedGInteractions object of length 3945 with 9 metadata columns"</span></span></code></pre>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Interactions shared by both sources</span></span>
-<span><span class="fu"><a href="../reference/subsetBySource.html">subsetBySource</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mgi</span>, include<span class="op">=</span><span class="fu"><a href="../reference/sources.html">sources</a></span><span class="op">(</span><span class="va">mgi</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/sets.html">sets</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mgi</span>, include<span class="op">=</span><span class="fu"><a href="../reference/sources.html">sources</a></span><span class="op">(</span><span class="va">mgi</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## MergedGInteractions object with 3945 interactions and 9 metadata columns:</span></span>
 <span><span class="co">##          seqnames1             ranges1     seqnames2             ranges2 |</span></span>
 <span><span class="co">##              &lt;Rle&gt;           &lt;IRanges&gt;         &lt;Rle&gt;           &lt;IRanges&gt; |</span></span>
@@ -605,7 +608,7 @@ giList.</p>
 <span><span class="co">##   seqinfo: 23 sequences from an unspecified genome; no seqlengths</span></span></code></pre>
 <p>This is particularly useful for identifying <em>de novo</em>, shared
 or transient interactions. For more information see
-<code>?subsetBySource()</code>.</p>
+<code>?sets()</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="extracting-aggregating-interactions">Extracting &amp; Aggregating Interactions<a class="anchor" aria-label="anchor" href="#extracting-aggregating-interactions"></a>
@@ -663,10 +666,10 @@ testing.</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">hicFiles</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FS"</span>, <span class="st">"WT"</span><span class="op">)</span></span>
 <span><span class="va">hicFiles</span></span></code></pre></div>
-<pre><code><span><span class="co">##                                                     FS </span></span>
-<span><span class="co">##  "/home/runner/.cache/R/ExperimentHub/7a75258795_8147" </span></span>
-<span><span class="co">##                                                     WT </span></span>
-<span><span class="co">## "/home/runner/.cache/R/ExperimentHub/7a752c14e92_8148"</span></span></code></pre>
+<pre><code><span><span class="co">##                                                      FS </span></span>
+<span><span class="co">## "/home/runner/.cache/R/ExperimentHub/7c3b719baace_8147" </span></span>
+<span><span class="co">##                                                      WT </span></span>
+<span><span class="co">## "/home/runner/.cache/R/ExperimentHub/7c3b73ca608e_8148"</span></span></code></pre>
 <p>The <code>strawr</code> package includes functions for visualizing
 the available chromosomes, resolutions (<code>binSizes</code>), and
 normalizations in the <code>.hic</code> files.</p>
@@ -676,10 +679,10 @@ normalizations in the <code>.hic</code> files.</p>
 <span><span class="co">## Normalizations</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">hicFiles</span>, <span class="va">readHicNormTypes</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $FS</span></span>
-<span><span class="co">## [1] "VC"      "NONE"    "KR"      "VC_SQRT"</span></span>
+<span><span class="co">## [1] "KR"      "VC"      "VC_SQRT" "NONE"   </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $WT</span></span>
-<span><span class="co">## [1] "VC"      "NONE"    "KR"      "VC_SQRT"</span></span></code></pre>
+<span><span class="co">## [1] "KR"      "VC"      "VC_SQRT" "NONE"</span></span></code></pre>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Resolutions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">hicFiles</span>, <span class="va">readHicBpResolutions</span><span class="op">)</span></span></code></pre></div>
@@ -715,10 +718,10 @@ processed without the “chr” prefix, it is important to change the
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">GenomeInfoDb</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqlevelsStyle.html" class="external-link">seqlevelsStyle</a></span><span class="op">(</span><span class="va">mgi</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">'ENSEMBL'</span></span></code></pre></div>
 <p>These interactions can then be binned to the desired resolution with
-the <code><a href="../reference/binPairs.html">binPairs()</a></code> function.</p>
+the <code><a href="../reference/assignToBins.html">assignToBins()</a></code> function.</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Assign interactions to 100Kb bins</span></span>
-<span><span class="va">binned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/binPairs.html">binPairs</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mgi</span>, binSize<span class="op">=</span><span class="fl">100e3</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">binned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assignToBins.html">assignToBins</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mgi</span>, binSize<span class="op">=</span><span class="fl">100e3</span><span class="op">)</span></span></code></pre></div>
 <p>Contact frequency can then be extracted with
 <code><a href="../reference/pullHicPixels.html">pullHicPixels()</a></code>. Here only the first 1000 pixels are pulled
 for demonstration purposes.</p>
@@ -944,7 +947,7 @@ pull 3x3 matrices surrounding a 100Kb pixel.</p>
 <p>This also works on rectangular selections.</p>
 <div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Bin at two different resolutions</span></span>
-<span><span class="va">binned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/binPairs.html">binPairs</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mgi</span>, binSize<span class="op">=</span><span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100e3</span>, <span class="fl">250e3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">binned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assignToBins.html">assignToBins</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mgi</span>, binSize<span class="op">=</span><span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100e3</span>, <span class="fl">250e3</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Pull 10x25 matrices from 1000 interactions and 2 hic files</span></span>
 <span><span class="va">iarr2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pullHicMatrices.html">pullHicMatrices</a></span><span class="op">(</span></span>
@@ -1212,7 +1215,7 @@ enrichment for each <code>.hic</code> file.</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="st">"WT"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span>header<span class="op">=</span><span class="cn">TRUE</span>, nrows<span class="op">=</span><span class="fl">1000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/as_ginteractions.html">as_ginteractions</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../reference/binPairs.html">binPairs</a></span><span class="op">(</span>binSize<span class="op">=</span><span class="fl">100e3</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/assignToBins.html">assignToBins</a></span><span class="op">(</span>binSize<span class="op">=</span><span class="fl">100e3</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">GenomeInfoDb</span><span class="fu">::</span><span class="fu">`seqlevelsStyle&lt;-`</span><span class="op">(</span><span class="st">'ENSEMBL'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Define foreground &amp; background</span></span>
@@ -1252,7 +1255,7 @@ file.</p>
 </h2>
 <div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.3.1 Patched (2023-06-20 r84592)</span></span>
+<pre><code><span><span class="co">## R version 4.3.1 Patched (2023-07-17 r84702)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
 <span><span class="co">## Running under: Ubuntu 22.04.2 LTS</span></span>
 <span><span class="co">## </span></span>
@@ -1278,13 +1281,13 @@ file.</p>
 <span><span class="co">##  [3] SummarizedExperiment_1.30.2 Biobase_2.60.0             </span></span>
 <span><span class="co">##  [5] MatrixGenerics_1.12.2       matrixStats_1.0.0          </span></span>
 <span><span class="co">##  [7] GenomicRanges_1.52.0        GenomeInfoDb_1.36.1        </span></span>
-<span><span class="co">##  [9] IRanges_2.34.0              S4Vectors_0.38.1           </span></span>
+<span><span class="co">##  [9] IRanges_2.34.1              S4Vectors_0.38.1           </span></span>
 <span><span class="co">## [11] BiocGenerics_0.46.0         marinerData_1.0.0          </span></span>
-<span><span class="co">## [13] mariner_1.1.1              </span></span>
+<span><span class="co">## [13] mariner_1.2.1              </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##   [1] RColorBrewer_1.1-3            jsonlite_1.8.5               </span></span>
-<span><span class="co">##   [3] magrittr_2.0.3                rmarkdown_2.22               </span></span>
+<span><span class="co">##   [1] RColorBrewer_1.1-3            jsonlite_1.8.7               </span></span>
+<span><span class="co">##   [3] magrittr_2.0.3                rmarkdown_2.23               </span></span>
 <span><span class="co">##   [5] fs_1.6.2                      BiocIO_1.10.0                </span></span>
 <span><span class="co">##   [7] zlibbioc_1.46.0               ragg_1.2.5                   </span></span>
 <span><span class="co">##   [9] vctrs_0.6.3                   memoise_2.0.1                </span></span>
@@ -1293,15 +1296,15 @@ file.</p>
 <span><span class="co">##  [15] progress_1.2.2                AnnotationHub_3.8.0          </span></span>
 <span><span class="co">##  [17] curl_5.0.1                    Rhdf5lib_1.22.0              </span></span>
 <span><span class="co">##  [19] rhdf5_2.44.0                  gridGraphics_0.5-1           </span></span>
-<span><span class="co">##  [21] sass_0.4.6                    bslib_0.5.0                  </span></span>
+<span><span class="co">##  [21] sass_0.4.7                    bslib_0.5.0                  </span></span>
 <span><span class="co">##  [23] desc_1.4.2                    cachem_1.0.8                 </span></span>
 <span><span class="co">##  [25] GenomicAlignments_1.36.0      mime_0.12                    </span></span>
 <span><span class="co">##  [27] lifecycle_1.0.3               pkgconfig_2.0.3              </span></span>
-<span><span class="co">##  [29] Matrix_1.5-4.1                R6_2.5.1                     </span></span>
+<span><span class="co">##  [29] Matrix_1.6-0                  R6_2.5.1                     </span></span>
 <span><span class="co">##  [31] fastmap_1.1.1                 GenomeInfoDbData_1.2.10      </span></span>
-<span><span class="co">##  [33] shiny_1.7.4                   digest_0.6.31                </span></span>
-<span><span class="co">##  [35] colorspace_2.1-0              AnnotationDbi_1.62.1         </span></span>
-<span><span class="co">##  [37] rprojroot_2.0.3               ExperimentHub_2.8.0          </span></span>
+<span><span class="co">##  [33] shiny_1.7.4.1                 digest_0.6.33                </span></span>
+<span><span class="co">##  [35] colorspace_2.1-0              AnnotationDbi_1.62.2         </span></span>
+<span><span class="co">##  [37] rprojroot_2.0.3               ExperimentHub_2.8.1          </span></span>
 <span><span class="co">##  [39] textshaping_0.3.6             RSQLite_2.3.1                </span></span>
 <span><span class="co">##  [41] filelock_1.0.2                fansi_1.0.4                  </span></span>
 <span><span class="co">##  [43] httr_1.4.6                    abind_1.4-5                  </span></span>
@@ -1309,7 +1312,7 @@ file.</p>
 <span><span class="co">##  [47] withr_2.5.0                   BiocParallel_1.34.2          </span></span>
 <span><span class="co">##  [49] DBI_1.1.3                     highr_0.10                   </span></span>
 <span><span class="co">##  [51] HDF5Array_1.28.1              rappdirs_0.3.3               </span></span>
-<span><span class="co">##  [53] DelayedArray_0.26.3           rjson_0.2.21                 </span></span>
+<span><span class="co">##  [53] DelayedArray_0.26.6           rjson_0.2.21                 </span></span>
 <span><span class="co">##  [55] tools_4.3.1                   interactiveDisplayBase_1.38.0</span></span>
 <span><span class="co">##  [57] httpuv_1.6.11                 glue_1.6.2                   </span></span>
 <span><span class="co">##  [59] restfulr_0.0.15               dbscan_1.1-11                </span></span>
@@ -1328,17 +1331,17 @@ file.</p>
 <span><span class="co">##  [85] stringi_1.7.12                yaml_2.3.7                   </span></span>
 <span><span class="co">##  [87] evaluate_0.21                 codetools_0.2-19             </span></span>
 <span><span class="co">##  [89] tibble_3.2.1                  BiocManager_1.30.21          </span></span>
-<span><span class="co">##  [91] ggplotify_0.1.0               cli_3.6.1                    </span></span>
+<span><span class="co">##  [91] ggplotify_0.1.1               cli_3.6.1                    </span></span>
 <span><span class="co">##  [93] xtable_1.8-4                  systemfonts_1.0.4            </span></span>
 <span><span class="co">##  [95] munsell_0.5.0                 jquerylib_0.1.4              </span></span>
-<span><span class="co">##  [97] Rcpp_1.0.10                   dbplyr_2.3.2                 </span></span>
+<span><span class="co">##  [97] Rcpp_1.0.11                   dbplyr_2.3.3                 </span></span>
 <span><span class="co">##  [99] png_0.1-8                     XML_3.99-0.14                </span></span>
 <span><span class="co">## [101] parallel_4.3.1                ellipsis_0.3.2               </span></span>
 <span><span class="co">## [103] pkgdown_2.0.7                 ggplot2_3.4.2                </span></span>
 <span><span class="co">## [105] assertthat_0.2.1              blob_1.2.4                   </span></span>
 <span><span class="co">## [107] prettyunits_1.1.1             plyranges_1.20.0             </span></span>
 <span><span class="co">## [109] bitops_1.0-7                  scales_1.2.1                 </span></span>
-<span><span class="co">## [111] plotgardener_1.6.0            purrr_1.0.1                  </span></span>
+<span><span class="co">## [111] plotgardener_1.6.2            purrr_1.0.1                  </span></span>
 <span><span class="co">## [113] crayon_1.5.2                  rlang_1.1.1                  </span></span>
 <span><span class="co">## [115] KEGGREST_1.40.0</span></span></code></pre>
 </div>

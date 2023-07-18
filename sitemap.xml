@@ -64,13 +64,13 @@
     <loc>http://ericscottdavis.com/mariner/reference/aggHicMatrices.html</loc>
   </url>
   <url>
-    <loc>http://ericscottdavis.com/mariner/reference/aggPairMcols.html</loc>
+    <loc>http://ericscottdavis.com/mariner/reference/aggMetadata.html</loc>
   </url>
   <url>
     <loc>http://ericscottdavis.com/mariner/reference/as_ginteractions.html</loc>
   </url>
   <url>
-    <loc>http://ericscottdavis.com/mariner/reference/binPairs.html</loc>
+    <loc>http://ericscottdavis.com/mariner/reference/assignToBins.html</loc>
   </url>
   <url>
     <loc>http://ericscottdavis.com/mariner/reference/binRanges.html</loc>
@@ -82,13 +82,13 @@
     <loc>http://ericscottdavis.com/mariner/reference/changePixelRes.html</loc>
   </url>
   <url>
+    <loc>http://ericscottdavis.com/mariner/reference/clusters.html</loc>
+  </url>
+  <url>
     <loc>http://ericscottdavis.com/mariner/reference/counts.html</loc>
   </url>
   <url>
     <loc>http://ericscottdavis.com/mariner/reference/defaultBuffer.html</loc>
-  </url>
-  <url>
-    <loc>http://ericscottdavis.com/mariner/reference/getPairClusters.html</loc>
   </url>
   <url>
     <loc>http://ericscottdavis.com/mariner/reference/hdf5BlockApply.html</loc>
@@ -118,6 +118,15 @@
     <loc>http://ericscottdavis.com/mariner/reference/path.html</loc>
   </url>
   <url>
+    <loc>http://ericscottdavis.com/mariner/reference/pileupBoundaries.html</loc>
+  </url>
+  <url>
+    <loc>http://ericscottdavis.com/mariner/reference/pileupDomains.html</loc>
+  </url>
+  <url>
+    <loc>http://ericscottdavis.com/mariner/reference/pileupPixels.html</loc>
+  </url>
+  <url>
     <loc>http://ericscottdavis.com/mariner/reference/pixelsToMatrices.html</loc>
   </url>
   <url>
@@ -145,6 +154,9 @@
     <loc>http://ericscottdavis.com/mariner/reference/selectionMethod.html</loc>
   </url>
   <url>
+    <loc>http://ericscottdavis.com/mariner/reference/sets.html</loc>
+  </url>
+  <url>
     <loc>http://ericscottdavis.com/mariner/reference/shiftRanges.html</loc>
   </url>
   <url>
@@ -152,8 +164,5 @@
   </url>
   <url>
     <loc>http://ericscottdavis.com/mariner/reference/sources.html</loc>
-  </url>
-  <url>
-    <loc>http://ericscottdavis.com/mariner/reference/subsetBySource.html</loc>
   </url>
 </urlset>
