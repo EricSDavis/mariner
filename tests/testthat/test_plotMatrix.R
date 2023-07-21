@@ -96,6 +96,12 @@ test_that("plotMatrix", {
     ## Accepts non-square data
     p <- plotMatrix(data=matrix(1:24, 3, 8), draw=FALSE)
     expect_s3_class(p, "MatrixPlot")
+    
+    
+    ## Develop non-raster version
+    plotMatrix(data=matrix(1:25, 5, 5))
+    plotMatrix(data=matrix(1:27, 3, 9))
+    
 
 })
 

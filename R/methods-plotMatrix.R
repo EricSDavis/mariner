@@ -139,8 +139,8 @@
 #' @inheritParams plotMatrix
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom plotgardener mapColors
-#' @importFrom grid viewport unit grid.newpage gTree grid.ls rasterGrob
-#'  addGrob grid.draw
+#' @importFrom grid viewport unit grid.newpage gTree grid.ls rectGrob
+#'  addGrob grid.draw gpar
 #' @importFrom rlang inform
 #' @importFrom grDevices colorRampPalette
 #' @noRd
@@ -202,11 +202,12 @@
 
     ## Replace NA with na.color
     colv[is.na(colv)] <- na.color
-
-    ## Format color vector back to matrix
-    m <- matrix(data=colv,
-                nrow=nrow(matrixPlot$data),
-                ncol=ncol(matrixPlot$data))
+    
+    ## Create 3-column df with rownum, colnum, and color columns
+    dims <- dim(matrixPlot$data)
+    m_long <- expand.grid(seq_len(dims[1]), seq_len(dims[2]))
+    m_long$color <- colv
+    colnames(m_long) <- c("rownum", "colnum", "color")
 
     ## Viewports ---------------------------
 
@@ -221,11 +222,12 @@
                        height=unit(1, "snpc"),
                        width=unit(1, "snpc"),
                        clip="on",
+                       xscale=c(0, dims[2]),
+                       yscale=c(dims[1], 0),
                        just="center",
                        name="MatrixPlot1")
 
         if (matrixPlot$draw){
-            # vp$name <- "MatrixPlot1"
             grid.newpage()
         }
 
@@ -251,6 +253,8 @@
                        height=page_coords$height,
                        width=page_coords$width,
                        clip="on",
+                       xscale=c(0, dims[2]),
+                       yscale=c(dims[1], 0),
                        just=matrixPlot$just,
                        name=vp_name)
     }
@@ -268,15 +272,32 @@
 
     ## Assign name to grob
     name <- paste0("MatrixPlot", nObjs + 1)
+    
+    ## Find the length of each square
+    maxDim <- which.max(dims)
+    if (maxDim == 1L) {
+        len <- vp$height/dims[maxDim]
+    } else {
+        len <- vp$width/dims[maxDim]
+    }
 
     ## Make grobs
-    mpRaster <- rasterGrob(image=m, interpolate=FALSE, name=name)
-
+    mpSquares <- rectGrob(
+        x=m_long$colnum,
+        y=m_long$rownum,
+        just=c("right", "top"),
+        width=len,
+        height=len,
+        gp=gpar(col=NA, fill=m_long$color),
+        default.units="native",
+        name=name
+    )
+    
     ## Assign grobs to gTree
     assign(x="MatrixPlotGrobs",
            value=addGrob(gTree=get(x="MatrixPlotGrobs",
                                    envir=plotgardener:::pgEnv),
-                         child=mpRaster),
+                         child=mpSquares),
            envir=plotgardener:::pgEnv)
 
     ## Add grobs to object
@@ -288,7 +309,7 @@
     }
 
     ## Return object --------------------------
-    inform(paste0("MatrixPlot[", mpRaster$name, "]"))
+    inform(paste0("MatrixPlot[", mpSquares$name, "]"))
     invisible(matrixPlot)
 }
 
