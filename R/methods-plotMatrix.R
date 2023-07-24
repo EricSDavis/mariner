@@ -140,7 +140,7 @@
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom plotgardener mapColors
 #' @importFrom grid viewport unit grid.newpage gTree grid.ls rectGrob
-#'  addGrob grid.draw gpar
+#'  addGrob grid.draw gpar convertWidth convertHeight
 #' @importFrom rlang inform
 #' @importFrom grDevices colorRampPalette
 #' @noRd
@@ -216,17 +216,29 @@
 
     ## Not translating into page_coordinates
     if (is.null(matrixPlot$x) & is.null(matrixPlot$y)){
-
+        # Outer viewport
         vp <- viewport(x=unit(0.5, "npc"),
                        y=unit(0.5, "npc"),
                        height=unit(1, "snpc"),
                        width=unit(1, "snpc"),
                        clip="on",
-                       xscale=c(0, dims[2]),
-                       yscale=c(dims[1], 0),
                        just="center",
-                       name="MatrixPlot1")
-
+                       name="MatrixPlot1_outside")
+        ## Define inner viewport with appropriate matrix dimensions
+        # Get minimum scaling based on nrow and ncol
+        minScale <- min(1/(dims/10))
+        # Multiply nrow and ncol ratios by minScale
+        vpDims <- (dims/10)*minScale
+        
+        mat_vp <- viewport(x=unit(0.5, "npc"),
+                           y=unit(0.5,"npc"),
+                           height=unit(vpDims[1], "npc"),
+                           width=unit(vpDims[2], "npc"),
+                           xscale=c(0, dims[2]),
+                           yscale=c(dims[1], 0),
+                           just="center",
+                           name="MatrixPlot1")
+        
         if (matrixPlot$draw){
             grid.newpage()
         }
@@ -246,17 +258,46 @@
         ## Convert coordinates into same units as page
         page_coords <- plotgardener:::convert_page(matrixPlot)
 
-
-        ## Make viewport
+        ## Outer viewport
         vp <- viewport(x=page_coords$x,
                        y=page_coords$y,
                        height=page_coords$height,
                        width=page_coords$width,
                        clip="on",
-                       xscale=c(0, dims[2]),
-                       yscale=c(dims[1], 0),
                        just=matrixPlot$just,
-                       name=vp_name)
+                       name=paste0(vp_name, "_outside"))
+        
+        ## Define inner viewport with appropriate matrix dimensions
+        # Convert nrow and ncol snpc scaling to page coordinates
+        mat_height <- convertHeight(unit(dims[1]/10, "snpc"), 
+                                    unitTo=get("page_units", 
+                                                 envir=plotgardener:::pgEnv),
+                                    valueOnly=TRUE)
+        mat_width <- convertWidth(unit(dims[2]/10, "snpc"),
+                                  unitTo=get("page_units",
+                                             envir=plotgardener:::pgEnv),
+                                  valueOnly=TRUE)
+        
+        # Get minimum scaling to outer viewport based on nrow and ncol
+        minScale <- min(as.numeric(page_coords$height)/mat_height,
+                        as.numeric(page_coords$width)/mat_width)
+        
+        # Multiply mat_height and mat_width by minScale
+        vpDims <- c(mat_height, mat_width)*minScale
+        
+        mat_vp <- viewport(x=unit(0.5, "npc"),
+                           y=unit(0.5,"npc"),
+                           height=unit(vpDims[1], 
+                                       get("page_units",
+                                           envir=plotgardener:::pgEnv)),
+                           width=unit(vpDims[2], 
+                                      get("page_units",
+                                          envir=plotgardener:::pgEnv)),
+                           xscale=c(0, dims[2]),
+                           yscale=c(dims[1], 0),
+                           just="center",
+                           name="MatrixPlot1")
+        
     }
 
     ## Handle graphical objects ----------------
@@ -272,24 +313,17 @@
 
     ## Assign name to grob
     name <- paste0("MatrixPlot", nObjs + 1)
-    
-    ## Find the length of each square
-    maxDim <- which.max(dims)
-    if (maxDim == 1L) {
-        len <- vp$height/dims[maxDim]
-    } else {
-        len <- vp$width/dims[maxDim]
-    }
 
-    ## Make grobs
+    ## Make grobs within mat_vp
     mpSquares <- rectGrob(
         x=m_long$colnum,
         y=m_long$rownum,
         just=c("right", "top"),
-        width=len,
-        height=len,
+        width=1,
+        height=1,
         gp=gpar(col=NA, fill=m_long$color),
         default.units="native",
+        vp=mat_vp,
         name=name
     )
     
