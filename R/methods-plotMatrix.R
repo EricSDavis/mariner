@@ -213,7 +213,6 @@
 
     ## If placing information is provided but plot == TRUE,
     ## set up it's own viewport separate from pageCreate
-
     ## Not translating into page_coordinates
     if (is.null(matrixPlot$x) & is.null(matrixPlot$y)){
         # Outer viewport
@@ -226,9 +225,9 @@
                        name="MatrixPlot1_outside")
         ## Define inner viewport with appropriate matrix dimensions
         # Get minimum scaling based on nrow and ncol
-        minScale <- min(1/(dims/10))
+        minScale <- min(1/dims)
         # Multiply nrow and ncol ratios by minScale
-        vpDims <- (dims/10)*minScale
+        vpDims <- dims*minScale
         
         mat_vp <- viewport(x=unit(0.5, "npc"),
                            y=unit(0.5,"npc"),
@@ -269,11 +268,11 @@
         
         ## Define inner viewport with appropriate matrix dimensions
         # Convert nrow and ncol snpc scaling to page coordinates
-        mat_height <- convertHeight(unit(dims[1]/10, "snpc"), 
+        mat_height <- convertHeight(unit(dims[1], "snpc"), 
                                     unitTo=get("page_units", 
                                                  envir=plotgardener:::pgEnv),
                                     valueOnly=TRUE)
-        mat_width <- convertWidth(unit(dims[2]/10, "snpc"),
+        mat_width <- convertWidth(unit(dims[2], "snpc"),
                                   unitTo=get("page_units",
                                              envir=plotgardener:::pgEnv),
                                   valueOnly=TRUE)
