@@ -38,7 +38,7 @@
         abort(c(glue("All interactions in `x` must be \\
                      the same width."),
                 "i"="Check this with `width(x)`.",
-                "i"="Set binSize with `assignToBins(x, binSize)`."))
+                "i"="Set binSize with `binPairs(x, binSize)`."))
     }
     ## How does moving down or right change dist to diag?
     p <- pairdist(x)

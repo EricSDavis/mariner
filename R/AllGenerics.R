@@ -16,15 +16,15 @@ setGeneric("makeGInteractionsFromDataFrame",
                     ...)
                standardGeneric("makeGInteractionsFromDataFrame"))
 
-#' @rdname assignToBins
+#' @rdname binPairs
 #' @export
-setGeneric("assignToBins",
+setGeneric("binPairs",
            function(x,
                     binSize,
                     pos1 = 'center',
                     pos2 = 'center',
                     ...)
-               standardGeneric("assignToBins"))
+               standardGeneric("binPairs"))
 
 #' @rdname binRanges
 #' @export
@@ -63,22 +63,22 @@ setGeneric("mergePairs",
 setGeneric("selectionMethod", function(x, ...)
     standardGeneric("selectionMethod"))
 
-#' @rdname clusters
+#' @rdname getPairClusters
 #' @export
-setGeneric("clusters", function(x, ...)
-    standardGeneric("clusters"))
+setGeneric("getPairClusters", function(x, ...)
+    standardGeneric("getPairClusters"))
 
 #' @rdname sources
 #' @export
 setGeneric("sources", function(x)
     standardGeneric("sources"))
 
-#' @rdname sets
+#' @rdname subsetBySource
 #' @export
-setGeneric("sets", function(x,
+setGeneric("subsetBySource", function(x,
                                       include,
                                       exclude)
-    standardGeneric("sets"))
+    standardGeneric("subsetBySource"))
 
 #' @rdname aggMetadata
 #' @export

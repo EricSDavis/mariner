@@ -49,7 +49,7 @@ mgi <- mergePairs(x = giList,
                   radius = 50e03)
 
 ## Bin MergedGInteractions
-bgi <- assignToBins(x = mgi, binSize = 50e03)
+bgi <- binPairs(x = mgi, binSize = 50e03)
 
 ## Bin with snapping
 sgi <- snapToBins(x = mgi, binSize = 50e03)
@@ -237,7 +237,7 @@ test_that("Straw args are checked correctly", {
 test_that("pullHicPixels pulls correct counts", {
 
     ## Assign to x (to avoid modifying in place)
-    x <- assignToBins(bgi[1:10], 2.5e06)
+    x <- binPairs(bgi[1:10], 2.5e06)
     seqlevelsStyle(x) <- "ENSEMBL"
 
     ## Give names to hicFiles

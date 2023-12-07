@@ -227,7 +227,7 @@
   widths <- unique(width(regions(x))) - 1
   if (length(widths) != 1L) {
     abort(c("All ranges in `x` must be equal widths.",
-            "i"="Use `assignToBins()` to bin into equal widths."))
+            "i"="Use `binPairs()` to bin into equal widths."))
   }
   return(widths)
 }

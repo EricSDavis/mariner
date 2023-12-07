@@ -1,5 +1,5 @@
-#' Internal assignToBins function
-#' @inheritParams assignToBins
+#' Internal binPairs function
+#' @inheritParams binPairs
 #' @importFrom data.table data.table
 #' @importFrom S4Vectors DataFrame mcols
 #' @importFrom InteractionSet anchors
@@ -7,7 +7,7 @@
 #' @return Input object that has been binned.
 #'
 #' @noRd
-.assignToBins <- function(x, binSize, pos1, pos2) {
+.binPairs <- function(x, binSize, pos1, pos2) {
 
     ## Convert x to a GInteractions
     if (is(x, 'data.frame') | is(x, 'DFrame')) {
@@ -73,21 +73,21 @@
 #'                chr2 = "chr1", y1 = 30000, y2 = 40000)
 #'
 #' ## Assign each range to 20-kb bins from the start positions
-#' assignToBins(x = df1,
+#' binPairs(x = df1,
 #'          binSize = 20000,
 #'          pos1 = 'start',
 #'          pos2 = 'start')
 #'
-#' @rdname assignToBins
+#' @rdname binPairs
 #' @export
-setMethod("assignToBins",
+setMethod("binPairs",
           signature(x = 'DF_OR_df_OR_dt',
                     binSize = 'numeric',
                     pos1 = 'character_OR_numeric_OR_missing',
                     pos2 = 'character_OR_numeric_OR_missing'),
-          definition = .assignToBins)
+          definition = .binPairs)
 
-#' @rdname assignToBins
+#' @rdname binPairs
 #' @examples
 #' ## Construct GInteractions
 #' library(InteractionSet)
@@ -97,14 +97,14 @@ setMethod("assignToBins",
 #'     as_ginteractions()
 #'
 #' ## Assign each range to 20-kb bins from the start positions
-#' assignToBins(x = gi1,
+#' binPairs(x = gi1,
 #'          binSize = 20000,
 #'          pos1 = 'start',
 #'          pos2 = 'start')
 #' @export
-setMethod("assignToBins",
+setMethod("binPairs",
           signature(x = 'GInteractions',
                     binSize = 'numeric',
                     pos1 = 'character_OR_numeric_OR_missing',
                     pos2 = 'character_OR_numeric_OR_missing'),
-          definition = .assignToBins)
+          definition = .binPairs)

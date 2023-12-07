@@ -2,7 +2,7 @@
 
     Code
       counts(regularize(ija, ndim = c(3, 3), scale = FALSE))
-    Message <simpleMessage>
+    Message
       / Reading and realizing block 1/3 of file 1/1 ... 
       OK
       \ Processing it ... 
