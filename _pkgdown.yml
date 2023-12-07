@@ -18,7 +18,7 @@ reference:
       - as_ginteractions
       - shiftRanges
       - binRanges
-      - assignToBins
+      - binPairs
       - snapToBins
       - seqnames1
       - makeRandomGRanges

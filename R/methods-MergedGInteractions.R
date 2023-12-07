@@ -162,7 +162,7 @@ setMethod("aggMetadata", signature(x = "MergedGInteractions",
 #' Access the names or source files of
 #' a `MergedGInteractions` object.
 #'
-#' @inheritParams sets
+#' @inheritParams subsetBySource
 #' @return A character vector of names or source
 #'  files of a `MergedGInteractions` object.
 #' @examples
@@ -198,7 +198,7 @@ setMethod("sources", "MergedGInteractions",
           function(x) as.character(unique(x@allPairs$src)))
 
 #' Create logial matrix of sources for each merged pair
-#' @inheritParams sets
+#' @inheritParams subsetBySource
 #' @importFrom data.table data.table as.data.table
 #' @importFrom stats setNames
 #' @return A logical matrix with columns for each source
@@ -241,7 +241,7 @@ setMethod("sources", "MergedGInteractions",
 }
 
 #' Check source names
-#' @inheritParams sets
+#' @inheritParams subsetBySource
 #' @param vec Input character vector (i.e. include, exclude or both)
 #' @importFrom glue glue glue_collapse double_quote
 #' @importFrom rlang abort
@@ -264,11 +264,11 @@ setMethod("sources", "MergedGInteractions",
 }
 
 #' Find subset pairs using include and exclude sources
-#' @inheritParams sets
+#' @inheritParams subsetBySource
 #' @importFrom data.table data.table
 #' @return A `MergedGInteractions` object of subset pairs.
 #' @noRd
-.setsIncludeExclude <- function(x, include, exclude) {
+.subsetBySourceIncludeExclude <- function(x, include, exclude) {
 
     ## Check source names
     .checkSourceNames(x, vec = c(include, exclude))
@@ -286,11 +286,11 @@ setMethod("sources", "MergedGInteractions",
 }
 
 #' Find subset pairs using include sources
-#' @inheritParams sets
+#' @inheritParams subsetBySource
 #' @importFrom data.table data.table
 #' @return A `MergedGInteractions` object of subset pairs.
 #' @noRd
-.setsInclude <- function(x, include) {
+.subsetBySourceInclude <- function(x, include) {
 
     ## Check source names
     .checkSourceNames(x, vec = include)
@@ -306,11 +306,11 @@ setMethod("sources", "MergedGInteractions",
 }
 
 #' Find subset pairs using exclude sources
-#' @inheritParams sets
+#' @inheritParams subsetBySource
 #' @importFrom data.table data.table
 #' @return A `MergedGInteractions` object of subset pairs.
 #' @noRd
-.setsExclude <- function(x, exclude) {
+.subsetBySourceExclude <- function(x, exclude) {
 
     ## Check source names
     .checkSourceNames(x, vec = exclude)
@@ -331,7 +331,7 @@ setMethod("sources", "MergedGInteractions",
 #' @importFrom utils combn
 #' @return A `MergedGInteractions` object of de novo pairs.
 #' @noRd
-.sets <- function(x) {
+.subsetBySource <- function(x) {
     
     ## Calculate the src matrix
     srcMat <- .makeSrcMatrix(x)
@@ -374,9 +374,9 @@ setMethod("sources", "MergedGInteractions",
     }) |> unlist()
     names(idxList) <- srcNames
     
-    ## Index the sets
-    sets <- lapply(idxList, \(i) x[i])
-    return(sets)
+    ## Index the subsetBySource
+    subsetBySource <- lapply(idxList, \(i) x[i])
+    return(subsetBySource)
 }
 
 #' Get each set from a MergedGInteractions object
@@ -389,8 +389,8 @@ setMethod("sources", "MergedGInteractions",
 #' merged pair is not returned.
 #'
 #' Optional `include` and `exclude` parameters modulate
-#' the behavior of `sets` to return different
-#' subsets of originating pairs. For example, `include` requires
+#' the behavior of `subsetBySource` to return different
+#' subsubsetBySource of originating pairs. For example, `include` requires
 #' that the returned pairs be present in specific sources,
 #' while `exclude` requires that returned pairs be absent
 #' from specific sources. Sources not listed in either
@@ -435,47 +435,47 @@ setMethod("sources", "MergedGInteractions",
 #' ## Merge pairs
 #' x <- mergePairs(x = giList, radius = 20)
 #'
-#' sets(x)
+#' subsetBySource(x)
 #'
-#' @rdname sets
+#' @rdname subsetBySource
 #' @export
-setMethod("sets",
+setMethod("subsetBySource",
           signature(x = "MergedGInteractions",
                     include = "missing",
                     exclude = "missing"),
-          definition = .sets)
+          definition = .subsetBySource)
 
-#' @rdname sets
+#' @rdname subsetBySource
 #' @export
-setMethod("sets",
+setMethod("subsetBySource",
           signature(x = "MergedGInteractions",
                     include = "character_OR_missing",
                     exclude = "missing"),
-          definition = .setsInclude)
+          definition = .subsetBySourceInclude)
 
-#' @rdname sets
+#' @rdname subsetBySource
 #' @export
-setMethod("sets",
+setMethod("subsetBySource",
           signature(x = "MergedGInteractions",
                     include = "missing",
                     exclude = "character_OR_missing"),
-          definition = .setsExclude)
+          definition = .subsetBySourceExclude)
 
-#' @rdname sets
+#' @rdname subsetBySource
 #' @export
-setMethod("sets",
+setMethod("subsetBySource",
           signature(x = "MergedGInteractions",
                     include = "character_OR_missing",
                     exclude = "character_OR_missing"),
-          definition = .setsIncludeExclude)
+          definition = .subsetBySourceIncludeExclude)
 
 
 
-#' Internal accessor function for clusters
-#' @inheritParams clusters
+#' Internal accessor function for getPairClusters
+#' @inheritParams getPairClusters
 #' @importFrom data.table data.table
 #' @noRd
-.clusters <- function(x) {
+.getPairClusters <- function(x) {
 
     ## Suppress NSE notes in R CMD check
     i.id <- NULL
@@ -533,16 +533,16 @@ setMethod("sets",
 #'                 radius = 10e03,
 #'                 column = "APScoreAvg")
 #'
-#' ## Access pair clusters
-#' clusters(x[1:3])
-#' clusters(x[3:1])
-#' clusters(x[c(3, 1, 2)])
-#' clusters(x) |> length()
+#' ## Access pair getPairClusters
+#' getPairClusters(x[1:3])
+#' getPairClusters(x[3:1])
+#' getPairClusters(x[c(3, 1, 2)])
+#' getPairClusters(x) |> length()
 #'
-#' @rdname clusters
+#' @rdname getPairClusters
 #' @export
-setMethod("clusters", signature(x = "MergedGInteractions"),
-          definition = .clusters)
+setMethod("getPairClusters", signature(x = "MergedGInteractions"),
+          definition = .getPairClusters)
 
 #' Get selectionMethod from MergedGInteractions object
 #'

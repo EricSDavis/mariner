@@ -61,29 +61,29 @@ test_that(".mapIds returns expected output", {
     expect_snapshot(x = .mapIds(x))
 })
 
-test_that("clusters accessor works", {
+test_that("getPairClusters accessor works", {
 
     ## Merge pairs and add names
     x <- mergePairs(x = giList, radius = 10e03)
     names(x) <- paste0("loop", 1:length(x))
 
     x[3:1] |>
-        clusters() |>
+        getPairClusters() |>
         names() |>
         expect_identical(paste0("loop", 3:1))
 
     x[1:3] |>
-        clusters() |>
+        getPairClusters() |>
         names() |>
         expect_identical(paste0("loop", 1:3))
 
-    expect_equal(length(clusters(x)), length(x))
+    expect_equal(length(getPairClusters(x)), length(x))
 
 })
 
-## TODO: Modfiy sets to return all sets
+## TODO: Modfiy subsetBySource to return all subsetBySource
 ## by default
-test_that("sets method works (and sources accessor)", {
+test_that("subsetBySource method works (and sources accessor)", {
 
     ## LIMA loops test
     loopFiles <- c(
@@ -114,71 +114,71 @@ test_that("sets method works (and sources accessor)", {
     ## Test sources accessor
     expect_identical(sources(x), names(loopFiles))
 
-    ## sets method dispatch
-    expect_equal(sets(x) |> length(), 255)
-    expect_equal(sets(x)[[sources(x)[1]]] |> length(), 846)
-    expect_equal(sets(x, include = sources(x)[1]) |> length(), 3982)
-    expect_equal(sets(x, exclude = sources(x)[1]) |> length(), 9890)
+    ## subsetBySource method dispatch
+    expect_equal(subsetBySource(x) |> length(), 255)
+    expect_equal(subsetBySource(x)[[sources(x)[1]]] |> length(), 846)
+    expect_equal(subsetBySource(x, include = sources(x)[1]) |> length(), 3982)
+    expect_equal(subsetBySource(x, exclude = sources(x)[1]) |> length(), 9890)
 
     ## Handles cases where none are found
-    sets(x,
+    subsetBySource(x,
            include = sources(x)[1],
            exclude = sources(x)[1]) |>
         length() |>
         expect_equal(0)
-    sets(x,
+    subsetBySource(x,
            include = sources(x)[1:2],
            exclude = sources(x)[1]) |>
         length() |>
         expect_equal(0)
-    sets(x, exclude = sources(x)) |>
+    subsetBySource(x, exclude = sources(x)) |>
         length() |>
         expect_equal(0)
 
     ## Handles improper source name
-    expect_error(sets(x, include = "foo"),
+    expect_error(subsetBySource(x, include = "foo"),
                  ".*foo.*not source option")
-    expect_error(sets(x, exclude = "foo"),
+    expect_error(subsetBySource(x, exclude = "foo"),
                  ".*foo.*not source option")
-    expect_error(sets(x, include = ""),
+    expect_error(subsetBySource(x, include = ""),
                  ".*not source option")
-    expect_error(sets(x, exclude = ""),
+    expect_error(subsetBySource(x, exclude = ""),
                  ".*not source option")
-    expect_error(sets(x, include = "foo", exclude = "foo"),
+    expect_error(subsetBySource(x, include = "foo", exclude = "foo"),
                  ".*foo.*not source option")
-    expect_error(sets(x, include = "foo", exclude = "bar"),
+    expect_error(subsetBySource(x, include = "foo", exclude = "bar"),
                  ".*foo.*bar.*not source option")
-    expect_error(sets(x,
+    expect_error(subsetBySource(x,
                         include = c(sources(x)[1], "foo"),
                         exclude = "bar"),
                  ".*foo.*bar.*not source option")
 
-    ## sets(x) produces same result as
+    ## subsetBySource(x) produces same result as
     ## using include & exclude
-    expect_equal(length(sets(x)[[sources(x)[1]]]),
-                 length(sets(x,
+    expect_equal(length(subsetBySource(x)[[sources(x)[1]]]),
+                 length(subsetBySource(x,
                                include = sources(x)[1],
                                exclude = sources(x)[2:8])))
 
-    ## sets(x) produces same result as
+    ## subsetBySource(x) produces same result as
     ## include/exclude for the first 8 sources
     expect_equal(
         lapply(seq_along(sources(x)), \(i){
             j <- seq_along(sources(x))[-i]
-            sets(x = x,
+            subsetBySource(x = x,
                            include = sources(x)[i],
                            exclude = sources(x)[j])
         }) |>
             lapply(length) |>
             unlist(),
-        sets(x)[1:8] |> lapply(length) |> unlist() |> unname()
+        subsetBySource(x)[1:8] |> lapply(length) |> unlist() |> unname()
     )
     
-    ## Results track with clusters(x)
-    mgi <- sets(x,
+    ## Results track with getPairClusters(x)
+    mgi <- subsetBySource(x,
                           include = sources(x)[1:2],
                           exclude = sources(x)[3:8])
-    expect_identical(clusters(mgi) |>
+    expect_identical(getPairClusters(mgi) |>
                          lapply(`[[`, "src") |>
                          unlist() |>
                          unique() |>
@@ -210,7 +210,7 @@ test_that("Aggregating metadata columns works", {
     expect_identical(object = aggMetadata(x[1:10],
                                            columns = "APScoreAvg",
                                            funs = "mean")$mean.APScoreAvg,
-                     expected = clusters(x[1:10]) |>
+                     expected = getPairClusters(x[1:10]) |>
                          lapply(`[[`, "APScoreAvg") |>
                          lapply(mean) |>
                          unlist())

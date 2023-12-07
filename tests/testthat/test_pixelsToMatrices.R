@@ -24,7 +24,7 @@ test_that("metadata columns are kept", {
 })
 
 test_that("throws error when ranges are not binned", {
-    assignToBins(gi, binSize=c(10, 20)) |>
+    binPairs(gi, binSize=c(10, 20)) |>
         pixelsToMatrices(buffer=3) |>
         expect_error(".*must be equal widths.*")
 })

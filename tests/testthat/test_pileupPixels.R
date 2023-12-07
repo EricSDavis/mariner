@@ -13,7 +13,7 @@ test_that("pileupPixels works", {
         setNames("WT") |>
         read.table(header=TRUE, nrows=1000) |>
         as_ginteractions(keep.extra.columns=FALSE) |>
-        assignToBins(binSize=5e3)
+        binPairs(binSize=5e3)
 
     ## Removes the "chr" prefix for compatibility
     ## with the preprocessed hic files

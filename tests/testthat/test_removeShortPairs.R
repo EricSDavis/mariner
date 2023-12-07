@@ -80,7 +80,7 @@ test_that("complex test for removeShortPairs", {
     loops <-
         mergePairs(loopList, radius=100e3) |>
         GenomeInfoDb::`seqlevelsStyle<-`('ENSEMBL') |>
-        assignToBins(binSize=100e3)
+        binPairs(binSize=100e3)
 
     ## Expand to apa regions
     regions <- pixelsToMatrices(loops, buffer=5)
