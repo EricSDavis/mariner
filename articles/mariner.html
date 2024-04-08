@@ -8,8 +8,8 @@
 <meta name="description" content="mariner">
 <title>Introduction to mariner • mariner</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Introduction to mariner">
 <meta property="og:description" content="mariner">
@@ -77,7 +77,7 @@
       <img src="" class="logo" alt=""><h1>Introduction to mariner</h1>
                         <h4 data-toc-skip class="author">Eric Davis</h4>
             
-            <h4 data-toc-skip class="date">2023-07-18</h4>
+            <h4 data-toc-skip class="date">2024-04-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EricSDavis/mariner/blob/HEAD/vignettes/mariner.Rmd" class="external-link"><code>vignettes/mariner.Rmd</code></a></small>
       <div class="d-none name"><code>mariner.Rmd</code></div>
@@ -418,17 +418,21 @@ contains additional information about the clustered interactions.</p>
 <span><span class="co">##   seqinfo: 23 sequences from an unspecified genome; no seqlengths</span></span>
 <span><span class="co">## [[1]]</span></span>
 <span><span class="co">##    seqnames1   start1     end1 width1 strand1 seqnames2   start2     end2</span></span>
+<span><span class="co">##       &lt;fctr&gt;    &lt;int&gt;    &lt;int&gt;  &lt;int&gt;  &lt;fctr&gt;    &lt;fctr&gt;    &lt;int&gt;    &lt;int&gt;</span></span>
 <span><span class="co">## 1:      chr9 90300000 90305000   5001       *      chr9 90430000 90435000</span></span>
 <span><span class="co">## 2:      chr9 90305000 90310000   5001       *      chr9 90430000 90435000</span></span>
-<span><span class="co">##    width2 strand2 color APScoreAvg ProbabilityofEnrichment RegAPScoreAvg</span></span>
-<span><span class="co">## 1:   5001       * 0,0,0   2.543816               0.9444922      1.887968</span></span>
-<span><span class="co">## 2:   5001       * 0,0,0   2.718088               0.9531689      1.922928</span></span>
+<span><span class="co">##    width2 strand2  color APScoreAvg ProbabilityofEnrichment RegAPScoreAvg</span></span>
+<span><span class="co">##     &lt;int&gt;  &lt;fctr&gt; &lt;char&gt;      &lt;num&gt;                   &lt;num&gt;         &lt;num&gt;</span></span>
+<span><span class="co">## 1:   5001       *  0,0,0   2.543816               0.9444922      1.887968</span></span>
+<span><span class="co">## 2:   5001       *  0,0,0   2.718088               0.9531689      1.922928</span></span>
 <span><span class="co">##    Avg_diffMaxNeihgboor_1 Avg_diffMaxNeihgboor_2      avg       std    value</span></span>
+<span><span class="co">##                     &lt;num&gt;                  &lt;num&gt;    &lt;num&gt;     &lt;num&gt;    &lt;num&gt;</span></span>
 <span><span class="co">## 1:              0.7340446              0.7978164 2.239048 0.4049837 2.891532</span></span>
 <span><span class="co">## 2:              0.7962394              1.0013034 2.353757 0.5259836 3.061525</span></span>
-<span><span class="co">##    src</span></span>
-<span><span class="co">## 1:  FS</span></span>
-<span><span class="co">## 2:  WT</span></span></code></pre>
+<span><span class="co">##       src</span></span>
+<span><span class="co">##    &lt;char&gt;</span></span>
+<span><span class="co">## 1:     FS</span></span>
+<span><span class="co">## 2:     WT</span></span></code></pre>
 <p>When no <code>column</code> argument is provided the most frequently
 occurring interaction is selected. In the pair above, the mean position
 of both anchors is returned since neither is more frequent.</p>
@@ -518,17 +522,21 @@ for “APScoreAvg” has been selected.</p>
 <span><span class="co">##   seqinfo: 23 sequences from an unspecified genome; no seqlengths</span></span>
 <span><span class="co">## [[1]]</span></span>
 <span><span class="co">##    seqnames1   start1     end1 width1 strand1 seqnames2   start2     end2</span></span>
+<span><span class="co">##       &lt;fctr&gt;    &lt;int&gt;    &lt;int&gt;  &lt;int&gt;  &lt;fctr&gt;    &lt;fctr&gt;    &lt;int&gt;    &lt;int&gt;</span></span>
 <span><span class="co">## 1:      chr9 90300000 90305000   5001       *      chr9 90430000 90435000</span></span>
 <span><span class="co">## 2:      chr9 90305000 90310000   5001       *      chr9 90430000 90435000</span></span>
-<span><span class="co">##    width2 strand2 color APScoreAvg ProbabilityofEnrichment RegAPScoreAvg</span></span>
-<span><span class="co">## 1:   5001       * 0,0,0   2.543816               0.9444922      1.887968</span></span>
-<span><span class="co">## 2:   5001       * 0,0,0   2.718088               0.9531689      1.922928</span></span>
+<span><span class="co">##    width2 strand2  color APScoreAvg ProbabilityofEnrichment RegAPScoreAvg</span></span>
+<span><span class="co">##     &lt;int&gt;  &lt;fctr&gt; &lt;char&gt;      &lt;num&gt;                   &lt;num&gt;         &lt;num&gt;</span></span>
+<span><span class="co">## 1:   5001       *  0,0,0   2.543816               0.9444922      1.887968</span></span>
+<span><span class="co">## 2:   5001       *  0,0,0   2.718088               0.9531689      1.922928</span></span>
 <span><span class="co">##    Avg_diffMaxNeihgboor_1 Avg_diffMaxNeihgboor_2      avg       std    value</span></span>
+<span><span class="co">##                     &lt;num&gt;                  &lt;num&gt;    &lt;num&gt;     &lt;num&gt;    &lt;num&gt;</span></span>
 <span><span class="co">## 1:              0.7340446              0.7978164 2.239048 0.4049837 2.891532</span></span>
 <span><span class="co">## 2:              0.7962394              1.0013034 2.353757 0.5259836 3.061525</span></span>
-<span><span class="co">##    src</span></span>
-<span><span class="co">## 1:  FS</span></span>
-<span><span class="co">## 2:  WT</span></span></code></pre>
+<span><span class="co">##       src</span></span>
+<span><span class="co">##    &lt;char&gt;</span></span>
+<span><span class="co">## 1:     FS</span></span>
+<span><span class="co">## 2:     WT</span></span></code></pre>
 <p>The <code><a href="../reference/sets.html">sets()</a></code> accessor allows users to find which
 interactions are shared or exclusive between sets of interactions in the
 giList.</p>
@@ -667,9 +675,9 @@ testing.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">hicFiles</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://phanstiellab.github.io/plotgardener/reference/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FS"</span>, <span class="st">"WT"</span><span class="op">)</span></span>
 <span><span class="va">hicFiles</span></span></code></pre></div>
 <pre><code><span><span class="co">##                                                      FS </span></span>
-<span><span class="co">## "/home/runner/.cache/R/ExperimentHub/7c3b719baace_8147" </span></span>
+<span><span class="co">## "/home/runner/.cache/R/ExperimentHub/c7ec4bb9b7c7_8147" </span></span>
 <span><span class="co">##                                                      WT </span></span>
-<span><span class="co">## "/home/runner/.cache/R/ExperimentHub/7c3b73ca608e_8148"</span></span></code></pre>
+<span><span class="co">##  "/home/runner/.cache/R/ExperimentHub/c7ec118d7f8_8148"</span></span></code></pre>
 <p>The <code>strawr</code> package includes functions for visualizing
 the available chromosomes, resolutions (<code>binSizes</code>), and
 normalizations in the <code>.hic</code> files.</p>
@@ -679,10 +687,10 @@ normalizations in the <code>.hic</code> files.</p>
 <span><span class="co">## Normalizations</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">hicFiles</span>, <span class="va">readHicNormTypes</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $FS</span></span>
-<span><span class="co">## [1] "KR"      "VC"      "VC_SQRT" "NONE"   </span></span>
+<span><span class="co">## [1] "KR"      "VC_SQRT" "VC"      "NONE"   </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## $WT</span></span>
-<span><span class="co">## [1] "KR"      "VC"      "VC_SQRT" "NONE"</span></span></code></pre>
+<span><span class="co">## [1] "KR"      "VC_SQRT" "VC"      "NONE"</span></span></code></pre>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Resolutions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">hicFiles</span>, <span class="va">readHicBpResolutions</span><span class="op">)</span></span></code></pre></div>
@@ -1039,16 +1047,6 @@ how these contacts should be aggregated (the default is
 <div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## One matrix per file</span></span>
 <span><span class="fu"><a href="../reference/aggHicMatrices.html">aggHicMatrices</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">iarr</span>, by<span class="op">=</span><span class="st">"files"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## / Reading and realizing block 1/5 ... OK</span></span>
-<span><span class="co">## \ Processing it ... OK</span></span>
-<span><span class="co">## / Reading and realizing block 2/5 ... OK</span></span>
-<span><span class="co">## \ Processing it ... OK</span></span>
-<span><span class="co">## / Reading and realizing block 3/5 ... OK</span></span>
-<span><span class="co">## \ Processing it ... OK</span></span>
-<span><span class="co">## / Reading and realizing block 4/5 ... OK</span></span>
-<span><span class="co">## \ Processing it ... OK</span></span>
-<span><span class="co">## / Reading and realizing block 5/5 ... OK</span></span>
-<span><span class="co">## \ Processing it ... OK</span></span></code></pre>
 <pre><code><span><span class="co">## &lt;3 x 3 x 2&gt; DelayedArray object of type "double":</span></span>
 <span><span class="co">## ,,FS</span></span>
 <span><span class="co">##       [,1]  [,2]  [,3]</span></span>
@@ -1061,19 +1059,9 @@ how these contacts should be aggregated (the default is
 <span><span class="co">## [1,]  5645  3180  2240</span></span>
 <span><span class="co">## [2,]  8964  5678  2996</span></span>
 <span><span class="co">## [3,] 11282  9085  5614</span></span></code></pre>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## One matrix total</span></span>
 <span><span class="fu"><a href="../reference/aggHicMatrices.html">aggHicMatrices</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">iarr</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## / Reading and realizing block 1/5 ... OK</span></span>
-<span><span class="co">## \ Processing it ... OK</span></span>
-<span><span class="co">## / Reading and realizing block 2/5 ... OK</span></span>
-<span><span class="co">## \ Processing it ... OK</span></span>
-<span><span class="co">## / Reading and realizing block 3/5 ... OK</span></span>
-<span><span class="co">## \ Processing it ... OK</span></span>
-<span><span class="co">## / Reading and realizing block 4/5 ... OK</span></span>
-<span><span class="co">## \ Processing it ... OK</span></span>
-<span><span class="co">## / Reading and realizing block 5/5 ... OK</span></span>
-<span><span class="co">## \ Processing it ... OK</span></span></code></pre>
 <pre><code><span><span class="co">## &lt;3 x 3&gt; DelayedMatrix object of type "double":</span></span>
 <span><span class="co">##       [,1]  [,2]  [,3]</span></span>
 <span><span class="co">## [1,] 12448  6969  4949</span></span>
@@ -1107,22 +1095,11 @@ more information.</p>
 <p><code>mariner</code> provides the <code><a href="../reference/plotMatrix.html">plotMatrix()</a></code> function
 for visualizing the aggregated <code>.hic</code> matrices, such as in an
 aggregate peak analysis.</p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/aggHicMatrices.html">aggHicMatrices</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">iarr</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## / Reading and realizing block 1/5 ... OK</span></span>
-<span><span class="co">## \ Processing it ... OK</span></span>
-<span><span class="co">## / Reading and realizing block 2/5 ... OK</span></span>
-<span><span class="co">## \ Processing it ... OK</span></span>
-<span><span class="co">## / Reading and realizing block 3/5 ... OK</span></span>
-<span><span class="co">## \ Processing it ... OK</span></span>
-<span><span class="co">## / Reading and realizing block 4/5 ... OK</span></span>
-<span><span class="co">## \ Processing it ... OK</span></span>
-<span><span class="co">## / Reading and realizing block 5/5 ... OK</span></span>
-<span><span class="co">## \ Processing it ... OK</span></span></code></pre>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotMatrix.html">plotMatrix</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mat</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/aggHicMatrices.html">aggHicMatrices</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">iarr</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotMatrix.html">plotMatrix</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">mat</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## MatrixPlot[MatrixPlot1]</span></span></code></pre>
-<p><img src="mariner_files/figure-html/plotMatrix-1.png"><!-- --></p>
+<p><img src="../docs/articles/mariner_files/figure-html/plotMatrix-1.png"><!-- --></p>
 <p>This function is compatible with <code>plotgardener</code>, an
 R/Bioconductor genomic visualization package. <code>plotgardener</code>
 gives precise control over the size and placement of plots on a page,
@@ -1143,7 +1120,7 @@ pulls Hi-C pixels and calculates the enrichment of a selected
 for easily and flexibly selecting different parts of a matrix. The code
 below shows a few examples of how these functions can be used and
 combined to select virtually any part of a square matrix.</p>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Define the buffer</span></span>
 <span><span class="va">buffer</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
 <span></span>
@@ -1158,7 +1135,7 @@ combined to select virtually any part of a square matrix.</p>
 <span><span class="co">##  -  -  -  -  -  -  - </span></span>
 <span><span class="co">##  -  -  -  -  -  -  - </span></span>
 <span><span class="co">##  -  -  -  -  -  -  -</span></span></code></pre>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## With a radial distance</span></span>
 <span><span class="fu"><a href="../reference/selection-functions.html">selectCenterPixel</a></span><span class="op">(</span>mhDist<span class="op">=</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, buffer<span class="op">=</span><span class="va">buffer</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## '0' = selected; '-' = unselected</span></span>
@@ -1170,7 +1147,7 @@ combined to select virtually any part of a square matrix.</p>
 <span><span class="co">##  -  -  -  0  -  -  - </span></span>
 <span><span class="co">##  -  -  -  -  -  -  - </span></span>
 <span><span class="co">##  -  -  -  -  -  -  -</span></span></code></pre>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Select all corners</span></span>
 <span><span class="fu"><a href="../reference/selection-functions.html">selectCorners</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">2</span>, buffer<span class="op">=</span><span class="va">buffer</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## '0' = selected; '-' = unselected</span></span>
@@ -1182,7 +1159,7 @@ combined to select virtually any part of a square matrix.</p>
 <span><span class="co">##  -  -  -  -  -  -  - </span></span>
 <span><span class="co">##  0  0  -  -  -  0  0 </span></span>
 <span><span class="co">##  0  0  -  -  -  0  0</span></span></code></pre>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Combine functions</span></span>
 <span><span class="fu"><a href="../reference/selection-functions.html">selectTopLeft</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">2</span>, buffer<span class="op">=</span><span class="va">buffer</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="../reference/selection-functions.html">selectBottomRight</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">2</span>, buffer<span class="op">=</span><span class="va">buffer</span><span class="op">)</span></span></code></pre></div>
@@ -1199,7 +1176,7 @@ combined to select virtually any part of a square matrix.</p>
 <code><a href="../reference/calcLoopEnrichment.html">calcLoopEnrichment()</a></code> along with a
 <code>GInteractions</code> object defining the loop pixels to calculate
 enrichment for each <code>.hic</code> file.</p>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ericscottdavis.com/mariner/" class="external-link">mariner</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">marinerData</span><span class="op">)</span></span>
 <span></span>
@@ -1253,11 +1230,11 @@ file.</p>
 <div class="section level2">
 <h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.3.1 Patched (2023-07-17 r84702)</span></span>
-<span><span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
-<span><span class="co">## Running under: Ubuntu 22.04.2 LTS</span></span>
+<pre><code><span><span class="co">## R version 4.4.0 alpha (2024-04-05 r86350)</span></span>
+<span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
+<span><span class="co">## Running under: Ubuntu 22.04.4 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
 <span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
@@ -1277,73 +1254,51 @@ file.</p>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">##  [1] strawr_0.0.91               InteractionSet_1.28.1      </span></span>
-<span><span class="co">##  [3] SummarizedExperiment_1.30.2 Biobase_2.60.0             </span></span>
-<span><span class="co">##  [5] MatrixGenerics_1.12.2       matrixStats_1.0.0          </span></span>
-<span><span class="co">##  [7] GenomicRanges_1.52.0        GenomeInfoDb_1.36.1        </span></span>
-<span><span class="co">##  [9] IRanges_2.34.1              S4Vectors_0.38.1           </span></span>
-<span><span class="co">## [11] BiocGenerics_0.46.0         marinerData_1.0.0          </span></span>
+<span><span class="co">##  [1] strawr_0.0.91               InteractionSet_1.31.0      </span></span>
+<span><span class="co">##  [3] SummarizedExperiment_1.33.3 Biobase_2.63.1             </span></span>
+<span><span class="co">##  [5] MatrixGenerics_1.15.0       matrixStats_1.2.0          </span></span>
+<span><span class="co">##  [7] GenomicRanges_1.55.4        GenomeInfoDb_1.39.12       </span></span>
+<span><span class="co">##  [9] IRanges_2.37.1              S4Vectors_0.41.6           </span></span>
+<span><span class="co">## [11] BiocGenerics_0.49.1         marinerData_1.3.0          </span></span>
 <span><span class="co">## [13] mariner_1.2.1              </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##   [1] RColorBrewer_1.1-3            jsonlite_1.8.7               </span></span>
-<span><span class="co">##   [3] magrittr_2.0.3                rmarkdown_2.23               </span></span>
-<span><span class="co">##   [5] fs_1.6.2                      BiocIO_1.10.0                </span></span>
-<span><span class="co">##   [7] zlibbioc_1.46.0               ragg_1.2.5                   </span></span>
-<span><span class="co">##   [9] vctrs_0.6.3                   memoise_2.0.1                </span></span>
-<span><span class="co">##  [11] Rsamtools_2.16.0              RCurl_1.98-1.12              </span></span>
-<span><span class="co">##  [13] htmltools_0.5.5               S4Arrays_1.0.4               </span></span>
-<span><span class="co">##  [15] progress_1.2.2                AnnotationHub_3.8.0          </span></span>
-<span><span class="co">##  [17] curl_5.0.1                    Rhdf5lib_1.22.0              </span></span>
-<span><span class="co">##  [19] rhdf5_2.44.0                  gridGraphics_0.5-1           </span></span>
-<span><span class="co">##  [21] sass_0.4.7                    bslib_0.5.0                  </span></span>
-<span><span class="co">##  [23] desc_1.4.2                    cachem_1.0.8                 </span></span>
-<span><span class="co">##  [25] GenomicAlignments_1.36.0      mime_0.12                    </span></span>
-<span><span class="co">##  [27] lifecycle_1.0.3               pkgconfig_2.0.3              </span></span>
-<span><span class="co">##  [29] Matrix_1.6-0                  R6_2.5.1                     </span></span>
-<span><span class="co">##  [31] fastmap_1.1.1                 GenomeInfoDbData_1.2.10      </span></span>
-<span><span class="co">##  [33] shiny_1.7.4.1                 digest_0.6.33                </span></span>
-<span><span class="co">##  [35] colorspace_2.1-0              AnnotationDbi_1.62.2         </span></span>
-<span><span class="co">##  [37] rprojroot_2.0.3               ExperimentHub_2.8.1          </span></span>
-<span><span class="co">##  [39] textshaping_0.3.6             RSQLite_2.3.1                </span></span>
-<span><span class="co">##  [41] filelock_1.0.2                fansi_1.0.4                  </span></span>
-<span><span class="co">##  [43] httr_1.4.6                    abind_1.4-5                  </span></span>
-<span><span class="co">##  [45] compiler_4.3.1                bit64_4.0.5                  </span></span>
-<span><span class="co">##  [47] withr_2.5.0                   BiocParallel_1.34.2          </span></span>
-<span><span class="co">##  [49] DBI_1.1.3                     highr_0.10                   </span></span>
-<span><span class="co">##  [51] HDF5Array_1.28.1              rappdirs_0.3.3               </span></span>
-<span><span class="co">##  [53] DelayedArray_0.26.6           rjson_0.2.21                 </span></span>
-<span><span class="co">##  [55] tools_4.3.1                   interactiveDisplayBase_1.38.0</span></span>
-<span><span class="co">##  [57] httpuv_1.6.11                 glue_1.6.2                   </span></span>
-<span><span class="co">##  [59] restfulr_0.0.15               dbscan_1.1-11                </span></span>
-<span><span class="co">##  [61] rhdf5filters_1.12.1           promises_1.2.0.1             </span></span>
-<span><span class="co">##  [63] grid_4.3.1                    generics_0.1.3               </span></span>
-<span><span class="co">##  [65] gtable_0.3.3                  data.table_1.14.8            </span></span>
-<span><span class="co">##  [67] hms_1.1.3                     utf8_1.2.3                   </span></span>
-<span><span class="co">##  [69] XVector_0.40.0                BiocVersion_3.17.1           </span></span>
-<span><span class="co">##  [71] pillar_1.9.0                  stringr_1.5.0                </span></span>
-<span><span class="co">##  [73] yulab.utils_0.0.6             later_1.3.1                  </span></span>
-<span><span class="co">##  [75] dplyr_1.1.2                   BiocFileCache_2.8.0          </span></span>
-<span><span class="co">##  [77] lattice_0.21-8                rtracklayer_1.60.0           </span></span>
-<span><span class="co">##  [79] bit_4.0.5                     tidyselect_1.2.0             </span></span>
-<span><span class="co">##  [81] Biostrings_2.68.1             knitr_1.43                   </span></span>
-<span><span class="co">##  [83] xfun_0.39                     colourvalues_0.3.9           </span></span>
-<span><span class="co">##  [85] stringi_1.7.12                yaml_2.3.7                   </span></span>
-<span><span class="co">##  [87] evaluate_0.21                 codetools_0.2-19             </span></span>
-<span><span class="co">##  [89] tibble_3.2.1                  BiocManager_1.30.21          </span></span>
-<span><span class="co">##  [91] ggplotify_0.1.1               cli_3.6.1                    </span></span>
-<span><span class="co">##  [93] xtable_1.8-4                  systemfonts_1.0.4            </span></span>
-<span><span class="co">##  [95] munsell_0.5.0                 jquerylib_0.1.4              </span></span>
-<span><span class="co">##  [97] Rcpp_1.0.11                   dbplyr_2.3.3                 </span></span>
-<span><span class="co">##  [99] png_0.1-8                     XML_3.99-0.14                </span></span>
-<span><span class="co">## [101] parallel_4.3.1                ellipsis_0.3.2               </span></span>
-<span><span class="co">## [103] pkgdown_2.0.7                 ggplot2_3.4.2                </span></span>
-<span><span class="co">## [105] assertthat_0.2.1              blob_1.2.4                   </span></span>
-<span><span class="co">## [107] prettyunits_1.1.1             plyranges_1.20.0             </span></span>
-<span><span class="co">## [109] bitops_1.0-7                  scales_1.2.1                 </span></span>
-<span><span class="co">## [111] plotgardener_1.6.2            purrr_1.0.1                  </span></span>
-<span><span class="co">## [113] crayon_1.5.2                  rlang_1.1.1                  </span></span>
-<span><span class="co">## [115] KEGGREST_1.40.0</span></span></code></pre>
+<span><span class="co">##   [1] DBI_1.2.2                bitops_1.0-7             rlang_1.1.3             </span></span>
+<span><span class="co">##   [4] magrittr_2.0.3           RSQLite_2.3.6            compiler_4.4.0          </span></span>
+<span><span class="co">##   [7] png_0.1-8                systemfonts_1.0.6        vctrs_0.6.5             </span></span>
+<span><span class="co">##  [10] pkgconfig_2.0.3          crayon_1.5.2             fastmap_1.1.1           </span></span>
+<span><span class="co">##  [13] dbplyr_2.5.0             XVector_0.43.1           utf8_1.2.4              </span></span>
+<span><span class="co">##  [16] Rsamtools_2.19.4         rmarkdown_2.26           UCSC.utils_0.99.5       </span></span>
+<span><span class="co">##  [19] ragg_1.3.0               bit_4.0.5                purrr_1.0.2             </span></span>
+<span><span class="co">##  [22] xfun_0.43                zlibbioc_1.49.3          cachem_1.0.8            </span></span>
+<span><span class="co">##  [25] jsonlite_1.8.8           progress_1.2.3           blob_1.2.4              </span></span>
+<span><span class="co">##  [28] highr_0.10               rhdf5filters_1.15.4      DelayedArray_0.29.9     </span></span>
+<span><span class="co">##  [31] Rhdf5lib_1.25.3          BiocParallel_1.37.1      prettyunits_1.2.0       </span></span>
+<span><span class="co">##  [34] parallel_4.4.0           R6_2.5.1                 plyranges_1.23.0        </span></span>
+<span><span class="co">##  [37] bslib_0.7.0              RColorBrewer_1.1-3       rtracklayer_1.63.2      </span></span>
+<span><span class="co">##  [40] jquerylib_0.1.4          Rcpp_1.0.12              assertthat_0.2.1        </span></span>
+<span><span class="co">##  [43] knitr_1.46               Matrix_1.7-0             tidyselect_1.2.1        </span></span>
+<span><span class="co">##  [46] abind_1.4-5              yaml_2.3.8               codetools_0.2-20        </span></span>
+<span><span class="co">##  [49] curl_5.2.1               lattice_0.22-6           tibble_3.2.1            </span></span>
+<span><span class="co">##  [52] KEGGREST_1.43.0          withr_3.0.0              evaluate_0.23           </span></span>
+<span><span class="co">##  [55] gridGraphics_0.5-1       desc_1.4.3               BiocFileCache_2.11.2    </span></span>
+<span><span class="co">##  [58] ExperimentHub_2.11.1     Biostrings_2.71.5        filelock_1.0.3          </span></span>
+<span><span class="co">##  [61] pillar_1.9.0             BiocManager_1.30.22      generics_0.1.3          </span></span>
+<span><span class="co">##  [64] dbscan_1.1-12            RCurl_1.98-1.14          BiocVersion_3.19.1      </span></span>
+<span><span class="co">##  [67] plotgardener_1.9.4       hms_1.1.3                ggplot2_3.5.0           </span></span>
+<span><span class="co">##  [70] munsell_0.5.1            scales_1.3.0             glue_1.7.0              </span></span>
+<span><span class="co">##  [73] tools_4.4.0              AnnotationHub_3.11.4     BiocIO_1.13.0           </span></span>
+<span><span class="co">##  [76] data.table_1.15.4        GenomicAlignments_1.39.5 fs_1.6.3                </span></span>
+<span><span class="co">##  [79] XML_3.99-0.16.1          rhdf5_2.47.6             grid_4.4.0              </span></span>
+<span><span class="co">##  [82] AnnotationDbi_1.65.2     colorspace_2.1-0         GenomeInfoDbData_1.2.12 </span></span>
+<span><span class="co">##  [85] HDF5Array_1.31.6         restfulr_0.0.15          cli_3.6.2               </span></span>
+<span><span class="co">##  [88] rappdirs_0.3.3           textshaping_0.3.7        fansi_1.0.6             </span></span>
+<span><span class="co">##  [91] S4Arrays_1.3.6           dplyr_1.1.4              gtable_0.3.4            </span></span>
+<span><span class="co">##  [94] yulab.utils_0.1.4        sass_0.4.9               digest_0.6.35           </span></span>
+<span><span class="co">##  [97] SparseArray_1.3.4        ggplotify_0.1.2          rjson_0.2.21            </span></span>
+<span><span class="co">## [100] memoise_2.0.1            htmltools_0.5.8.1        pkgdown_2.0.7           </span></span>
+<span><span class="co">## [103] lifecycle_1.0.4          colourvalues_0.3.9       httr_1.4.7              </span></span>
+<span><span class="co">## [106] mime_0.12                bit64_4.0.5</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

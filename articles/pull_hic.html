@@ -8,8 +8,8 @@
 <meta name="description" content="mariner">
 <title>Pulling Hi-C data with mariner • mariner</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Pulling Hi-C data with mariner">
 <meta property="og:description" content="mariner">
@@ -77,7 +77,7 @@
       <img src="" class="logo" alt=""><h1>Pulling Hi-C data with mariner</h1>
                         <h4 data-toc-skip class="author">Eric Davis</h4>
             
-            <h4 data-toc-skip class="date">2023-07-18</h4>
+            <h4 data-toc-skip class="date">2024-04-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EricSDavis/mariner/blob/HEAD/vignettes/articles/pull_hic.Rmd" class="external-link"><code>vignettes/articles/pull_hic.Rmd</code></a></small>
       <div class="d-none name"><code>pull_hic.Rmd</code></div>
@@ -185,7 +185,7 @@ the <code><a href="../reference/pullHicPixels.html">pullHicPixels()</a></code> f
 function.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/path.html" class="external-link">path</a></span><span class="op">(</span><span class="va">pixels</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "/tmp/RtmpTMiTjw/file7f6c2157f818.h5"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "/tmp/Rtmp1pXHBd/filecb30bf58464.h5"</span></span></code></pre>
 <div style="
 padding: .5em 1em;
 margin-bottom: 10px;
@@ -401,7 +401,7 @@ and 3x2 after pulling matrices with a <code>binSize</code> of 100e3:</p>
 <span><span class="co">## metadata(3): binSize, norm, matrix</span></span>
 <span><span class="co">## colData: hic1, hic2</span></span>
 <span><span class="co">## colData names(2): files, fileNames</span></span>
-<span><span class="co">## HDF5: /tmp/RtmpTMiTjw/file7f6c73b9e8fb.h5</span></span></code></pre>
+<span><span class="co">## HDF5: /tmp/Rtmp1pXHBd/filecb3079c2143b.h5</span></span></code></pre>
 <p>The resulting object is of class <code>InteractionJaggedArray</code>.
 The class is different than the previous examples because the classes
 that <code>InteractionArray</code> inherits from are designed for
@@ -511,8 +511,8 @@ this example object:</p>
 <pre><code><span><span class="co">## DataFrame with 2 rows and 2 columns</span></span>
 <span><span class="co">##                       files         fileNames</span></span>
 <span><span class="co">##                 &lt;character&gt;       &lt;character&gt;</span></span>
-<span><span class="co">## hic1 /home/runner/.cache/.. 7c3b719baace_8147</span></span>
-<span><span class="co">## hic2 /home/runner/.cache/.. 7c3b73ca608e_8148</span></span></code></pre>
+<span><span class="co">## hic1 /home/runner/.cache/.. c7ec4bb9b7c7_8147</span></span>
+<span><span class="co">## hic2 /home/runner/.cache/..  c7ec118d7f8_8148</span></span></code></pre>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Interactions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/InteractionSet/man/interaction-accessors.html" class="external-link">interactions</a></span><span class="op">(</span><span class="va">imat</span><span class="op">)</span></span></code></pre></div>
@@ -708,8 +708,8 @@ using this example object:</p>
 <pre><code><span><span class="co">## DataFrame with 2 rows and 2 columns</span></span>
 <span><span class="co">##                       files         fileNames</span></span>
 <span><span class="co">##                 &lt;character&gt;       &lt;character&gt;</span></span>
-<span><span class="co">## hic1 /home/runner/.cache/.. 7c3b719baace_8147</span></span>
-<span><span class="co">## hic2 /home/runner/.cache/.. 7c3b73ca608e_8148</span></span></code></pre>
+<span><span class="co">## hic1 /home/runner/.cache/.. c7ec4bb9b7c7_8147</span></span>
+<span><span class="co">## hic2 /home/runner/.cache/..  c7ec118d7f8_8148</span></span></code></pre>
 <div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Interactions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/InteractionSet/man/interaction-accessors.html" class="external-link">interactions</a></span><span class="op">(</span><span class="va">ia</span><span class="op">)</span></span></code></pre></div>
@@ -958,7 +958,7 @@ the <code><a href="../reference/regularize.html">regularize()</a></code> functio
 <span><span class="co">## metadata(3): binSize, norm, matrix</span></span>
 <span><span class="co">## colData: hic1, hic2</span></span>
 <span><span class="co">## colData names(2): files, fileNames</span></span>
-<span><span class="co">## HDF5: /tmp/RtmpTMiTjw/file7f6c1b14b5c3.h5</span></span></code></pre>
+<span><span class="co">## HDF5: /tmp/Rtmp1pXHBd/filecb303152f38b.h5</span></span></code></pre>
 <p>The variable dimensions of the jagged arrays can be accessed with the
 <code><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim()</a></code> function:</p>
 <div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
@@ -992,12 +992,12 @@ the <code><a href="../reference/regularize.html">regularize()</a></code> functio
 <pre><code><span><span class="co">## DataFrame with 2 rows and 2 columns</span></span>
 <span><span class="co">##                       files         fileNames</span></span>
 <span><span class="co">##                 &lt;character&gt;       &lt;character&gt;</span></span>
-<span><span class="co">## hic1 /home/runner/.cache/.. 7c3b719baace_8147</span></span>
-<span><span class="co">## hic2 /home/runner/.cache/.. 7c3b73ca608e_8148</span></span></code></pre>
+<span><span class="co">## hic1 /home/runner/.cache/.. c7ec4bb9b7c7_8147</span></span>
+<span><span class="co">## hic2 /home/runner/.cache/..  c7ec118d7f8_8148</span></span></code></pre>
 <div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Access HDF5 filepath</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/path.html" class="external-link">path</a></span><span class="op">(</span><span class="va">ija</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "/tmp/RtmpTMiTjw/file7f6c1b14b5c3.h5"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "/tmp/Rtmp1pXHBd/filecb303152f38b.h5"</span></span></code></pre>
 <div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Interactions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/InteractionSet/man/interaction-accessors.html" class="external-link">interactions</a></span><span class="op">(</span><span class="va">ija</span><span class="op">)</span></span></code></pre></div>
@@ -1302,8 +1302,8 @@ aggregating with <code><a href="../reference/aggHicMatrices.html">aggHicMatrices
 <span><span class="co">## \ Processing it ... OK</span></span>
 <span><span class="co">## / Reading and realizing block 1/1 of file 2/2 ... OK</span></span>
 <span><span class="co">## \ Processing it ... OK</span></span>
-<span><span class="co">## / Reading and realizing block 1/1 ... OK</span></span>
-<span><span class="co">## \ Processing it ... OK</span></span></code></pre>
+<span><span class="co">## / reading and realizing block 1/1 ... ok</span></span>
+<span><span class="co">## \ processing it ... ok</span></span></code></pre>
 <pre><code><span><span class="co">## &lt;3 x 3&gt; DelayedMatrix object of type "double":</span></span>
 <span><span class="co">##           [,1]      [,2]      [,3]</span></span>
 <span><span class="co">## [1,] 1.2594470 0.6167168 0.2166369</span></span>
@@ -1338,7 +1338,7 @@ package to see available normalizations.</p>
 <div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pullHicPixels.html">pullHicPixels</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">gi</span>, files<span class="op">=</span><span class="va">hicFiles</span>, binSize<span class="op">=</span><span class="fl">100e3</span>, norm<span class="op">=</span><span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `.checkStrawArgs()`:</span></span></span>
-<span><span class="co">## <span style="color: #BBBB00;">!</span> `norm` must be one of "VC", "VC_SQRT", "NONE", or "KR", not "none".</span></span>
+<span><span class="co">## <span style="color: #BBBB00;">!</span> `norm` must be one of "VC_SQRT", "VC", "KR", or "NONE", not "none".</span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Did you mean "NONE"?</span></span></code></pre>
 <p>The <code>matrix</code> argument specifies the type of values to
 extract. The default is the “observed” contact frequency values. Other
