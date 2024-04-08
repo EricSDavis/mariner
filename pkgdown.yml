@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   pull_hic: pull_hic.html
   mariner: mariner.html
-last_built: 2024-04-08T05:26Z
+last_built: 2024-04-08T05:32Z
 urls:
   reference: http://ericscottdavis.com/mariner/reference
   article: http://ericscottdavis.com/mariner/articles
