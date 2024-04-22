@@ -70,6 +70,8 @@
 #' @importFrom rhdf5 h5ls
 #'
 #' @returns Vector of available normalizations
+#' 
+#' @export
 readCoolNormTypes <- function(fname, resolution){
   fileType <- .checkIfCool(fname)
   
@@ -107,6 +109,7 @@ readCoolNormTypes <- function(fname, resolution){
 #'
 #' @returns Data frame of chromosome names and lengths
 #'
+#' @export
 readCoolChroms <- function(fname, resolution){
   ## check if input is a cool file
   fileType <- .checkIfCool(fname)
@@ -144,6 +147,8 @@ readCoolChroms <- function(fname, resolution){
 #' @importFrom rhdf5 h5ls h5read
 #'
 #' @returns Vector of basepair resolutions
+#' 
+#' @export
 readCoolBpResolutions <- function(fname){
   ## Check if file is `.mcool` or `.cool`
   fileType <- .checkIfCool(fname)
