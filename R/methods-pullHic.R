@@ -136,11 +136,21 @@
     ## Convert to data.table format
     x <- as.data.table(x)[, c("seqnames1", "start1", "end1",
                               "seqnames2", "start2", "end2")]
-
-    ## Get strawr chromosome map index
-    chrMap <- readHicChroms(file)
-
-    ## Get indices for correct ordering in .hic file
+    
+    ## Get chromosome map index if cool file
+    fileEnding <- tryCatch(.checkIfCool(file), 
+               error = function(e){
+                 return(FALSE)
+               })
+    
+    if(fileEnding %in% c(".cool",".mcool")){
+      chrMap <- readCoolChroms(file)
+    } else {
+      ## Get strawr chromosome map index if hic file
+      chrMap <- readHicChroms(file)
+    }
+    
+    ## Get indices for correct ordering in .hic/.cool file
     x$chromIndex1 <- chrMap$index[match(x$seqnames1, chrMap$name)]
     x$chromIndex2 <- chrMap$index[match(x$seqnames2, chrMap$name)]
 
@@ -332,7 +342,8 @@
 #'
 #' @inheritParams pullHicMatrices
 #' @param mDim integer - dimensions for matrices (equal)
-#' @param blocks
+#' @param blocks genomic blocks determining how much data to pull out at once
+#' @param filesAreCool logical, TRUE if files are all .cool/.mcool
 #'
 #' @importFrom rhdf5 h5createFile h5createDataset h5write
 #' @importFrom progress progress_bar
@@ -348,8 +359,9 @@
 #' @noRd
 .pullArray <- function(x, files, binSize, h5File, half, norm,
                        matrix, blockSize, onDisk, compressionLevel,
-                       chunkSize, mDim1, mDim2, blocks, chrSwapped) {
-
+                       chunkSize, mDim1, mDim2, blocks, chrSwapped,
+                       filesAreCool) {
+  
     ## Suppress NSE notes in R CMD check
     grp <- NULL
 
@@ -416,6 +428,15 @@
             )))
 
             ## Extract block data from file
+          if(filesAreCool){
+            sparseMat <-
+              coolStraw(norm = norm,
+                    fname = files[j],
+                    chr1loc = blocks$chr1loc[i],
+                    chr2loc = blocks$chr2loc[i],
+                    binsize = binSize) |>
+              as.data.table()
+          } else {
             sparseMat <-
                 straw(norm = norm,
                       fname = files[j],
@@ -425,6 +446,7 @@
                       binsize = binSize,
                       matrix = matrix) |>
                 as.data.table()
+          }
 
             ## Select interactions belonging to block
             xIndices <- blocks$xIndex[[i]]
@@ -547,7 +569,8 @@
 #'
 #' @inheritParams pullHicMatrices
 #' @param mDim integer - dimensions for matrices (not equal)
-#' @param blocks
+#' @param blocks genomic blocks determining how much data to pull out at once
+#' @param filesAreCool logical, TRUE if files are all .cool/.mcool
 #'
 #' @importFrom rhdf5 h5createFile h5createDataset h5write
 #' @importFrom progress progress_bar
@@ -562,7 +585,8 @@
 #' @noRd
 .pullJaggedArray <- function(x, files, binSize, h5File, half, norm,
                              matrix, blockSize, onDisk, compressionLevel,
-                             chunkSize, mDim1, mDim2, blocks, chrSwapped) {
+                             chunkSize, mDim1, mDim2, blocks, chrSwapped,
+                             filesAreCool) {
 
     ## TODO ignore onDisk argument
     if (!onDisk) stop("Jagged arrays must be stored onDisk.")
@@ -603,6 +627,15 @@
             )))
 
             ## Extract block data from file
+          if(filesAreCool){
+            sparseMat <-
+              coolStraw(norm = norm,
+                    fname = files[j],
+                    chr1loc = blocks$chr1loc[i],
+                    chr2loc = blocks$chr2loc[i],
+                    binsize = binSize) |>
+              as.data.table()
+          } else {
             sparseMat <-
                 straw(norm = norm,
                       fname = files[j],
@@ -612,6 +645,7 @@
                       binsize = binSize,
                       matrix = matrix) |>
                 as.data.table()
+          }
 
             ## Select interactions belonging to block
             xIndices <- blocks$xIndex[[i]]
@@ -709,12 +743,45 @@
         compressionLevel="number",
         chunkSize="number"
     ))
+    
+    ## Determine if files are .hic or .cool/.mcool
+    filesAreCool <- sapply(files,
+           function(x){
+             ## If an error results from .checkIfCool, set to false
+             isCool <- tryCatch(.checkIfCool(x),
+                      error = function(e){
+                        return(FALSE)
+                        }) |>
+               as.logical()
+             
+             ## No error gives NA, so set NAs to TRUE
+             isCool[is.na(isCool)] <- TRUE
+             
+             return(isCool)
+           })
+    
+    if (!(all(filesAreCool) | all(!filesAreCool))){
+      abort(c("Mixed file types are not currently supported",
+            "i" = "`files` must either be all `.hic` or all `.(m)cool`",
+            "*" = glue("Split files by type and run this function",
+                       " multiple times to proceed")))
+    }
+    
+    filesAreCool <- all(filesAreCool)
 
     ## Parse straw parameters
-    .checkStrawArgs(files, half, norm, binSize, matrix)
+    if(filesAreCool){
+      .checkCoolArgs(files, half, norm, binSize, matrix)
+    } else {
+      .checkStrawArgs(files, half, norm, binSize, matrix)
+    }
 
     ## Ensure seqnames are properly formatted
-    .checkHicChroms(x, files)
+    if(filesAreCool){
+      .checkCoolChroms(x, files, binSize)
+    } else {
+      .checkHicChroms(x, files)
+    }
 
     ## Assign GInteractions to bins
     x <- .handleBinning(x, binSize)
@@ -734,8 +801,10 @@
 
     ## Return x, blocks, and indices
     ## for swapped chroms & positions
+    ## along with tag if files are cool or hic
     return(list(x=x, blocks=blocks,
-                chrSwapped=oi$chrSwapped))
+                chrSwapped=oi$chrSwapped,
+                filesAreCool=filesAreCool))
 }
 
 #' Internal pullHicMatrices
@@ -771,7 +840,7 @@
         iset <- .pullArray(dat$x, files, binSize, h5File, half, norm,
                            matrix, blockSize, onDisk, compressionLevel,
                            chunkSize, mDim1, mDim2, dat$blocks,
-                           dat$chrSwapped)
+                           dat$chrSwapped, dat$filesAreCool)
 
     } else {
 
@@ -784,7 +853,7 @@
         iset <- .pullJaggedArray(dat$x, files, binSize, h5File, half, norm,
                                  matrix, blockSize, onDisk, compressionLevel,
                                  chunkSize, mDim1, mDim2, dat$blocks,
-                                 dat$chrSwapped)
+                                 dat$chrSwapped, dat$filesAreCool)
     }
     return(iset)
 }
@@ -820,12 +889,15 @@
 #' @param norm String (length one character vector)
 #'  describing the Hi-C normalization to apply. Use
 #'  `strawr::readHicNormTypes()` to see accepted values
-#'  for each file in `files`.
+#'  for each `.hic` file in `files`. Use `readCoolNormTypes()`
+#'  to see accepted values for each `.cool` or `.mcool` file
+#'  in `files`.
 #' @param matrix String (length one character vector)
 #'  Type of matrix to extract. Must be one of "observed",
 #'  "oe", or "expected". "observed" is observed counts,
 #'  "oe" is observed/expected counts, "expected" is
-#'  expected counts.
+#'  expected counts. For `.cool` and `.mcool` files, only
+#'  extracting the "observed" matrix is supported.
 #' @param blockSize Number (length one numeric vector)
 #'  describing the size in base-pairs to pull from each
 #'  `.hic` file. Default is 248956422 (the length of the
@@ -925,7 +997,8 @@ setMethod("pullHicMatrices",
 #'
 #' @inheritParams pullHicMatrices
 #' @param mDim integer - dimensions for matrices (equal)
-#' @param blocks
+#' @param blocks genomic blocks determining how much data to pull out at once
+#' @param filesAreCool logical, TRUE if files are all .cool/.mcool
 #'
 #' @importFrom rhdf5 h5createFile h5createDataset h5write
 #' @importFrom progress progress_bar
@@ -941,7 +1014,7 @@ setMethod("pullHicMatrices",
 #' @noRd
 .pullMatrix <- function(x, files, binSize, h5File, half, norm, matrix,
                        blockSize, onDisk, compressionLevel,
-                       chunkSize, blocks, chrSwapped) {
+                       chunkSize, blocks, chrSwapped, filesAreCool) {
     ## Determine dimensions for dataset
     ## Dim order is nInteractions, nFiles, matrix dims
     dims <- c(length(x), length(files))
@@ -987,6 +1060,15 @@ setMethod("pullHicMatrices",
             )))
 
             ## Extract block data from file
+          if(filesAreCool){
+            sparseMat <-
+              coolStraw(norm = norm,
+                    fname = files[j],
+                    chr1loc = blocks$chr1loc[i],
+                    chr2loc = blocks$chr2loc[i],
+                    binsize = binSize) |>
+              as.data.table()
+          } else {
             sparseMat <-
                 straw(norm = norm,
                       fname = files[j],
@@ -996,6 +1078,7 @@ setMethod("pullHicMatrices",
                       binsize = binSize,
                       matrix = matrix) |>
                 as.data.table()
+          }
 
             ## Select interactions belonging to block
             xIndices <- blocks$xIndex[[i]]
@@ -1105,7 +1188,7 @@ setMethod("pullHicMatrices",
     iset <- .pullMatrix(dat$x, files, binSize, h5File, half,
                         norm, matrix, blockSize, onDisk,
                         compressionLevel, chunkSize,
-                        dat$blocks, dat$chrSwapped)
+                        dat$blocks, dat$chrSwapped, dat$filesAreCool)
 
     return(iset)
 

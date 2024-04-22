@@ -62,13 +62,16 @@ regardless of specified order.}
 \item{norm}{String (length one character vector)
 describing the Hi-C normalization to apply. Use
 `strawr::readHicNormTypes()` to see accepted values
-for each file in `files`.}
+for each `.hic` file in `files`. Use `readCoolNormTypes()`
+to see accepted values for each `.cool` or `.mcool` file
+in `files`.}
 
 \item{matrix}{String (length one character vector)
 Type of matrix to extract. Must be one of "observed",
 "oe", or "expected". "observed" is observed counts,
 "oe" is observed/expected counts, "expected" is
-expected counts.}
+expected counts. For `.cool` and `.mcool` files, only
+extracting the "observed" matrix is supported.}
 
 \item{blockSize}{Number (length one numeric vector)
 describing the size in base-pairs to pull from each
