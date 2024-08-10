@@ -111,7 +111,7 @@ loops <-
 GenomeInfoDb::seqlevelsStyle(loops) <- 'ENSEMBL'
 
 ## Expand binSize of loops
-loops <- assignToBins(x=loops, binSize=100e3)
+loops <- binPairs(x=loops, binSize=100e3)
 
 ## Calculate loop enrichment
 calcLoopEnrichment(x=loops[1:10],
@@ -131,7 +131,7 @@ calcLoopEnrichment(x=loops[1:10],
                    bg=bg)
 
 ## Extract count matrices first
-mats <- assignToBins(loops[1:10],100e3) |>
+mats <- binPairs(loops[1:10],100e3) |>
   pixelsToMatrices(buffer=10) |>
     pullHicMatrices(
     files=hicFiles,

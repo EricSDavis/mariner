@@ -212,7 +212,7 @@ gi <- read.table(text="
 iarr <- pullHicMatrices(gi, hicFiles, 100e03, half="both")
 
 ## Shift first two ranges out of range
-gi2 <- c(assignToBins(gi[1:2], binSize=100e3, pos1=-200e3), gi[3:4])
+gi2 <- c(binPairs(gi[1:2], binSize=100e3, pos1=-200e3), gi[3:4])
 
 ## Find overlaps
 findOverlaps(iarr, gi2)

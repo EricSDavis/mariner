@@ -12,7 +12,7 @@ gi1 <-
 
 ## Tests -----------------------------------------------------------------------
 
-test_that("assignToBins can expand the resolution (from start)", {
+test_that("binPairs can expand the resolution (from start)", {
 
     ## Construct GInteractions from data.frame
     exp <-
@@ -21,7 +21,7 @@ test_that("assignToBins can expand the resolution (from start)", {
         as_ginteractions()
 
     obj <-
-        assignToBins(x = gi1,
+        binPairs(x = gi1,
                  binSize = 20000,
                  pos1 = 'start',
                  pos2 = 'start')
@@ -45,7 +45,7 @@ test_that("Bin to the TSS of one anchor", {
         as_ginteractions()
 
     obj <-
-        assignToBins(x = gi2,
+        binPairs(x = gi2,
                  binSize = 1000,
                  pos1 = 'start',
                  pos2 = 2000)
@@ -54,7 +54,7 @@ test_that("Bin to the TSS of one anchor", {
 
 })
 
-test_that("assignToBins retains metadata", {
+test_that("binPairs retains metadata", {
 
     ## Construct GInteractions from data.frame
     exp <-
@@ -67,7 +67,7 @@ test_that("assignToBins retains metadata", {
     gi1$var2 <- 10
 
     obj <-
-        assignToBins(x = gi1,
+        binPairs(x = gi1,
                  binSize = 20000,
                  pos1 = 'start',
                  pos2 = 'start')
@@ -76,7 +76,7 @@ test_that("assignToBins retains metadata", {
 
 })
 
-test_that("assignToBins doesn't modify class", {
+test_that("binPairs doesn't modify class", {
 
     ## Load required packages
     library(data.table)
@@ -102,7 +102,7 @@ test_that("assignToBins doesn't modify class", {
 
     ## Binning
     bmgi <-
-        assignToBins(x = mgi,
+        binPairs(x = mgi,
                  binSize = 10e03,
                  pos1 = 'start',
                  pos2 = 'end')
@@ -113,7 +113,7 @@ test_that("assignToBins doesn't modify class", {
 
     ## For non merged data
     bp <-
-        assignToBins(x = giList[[1]],
+        binPairs(x = giList[[1]],
                  binSize = 10e03,
                  pos1 = 'start',
                  pos2 = 'end')
@@ -124,12 +124,12 @@ test_that("assignToBins doesn't modify class", {
 })
 
 test_that("Binning checks for appropriate binSize", {
-    assignToBins(gi1, binSize = 0) |>
+    binPairs(gi1, binSize = 0) |>
         expect_error("`binSize` must be > 0")
 })
 
 test_that("Anchors can be binned independently", {
-    bgi <- assignToBins(gi1, binSize=c(5e03, 1e03))
+    bgi <- binPairs(gi1, binSize=c(5e03, 1e03))
     expect_equal(unique(width(regions(bgi)))-1,
                  c(5e03, 1e03))
 })
