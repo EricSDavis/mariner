@@ -1,7 +1,7 @@
 Package: mariner
 Type: Package
 Title: Mariner: Explore the Hi-Cs
-Version: 1.9.0
+Version: 1.9.1
 Authors@R: c(
     person("Eric", "Davis", role = c("aut", "cre"),
       email = "ericscottdavis@outlook.com",
@@ -22,7 +22,8 @@ Suggests:
     dplyr,
     rmarkdown,
     ExperimentHub,
-    marinerData
+    marinerData,
+    GenomeInfoDb
 Imports:
     methods,
     S4Vectors,
@@ -40,7 +41,7 @@ Imports:
     dbscan,
     purrr,
     progress,
-    GenomeInfoDb,
+    Seqinfo,
     strawr (>= 0.0.91),
     DelayedArray,
     HDF5Array,

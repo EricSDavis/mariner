@@ -5,8 +5,8 @@ library(InteractionSet)
 library(glue, include.only = "glue")
 library(strawr)
 library(dplyr, include.only = "arrange")
-library(GenomeInfoDb)
 library(GenomicRanges)
+library(GenomeInfoDb)
 
 ## Shared objects --------------------------------------------------------------
 
@@ -131,7 +131,7 @@ test_that("Check chromosomes in .hic file", {
         expect_error("There's.*craziness.*")
 
     ## Corrected seqnames don't throw error
-    seqlevelsStyle(x) <- "ENSEMBL"
+    GenomeInfoDb::seqlevelsStyle(x) <- "ENSEMBL"
     .checkHicChroms(x, hicFiles[1]) |>
         expect_null()
 
@@ -238,7 +238,7 @@ test_that("pullHicPixels pulls correct counts", {
 
     ## Assign to x (to avoid modifying in place)
     x <- binPairs(bgi[1:10], 2.5e06)
-    seqlevelsStyle(x) <- "ENSEMBL"
+    GenomeInfoDb::seqlevelsStyle(x) <- "ENSEMBL"
 
     ## Give names to hicFiles
     namedHicFiles <- hicFiles
