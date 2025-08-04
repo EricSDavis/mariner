@@ -1,7 +1,7 @@
 Package: mariner
 Type: Package
 Title: Mariner: Explore the Hi-Cs
-Version: 1.2.1
+Version: 1.9.1
 Authors@R: c(
     person("Eric", "Davis", role = c("aut", "cre"),
       email = "ericscottdavis@outlook.com",
@@ -26,6 +26,8 @@ Suggests:
     rmarkdown,
     ExperimentHub,
     marinerData,
+    GenomeInfoDb
+    marinerData,
     TxDb.Hsapiens.UCSC.hg38.knownGene,
     fields
 Imports:
@@ -45,7 +47,7 @@ Imports:
     dbscan,
     purrr,
     progress,
-    GenomeInfoDb,
+    Seqinfo,
     strawr (>= 0.0.91),
     DelayedArray,
     HDF5Array,
