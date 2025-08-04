@@ -99,7 +99,6 @@
 names.MatrixSelection <- function(x) slotNames(x)
 
 #' Extract `$` operator for MatrixSelection
-#' @param object A `MatrixSelection` object.
 #' @param name Name of slot.
 #' @rdname MatrixSelection
 #' @keywords internal

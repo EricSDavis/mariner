@@ -24,8 +24,6 @@
 \item{name}{Name of slot.}
 
 \item{i}{A character or numeric to extract.}
-
-\item{object}{A `MatrixSelection` object.}
 }
 \value{
 different data or metadata concerning a MatrixSelection object
