@@ -1,18 +1,26 @@
 citHeader("To cite mariner in publications use:")
 
 citEntry(
-    entry = "Unpublished",
-    title        = "Mariner: Explore the Hi-Cs",
-    author       = personList(as.person("Eric S. Davis"),
-                              as.person("Sarah M. Parker"),
-                              as.person("Douglas H. Phanstiel")),
-    year         = "2022",
-    note         = "R package version 1.1.0",
-    doi          = "10.5281/zenodo.7514361",
-
-    textVersion  =
-        paste("Eric S. Davis, Sarah M. Parker, Douglas H. Phanstiel (2022).",
-              "Mariner: Explore the Hi-Cs.",
-              "R package version 1.1.0.",
-              "https://doi.org/10.5281/zenodo.7514362")
+    entry = "Article",
+    title = "Mariner: Explore the Hi-Cs",
+    author = personList(
+        as.person("Eric S. Davis"),
+        as.person("Sarah M. Parker"),
+        as.person("Nicole E. Kramer"),
+        as.person("J.P. Flores"),
+        as.person("Manjari Kiran"),
+        as.person("Douglas H. Phanstiel")
+    ),
+    journal = "Bioinformatics",
+    year = "2024",
+    url = "https://doi.org/10.1093/bioinformatics/btae352",
+    doi = "10.1093/bioinformatics/btae352",
+    textVersion =
+        paste(
+            "Eric S. Davis, Sarah M. Parker, Nicole E. Kramer,",
+            "J.P. Flores, Manjari Kiran, Douglas H. Phanstiel (2022).",
+            "Mariner: Explore the Hi-Cs.",
+            "Bioinformatics, 2024",
+            "https://doi.org/10.1093/bioinformatics/btae352"
+        )
 )

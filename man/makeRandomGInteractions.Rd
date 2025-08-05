@@ -45,7 +45,7 @@ Creating random GRanges & GInteractions
 if (require(TxDb.Hsapiens.UCSC.hg38.knownGene)) {
     txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
     si <- seqinfo(txdb)
-    si <- keepStandardChromosomes(si)
+    si <- GenomeInfoDb::keepStandardChromosomes(si)
 } else {
     si <- Seqinfo(
         seqnames=c("chr1", "chr2"),

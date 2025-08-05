@@ -95,7 +95,7 @@
             'x' = glue("seqnames in `x` are not correctly ",
                        "formatted or do not exist in `files`."),
             "Try the following steps:",
-            '>' = "Check `x` with `GenomeInfoDb::seqinfo(x)`.",
+            '>' = "Check `x` with `Seqinfo::seqinfo(x)`.",
             '>' = "Check `file` with `strawr::readHicChroms(files)`.",
             '>' = "Edit seqnames in `x` to match chromosomes in `files`.",
             "Hint:",
