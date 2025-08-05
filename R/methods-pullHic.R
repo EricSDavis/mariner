@@ -59,7 +59,7 @@
 #' in these files.
 #'
 #' @inheritParams pullHicMatrices
-#' @importFrom Seqinfo seqinfo seqnames
+#' @importFrom GenomeInfoDb seqinfo seqnames
 #' @importFrom strawr readHicChroms
 #' @importFrom rlang abort
 #' @importFrom glue glue

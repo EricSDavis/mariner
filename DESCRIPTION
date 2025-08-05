@@ -26,8 +26,6 @@ Suggests:
     rmarkdown,
     ExperimentHub,
     marinerData,
-    GenomeInfoDb
-    marinerData,
     TxDb.Hsapiens.UCSC.hg38.knownGene,
     fields
 Imports:
@@ -47,7 +45,7 @@ Imports:
     dbscan,
     purrr,
     progress,
-    Seqinfo,
+    GenomeInfoDb,
     strawr (>= 0.0.91),
     DelayedArray,
     HDF5Array,
