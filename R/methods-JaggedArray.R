@@ -224,6 +224,7 @@ setMethod("[", "JaggedArray", function(x, i, j, ...) {
 #' as an in-memory list of matrices.
 #'
 #' @param x JaggedArray object.
+#' @importMethodsFrom S4Vectors as.list
 #' @returns `as.list()` returns a list of matrices.
 #' @examples
 #' ## Realize as list
