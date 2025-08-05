@@ -168,7 +168,7 @@ the <code><a href="../reference/pullHicPixels.html">pullHicPixels()</a></code> f
 function.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/path.html" class="external-link">path</a></span><span class="op">(</span><span class="va">pixels</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "/tmp/RtmpK3GJ4z/file830216930b3f.h5"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "/tmp/RtmpdicOqR/file20c24cd87207.h5"</span></span></code></pre>
 <div style="
 padding: .5em 1em;
 margin-bottom: 10px;
@@ -384,7 +384,7 @@ and 3x2 after pulling matrices with a <code>binSize</code> of 100e3:</p>
 <span><span class="co">## metadata(3): binSize, norm, matrix</span></span>
 <span><span class="co">## colData: hic1, hic2</span></span>
 <span><span class="co">## colData names(2): files, fileNames</span></span>
-<span><span class="co">## HDF5: /tmp/RtmpK3GJ4z/file83021cb729f.h5</span></span></code></pre>
+<span><span class="co">## HDF5: /tmp/RtmpdicOqR/file20c230d0ce3.h5</span></span></code></pre>
 <p>The resulting object is of class <code>InteractionJaggedArray</code>.
 The class is different than the previous examples because the classes
 that <code>InteractionArray</code> inherits from are designed for
@@ -494,8 +494,8 @@ this example object:</p>
 <pre><code><span><span class="co">## DataFrame with 2 rows and 2 columns</span></span>
 <span><span class="co">##                       files         fileNames</span></span>
 <span><span class="co">##                 &lt;character&gt;       &lt;character&gt;</span></span>
-<span><span class="co">## hic1 /home/runner/.cache/.. 7eee75225761_8147</span></span>
-<span><span class="co">## hic2 /home/runner/.cache/.. 7eee6d62fa87_8148</span></span></code></pre>
+<span><span class="co">## hic1 /home/runner/.cache/.. 1c6a2e2a0cb1_8147</span></span>
+<span><span class="co">## hic2 /home/runner/.cache/.. 1c6a6d746570_8148</span></span></code></pre>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Interactions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/InteractionSet/man/interaction-accessors.html" class="external-link">interactions</a></span><span class="op">(</span><span class="va">imat</span><span class="op">)</span></span></code></pre></div>
@@ -691,8 +691,8 @@ using this example object:</p>
 <pre><code><span><span class="co">## DataFrame with 2 rows and 2 columns</span></span>
 <span><span class="co">##                       files         fileNames</span></span>
 <span><span class="co">##                 &lt;character&gt;       &lt;character&gt;</span></span>
-<span><span class="co">## hic1 /home/runner/.cache/.. 7eee75225761_8147</span></span>
-<span><span class="co">## hic2 /home/runner/.cache/.. 7eee6d62fa87_8148</span></span></code></pre>
+<span><span class="co">## hic1 /home/runner/.cache/.. 1c6a2e2a0cb1_8147</span></span>
+<span><span class="co">## hic2 /home/runner/.cache/.. 1c6a6d746570_8148</span></span></code></pre>
 <div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Interactions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/InteractionSet/man/interaction-accessors.html" class="external-link">interactions</a></span><span class="op">(</span><span class="va">ia</span><span class="op">)</span></span></code></pre></div>
@@ -941,7 +941,7 @@ the <code><a href="../reference/regularize.html">regularize()</a></code> functio
 <span><span class="co">## metadata(3): binSize, norm, matrix</span></span>
 <span><span class="co">## colData: hic1, hic2</span></span>
 <span><span class="co">## colData names(2): files, fileNames</span></span>
-<span><span class="co">## HDF5: /tmp/RtmpK3GJ4z/file83023c69be0b.h5</span></span></code></pre>
+<span><span class="co">## HDF5: /tmp/RtmpdicOqR/file20c24eeaf134.h5</span></span></code></pre>
 <p>The variable dimensions of the jagged arrays can be accessed with the
 <code><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim()</a></code> function:</p>
 <div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
@@ -975,12 +975,12 @@ the <code><a href="../reference/regularize.html">regularize()</a></code> functio
 <pre><code><span><span class="co">## DataFrame with 2 rows and 2 columns</span></span>
 <span><span class="co">##                       files         fileNames</span></span>
 <span><span class="co">##                 &lt;character&gt;       &lt;character&gt;</span></span>
-<span><span class="co">## hic1 /home/runner/.cache/.. 7eee75225761_8147</span></span>
-<span><span class="co">## hic2 /home/runner/.cache/.. 7eee6d62fa87_8148</span></span></code></pre>
+<span><span class="co">## hic1 /home/runner/.cache/.. 1c6a2e2a0cb1_8147</span></span>
+<span><span class="co">## hic2 /home/runner/.cache/.. 1c6a6d746570_8148</span></span></code></pre>
 <div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Access HDF5 filepath</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/path.html" class="external-link">path</a></span><span class="op">(</span><span class="va">ija</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "/tmp/RtmpK3GJ4z/file83023c69be0b.h5"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "/tmp/RtmpdicOqR/file20c24eeaf134.h5"</span></span></code></pre>
 <div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Interactions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/InteractionSet/man/interaction-accessors.html" class="external-link">interactions</a></span><span class="op">(</span><span class="va">ija</span><span class="op">)</span></span></code></pre></div>
@@ -1321,7 +1321,7 @@ package to see available normalizations.</p>
 <div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pullHicPixels.html">pullHicPixels</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">gi</span>, files<span class="op">=</span><span class="va">hicFiles</span>, binSize<span class="op">=</span><span class="fl">100e3</span>, norm<span class="op">=</span><span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `.checkStrawArgs()`:</span></span></span>
-<span><span class="co">## <span style="color: #BBBB00;">!</span> `norm` must be one of "KR", "NONE", "VC_SQRT", or "VC", not "none".</span></span>
+<span><span class="co">## <span style="color: #BBBB00;">!</span> `norm` must be one of "VC_SQRT", "KR", "NONE", or "VC", not "none".</span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Did you mean "NONE"?</span></span></code></pre>
 <p>The <code>matrix</code> argument specifies the type of values to
 extract. The default is the “observed” contact frequency values. Other
