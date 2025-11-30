@@ -1,6 +1,6 @@
 #' Internal shiftRanges function
 #' @inheritParams shiftRanges
-#' @importFrom plyranges mutate
+#' @importFrom dplyr mutate
 #' @importFrom GenomicRanges trim resize shift strand
 #' @importFrom magrittr `%<>%` `%>%`
 #' @importFrom rlang arg_match abort

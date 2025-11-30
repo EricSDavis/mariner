@@ -1,7 +1,7 @@
 Package: mariner
 Type: Package
 Title: Mariner: Explore the Hi-Cs
-Version: 1.9.1
+Version: 1.9.2
 Authors@R: c(
     person("Eric", "Davis", role = c("aut", "cre"),
       email = "ericscottdavis@outlook.com",
@@ -17,12 +17,11 @@ Description: Tools for manipulating paired ranges and
     from `.hic` files, and visualizing the results. 
     Designed for compatibility with plotgardener for
     visualization.
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Depends: R (>= 4.2.0)
 Suggests:
     knitr,
     testthat (>= 3.0.0),
-    dplyr,
     rmarkdown,
     ExperimentHub,
     marinerData,
@@ -40,7 +39,7 @@ Imports:
     rlang,
     glue,
     assertthat,
-    plyranges,
+    dplyr,
     magrittr,
     dbscan,
     purrr,
