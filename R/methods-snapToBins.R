@@ -76,7 +76,7 @@
 
 #' Internal snapRangesToBins function
 #' @inheritParams snapRangesToBins
-#' @importFrom plyranges mutate
+#' @importFrom dplyr mutate
 #' @importFrom GenomicRanges trim
 #' @return GRanges object snapped to the nearest `binSize`.
 #' @noRd
@@ -93,8 +93,8 @@
 
     ## Update object and trim excess
     x |>
-        mutate(start = snapped$start,
-               end = snapped$end) |>
+        dplyr::mutate(start = snapped$start,
+                      end = snapped$end) |>
         trim() |>
         suppressWarnings()
 }

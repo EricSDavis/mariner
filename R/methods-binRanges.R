@@ -1,6 +1,6 @@
 #' Internal binRanges function
 #' @inheritParams binRanges
-#' @importFrom plyranges mutate
+#' @importFrom dplyr mutate
 #' @importFrom GenomicRanges trim
 #' @return GRanges object binned to `binSize` from `pos`
 #' @noRd
@@ -15,7 +15,7 @@
     ## Shift, bin, and trim ranges
     x |>
         shiftRanges(pos) |>
-        mutate(start = floor(start/binSize)*binSize,
+        dplyr::mutate(start = floor(start/binSize)*binSize,
                end = floor(start/binSize)*binSize + binSize) |>
         trim() |>
         suppressWarnings()

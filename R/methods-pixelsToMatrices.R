@@ -3,7 +3,7 @@
 #' @importFrom InteractionSet regions anchors GInteractions
 #' @importFrom S4Vectors width mcols "mcols<-"
 #' @importFrom rlang abort
-#' @importFrom plyranges mutate
+#' @importFrom dplyr mutate
 #' @noRd
 .pixelsToMatrices <- function(x, buffer) {
 
@@ -17,13 +17,13 @@
     ## Resize each anchor
     a1 <-
         anchors(x, 'first') |>
-        mutate(end = start + binSize*(buffer+1),
-               start = start - binSize*buffer)
+        dplyr::mutate(end = start + binSize*(buffer+1),
+                      start = start - binSize*buffer)
 
     a2 <-
         anchors(x, 'second') |>
-        mutate(end = start + binSize*(buffer+1),
-               start = start - binSize*buffer)
+        dplyr::mutate(end = start + binSize*(buffer+1),
+                      start = start - binSize*buffer)
 
     ## Form delegate object & preserve mcols
     gi <- GInteractions(a1, a2)
