@@ -1,0 +1,330 @@
+# Mariner: Explore the Hi-Cs ![](reference/figures/mariner.png)
+
+## Why mariner?
+
+Disruption or aberrant formation of chromatin interactions can result in
+developmental abnormalities and disease. Therefore, deriving biological
+insights from 3D chromatin structure experiments, such as Hi-C or
+Micro-C, is essential for understanding and correcting human disease.
+
+`mariner` is an R/Bioconductor package for exploring Hi-C data. It
+enables users to flexibly manipulate, extract, and aggregate chromatin
+interaction data quickly and efficiently.
+
+**One ecosystem**  
+`mariner` extends common Bioconductor classes, leveraging the thousands
+of existing tools for analyzing and visualizing genomic data.
+
+**Modular design**  
+`mariner’s` functions can be combined and chained in various ways to
+produce custom workflows.
+
+**Fast and efficient**  
+`mariner` leverages HDF5 to store large results and uses block
+processing to minimize hardware requirements.
+
+## Key features
+
+**Manipulating Paired Ranges**  
+*Convert, bin, and shift paired genomic ranges*
+![](reference/figures/binningFigure2.png)
+
+**Clustering & Merging Interactions**  
+*Group nearby interactions and select one as representative*
+![](reference/figures/mergingFigure.png)
+
+**Extracting & Aggregating Interactions**  
+*Pull Hi-C pixels or matrices, then aggregate by files or interactions*
+![](reference/figures/aggregateFigure.png)
+
+**Calculating Loop Enrichment**  
+*Determine loop enrichment to local background with selection functions
+to flexibility select foreground and background.*
+![](reference/figures/enrichmentFigure.png)
+
+## Installation
+
+This package can be installed through Bioconductor:
+
+`{r} if (!require("BiocManager", quietly = TRUE)) install.packages("BiocManager") BiocManager::install("mariner")`
+
+Or the development version can be installed via GitHub:
+
+`{r} if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes") remotes::install_github("EricSDavis/mariner")`
+
+## Contributing
+
+This outlines how to propose a change to `mariner`. (Template adapted
+from tidyverse contribution guide).
+
+### Setting up the development environment
+
+Every push to the `dev` or `main` branch of this repository builds and
+pushes a development container to
+[dockerhub](https://hub.docker.com/r/ericsdavis/r-mariner) with
+`mariner` and its dependencies pre-installed. If you don’t have docker,
+follow the installation instructions at <https://www.docker.com/>.
+Follow the steps below to set up a reproducible development environment:
+
+1.  In the terminal, clone this repository:
+
+    `{bash} git clone https://github.com/EricSDavis/mariner`
+
+2.  Pull the latest image development image from dockerhub:
+
+    `{bash} docker pull ericsdavis/r-mariner`
+
+3.  Run the container:
+
+    `{bash} docker run \ --name mariner \ -e PASSWORD=bioc \ -p 8787:8787 \ -v "$(pwd)/mariner:/home/rstudio/mariner" \ ericsdavis/r-mariner:latest`
+    Then navigate to [localhost:8787](localhost:8787) and sign into
+    RStudio with username=rstudio and password=bioc.
+
+    Alternatively, this `docker-compose up` can be run with this `yaml`
+    file:
+
+    `{yaml} services: mariner-devel: container_name: mariner-devel image: "ericsdavis/r-mariner" ports: - "8787:8787" environment: - PASSWORD=bioc volumes: - type: bind source: ./mariner target: /home/rstudio/mariner`
+
+### Fixing typos
+
+You can fix typos, spelling mistakes, or grammatical errors in the
+documentation directly using the GitHub web interface, as long as the
+changes are made in the *source* file. This generally means you’ll need
+to edit [roxygen2
+comments](https://roxygen2.r-lib.org/articles/roxygen2.html) in an `.R`,
+not a `.Rd` file. You can find the `.R` file that generates the `.Rd` by
+reading the comment in the first line.
+
+### Bigger changes
+
+If you want to make a bigger change, it’s a good idea to first file an
+issue and make sure someone from the team agrees that it’s needed. If
+you’ve found a bug, please file an issue that illustrates the bug with a
+minimal [reprex](https://www.tidyverse.org/help/#reprex) (this will also
+help you write a unit test, if needed).
+
+### Pull request process
+
+- Fork the package and clone onto your computer. If you haven’t done
+  this before, we recommend using
+  `usethis::create_from_github("EricSDavis/mariner", fork = TRUE)`.
+
+- Install all development dependences with
+  `devtools::install_dev_deps()`, and then make sure the package passes
+  R CMD check by running `devtools::check()`. If R CMD check doesn’t
+  pass cleanly, it’s a good idea to ask for help before continuing.
+
+- Create a Git branch for your pull request (PR). We recommend using
+  `usethis::pr_init("brief-description-of-change")`.
+
+- Make your changes, commit to git, and then create a PR by running
+  `usethis::pr_push()`, and following the prompts in your browser. The
+  title of your PR should briefly describe the change. The body of your
+  PR should contain `Fixes #issue-number`.
+
+- For user-facing changes, add a bullet to the top of `NEWS.md`
+  (i.e. just below the first header). Follow the style described in
+  <https://style.tidyverse.org/news.html>.
+
+### Code style
+
+- We use [roxygen2](https://cran.r-project.org/package=roxygen2) for
+  documentation.
+
+- We use [testthat](https://cran.r-project.org/package=testthat) for
+  unit tests. Contributions with test cases included are easier to
+  accept.
+
+## Code of Conduct
+
+Please note that the mariner project is released with a [Contributor
+Code of Conduct](http://ericscottdavis.com/mariner/CODE_OF_CONDUCT.md).
+By contributing to this project you agree to abide by its terms.
+
+# Package index
+
+## About mariner
+
+- [`mariner`](http://ericscottdavis.com/mariner/reference/mariner-package.md)
+  [`mariner-package`](http://ericscottdavis.com/mariner/reference/mariner-package.md)
+  : Mariner: Explore the Hi-Cs
+
+## Manipulating Paired Ranges
+
+Convert, bin, and shift paired genomic ranges
+
+- [`as_ginteractions()`](http://ericscottdavis.com/mariner/reference/as_ginteractions.md)
+  [`makeGInteractionsFromDataFrame()`](http://ericscottdavis.com/mariner/reference/as_ginteractions.md)
+  : Convert DataFrames to GInteraction objects
+- [`shiftRanges()`](http://ericscottdavis.com/mariner/reference/shiftRanges.md)
+  : Flexibly shifting GRanges according to strand
+- [`binRanges()`](http://ericscottdavis.com/mariner/reference/binRanges.md)
+  : Flexibly bin ranges
+- [`assignToBins()`](http://ericscottdavis.com/mariner/reference/assignToBins.md)
+  : Flexibly bin paired ranges
+- [`snapToBins()`](http://ericscottdavis.com/mariner/reference/snapToBins.md)
+  : Snap GRanges or GInteractions to nearest bins
+- [`seqnames1()`](http://ericscottdavis.com/mariner/reference/GInteractions-accessors.md)
+  [`seqnames2()`](http://ericscottdavis.com/mariner/reference/GInteractions-accessors.md)
+  [`start1()`](http://ericscottdavis.com/mariner/reference/GInteractions-accessors.md)
+  [`end1()`](http://ericscottdavis.com/mariner/reference/GInteractions-accessors.md)
+  [`start2()`](http://ericscottdavis.com/mariner/reference/GInteractions-accessors.md)
+  [`end2()`](http://ericscottdavis.com/mariner/reference/GInteractions-accessors.md)
+  : Access each portion of a GInteractions-like object
+- [`makeRandomGRanges()`](http://ericscottdavis.com/mariner/reference/makeRandomGInteractions.md)
+  [`makeRandomGInteractions()`](http://ericscottdavis.com/mariner/reference/makeRandomGInteractions.md)
+  : Creating random GRanges & GInteractions
+
+## Clustering & Merging Interactions
+
+Group nearby interactions and select one as representative
+
+- [`mergePairs()`](http://ericscottdavis.com/mariner/reference/mergePairs.md)
+  : Merge sets of paired interactions
+- [`MergedGInteractions-class`](http://ericscottdavis.com/mariner/reference/MergedGInteractions-class.md)
+  [`MergedGInteractions`](http://ericscottdavis.com/mariner/reference/MergedGInteractions-class.md)
+  : MergedGInteractions Class
+- [`aggMetadata()`](http://ericscottdavis.com/mariner/reference/aggMetadata.md)
+  : Aggregate the metadata columns of merged pairs
+- [`clusters()`](http://ericscottdavis.com/mariner/reference/clusters.md)
+  : Get clustered pairs from MergedGInteractions object
+- [`sources()`](http://ericscottdavis.com/mariner/reference/sources.md)
+  : Accessor for sources
+- [`sets()`](http://ericscottdavis.com/mariner/reference/sets.md) : Get
+  each set from a MergedGInteractions object
+
+## Extracting & Aggregating Interactions
+
+Pull Hi-C pixels or matrices, then aggregate by files or interactions
+
+- [`pullHicPixels()`](http://ericscottdavis.com/mariner/reference/pullHicPixels.md)
+  : Pull contact frequency from \`.hic\` files
+- [`InteractionMatrix()`](http://ericscottdavis.com/mariner/reference/InteractionMatrix-class.md)
+  [`show(`*`<InteractionMatrix>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionMatrix-class.md)
+  [`rbind(`*`<InteractionMatrix>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionMatrix-class.md)
+  [`cbind(`*`<InteractionMatrix>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionMatrix-class.md)
+  : InteractionMatrix Class
+- [`pixelsToMatrices()`](http://ericscottdavis.com/mariner/reference/pixelsToMatrices.md)
+  : Expand pixels to submatrices
+- [`removeShortPairs()`](http://ericscottdavis.com/mariner/reference/removeShortPairs.md)
+  : Remove interactions that would cross the Hi-C diagonal or a
+  specified distance from the diagonal.
+- [`pullHicMatrices()`](http://ericscottdavis.com/mariner/reference/pullHicMatrices.md)
+  : Pull submatrices from \`.hic\` files
+- [`InteractionArray()`](http://ericscottdavis.com/mariner/reference/InteractionArray-class.md)
+  [`show(`*`<InteractionArray>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionArray-class.md)
+  [`rbind(`*`<InteractionArray>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionArray-class.md)
+  [`cbind(`*`<InteractionArray>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionArray-class.md)
+  : InteractionArray Class
+- [`counts(`*`<InteractionArray>`*`)`](http://ericscottdavis.com/mariner/reference/counts.md)
+  [`counts(`*`<InteractionMatrix>`*`)`](http://ericscottdavis.com/mariner/reference/counts.md)
+  [`` `counts<-`( ``*`<InteractionMatrix>`*`)`](http://ericscottdavis.com/mariner/reference/counts.md)
+  : Access count matrices from InteractionArray or InteractionMatrix
+- [`path(`*`<InteractionMatrix>`*`)`](http://ericscottdavis.com/mariner/reference/path.md)
+  [`` `path<-`( ``*`<InteractionMatrix>`*`)`](http://ericscottdavis.com/mariner/reference/path.md)
+  : Accessor for h5File path from an InteractionMatrix
+- [`show(`*`<InteractionJaggedArray>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-class.md)
+  [`dim(`*`<InteractionJaggedArray>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-class.md)
+  [`interactions(`*`<InteractionJaggedArray>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-class.md)
+  [`metadata(`*`<InteractionJaggedArray>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-class.md)
+  [`colData(`*`<InteractionJaggedArray>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-class.md)
+  [`counts(`*`<InteractionJaggedArray>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-class.md)
+  [`path(`*`<InteractionJaggedArray>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-class.md)
+  [`length(`*`<InteractionJaggedArray>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-class.md)
+  [`` `[`( ``*`<InteractionJaggedArray>`*`,`*`<ANY>`*`,`*`<ANY>`*`,`*`<ANY>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-class.md)
+  : InteractionJaggedArray Class
+- [`show(`*`<JaggedArray>`*`)`](http://ericscottdavis.com/mariner/reference/JaggedArray-class.md)
+  [`` `[`( ``*`<JaggedArray>`*`,`*`<ANY>`*`,`*`<ANY>`*`,`*`<ANY>`*`)`](http://ericscottdavis.com/mariner/reference/JaggedArray-class.md)
+  [`as.list(`*`<JaggedArray>`*`)`](http://ericscottdavis.com/mariner/reference/JaggedArray-class.md)
+  [`path(`*`<JaggedArray>`*`)`](http://ericscottdavis.com/mariner/reference/JaggedArray-class.md)
+  [`dim(`*`<JaggedArray>`*`)`](http://ericscottdavis.com/mariner/reference/JaggedArray-class.md)
+  : JaggedArray Class
+- [`findOverlaps(`*`<InteractionJaggedArray>`*`,`*`<InteractionJaggedArray>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-overlaps.md)
+  [`findOverlaps(`*`<InteractionJaggedArray>`*`,`*`<Vector>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-overlaps.md)
+  [`findOverlaps(`*`<InteractionJaggedArray>`*`,`*`<missing>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-overlaps.md)
+  [`countOverlaps(`*`<InteractionJaggedArray>`*`,`*`<InteractionJaggedArray>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-overlaps.md)
+  [`countOverlaps(`*`<InteractionJaggedArray>`*`,`*`<Vector>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-overlaps.md)
+  [`countOverlaps(`*`<InteractionJaggedArray>`*`,`*`<missing>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-overlaps.md)
+  [`overlapsAny(`*`<InteractionJaggedArray>`*`,`*`<InteractionJaggedArray>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-overlaps.md)
+  [`overlapsAny(`*`<InteractionJaggedArray>`*`,`*`<Vector>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-overlaps.md)
+  [`overlapsAny(`*`<InteractionJaggedArray>`*`,`*`<missing>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-overlaps.md)
+  [`subsetByOverlaps(`*`<InteractionJaggedArray>`*`,`*`<InteractionJaggedArray>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-overlaps.md)
+  [`subsetByOverlaps(`*`<InteractionJaggedArray>`*`,`*`<Vector>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-overlaps.md)
+  [`subsetByOverlaps(`*`<InteractionJaggedArray>`*`,`*`<missing>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionJaggedArray-overlaps.md)
+  : Overlap methods for InteractionJaggedArray
+- [`regularize()`](http://ericscottdavis.com/mariner/reference/regularize.md)
+  : Regularize JaggedArray or InteractionJaggedArray objects
+- [`aggHicMatrices()`](http://ericscottdavis.com/mariner/reference/aggHicMatrices.md)
+  : Aggregate count matrices from InteractionArray objects
+- [`hdf5BlockApply()`](http://ericscottdavis.com/mariner/reference/hdf5BlockApply.md)
+  : HDF5-backed blockApply
+- [`plotMatrix()`](http://ericscottdavis.com/mariner/reference/plotMatrix.md)
+  : Plot matrix
+
+## Pileup analysis
+
+Wraps several mariner functions to facilitate pileup analysis of Hi-C
+pixels, domains or boundaries.
+
+- [`pileupPixels()`](http://ericscottdavis.com/mariner/reference/pileupPixels.md)
+  : Pileup Hi-C pixels
+- [`pileupDomains()`](http://ericscottdavis.com/mariner/reference/pileupDomains.md)
+  : Pileup Hi-C domains
+- [`pileupBoundaries()`](http://ericscottdavis.com/mariner/reference/pileupBoundaries.md)
+  : Pileup Hi-C contacts around boundary regions
+
+## Calculating Loop Enrichment
+
+Determine loop enrichment to local background with selection functions
+to flexibility select foreground and background.
+
+- [`calcLoopEnrichment()`](http://ericscottdavis.com/mariner/reference/calcLoopEnrichment.md)
+  : Calculate loop enrichment over background.
+- [`plotEnrichment()`](http://ericscottdavis.com/mariner/reference/adjustEnrichment.md)
+  [`adjustEnrichment()`](http://ericscottdavis.com/mariner/reference/adjustEnrichment.md)
+  : Adjust loop enrichment to remove distance- dependent effect.
+
+### Selection functions
+
+- [`MatrixSelection-class`](http://ericscottdavis.com/mariner/reference/MatrixSelection-class.md)
+  [`MatrixSelection`](http://ericscottdavis.com/mariner/reference/MatrixSelection-class.md)
+  : MatrixSelection Class
+- [`selectRadius()`](http://ericscottdavis.com/mariner/reference/selection-functions.md)
+  [`selectCenterPixel()`](http://ericscottdavis.com/mariner/reference/selection-functions.md)
+  [`selectSubmatrix()`](http://ericscottdavis.com/mariner/reference/selection-functions.md)
+  [`selectCoordinates()`](http://ericscottdavis.com/mariner/reference/selection-functions.md)
+  [`selectBlock()`](http://ericscottdavis.com/mariner/reference/selection-functions.md)
+  [`selectTopLeft()`](http://ericscottdavis.com/mariner/reference/selection-functions.md)
+  [`selectTopRight()`](http://ericscottdavis.com/mariner/reference/selection-functions.md)
+  [`selectBottomRight()`](http://ericscottdavis.com/mariner/reference/selection-functions.md)
+  [`selectBottomLeft()`](http://ericscottdavis.com/mariner/reference/selection-functions.md)
+  [`selectCorners()`](http://ericscottdavis.com/mariner/reference/selection-functions.md)
+  [`selectRows()`](http://ericscottdavis.com/mariner/reference/selection-functions.md)
+  [`selectCols()`](http://ericscottdavis.com/mariner/reference/selection-functions.md)
+  [`selectInner()`](http://ericscottdavis.com/mariner/reference/selection-functions.md)
+  [`selectOuter()`](http://ericscottdavis.com/mariner/reference/selection-functions.md)
+  [`show(`*`<MatrixSelection>`*`)`](http://ericscottdavis.com/mariner/reference/selection-functions.md)
+  : Visualize selection for a MatrixSelection object
+- [`selectionMethod()`](http://ericscottdavis.com/mariner/reference/selectionMethod.md)
+  : Get selectionMethod from MergedGInteractions object
+- [`defaultBuffer()`](http://ericscottdavis.com/mariner/reference/defaultBuffer.md)
+  : Return default buffer If InteractionArray is supplied, it uses the
+  dimensions of counts matrices to set the buffer dimensions.
+
+## Miscellaneous
+
+- [`changePixelRes()`](http://ericscottdavis.com/mariner/reference/changePixelRes.md)
+  : Change pixels from one resolution to another selecting the new pixel
+  using Hi-C data.
+- [`selectPixel()`](http://ericscottdavis.com/mariner/reference/selectPixel.md)
+  : Get the pixel representing the strongest or weakest interaction in
+  an InteractionArray
+
+# Articles
+
+### All vignettes
+
+- [Introduction to
+  mariner](http://ericscottdavis.com/mariner/articles/mariner.md):
+- [Pulling Hi-C data with
+  mariner](http://ericscottdavis.com/mariner/articles/pull_hic.md):

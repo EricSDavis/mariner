@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,7 +60,7 @@
       <h1>Pulling Hi-C data with mariner</h1>
                         <h4 data-toc-skip class="author">Eric Davis</h4>
             
-            <h4 data-toc-skip class="date">2025-08-05</h4>
+            <h4 data-toc-skip class="date">2025-11-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/EricSDavis/mariner/blob/main/vignettes/articles/pull_hic.Rmd" class="external-link"><code>vignettes/articles/pull_hic.Rmd</code></a></small>
       <div class="d-none name"><code>pull_hic.Rmd</code></div>
@@ -86,7 +86,7 @@ file then you should use the <code><a href="../reference/pullHicPixels.html">pul
 define a “pixel” as an interaction where both anchors are the same
 width. The <code>binSize</code> argument is used here to check that your
 desired pixel resolution matches your input interactions.</p>
-<p><img src="img/pixelFigure.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="img/pixelFigure.png" class="r-plt" width="50%" style="display: block; margin: auto;"></p>
 <div style="
 padding: .5em 1em;
 margin-bottom: 10px;
@@ -168,7 +168,7 @@ the <code><a href="../reference/pullHicPixels.html">pullHicPixels()</a></code> f
 function.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/path.html" class="external-link">path</a></span><span class="op">(</span><span class="va">pixels</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "/tmp/RtmpdicOqR/file20c24cd87207.h5"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "/tmp/RtmpTYYjyF/file7f6370023d65.h5"</span></span></code></pre>
 <div style="
 padding: .5em 1em;
 margin-bottom: 10px;
@@ -201,7 +201,7 @@ class</a> section below.</p>
 use the <code><a href="../reference/pullHicMatrices.html">pullHicMatrices()</a></code> function. These matrices are made
 up of multiple “pixels”, defined by dividing the range of each
 interaction by the supplied <code>binSize</code> parameter.</p>
-<p><img src="img/matricesFigure.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="img/matricesFigure.png" class="r-plt" width="50%" style="display: block; margin: auto;"></p>
 <div class="section level3">
 <h3 id="square-matrices">Square matrices<a class="anchor" aria-label="anchor" href="#square-matrices"></a>
 </h3>
@@ -384,7 +384,7 @@ and 3x2 after pulling matrices with a <code>binSize</code> of 100e3:</p>
 <span><span class="co">## metadata(3): binSize, norm, matrix</span></span>
 <span><span class="co">## colData: hic1, hic2</span></span>
 <span><span class="co">## colData names(2): files, fileNames</span></span>
-<span><span class="co">## HDF5: /tmp/RtmpdicOqR/file20c230d0ce3.h5</span></span></code></pre>
+<span><span class="co">## HDF5: /tmp/RtmpTYYjyF/file7f63300f74bb.h5</span></span></code></pre>
 <p>The resulting object is of class <code>InteractionJaggedArray</code>.
 The class is different than the previous examples because the classes
 that <code>InteractionArray</code> inherits from are designed for
@@ -494,8 +494,8 @@ this example object:</p>
 <pre><code><span><span class="co">## DataFrame with 2 rows and 2 columns</span></span>
 <span><span class="co">##                       files         fileNames</span></span>
 <span><span class="co">##                 &lt;character&gt;       &lt;character&gt;</span></span>
-<span><span class="co">## hic1 /home/runner/.cache/.. 1c6a2e2a0cb1_8147</span></span>
-<span><span class="co">## hic2 /home/runner/.cache/.. 1c6a6d746570_8148</span></span></code></pre>
+<span><span class="co">## hic1 /home/runner/.cache/.. 7b5756449908_8147</span></span>
+<span><span class="co">## hic2 /home/runner/.cache/.. 7b575c1774a3_8148</span></span></code></pre>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Interactions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/InteractionSet/man/interaction-accessors.html" class="external-link">interactions</a></span><span class="op">(</span><span class="va">imat</span><span class="op">)</span></span></code></pre></div>
@@ -691,8 +691,8 @@ using this example object:</p>
 <pre><code><span><span class="co">## DataFrame with 2 rows and 2 columns</span></span>
 <span><span class="co">##                       files         fileNames</span></span>
 <span><span class="co">##                 &lt;character&gt;       &lt;character&gt;</span></span>
-<span><span class="co">## hic1 /home/runner/.cache/.. 1c6a2e2a0cb1_8147</span></span>
-<span><span class="co">## hic2 /home/runner/.cache/.. 1c6a6d746570_8148</span></span></code></pre>
+<span><span class="co">## hic1 /home/runner/.cache/.. 7b5756449908_8147</span></span>
+<span><span class="co">## hic2 /home/runner/.cache/.. 7b575c1774a3_8148</span></span></code></pre>
 <div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Interactions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/InteractionSet/man/interaction-accessors.html" class="external-link">interactions</a></span><span class="op">(</span><span class="va">ia</span><span class="op">)</span></span></code></pre></div>
@@ -941,7 +941,7 @@ the <code><a href="../reference/regularize.html">regularize()</a></code> functio
 <span><span class="co">## metadata(3): binSize, norm, matrix</span></span>
 <span><span class="co">## colData: hic1, hic2</span></span>
 <span><span class="co">## colData names(2): files, fileNames</span></span>
-<span><span class="co">## HDF5: /tmp/RtmpdicOqR/file20c24eeaf134.h5</span></span></code></pre>
+<span><span class="co">## HDF5: /tmp/RtmpTYYjyF/file7f632172c714.h5</span></span></code></pre>
 <p>The variable dimensions of the jagged arrays can be accessed with the
 <code><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim()</a></code> function:</p>
 <div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
@@ -975,12 +975,12 @@ the <code><a href="../reference/regularize.html">regularize()</a></code> functio
 <pre><code><span><span class="co">## DataFrame with 2 rows and 2 columns</span></span>
 <span><span class="co">##                       files         fileNames</span></span>
 <span><span class="co">##                 &lt;character&gt;       &lt;character&gt;</span></span>
-<span><span class="co">## hic1 /home/runner/.cache/.. 1c6a2e2a0cb1_8147</span></span>
-<span><span class="co">## hic2 /home/runner/.cache/.. 1c6a6d746570_8148</span></span></code></pre>
+<span><span class="co">## hic1 /home/runner/.cache/.. 7b5756449908_8147</span></span>
+<span><span class="co">## hic2 /home/runner/.cache/.. 7b575c1774a3_8148</span></span></code></pre>
 <div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Access HDF5 filepath</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/path.html" class="external-link">path</a></span><span class="op">(</span><span class="va">ija</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "/tmp/RtmpdicOqR/file20c24eeaf134.h5"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "/tmp/RtmpTYYjyF/file7f632172c714.h5"</span></span></code></pre>
 <div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Interactions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/InteractionSet/man/interaction-accessors.html" class="external-link">interactions</a></span><span class="op">(</span><span class="va">ija</span><span class="op">)</span></span></code></pre></div>
@@ -1321,7 +1321,7 @@ package to see available normalizations.</p>
 <div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pullHicPixels.html">pullHicPixels</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">gi</span>, files<span class="op">=</span><span class="va">hicFiles</span>, binSize<span class="op">=</span><span class="fl">100e3</span>, norm<span class="op">=</span><span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `.checkStrawArgs()`:</span></span></span>
-<span><span class="co">## <span style="color: #BBBB00;">!</span> `norm` must be one of "VC_SQRT", "KR", "NONE", or "VC", not "none".</span></span>
+<span><span class="co">## <span style="color: #BBBB00;">!</span> `norm` must be one of "VC_SQRT", "NONE", "VC", or "KR", not "none".</span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Did you mean "NONE"?</span></span></code></pre>
 <p>The <code>matrix</code> argument specifies the type of values to
 extract. The default is the “observed” contact frequency values. Other
@@ -1349,23 +1349,23 @@ between a two pairs, or anchors, of genomic regions.</p>
 <p>In <code>mariner</code>, the Hi-C matrix is oriented with the origin
 (lowest genomic coordinates) in the upper left corner with linear
 genomic position increasing down and to the right.</p>
-<p><img src="img/origin.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="img/origin.png" class="r-plt" width="50%" style="display: block; margin: auto;"></p>
 <p>The first anchor, or genomic locus, corresponds on the vertical axis
 (rows of matrix) while the second anchor corresponds to the horizontal
 axis (columns of the matrix). Together, these anchors specify a
 two-dimensional region on the Hi-C matrix.</p>
-<p><img src="img/anchors.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="img/anchors.png" class="r-plt" width="50%" style="display: block; margin: auto;"></p>
 <p>The relative positions of these anchors determines from which “half”
 of the matrix data is extracted. When the genomic position of the first
 anchor is less than the second anchor the region resides in the upper
 trianglar.</p>
-<p><img src="img/upper.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="img/upper.png" class="r-plt" width="75%" style="display: block; margin: auto;"></p>
 <p>When the genomic position of the first anchor is greater than the
 second anchor the region resides in the lower triangular.</p>
-<p><img src="img/lower.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="img/lower.png" class="r-plt" width="75%" style="display: block; margin: auto;"></p>
 <p>If the first and second anchors are equal then the region is on the
 diagonal and the values will be mirrored across the diagonal.</p>
-<p><img src="img/diagonal.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="img/diagonal.png" class="r-plt" width="50%" style="display: block; margin: auto;"></p>
 <p>To summarize:</p>
 <ul>
 <li>first &lt; second - upper triangular</li>
@@ -1382,7 +1382,7 @@ not match the region of the matrix specified with <code>half</code>. The
 figure and code below show how data are returned for a region that
 resides on the diagonal, crossing into both the upper and lower
 triangular of the Hi-C matrix.</p>
-<p><img src="img/diagonalHalf.png" width="75%" style="display: block; margin: auto;"></p>
+<p><img src="img/diagonalHalf.png" class="r-plt" width="75%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Hic file</span></span>
 <span><span class="va">hic</span> <span class="op">&lt;-</span> <span class="fu">marinerData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/marinerData/man/LEUK_HEK_PJA27_inter_30.hic.html" class="external-link">LEUK_HEK_PJA27_inter_30.hic</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -1470,7 +1470,7 @@ parameters.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
