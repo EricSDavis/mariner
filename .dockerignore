@@ -1,0 +1,17 @@
+# The Dockerfile installs mariner from the build context, so keep the context
+# to the package itself. Without this, `COPY . /tmp/mariner` ships the git
+# history and any local check output into the image.
+.git
+.github
+.Rproj.user
+*.Rcheck
+..Rcheck
+*.tar.gz
+docs
+.Renviron
+.Rhistory
+.RData
+tests/testthat/_snaps_bak
+tests/testthat/Rplots.pdf
+check.sh
+docker-compose.yml
