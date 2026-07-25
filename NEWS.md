@@ -1,3 +1,31 @@
+# mariner 1.13.1
+
+New features:
+
+Support for reading `.cool` and `.mcool` (cooler) files, contributed
+by Sarah Parker.
+
+* `pullHicPixels()` and `pullHicMatrices()` now accept `.cool` and
+`.mcool` files in addition to `.hic`. File type is detected
+automatically, so no change to existing code is required. Functions
+built on top of these, such as `pileupPixels()`, `pileupDomains()`,
+`pileupBoundaries()`, and `calcLoopEnrichment()`, therefore accept
+cooler files as well.
+
+* `coolStraw()` extracts a sparse contact matrix from a cooler file,
+mirroring the interface of `strawr::straw()`.
+
+* `readCoolChroms()`, `readCoolBpResolutions()`, and
+`readCoolNormTypes()` report the chromosomes, resolutions, and
+normalizations available in a cooler file.
+
+Limitations:
+
+* Only `matrix = "observed"` is supported for cooler files.
+Expected and observed/expected matrices remain `.hic` only.
+
+* A single call cannot mix `.hic` and cooler files.
+
 # mariner 1.2.1
 
 New features:

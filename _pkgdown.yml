@@ -53,6 +53,17 @@ reference:
       - aggHicMatrices
       - hdf5BlockApply
       - plotMatrix
+  - subtitle: "Cooler files"
+    desc: >
+      Inspect and extract from `.cool` and `.mcool` files.
+      `pullHicPixels()` and `pullHicMatrices()` accept these
+      formats directly; these are the cooler counterparts to
+      the `strawr` functions used for `.hic` files.
+    contents:
+      - coolStraw
+      - readCoolChroms
+      - readCoolBpResolutions
+      - readCoolNormTypes
   - title: "Pileup analysis"
     desc: >
       Wraps several mariner functions to facilitate

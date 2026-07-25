@@ -324,14 +324,98 @@ For more information see `?sets()`.
 Pull Hi-C pixels or matrices, then aggregate by files or interactions.
 
 `mariner` provides two functions for extracting
-contacts from `.hic` files, `pullHicPixels()` and
+contacts from Hi-C files, `pullHicPixels()` and
 `pullHicMatrices()`, which use the `binSize`
 argument to determine how the data should be returned.
 In short, `pullHicPixels()` returns a matrix of
-contact frequency for each interaction and `.hic` file,
+contact frequency for each interaction and file,
 while `pullHicMatrices()` returns an array of
 contact matrices. The following sections describe
 when and how to use each of these functions.
+
+Both functions accept `.hic` files as well as `.cool`
+and `.mcool` (cooler) files. The file format is detected
+automatically, so the same code works with either, and
+functions built on top of these -- such as
+`pileupPixels()`, `pileupDomains()`, `pileupBoundaries()`,
+and `calcLoopEnrichment()` -- accept cooler files too.
+The section "Using .cool and .mcool files" below covers
+the differences that do apply.
+
+### Using .cool and .mcool files
+
+`pullHicPixels()` and `pullHicMatrices()` also read
+`.cool` and `.mcool` files produced by
+[cooler](https://github.com/open2c/cooler). No extra
+argument is needed -- the file type is detected from its
+contents, so the calls shown throughout this vignette
+work unchanged if `hicFiles` points at cooler files
+instead.
+
+```{r coolExample, eval=FALSE}
+coolFiles <- c("sample1.mcool", "sample2.mcool")
+
+## Identical to the .hic call
+pullHicPixels(
+    x = binned,
+    files = coolFiles,
+    binSize = 100e3
+)
+```
+
+`mariner` supplies cooler equivalents of the `strawr`
+inspection functions, for listing what a file contains
+before pulling from it.
+
+| `.hic` (`strawr`)       | `.cool` / `.mcool` (`mariner`) |
+|-------------------------|--------------------------------|
+| `readHicChroms()`       | `readCoolChroms()`             |
+| `readHicBpResolutions()`| `readCoolBpResolutions()`      |
+| `readHicNormTypes()`    | `readCoolNormTypes()`          |
+| `strawr::straw()`       | `coolStraw()`                  |
+
+```{r coolInspect, eval=FALSE}
+## Which resolutions does this .mcool file store?
+readCoolBpResolutions(coolFiles[1])
+
+## Normalizations available at a given resolution
+readCoolNormTypes(coolFiles[1], resolution = 100e3)
+
+## Chromosomes, with the index used internally for binning
+readCoolChroms(coolFiles[1], resolution = 100e3)
+```
+
+Note that `readCoolNormTypes()` and `readCoolChroms()`
+take a `resolution`, because an `.mcool` file stores a
+separate set of bins for each resolution it contains. A
+`.cool` file holds a single resolution, which
+`readCoolBpResolutions()` infers from its bin table.
+
+Two differences from `.hic` files are worth knowing:
+
+* Only `matrix = "observed"` is supported. Expected and
+observed/expected matrices remain `.hic` only, since
+cooler files do not store them.
+
+* A single call cannot mix `.hic` and cooler files.
+Passing both to `files` is an error rather than a silent
+partial result.
+
+Normalizations are named differently in the two formats.
+Cooler stores balancing weights in a `weight` dataset,
+which `mariner` reports as `"BALANCE"`; use that in place
+of `.hic` names such as `"KR"` or `"SCALE"`. Raw counts
+are `"NONE"` in both.
+
+The two formats also disagree on how a normalization
+vector is applied. Cooler defines the balanced value as
+`count * w_i * w_j`, so `"BALANCE"` multiplies by the
+weights. Juicer's vectors are divisors, so `.hic`
+normalizations divide. Cooler files converted from `.hic`
+sometimes carry the original juicer vectors along as
+extra bin columns; when a normalization other than
+`"BALANCE"` is requested, `mariner` treats it as a juicer
+vector and divides, matching `strawr::straw()`.
 
 ### Pulling pixels
 

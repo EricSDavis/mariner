@@ -268,7 +268,7 @@ test_that("Straw args are checked correctly", {
         expect_error()
 })
 
-test_that("pullHicPixels pulls correct counts", {
+test_that("pullHicPixels pulls correct counts from hic files", {
     ## Assign to x (to avoid modifying in place)
     x <- assignToBins(bgi[1:10], 2.5e06)
     GenomeInfoDb::seqlevelsStyle(x) <- "ENSEMBL"
@@ -323,7 +323,9 @@ test_that("pullHicPixels pulls correct counts", {
         as.matrix(counts(imat)),
         as.matrix(data.frame(Mut, WT))
     )
+
 })
+
 
 test_that("pullHicMatrices for square, regular arrays", {
     ## Intrachromosomal
@@ -413,7 +415,6 @@ test_that("pullHicMatrices for square, regular arrays", {
     exp <- array(data = NA_real_, dim = c(2, 2, 2, 1))
     expect_identical(interactions(res), gi)
     expect_identical(unname(as.array(counts(res))), exp)
-
 
     ## Intrachromosomal
     ## Off-diagonal
@@ -724,4 +725,5 @@ test_that("Pull irregular arrays", {
     exp <- counts(iset1) |> as.matrix()
     expect_identical(counts(iset2)[, , 1, 1] |> as.matrix(), exp)
     expect_identical(as.list(counts(iset2))[[1]][[1]], exp)
+
 })

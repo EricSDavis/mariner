@@ -1,7 +1,7 @@
 Package: mariner
 Type: Package
 Title: Mariner: Explore the Hi-Cs
-Version: 1.13.0
+Version: 1.13.1
 Authors@R: c(
     person("Eric", "Davis", role = c("aut", "cre"),
       email = "ericscottdavis@outlook.com",
@@ -102,6 +102,7 @@ Collate:
     'methods-removeShortPairs.R'
     'methods-shiftRanges.R'
     'methods-snapToBins.R'
+    'methods-useCool.R'
     'zzz.R'
 URL: 
     https://ericscottdavis.com/mariner/,

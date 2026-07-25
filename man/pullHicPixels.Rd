@@ -3,7 +3,7 @@
 \name{pullHicPixels}
 \alias{pullHicPixels}
 \alias{pullHicPixels,GInteractions,character,numeric-method}
-\title{Pull contact frequency from `.hic` files}
+\title{Pull contact frequency from Hi-C files}
 \usage{
 pullHicPixels(
   x,
@@ -38,7 +38,8 @@ pullHicPixels(
 \item{x}{GInteractions object containing interactions
 to extract from Hi-C files.}
 
-\item{files}{Character file paths to `.hic` files.}
+\item{files}{Character file paths to `.hic`, `.cool`, or
+`.mcool` files. All files must be the same format.}
 
 \item{binSize}{Integer (numeric) describing the
 resolution (range widths) of the paired data.}
@@ -62,13 +63,15 @@ regardless of specified order.}
 \item{norm}{String (length one character vector)
 describing the Hi-C normalization to apply. Use
 `strawr::readHicNormTypes()` to see accepted values
-for each file in `files`.}
+for each `.hic` file in `files`, or
+`readCoolNormTypes()` for cooler files.}
 
 \item{matrix}{String (length one character vector)
 Type of matrix to extract. Must be one of "observed",
 "oe", or "expected". "observed" is observed counts,
 "oe" is observed/expected counts, "expected" is
-expected counts.}
+expected counts. Only "observed" is available for
+cooler files, which do not store the others.}
 
 \item{blockSize}{Number (length one numeric vector)
 describing the size in base-pairs to pull from each
@@ -100,7 +103,11 @@ InteractionSet object with a 2-dimensional array
  of Hi-C interactions (rows) and Hi-C sample (columns).
 }
 \description{
-Pull contact frequency from `.hic` files
+Accepts `.hic` files as well as `.cool`/`.mcool` (cooler)
+files. The format is detected from the file contents, so
+no additional argument is required. Two restrictions apply
+to cooler files: only `matrix="observed"` is supported,
+and `.hic` and cooler files cannot be mixed in one call.
 }
 \examples{
 ## Load marinerData
