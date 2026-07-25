@@ -149,8 +149,6 @@ loops <-
     GenomeInfoDb::`seqlevelsStyle<-`(value='ENSEMBL')
 #> see ?marinerData and browseVignettes('marinerData') for documentation
 #> loading from cache
-#> Error while performing HEAD request.
-#>    Proceeding without cache information.
 
 ## Warn about small binSize
 pileupDomains(x=loops, files=hicFile, binSize=50e3, buffer=0.25)

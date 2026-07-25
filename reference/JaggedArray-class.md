@@ -244,7 +244,7 @@ as.list(arr)
 
 ## Find the data path
 path(arr)
-#> [1] "/tmp/RtmpPan8ah/file1938792ece83.h5"
+#> [1] "/tmp/Rtmpbo67AE/file18fd6b4000da.h5"
 
 ## Find the data path
 dim(arr)

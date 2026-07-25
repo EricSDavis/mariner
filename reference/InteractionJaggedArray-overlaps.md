@@ -243,7 +243,7 @@ subsetByOverlaps(iarr, gi2)
 #> metadata(3): binSize, norm, matrix
 #> colData: FS, WT
 #> colData names(2): files, fileNames
-#> HDF5: /tmp/RtmpPan8ah/file1938465fe610.h5
+#> HDF5: /tmp/Rtmpbo67AE/file18fd1d1141da.h5
 subsetByOverlaps(iarr, gi2, invert=TRUE)
 #> class: InteractionArray 
 #> dim: 2 interaction(s), 2 file(s), 3x5 count matrix(es)

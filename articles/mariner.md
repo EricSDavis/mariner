@@ -735,9 +735,9 @@ hicFiles
 ```
 
     ##                                                      FS 
-    ## "/home/runner/.cache/R/ExperimentHub/19384fc45611_8147" 
+    ## "/home/runner/.cache/R/ExperimentHub/18fd75fbb8dd_8147" 
     ##                                                      WT 
-    ##  "/home/runner/.cache/R/ExperimentHub/1938bfdd0bb_8148"
+    ## "/home/runner/.cache/R/ExperimentHub/18fd7c73aa02_8148"
 
 The `strawr` package includes functions for visualizing the available
 chromosomes, resolutions (`binSizes`), and normalizations in the `.hic`
@@ -752,10 +752,10 @@ lapply(hicFiles, readHicNormTypes)
 ```
 
     ## $FS
-    ## [1] "NONE"    "VC_SQRT" "KR"      "VC"     
+    ## [1] "VC"      "KR"      "NONE"    "VC_SQRT"
     ## 
     ## $WT
-    ## [1] "NONE"    "VC_SQRT" "KR"      "VC"
+    ## [1] "VC"      "KR"      "NONE"    "VC_SQRT"
 
 ``` r
 

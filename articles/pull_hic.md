@@ -112,7 +112,7 @@ function, use the
 path(pixels)
 ```
 
-    ## [1] "/tmp/RtmpJ9nvOx/file1e3676cec5cb.h5"
+    ## [1] "/tmp/RtmprpCkET/file1df638f728ef.h5"
 
 Note
 
@@ -368,7 +368,7 @@ matrices
     ## metadata(3): binSize, norm, matrix
     ## colData: hic1, hic2
     ## colData names(2): files, fileNames
-    ## HDF5: /tmp/RtmpJ9nvOx/file1e362ffa9eb5.h5
+    ## HDF5: /tmp/RtmprpCkET/file1df66c6ec613.h5
 
 The resulting object is of class `InteractionJaggedArray`. The class is
 different than the previous examples because the classes that
@@ -501,8 +501,8 @@ SummarizedExperiment::colData(imat)
     ## DataFrame with 2 rows and 2 columns
     ##                       files         fileNames
     ##                 <character>       <character>
-    ## hic1 /home/runner/.cache/.. 19384fc45611_8147
-    ## hic2 /home/runner/.cache/..  1938bfdd0bb_8148
+    ## hic1 /home/runner/.cache/.. 18fd75fbb8dd_8147
+    ## hic2 /home/runner/.cache/.. 18fd7c73aa02_8148
 
 ``` r
 
@@ -755,8 +755,8 @@ SummarizedExperiment::colData(ia)
     ## DataFrame with 2 rows and 2 columns
     ##                       files         fileNames
     ##                 <character>       <character>
-    ## hic1 /home/runner/.cache/.. 19384fc45611_8147
-    ## hic2 /home/runner/.cache/..  1938bfdd0bb_8148
+    ## hic1 /home/runner/.cache/.. 18fd75fbb8dd_8147
+    ## hic2 /home/runner/.cache/.. 18fd7c73aa02_8148
 
 ``` r
 
@@ -1055,7 +1055,7 @@ ija
     ## metadata(3): binSize, norm, matrix
     ## colData: hic1, hic2
     ## colData names(2): files, fileNames
-    ## HDF5: /tmp/RtmpJ9nvOx/file1e3658e64587.h5
+    ## HDF5: /tmp/RtmprpCkET/file1df67e9ea842.h5
 
 The variable dimensions of the jagged arrays can be accessed with the
 [`dim()`](https://rdrr.io/r/base/dim.html) function:
@@ -1102,8 +1102,8 @@ SummarizedExperiment::colData(ija)
     ## DataFrame with 2 rows and 2 columns
     ##                       files         fileNames
     ##                 <character>       <character>
-    ## hic1 /home/runner/.cache/.. 19384fc45611_8147
-    ## hic2 /home/runner/.cache/..  1938bfdd0bb_8148
+    ## hic1 /home/runner/.cache/.. 18fd75fbb8dd_8147
+    ## hic2 /home/runner/.cache/.. 18fd7c73aa02_8148
 
 ``` r
 
@@ -1111,7 +1111,7 @@ SummarizedExperiment::colData(ija)
 path(ija)
 ```
 
-    ## [1] "/tmp/RtmpJ9nvOx/file1e3658e64587.h5"
+    ## [1] "/tmp/RtmprpCkET/file1df67e9ea842.h5"
 
 ``` r
 
@@ -1523,7 +1523,7 @@ pullHicPixels(x=gi, files=hicFiles, binSize=100e3, norm="none")
 ```
 
     ## Error in `.checkStrawArgs()`:
-    ## ! `norm` must be one of "VC_SQRT", "VC", "NONE", or "KR", not "none".
+    ## ! `norm` must be one of "VC", "KR", "VC_SQRT", or "NONE", not "none".
     ## ℹ Did you mean "NONE"?
 
 The `matrix` argument specifies the type of values to extract. The
