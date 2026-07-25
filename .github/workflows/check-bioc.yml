@@ -277,11 +277,20 @@ jobs:
         env:
           DISPLAY: 99.0
         run: |
+          ## no-check-deprecated skips the one check that fetches
+          ## bioconductor.org/checkResults/<ver>/bioc-LATEST/meat-index.dcf.
+          ## BiocCheck has no offline fallback for that file, so any outage of
+          ## that endpoint aborts the entire run on a fresh runner, where the
+          ## BiocFileCache is always empty. The Bioconductor build machines run
+          ## the full BiocCheck, deprecation check included, so nothing is lost
+          ## here beyond a duplicate that costs a hard dependency on a
+          ## historically flaky endpoint.
           BiocCheck::BiocCheck(
               dir('check', 'tar.gz$', full.names = TRUE),
               `quit-with-status` = TRUE,
               `no-check-R-ver` = TRUE,
-              `no-check-bioc-help` = TRUE
+              `no-check-bioc-help` = TRUE,
+              `no-check-deprecated` = TRUE
           )
         shell: Rscript {0}
 
