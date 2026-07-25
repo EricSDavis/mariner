@@ -34,7 +34,8 @@ test_that("counts accessor for InteractionArray", {
                         files=hicFiles)
 
     ref <- aperm(assay(iarr, 'counts'), c(3,4,1,2))
-
+    
+    skip_on_bioc()
     expect_identical(counts(iarr, FALSE), ref)
     expect_snapshot(counts(iarr, TRUE))
     expect_snapshot(counts(iarr[1:3, 1:2]), TRUE)

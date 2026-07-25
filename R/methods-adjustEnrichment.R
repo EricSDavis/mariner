@@ -27,8 +27,8 @@
 
     ## Calculate rollMedians for size and score
     FUN <- \(x) median(x)
-    dat[, rollMedSize := frollapply(x=size, n=k, FUN=FUN)]
-    dat[, rollMedScore := frollapply(x=scores, n=k, FUN=FUN)]
+    dat[, rollMedSize := frollapply(X=size, N=k, FUN=FUN)]
+    dat[, rollMedScore := frollapply(X=scores, N=k, FUN=FUN)]
 
     ## Take the median per group
     ans <- dat[, .(rollMedScore = median(rollMedScore)), by=rollMedSize]
