@@ -140,7 +140,7 @@ iarr
 #> metadata(3): binSize, norm, matrix
 #> colData: FS, WT
 #> colData names(2): files, fileNames
-#> HDF5: /tmp/Rtmp9FSwoA/file7b572694fe34.h5
+#> HDF5: /tmp/RtmpgRedCh/file4d3423c0a85d.h5
 
 ## Show dimensions
 dim(iarr)
@@ -187,8 +187,8 @@ colData(iarr)
 #> DataFrame with 2 rows and 2 columns
 #>                     files         fileNames
 #>               <character>       <character>
-#> FS /home/runner/.cache/.. 7b5756449908_8147
-#> WT /home/runner/.cache/.. 7b575c1774a3_8148
+#> FS /home/runner/.cache/.. 4d346983f336_8147
+#> WT /home/runner/.cache/.. 4d34757bce80_8148
 
 ## Access count matrices
 counts(iarr)
@@ -212,7 +212,7 @@ counts(iarr)
 
 ## Access path to HDF5 data
 path(iarr)
-#> [1] "/tmp/Rtmp9FSwoA/file7b572694fe34.h5"
+#> [1] "/tmp/RtmpgRedCh/file4d3423c0a85d.h5"
 
 ## length
 length(iarr)
@@ -225,5 +225,5 @@ iarr[1:3,1]
 #> metadata(3): binSize, norm, matrix
 #> colData: FS
 #> colData names(2): files, fileNames
-#> HDF5: /tmp/Rtmp9FSwoA/file7b572694fe34.h5
+#> HDF5: /tmp/RtmpgRedCh/file4d3423c0a85d.h5
 ```

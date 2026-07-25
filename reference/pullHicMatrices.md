@@ -251,7 +251,7 @@ iarr
 #> metadata(3): binSize, norm, matrix
 #> colData: FS, WT
 #> colData names(2): files, fileNames
-#> HDF5: /tmp/Rtmp9FSwoA/file7b57418ce8d6.h5
+#> HDF5: /tmp/RtmpgRedCh/file4d3463a73c3a.h5
 
 counts(iarr)
 #> <n x m x 4 x 2> JaggedArray:

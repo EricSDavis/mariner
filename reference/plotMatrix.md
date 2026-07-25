@@ -98,6 +98,7 @@ class \`MatrixPlot\`.
 ## Examples
 
 ``` r
+
 library(plotgardener)
 #> 
 #> Attaching package: ‘plotgardener’

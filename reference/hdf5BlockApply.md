@@ -50,6 +50,7 @@ objects.
 ## Examples
 
 ``` r
+
 ## ################################################
 ## This function is intended for advanced users.
 ## To learn more about using DelayedArray

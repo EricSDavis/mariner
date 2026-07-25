@@ -29,6 +29,7 @@ processing to minimize hardware requirements.
 This package can be installed through Bioconductor:
 
 ``` r
+
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("mariner")
@@ -37,6 +38,7 @@ BiocManager::install("mariner")
 Or the development version can be installed via GitHub:
 
 ``` r
+
 if (!requireNamespace("remotes", quietly = TRUE))
     install.packages("remotes")
 remotes::install_github("EricSDavis/mariner")
@@ -58,6 +60,7 @@ BEDPE-formatted data to `GInteractions` as well as accessing relevant
 components of these objects.
 
 ``` r
+
 library(mariner)
 library(marinerData)
 
@@ -92,6 +95,7 @@ head(bedpe)
     ## 6              3.5826060 4.161625 1.0922525 6.046209
 
 ``` r
+
 ## Coerce to GInteractions
 gi <- as_ginteractions(bedpe, keep.extra.columns = FALSE)
 gi
@@ -119,6 +123,7 @@ gi
 extract each component of interactions as vectors.
 
 ``` r
+
 seqnames1(gi) |> head()
 start1(gi) |> head()
 end1(gi) |> head()
@@ -141,6 +146,7 @@ Chromatin interaction data is usually binned at specific resolutions.
 objects to differently sized bins.
 
 ``` r
+
 ## Assign to 1Kb bins
 binned <- assignToBins(x=gi, binSize = 1e3, pos1='center', pos2='center')
 
@@ -166,6 +172,7 @@ This function also allows each pair, or anchor, to be binned separately
 and from different reference points (e.g. `pos1` and `pos2`).
 
 ``` r
+
 ## Assign anchor1 to 1Kb bins and anchor2 to 25Kb bins
 binned <- assignToBins(x=gi, binSize=c(1e3, 25e3), pos1="start", pos2="center")
 
@@ -188,6 +195,7 @@ function assigns the starts and ends of the ranges to their nearest bin.
 This allows each anchor to span multiple bins.
 
 ``` r
+
 ## Create an example GInteractions object
 gi <- GInteractions(
     anchor1 = c(
@@ -258,6 +266,7 @@ Here, two example BEDPE files are imported as a list of `GInteractions`
 objects.
 
 ``` r
+
 library(mariner)
 library(marinerData)
 
@@ -286,6 +295,7 @@ Then cluster and merge with
 [`mergePairs()`](http://ericscottdavis.com/mariner/reference/mergePairs.md).
 
 ``` r
+
 mgi <- mergePairs(
     x=giList,
     radius=10e3
@@ -329,6 +339,7 @@ To view the clusters of specific interactions, use the
 accessor.
 
 ``` r
+
 mgi[12772]
 clusters(mgi[12772])
 ```
@@ -366,6 +377,7 @@ Alternatively, users can specify the `column` argument to use a custom
 metric for selecting a representative interaction.
 
 ``` r
+
 mgi <- mergePairs(
     x=giList,
     radius=10e3,
@@ -436,6 +448,7 @@ The interaction with the higher value (`selectMax=TRUE`) for
 “APScoreAvg” has been selected.
 
 ``` r
+
 mgi[12772]
 clusters(mgi[12772])
 ```
@@ -476,6 +489,7 @@ accessor allows users to find which interactions are shared or exclusive
 between sets of interactions in the giList.
 
 ``` r
+
 ## List the input sources
 sources(mgi)
 ```
@@ -483,6 +497,7 @@ sources(mgi)
     ## [1] "FS" "WT"
 
 ``` r
+
 ## Interactions unique to each source
 sets(mgi) |> lapply(summary)
 ```
@@ -497,6 +512,7 @@ sets(mgi) |> lapply(summary)
     ## [1] "MergedGInteractions object of length 3945 with 9 metadata columns"
 
 ``` r
+
 ## Interactions shared by both sources
 sets(x=mgi, include=sources(mgi))
 ```
@@ -591,6 +607,7 @@ As described in previous sections, BEDPE files containing the locations
 of chromatin loops can be read in and merged.
 
 ``` r
+
 library(mariner)
 library(marinerData)
 
@@ -618,6 +635,7 @@ The `marinerData` `ExperimentHub` package includes some small `.hic`
 files that can be downloaded for testing.
 
 ``` r
+
 library(marinerData)
 hicFiles <- c(
     LEUK_HEK_PJA27_inter_30.hic(),
@@ -628,15 +646,16 @@ hicFiles
 ```
 
     ##                                                      FS 
-    ## "/home/runner/.cache/R/ExperimentHub/7b5756449908_8147" 
+    ## "/home/runner/.cache/R/ExperimentHub/4d346983f336_8147" 
     ##                                                      WT 
-    ## "/home/runner/.cache/R/ExperimentHub/7b575c1774a3_8148"
+    ## "/home/runner/.cache/R/ExperimentHub/4d34757bce80_8148"
 
 The `strawr` package includes functions for visualizing the available
 chromosomes, resolutions (`binSizes`), and normalizations in the `.hic`
 files.
 
 ``` r
+
 library(strawr)
 
 ## Normalizations
@@ -644,12 +663,13 @@ lapply(hicFiles, readHicNormTypes)
 ```
 
     ## $FS
-    ## [1] "NONE"    "VC_SQRT" "VC"      "KR"     
+    ## [1] "VC_SQRT" "KR"      "NONE"    "VC"     
     ## 
     ## $WT
-    ## [1] "NONE"    "VC_SQRT" "VC"      "KR"
+    ## [1] "VC_SQRT" "KR"      "NONE"    "VC"
 
 ``` r
+
 ## Resolutions
 lapply(hicFiles, readHicBpResolutions)
 ```
@@ -661,6 +681,7 @@ lapply(hicFiles, readHicBpResolutions)
     ## [1] 2500000 1000000  500000  250000  100000   50000   25000   10000    5000
 
 ``` r
+
 ## Chromosomes
 lapply(hicFiles, readHicChroms) |>
     lapply(head)
@@ -689,6 +710,7 @@ the “chr” prefix, it is important to change the `seqLevelsStyle` of the
 interactions to match.
 
 ``` r
+
 GenomeInfoDb::seqlevelsStyle(mgi) <- 'ENSEMBL'
 ```
 
@@ -697,6 +719,7 @@ These interactions can then be binned to the desired resolution with the
 function.
 
 ``` r
+
 ## Assign interactions to 100Kb bins
 binned <- assignToBins(x=mgi, binSize=100e3)
 ```
@@ -706,6 +729,7 @@ Contact frequency can then be extracted with
 Here only the first 1000 pixels are pulled for demonstration purposes.
 
 ``` r
+
 imat <- pullHicPixels(
     x=binned[1:1000],
     files=hicFiles,
@@ -740,6 +764,7 @@ with the [`counts()`](https://rdrr.io/pkg/BiocGenerics/man/dge.html)
 function.
 
 ``` r
+
 counts(imat)
 ```
 
@@ -776,6 +801,7 @@ binned at 100Kb results in 4x4 count matrices for each interaction
 instead of a single value.
 
 ``` r
+
 iarr <- pullHicMatrices(
     x=binned[1:1000],
     file=hicFiles,
@@ -801,6 +827,7 @@ with the same
 [`counts()`](https://rdrr.io/pkg/BiocGenerics/man/dge.html) accessor.
 
 ``` r
+
 counts(iarr)
 ```
 
@@ -825,6 +852,7 @@ The start bins for each interaction can be shown by setting
 `showDimnames=TRUE`.
 
 ``` r
+
 counts(iarr, showDimnames=TRUE)
 ```
 
@@ -857,6 +885,7 @@ function helps prepare regions surrounding a central pixel. For example,
 the code below shows how to pull 3x3 matrices surrounding a 100Kb pixel.
 
 ``` r
+
 ## Define region with 1-pixel buffer
 regions <- pixelsToMatrices(x=binned[1:1000], buffer=1)
 
@@ -913,6 +942,7 @@ counts(iarr)
 This also works on rectangular selections.
 
 ``` r
+
 ## Bin at two different resolutions
 binned <- assignToBins(x=mgi, binSize=c(100e3, 250e3))
 
@@ -955,6 +985,7 @@ interactions, Hi-C files, or both (default). The `FUN` argument controls
 how these contacts should be aggregated (the default is `sum`).
 
 ``` r
+
 ## One matrix per interaction
 aggHicMatrices(x=iarr, by="interactions")
 ```
@@ -1010,6 +1041,7 @@ aggHicMatrices(x=iarr, by="interactions")
     ## [3,]    3    2    2
 
 ``` r
+
 ## One matrix per file
 aggHicMatrices(x=iarr, by="files")
 ```
@@ -1028,6 +1060,7 @@ aggHicMatrices(x=iarr, by="files")
     ## [3,] 11282  9085  5614
 
 ``` r
+
 ## One matrix total
 aggHicMatrices(x=iarr)
 ```
@@ -1055,6 +1088,7 @@ function for visualizing the aggregated `.hic` matrices, such as in an
 aggregate peak analysis.
 
 ``` r
+
 mat <- aggHicMatrices(x=iarr)
 plotMatrix(data=mat)
 ```
@@ -1087,6 +1121,7 @@ few examples of how these functions can be used and combined to select
 virtually any part of a square matrix.
 
 ``` r
+
 ## Define the buffer
 buffer <- 3
 
@@ -1105,6 +1140,7 @@ selectCenterPixel(mhDist=0, buffer=buffer)
     ##  -  -  -  -  -  -  -
 
 ``` r
+
 ## With a radial distance
 selectCenterPixel(mhDist=0:1, buffer=buffer)
 ```
@@ -1120,6 +1156,7 @@ selectCenterPixel(mhDist=0:1, buffer=buffer)
     ##  -  -  -  -  -  -  -
 
 ``` r
+
 ## Select all corners
 selectCorners(n=2, buffer=buffer)
 ```
@@ -1135,6 +1172,7 @@ selectCorners(n=2, buffer=buffer)
     ##  0  0  -  -  -  0  0
 
 ``` r
+
 ## Combine functions
 selectTopLeft(n=2, buffer=buffer) +
     selectBottomRight(n=2, buffer=buffer)
@@ -1156,6 +1194,7 @@ along with a `GInteractions` object defining the loop pixels to
 calculate enrichment for each `.hic` file.
 
 ``` r
+
 library(mariner)
 library(marinerData)
 
@@ -1210,12 +1249,13 @@ columns corresponding to each `.hic` file.
 ## Session Info
 
 ``` r
+
 sessionInfo()
 ```
 
-    ## R version 4.5.2 Patched (2025-11-24 r89073)
+    ## R version 4.6.1 RC (2026-06-18 r90185)
     ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.3 LTS
+    ## Running under: Ubuntu 24.04.4 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -1235,47 +1275,47 @@ sessionInfo()
     ## [8] base     
     ## 
     ## other attached packages:
-    ##  [1] strawr_0.0.92               InteractionSet_1.38.0      
-    ##  [3] SummarizedExperiment_1.40.0 Biobase_2.70.0             
-    ##  [5] MatrixGenerics_1.22.0       matrixStats_1.5.0          
-    ##  [7] GenomicRanges_1.62.0        Seqinfo_1.0.0              
-    ##  [9] IRanges_2.44.0              S4Vectors_0.48.0           
-    ## [11] BiocGenerics_0.56.0         generics_0.1.4             
-    ## [13] marinerData_1.10.0          mariner_1.9.2              
+    ##  [1] strawr_0.0.92               InteractionSet_1.40.0      
+    ##  [3] SummarizedExperiment_1.42.0 Biobase_2.72.0             
+    ##  [5] MatrixGenerics_1.24.0       matrixStats_1.5.0          
+    ##  [7] GenomicRanges_1.64.0        Seqinfo_1.2.0              
+    ##  [9] IRanges_2.46.0              S4Vectors_0.50.1           
+    ## [11] BiocGenerics_0.58.1         generics_0.1.4             
+    ## [13] marinerData_1.12.0          mariner_1.13.0             
     ## 
     ## loaded via a namespace (and not attached):
-    ##   [1] DBI_1.2.3                bitops_1.0-9             httr2_1.2.1             
-    ##   [4] rlang_1.1.6              magrittr_2.0.4           RSQLite_2.4.4           
-    ##   [7] compiler_4.5.2           png_0.1-8                systemfonts_1.3.1       
-    ##  [10] vctrs_0.6.5              pkgconfig_2.0.3          crayon_1.5.3            
-    ##  [13] fastmap_1.2.0            dbplyr_2.5.1             XVector_0.50.0          
-    ##  [16] Rsamtools_2.26.0         rmarkdown_2.30           UCSC.utils_1.6.0        
-    ##  [19] ragg_1.5.0               bit_4.6.0                purrr_1.2.0             
-    ##  [22] xfun_0.54                cachem_1.1.0             cigarillo_1.0.0         
-    ##  [25] GenomeInfoDb_1.46.0      jsonlite_2.0.0           progress_1.2.3          
-    ##  [28] blob_1.2.4               rhdf5filters_1.22.0      DelayedArray_0.36.0     
-    ##  [31] Rhdf5lib_1.32.0          BiocParallel_1.44.0      parallel_4.5.2          
-    ##  [34] prettyunits_1.2.0        R6_2.6.1                 plyranges_1.30.1        
-    ##  [37] bslib_0.9.0              RColorBrewer_1.1-3       rtracklayer_1.70.0      
-    ##  [40] jquerylib_0.1.4          Rcpp_1.1.0               assertthat_0.2.1        
-    ##  [43] knitr_1.50               Matrix_1.7-4             tidyselect_1.2.1        
-    ##  [46] abind_1.4-8              yaml_2.3.10              codetools_0.2-20        
-    ##  [49] curl_7.0.0               lattice_0.22-7           tibble_3.3.0            
-    ##  [52] KEGGREST_1.50.0          withr_3.0.2              S7_0.2.1                
-    ##  [55] evaluate_1.0.5           gridGraphics_0.5-1       desc_1.4.3              
-    ##  [58] BiocFileCache_3.0.0      ExperimentHub_3.0.0      Biostrings_2.78.0       
-    ##  [61] filelock_1.0.3           pillar_1.11.1            BiocManager_1.30.27     
-    ##  [64] dbscan_1.2.3             RCurl_1.98-1.17          BiocVersion_3.22.0      
-    ##  [67] plotgardener_1.16.0      hms_1.1.4                ggplot2_4.0.1           
-    ##  [70] scales_1.4.0             glue_1.8.0               tools_4.5.2             
-    ##  [73] AnnotationHub_4.0.0      BiocIO_1.20.0            data.table_1.17.8       
-    ##  [76] GenomicAlignments_1.46.0 fs_1.6.6                 XML_3.99-0.20           
-    ##  [79] rhdf5_2.54.0             grid_4.5.2               AnnotationDbi_1.72.0    
-    ##  [82] HDF5Array_1.38.0         restfulr_0.0.16          cli_3.6.5               
-    ##  [85] rappdirs_0.3.3           textshaping_1.0.4        S4Arrays_1.10.0         
-    ##  [88] dplyr_1.1.4              gtable_0.3.6             yulab.utils_0.2.1       
-    ##  [91] sass_0.4.10              digest_0.6.39            SparseArray_1.10.3      
-    ##  [94] ggplotify_0.1.3          rjson_0.2.23             farver_2.1.2            
-    ##  [97] memoise_2.0.1            htmltools_0.5.8.1        pkgdown_2.2.0           
-    ## [100] lifecycle_1.0.4          colourvalues_0.3.9       h5mread_1.2.1           
-    ## [103] httr_1.4.7               bit64_4.6.0-1
+    ##   [1] DBI_1.3.0                bitops_1.0-9             httr2_1.3.0             
+    ##   [4] rlang_1.3.0              magrittr_2.0.5           otel_0.2.0              
+    ##   [7] RSQLite_3.53.3           compiler_4.6.1           png_0.1-9               
+    ##  [10] systemfonts_1.3.2        vctrs_0.7.3              pkgconfig_2.0.3         
+    ##  [13] crayon_1.5.3             fastmap_1.2.0            dbplyr_2.6.0            
+    ##  [16] XVector_0.52.0           Rsamtools_2.28.0         rmarkdown_2.31          
+    ##  [19] UCSC.utils_1.8.0         ragg_1.5.2               bit_4.6.0               
+    ##  [22] purrr_1.2.2              xfun_0.60                cachem_1.1.0            
+    ##  [25] cigarillo_1.2.1          GenomeInfoDb_1.48.0      jsonlite_2.0.0          
+    ##  [28] progress_1.2.3           blob_1.3.0               rhdf5filters_1.24.0     
+    ##  [31] DelayedArray_0.38.2      Rhdf5lib_2.0.0           BiocParallel_1.46.0     
+    ##  [34] parallel_4.6.1           prettyunits_1.2.0        R6_2.6.1                
+    ##  [37] plyranges_1.32.0         bslib_0.11.0             RColorBrewer_1.1-3      
+    ##  [40] rtracklayer_1.72.0       jquerylib_0.1.4          Rcpp_1.1.2              
+    ##  [43] assertthat_0.2.1         knitr_1.51               Matrix_1.7-5            
+    ##  [46] tidyselect_1.2.1         abind_1.4-8              yaml_2.3.12             
+    ##  [49] codetools_0.2-20         curl_7.1.0               lattice_0.22-9          
+    ##  [52] tibble_3.3.1             KEGGREST_1.52.2          withr_3.0.3             
+    ##  [55] S7_0.2.2                 evaluate_1.0.5           gridGraphics_0.5-1      
+    ##  [58] desc_1.4.3               BiocFileCache_3.2.0      ExperimentHub_3.2.0     
+    ##  [61] Biostrings_2.80.1        filelock_1.0.3           pillar_1.11.1           
+    ##  [64] BiocManager_1.30.27      dbscan_1.2.5             RCurl_1.98-1.19         
+    ##  [67] BiocVersion_3.23.1       plotgardener_1.18.0      hms_1.1.4               
+    ##  [70] ggplot2_4.0.3            scales_1.4.0             glue_1.8.1              
+    ##  [73] tools_4.6.1              AnnotationHub_4.2.2      BiocIO_1.22.0           
+    ##  [76] data.table_1.18.4        GenomicAlignments_1.48.0 fs_2.1.0                
+    ##  [79] XML_3.99-0.23            rhdf5_2.56.0             grid_4.6.1              
+    ##  [82] AnnotationDbi_1.74.0     HDF5Array_1.40.0         restfulr_0.0.17         
+    ##  [85] cli_3.6.6                rappdirs_0.3.4           textshaping_1.0.5       
+    ##  [88] S4Arrays_1.12.0          dplyr_1.2.1              gtable_0.3.6            
+    ##  [91] yulab.utils_0.2.4        sass_0.4.10              digest_0.6.39           
+    ##  [94] SparseArray_1.12.2       ggplotify_0.1.3          rjson_0.2.23            
+    ##  [97] farver_2.1.2             memoise_2.0.1            htmltools_0.5.9         
+    ## [100] pkgdown_2.2.1            lifecycle_1.0.5          colourvalues_0.3.11     
+    ## [103] h5mread_1.4.0            httr_1.4.8               bit64_4.8.2

@@ -1,10 +1,10 @@
-pandoc: 3.1.11
-pkgdown: 2.2.0
+pandoc: 3.8.3
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   mariner: mariner.html
   articles/pull_hic: pull_hic.html
-last_built: 2025-11-30T04:39Z
+last_built: 2026-07-25T18:52Z
 urls:
   reference: http://ericscottdavis.com/mariner/reference
   article: http://ericscottdavis.com/mariner/articles

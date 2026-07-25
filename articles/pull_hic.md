@@ -39,6 +39,7 @@ to set your interactions to an acceptable resolution.
 The following example pulls 100-Kb pixels from two `.hic` files:
 
 ``` r
+
 ## Load mariner
 library(mariner)
 
@@ -86,6 +87,7 @@ an interaction (i.e pixel) and each column is a `.hic` file. Use the
 access the count matrix from an `InteractionMatrix` object.
 
 ``` r
+
 counts(pixels)
 ```
 
@@ -106,10 +108,11 @@ function, use the
 [`path()`](https://rdrr.io/pkg/BiocGenerics/man/path.html) function.
 
 ``` r
+
 path(pixels)
 ```
 
-    ## [1] "/tmp/RtmpTYYjyF/file7f6370023d65.h5"
+    ## [1] "/tmp/Rtmpd40FX4/file51647648af2e.h5"
 
 Note
 
@@ -141,6 +144,7 @@ For example, if you define 500x500 Kb interactions by setting the width
 of both anchors to be 500 Kb
 
 ``` r
+
 ## Create 500x500 Kb regions
 regions <- assignToBins(x=gi, binSize=500e3, pos1="start", pos2="start")
 ```
@@ -148,6 +152,7 @@ regions <- assignToBins(x=gi, binSize=500e3, pos1="start", pos2="start")
 Then set the `binSize` to 100 Kb
 
 ``` r
+
 ## Pull Hi-C matrices
 matrices <- pullHicMatrices(x=regions, files=hicFiles, binSize=100e3)
 matrices
@@ -170,6 +175,7 @@ with the [`counts()`](https://rdrr.io/pkg/BiocGenerics/man/dge.html)
 function.
 
 ``` r
+
 counts(matrices)
 ```
 
@@ -196,6 +202,7 @@ You can supply `showDimnames=TRUE` to display the start bin of each
 anchor.
 
 ``` r
+
 counts(matrices, showDimnames=TRUE)
 ```
 
@@ -231,6 +238,7 @@ add two additional 100 Kb pixels on both sides of the central 100 Kb
 pixels.
 
 ``` r
+
 regions <- pixelsToMatrices(x=gi, buffer=2)
 IRanges::width(regions)
 ```
@@ -246,6 +254,7 @@ When pulled with
 using `binSize=100e3` odd, 5x5 matrices result.
 
 ``` r
+
 pullHicMatrices(x=regions, files=hicFiles, binSize=100e3)
 ```
 
@@ -271,6 +280,7 @@ For example, you can define 300x600 Kb interactions by setting the width
 of the first anchor to be 300 Kb and the second anchor to be 600 Kb.
 
 ``` r
+
 ## Create 300x600 Kb regions
 regions <- assignToBins(
     x=gi,
@@ -283,6 +293,7 @@ regions <- assignToBins(
 Then set the `binSize` to 100 Kb
 
 ``` r
+
 ## Pull Hi-C matrices
 matrices <- pullHicMatrices(x=regions, files=hicFiles, binSize=100e3)
 matrices
@@ -303,6 +314,7 @@ Which produces an `InteractionArray` object with count matrices each
 with 3 rows and 6 columns.
 
 ``` r
+
 counts(matrices, showDimnames=TRUE)
 ```
 
@@ -335,6 +347,7 @@ For example, these three interactions have dimensions of 1x3, 3x3, and
 3x2 after pulling matrices with a `binSize` of 100e3:
 
 ``` r
+
 ## Interactions of different dimensions
 regions <- read.table(
     text="
@@ -355,7 +368,7 @@ matrices
     ## metadata(3): binSize, norm, matrix
     ## colData: hic1, hic2
     ## colData names(2): files, fileNames
-    ## HDF5: /tmp/RtmpTYYjyF/file7f63300f74bb.h5
+    ## HDF5: /tmp/Rtmpd40FX4/file516452c71699.h5
 
 The resulting object is of class `InteractionJaggedArray`. The class is
 different than the previous examples because the classes that
@@ -368,6 +381,7 @@ function returns these `JaggedArray` objects containing the Hi-C count
 data for each interaction and `.hic` file.
 
 ``` r
+
 counts(matrices)
 ```
 
@@ -402,6 +416,7 @@ sections highlight some of the most useful accessors and methods for
 `InteractionMatrix` using this example object:
 
 ``` r
+
 ## Load mariner
 library(mariner)
 
@@ -430,6 +445,7 @@ imat <- pullHicPixels(x=gi, files=hicFiles, binSize=100e3)
 ### Common accessors
 
 ``` r
+
 ## Show method
 imat
 ```
@@ -446,6 +462,7 @@ imat
     ## regions: 4
 
 ``` r
+
 ## Dimensions
 dim(imat)
 ```
@@ -453,6 +470,7 @@ dim(imat)
     ## [1] 4 2
 
 ``` r
+
 ## Metadata about Hi-C extraction
 metadata(imat)
 ```
@@ -467,6 +485,7 @@ metadata(imat)
     ## [1] "observed"
 
 ``` r
+
 ## Metadata about interactions
 SummarizedExperiment::rowData(imat)
 ```
@@ -474,6 +493,7 @@ SummarizedExperiment::rowData(imat)
     ## DataFrame with 4 rows and 0 columns
 
 ``` r
+
 ## Metadata about columns
 SummarizedExperiment::colData(imat)
 ```
@@ -481,10 +501,11 @@ SummarizedExperiment::colData(imat)
     ## DataFrame with 2 rows and 2 columns
     ##                       files         fileNames
     ##                 <character>       <character>
-    ## hic1 /home/runner/.cache/.. 7b5756449908_8147
-    ## hic2 /home/runner/.cache/.. 7b575c1774a3_8148
+    ## hic1 /home/runner/.cache/.. 4d346983f336_8147
+    ## hic2 /home/runner/.cache/.. 4d34757bce80_8148
 
 ``` r
+
 ## Interactions
 interactions(imat)
 ```
@@ -501,6 +522,7 @@ interactions(imat)
     ##   seqinfo: 2 sequences from an unspecified genome; no seqlengths
 
 ``` r
+
 ## Count matrices
 counts(imat)
 ```
@@ -518,6 +540,7 @@ You can subset the interactions and files of the object directly where
 the first position subsets interactions and the second subsets files.
 
 ``` r
+
 imat[1:3] |> counts()
 ```
 
@@ -528,6 +551,7 @@ imat[1:3] |> counts()
     ## [3,]   36   16
 
 ``` r
+
 imat[3:1] |> counts()
 ```
 
@@ -538,6 +562,7 @@ imat[3:1] |> counts()
     ## [3,]   53   49
 
 ``` r
+
 imat[,2] |> counts()
 ```
 
@@ -549,6 +574,7 @@ imat[,2] |> counts()
     ## [4,]   24
 
 ``` r
+
 imat[1,1] |> counts()
 ```
 
@@ -563,6 +589,7 @@ Use the [`rbind()`](https://rdrr.io/pkg/BiocGenerics/man/cbind.html) or
 to combine interactions row-wise or column-wise, respectively.
 
 ``` r
+
 cbind(imat[,1], imat[,2])
 ```
 
@@ -578,6 +605,7 @@ cbind(imat[,1], imat[,2])
     ## regions: 4
 
 ``` r
+
 rbind(imat[1:2,], imat[3:4,])
 ```
 
@@ -596,6 +624,7 @@ Note that the column metadata must be the same when using `rbind` and
 the row interactions must be the same when using `cbind`.
 
 ``` r
+
 rbind(imat[1:2,1], imat[3:4,2])
 ```
 
@@ -603,6 +632,7 @@ rbind(imat[1:2,1], imat[3:4,2])
     ## ! Can't rbind InteractionMatrix objects with different colData.
 
 ``` r
+
 cbind(imat[1:2,1], imat[3:4,2])
 ```
 
@@ -640,6 +670,7 @@ The following sections highlight some of the most useful accessors and
 methods for `InteractionMatrix` using this example object:
 
 ``` r
+
 ## Load mariner
 library(mariner)
 
@@ -668,6 +699,7 @@ ia <- pullHicMatrices(x=regions, files=hicFiles, binSize=100e3)
 ### Common accessors
 
 ``` r
+
 ## Show method
 ia
 ```
@@ -684,6 +716,7 @@ ia
     ## regions: 4
 
 ``` r
+
 ## Dimensions
 dim(ia)
 ```
@@ -691,6 +724,7 @@ dim(ia)
     ## [1] 4 2
 
 ``` r
+
 ## Metadata about Hi-C extraction
 metadata(ia)
 ```
@@ -705,6 +739,7 @@ metadata(ia)
     ## [1] "observed"
 
 ``` r
+
 ## Metadata about interactions
 SummarizedExperiment::rowData(ia)
 ```
@@ -712,6 +747,7 @@ SummarizedExperiment::rowData(ia)
     ## DataFrame with 4 rows and 0 columns
 
 ``` r
+
 ## Metadata about columns
 SummarizedExperiment::colData(ia)
 ```
@@ -719,10 +755,11 @@ SummarizedExperiment::colData(ia)
     ## DataFrame with 2 rows and 2 columns
     ##                       files         fileNames
     ##                 <character>       <character>
-    ## hic1 /home/runner/.cache/.. 7b5756449908_8147
-    ## hic2 /home/runner/.cache/.. 7b575c1774a3_8148
+    ## hic1 /home/runner/.cache/.. 4d346983f336_8147
+    ## hic2 /home/runner/.cache/.. 4d34757bce80_8148
 
 ``` r
+
 ## Interactions
 interactions(ia)
 ```
@@ -739,6 +776,7 @@ interactions(ia)
     ##   seqinfo: 2 sequences from an unspecified genome; no seqlengths
 
 ``` r
+
 ## Count matrices
 counts(ia)
 ```
@@ -763,6 +801,7 @@ counts(ia)
     ## [5,]    4    5    4   14   44
 
 ``` r
+
 ## Counts with start bins for anchor1 and 2
 counts(ia, showDimnames=TRUE)
 ```
@@ -792,6 +831,7 @@ You can subset the interactions and files of the object directly where
 the first position subsets interactions and the second subsets files.
 
 ``` r
+
 ia[1:3] |> counts()
 ```
 
@@ -815,6 +855,7 @@ ia[1:3] |> counts()
     ## [5,]    4    0    0    2   24
 
 ``` r
+
 ia[3:1] |> counts()
 ```
 
@@ -838,6 +879,7 @@ ia[3:1] |> counts()
     ## [5,]    3    6    8   10   47
 
 ``` r
+
 ia[,2] |> counts()
 ```
 
@@ -861,6 +903,7 @@ ia[,2] |> counts()
     ## [5,]    4    5    4   14   44
 
 ``` r
+
 ia[1,1] |> counts()
 ```
 
@@ -880,6 +923,7 @@ example, the following code shows how you could access the top left
 corner of the count matrix of the first interaction and `.hic` file.
 
 ``` r
+
 counts(ia)[1:3, 1:3, 1, 1]
 ```
 
@@ -896,6 +940,7 @@ Use the [`rbind()`](https://rdrr.io/pkg/BiocGenerics/man/cbind.html) or
 to combine interactions row-wise or column-wise, respectively.
 
 ``` r
+
 cbind(ia[,1], ia[,2])
 ```
 
@@ -911,6 +956,7 @@ cbind(ia[,1], ia[,2])
     ## regions: 4
 
 ``` r
+
 rbind(ia[1:2,], ia[3:4,])
 ```
 
@@ -929,6 +975,7 @@ Note that the column metadata must be the same when using `rbind` and
 the row interactions must be the same when using `cbind`.
 
 ``` r
+
 rbind(ia[1:2,1], ia[3:4,2])
 ```
 
@@ -936,6 +983,7 @@ rbind(ia[1:2,1], ia[3:4,2])
     ## ! Can't rbind InteractionArray objects with different colData.
 
 ``` r
+
 cbind(ia[1:2,1], ia[3:4,2])
 ```
 
@@ -969,6 +1017,7 @@ them to `InteractionArray` or `DelayedArray` objects with the
 function for downstream analysis.
 
 ``` r
+
 ## Load mariner
 library(mariner)
 
@@ -996,6 +1045,7 @@ ija <- pullHicMatrices(x=regions, files=hicFiles, binSize=100e3)
 ### Common accessors
 
 ``` r
+
 ## Show method
 ija
 ```
@@ -1005,12 +1055,13 @@ ija
     ## metadata(3): binSize, norm, matrix
     ## colData: hic1, hic2
     ## colData names(2): files, fileNames
-    ## HDF5: /tmp/RtmpTYYjyF/file7f632172c714.h5
+    ## HDF5: /tmp/Rtmpd40FX4/file51643b2f6fbe.h5
 
 The variable dimensions of the jagged arrays can be accessed with the
 [`dim()`](https://rdrr.io/r/base/dim.html) function:
 
 ``` r
+
 ## Dimensions
 dim(ija)
 ```
@@ -1028,6 +1079,7 @@ dim(ija)
     ## [1] 3 3 2
 
 ``` r
+
 ## Metadata about Hi-C extraction
 metadata(ija)
 ```
@@ -1042,6 +1094,7 @@ metadata(ija)
     ## [1] "observed"
 
 ``` r
+
 ## Metadata about columns
 SummarizedExperiment::colData(ija)
 ```
@@ -1049,17 +1102,19 @@ SummarizedExperiment::colData(ija)
     ## DataFrame with 2 rows and 2 columns
     ##                       files         fileNames
     ##                 <character>       <character>
-    ## hic1 /home/runner/.cache/.. 7b5756449908_8147
-    ## hic2 /home/runner/.cache/.. 7b575c1774a3_8148
+    ## hic1 /home/runner/.cache/.. 4d346983f336_8147
+    ## hic2 /home/runner/.cache/.. 4d34757bce80_8148
 
 ``` r
+
 ## Access HDF5 filepath
 path(ija)
 ```
 
-    ## [1] "/tmp/RtmpTYYjyF/file7f632172c714.h5"
+    ## [1] "/tmp/Rtmpd40FX4/file51643b2f6fbe.h5"
 
 ``` r
+
 ## Interactions
 interactions(ija)
 ```
@@ -1078,6 +1133,7 @@ The [`counts()`](https://rdrr.io/pkg/BiocGenerics/man/dge.html) function
 returns a `JaggedArray`
 
 ``` r
+
 ## Count matrices as JaggedArray
 ja <- counts(ija)
 ja
@@ -1104,6 +1160,7 @@ function, where the outer level refers to the `.hic` file and the inner
 level contains a matrix for each interaction.
 
 ``` r
+
 as.list(ja)
 ```
 
@@ -1148,6 +1205,7 @@ You can subset the interactions and files of the object directly where
 the first position subsets interactions and the second subsets files.
 
 ``` r
+
 ija[1:2] |> counts()
 ```
 
@@ -1167,6 +1225,7 @@ ija[1:2] |> counts()
     ## [3,]    8   14   89
 
 ``` r
+
 ija[2:1] |> counts()
 ```
 
@@ -1186,6 +1245,7 @@ ija[2:1] |> counts()
     ## [1,]   49   27    4
 
 ``` r
+
 ija[,2] |> counts()
 ```
 
@@ -1205,6 +1265,7 @@ ija[,2] |> counts()
     ## [3,]    3    7
 
 ``` r
+
 ija[1,1] |> counts()
 ```
 
@@ -1218,6 +1279,7 @@ dimensions it is automatically coerced to an `InteractionArray` or
 `DelayedArray`.
 
 ``` r
+
 ija[3,1] |> class()
 ```
 
@@ -1226,6 +1288,7 @@ ija[3,1] |> class()
     ## [1] "mariner"
 
 ``` r
+
 ija[3,1] |> counts() |> class()
 ```
 
@@ -1239,6 +1302,7 @@ the fourth dimension. Since the first two dimensions are variable,
 subsetting/indexing these is not supported.
 
 ``` r
+
 ja[,,3,2]
 ```
 
@@ -1253,6 +1317,7 @@ If the selection results in a `DelayedArray` then normal indexing rules
 apply:
 
 ``` r
+
 ja[,,3,2][1:2,1,1,1]
 ```
 
@@ -1289,6 +1354,7 @@ desired rectangular (or square) matrices with dimensions supplied to
 `JaggedArray` objects.
 
 ``` r
+
 regularize(x=ija, ndim=c(3,3)) |> counts()
 ```
 
@@ -1344,6 +1410,7 @@ regularize(x=ija, ndim=c(3,3)) |> counts()
     ## [3,] 0.03636364 0.06060606 0.08484848
 
 ``` r
+
 regularize(x=ja, ndim=c(3,3))
 ```
 
@@ -1404,6 +1471,7 @@ parallel processing functionality from aggregating with
 [`aggHicMatrices()`](http://ericscottdavis.com/mariner/reference/aggHicMatrices.md):
 
 ``` r
+
 regularize(x=ija, ndim=c(3,3), nBlocks=1) |>
     aggHicMatrices(nBlocks=1)
 ```
@@ -1450,11 +1518,12 @@ normalizations in the `.hic` file. Use the
 function from the `strawr` package to see available normalizations.
 
 ``` r
+
 pullHicPixels(x=gi, files=hicFiles, binSize=100e3, norm="none")
 ```
 
     ## Error in `.checkStrawArgs()`:
-    ## ! `norm` must be one of "VC_SQRT", "NONE", "VC", or "KR", not "none".
+    ## ! `norm` must be one of "KR", "NONE", "VC", or "VC_SQRT", not "none".
     ## ℹ Did you mean "NONE"?
 
 The `matrix` argument specifies the type of values to extract. The
@@ -1464,6 +1533,7 @@ values. For an in-depth description of these matrix types see [Durand et
 al. 2016](https://doi.org/10.1016/j.cels.2016.07.002)
 
 ``` r
+
 pullHicPixels(x=gi, files=hicFiles, binSize=100e3, matrix="oe") |>
     counts()
 ```
@@ -1531,6 +1601,7 @@ triangular of the Hi-C matrix.
 ![](img/diagonalHalf.png)
 
 ``` r
+
 ## Hic file
 hic <- marinerData::LEUK_HEK_PJA27_inter_30.hic()
 
@@ -1552,6 +1623,7 @@ pullHicMatrices(x=diagonal, files=hic, binSize=100e3, half="upper") |>
     ## [3,]   NA   NA   69
 
 ``` r
+
 ## half="lower"
 pullHicMatrices(x=diagonal, files=hic, binSize=100e3, half="lower") |>
     counts()
@@ -1565,6 +1637,7 @@ pullHicMatrices(x=diagonal, files=hic, binSize=100e3, half="lower") |>
     ## [3,]    5   19   69
 
 ``` r
+
 ## half="both"
 pullHicMatrices(x=diagonal, files=hic, binSize=100e3, half="both") |>
     counts()

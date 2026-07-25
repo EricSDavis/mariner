@@ -128,7 +128,7 @@ plotEnrichment(enrich[,1], loops)
 
 #> $rollEnrich
 #>      rollMedSize rollMedScore
-#>            <num>        <num>
+#>            <int>        <num>
 #>   1:          NA           NA
 #>   2:       40000     1.272727
 #>   3:       45000     1.240741
