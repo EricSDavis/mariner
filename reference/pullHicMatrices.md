@@ -1,4 +1,4 @@
-# Pull submatrices from \`.hic\` files
+# Pull submatrices from Hi-C files
 
 The dimensions of the pulled submatrix is defined by dividing the widths
 of anchors in \`x\` by the \`binSize\`. When the anchor widths are the
@@ -49,7 +49,8 @@ pullHicMatrices(
 
 - files:
 
-  Character file paths to \`.hic\` files.
+  Character file paths to \`.hic\`, \`.cool\`, or \`.mcool\` files. All
+  files must be the same format.
 
 - binSize:
 
@@ -80,14 +81,17 @@ pullHicMatrices(
 
   String (length one character vector) describing the Hi-C normalization
   to apply. Use \`strawr::readHicNormTypes()\` to see accepted values
-  for each file in \`files\`.
+  for each \`.hic\` file in \`files\`. Use \`readCoolNormTypes()\` to
+  see accepted values for each \`.cool\` or \`.mcool\` file in
+  \`files\`.
 
 - matrix:
 
   String (length one character vector) Type of matrix to extract. Must
   be one of "observed", "oe", or "expected". "observed" is observed
   counts, "oe" is observed/expected counts, "expected" is expected
-  counts.
+  counts. For \`.cool\` and \`.mcool\` files, only extracting the
+  "observed" matrix is supported.
 
 - blockSize:
 
@@ -125,6 +129,14 @@ rownames, and colnames. Array is stored with the following dimensions:
 Interactions in \`x\`, Hi-C \`files\`, rows of submatrix, columns of
 submatrix. The submatrices returned have rows cooresponding to anchor1
 of \`x\` and columns correspond to anchor2 of \`x\`.
+
+## Details
+
+Accepts \`.hic\` files as well as \`.cool\`/\`.mcool\` (cooler) files.
+The format is detected from the file contents, so no additional argument
+is required. Two restrictions apply to cooler files: only
+\`matrix="observed"\` is supported, and \`.hic\` and cooler files cannot
+be mixed in one call.
 
 ## Examples
 
@@ -251,7 +263,7 @@ iarr
 #> metadata(3): binSize, norm, matrix
 #> colData: FS, WT
 #> colData names(2): files, fileNames
-#> HDF5: /tmp/RtmpgRedCh/file4d3463a73c3a.h5
+#> HDF5: /tmp/RtmptBzY3Q/file194e1c2c8460.h5
 
 counts(iarr)
 #> <n x m x 4 x 2> JaggedArray:

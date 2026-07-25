@@ -102,6 +102,9 @@ class \`MatrixPlot\`.
 library(plotgardener)
 #> 
 #> Attaching package: ‘plotgardener’
+#> The following objects are masked from ‘package:mariner’:
+#> 
+#>     readCoolBpResolutions, readCoolChroms
 #> The following object is masked from ‘package:base’:
 #> 
 #>     c

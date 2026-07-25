@@ -55,7 +55,7 @@ Group nearby interactions and select one as representative
 Pull Hi-C pixels or matrices, then aggregate by files or interactions
 
 - [`pullHicPixels()`](http://ericscottdavis.com/mariner/reference/pullHicPixels.md)
-  : Pull contact frequency from \`.hic\` files
+  : Pull contact frequency from Hi-C files
 - [`InteractionMatrix()`](http://ericscottdavis.com/mariner/reference/InteractionMatrix-class.md)
   [`show(`*`<InteractionMatrix>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionMatrix-class.md)
   [`rbind(`*`<InteractionMatrix>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionMatrix-class.md)
@@ -67,7 +67,7 @@ Pull Hi-C pixels or matrices, then aggregate by files or interactions
   : Remove interactions that would cross the Hi-C diagonal or a
   specified distance from the diagonal.
 - [`pullHicMatrices()`](http://ericscottdavis.com/mariner/reference/pullHicMatrices.md)
-  : Pull submatrices from \`.hic\` files
+  : Pull submatrices from Hi-C files
 - [`InteractionArray()`](http://ericscottdavis.com/mariner/reference/InteractionArray-class.md)
   [`show(`*`<InteractionArray>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionArray-class.md)
   [`rbind(`*`<InteractionArray>`*`)`](http://ericscottdavis.com/mariner/reference/InteractionArray-class.md)
@@ -117,6 +117,25 @@ Pull Hi-C pixels or matrices, then aggregate by files or interactions
   : HDF5-backed blockApply
 - [`plotMatrix()`](http://ericscottdavis.com/mariner/reference/plotMatrix.md)
   : Plot matrix
+
+### Cooler files
+
+Inspect and extract from `.cool` and `.mcool` files.
+[`pullHicPixels()`](http://ericscottdavis.com/mariner/reference/pullHicPixels.md)
+and
+[`pullHicMatrices()`](http://ericscottdavis.com/mariner/reference/pullHicMatrices.md)
+accept these formats directly; these are the cooler counterparts to the
+`strawr` functions used for `.hic` files.
+
+- [`coolStraw()`](http://ericscottdavis.com/mariner/reference/coolStraw.md)
+  : Equivalent to \`strawr::straw\` for \`.cool\` and \`.mcool\` files
+- [`readCoolChroms()`](http://ericscottdavis.com/mariner/reference/readCoolChroms.md)
+  : Function for reading chromosomes from a \`.cool\` or \`.mcool\` file
+- [`readCoolBpResolutions()`](http://ericscottdavis.com/mariner/reference/readCoolBpResolutions.md)
+  : Function for reading basepair resolutions from .cool or .mcool file
+- [`readCoolNormTypes()`](http://ericscottdavis.com/mariner/reference/readCoolNormTypes.md)
+  : Function for reading available normalizations from .cool or .mcool
+  file
 
 ## Pileup analysis
 

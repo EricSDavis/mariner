@@ -1,5 +1,44 @@
 # Changelog
 
+## mariner 1.13.1
+
+New features:
+
+Support for reading `.cool` and `.mcool` (cooler) files, contributed by
+Sarah Parker.
+
+- [`pullHicPixels()`](http://ericscottdavis.com/mariner/reference/pullHicPixels.md)
+  and
+  [`pullHicMatrices()`](http://ericscottdavis.com/mariner/reference/pullHicMatrices.md)
+  now accept `.cool` and `.mcool` files in addition to `.hic`. File type
+  is detected automatically, so no change to existing code is required.
+  Functions built on top of these, such as
+  [`pileupPixels()`](http://ericscottdavis.com/mariner/reference/pileupPixels.md),
+  [`pileupDomains()`](http://ericscottdavis.com/mariner/reference/pileupDomains.md),
+  [`pileupBoundaries()`](http://ericscottdavis.com/mariner/reference/pileupBoundaries.md),
+  and
+  [`calcLoopEnrichment()`](http://ericscottdavis.com/mariner/reference/calcLoopEnrichment.md),
+  therefore accept cooler files as well.
+
+- [`coolStraw()`](http://ericscottdavis.com/mariner/reference/coolStraw.md)
+  extracts a sparse contact matrix from a cooler file, mirroring the
+  interface of
+  [`strawr::straw()`](https://rdrr.io/pkg/strawr/man/straw.html).
+
+- [`readCoolChroms()`](http://ericscottdavis.com/mariner/reference/readCoolChroms.md),
+  [`readCoolBpResolutions()`](http://ericscottdavis.com/mariner/reference/readCoolBpResolutions.md),
+  and
+  [`readCoolNormTypes()`](http://ericscottdavis.com/mariner/reference/readCoolNormTypes.md)
+  report the chromosomes, resolutions, and normalizations available in a
+  cooler file.
+
+Limitations:
+
+- Only `matrix = "observed"` is supported for cooler files. Expected and
+  observed/expected matrices remain `.hic` only.
+
+- A single call cannot mix `.hic` and cooler files.
+
 ## mariner 1.2.1
 
 New features:

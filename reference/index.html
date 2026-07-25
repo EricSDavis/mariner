@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -176,7 +176,7 @@
           <code><a href="pullHicPixels.html">pullHicPixels()</a></code>
 
         </dt>
-        <dd>Pull contact frequency from `.hic` files</dd>
+        <dd>Pull contact frequency from Hi-C files</dd>
 
         <dt>
 
@@ -204,7 +204,7 @@
           <code><a href="pullHicMatrices.html">pullHicMatrices()</a></code>
 
         </dt>
-        <dd>Pull submatrices from `.hic` files</dd>
+        <dd>Pull submatrices from Hi-C files</dd>
 
         <dt>
 
@@ -275,6 +275,43 @@
 
         </dt>
         <dd>Plot matrix</dd>
+      </dl></div><div class="section level2">
+
+      <h3 id="cooler-files">Cooler files<a class="anchor" aria-label="anchor" href="#cooler-files"></a></h3>
+      <div class="section-desc"><p>Inspect and extract from <code>.cool</code> and <code>.mcool</code> files. <code><a href="../reference/pullHicPixels.html">pullHicPixels()</a></code> and <code><a href="../reference/pullHicMatrices.html">pullHicMatrices()</a></code> accept these formats directly; these are the cooler counterparts to the <code>strawr</code> functions used for <code>.hic</code> files.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="coolStraw.html">coolStraw()</a></code>
+
+        </dt>
+        <dd>Equivalent to `strawr::straw` for `.cool` and `.mcool` files</dd>
+
+        <dt>
+
+          <code><a href="readCoolChroms.html">readCoolChroms()</a></code>
+
+        </dt>
+        <dd>Function for reading chromosomes from a `.cool` or `.mcool` file</dd>
+
+        <dt>
+
+          <code><a href="readCoolBpResolutions.html">readCoolBpResolutions()</a></code>
+
+        </dt>
+        <dd>Function for reading basepair resolutions from .cool or .mcool file</dd>
+
+        <dt>
+
+          <code><a href="readCoolNormTypes.html">readCoolNormTypes()</a></code>
+
+        </dt>
+        <dd>Function for reading available normalizations from .cool or .mcool file</dd>
       </dl></div><div class="section level2">
       <h2 id="pileup-analysis">Pileup analysis<a class="anchor" aria-label="anchor" href="#pileup-analysis"></a></h2>
 

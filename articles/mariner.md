@@ -581,7 +581,7 @@ transient interactions. For more information see `?sets()`.
 
 Pull Hi-C pixels or matrices, then aggregate by files or interactions.
 
-`mariner` provides two functions for extracting contacts from `.hic`
+`mariner` provides two functions for extracting contacts from Hi-C
 files,
 [`pullHicPixels()`](http://ericscottdavis.com/mariner/reference/pullHicPixels.md)
 and
@@ -589,11 +589,100 @@ and
 which use the `binSize` argument to determine how the data should be
 returned. In short,
 [`pullHicPixels()`](http://ericscottdavis.com/mariner/reference/pullHicPixels.md)
-returns a matrix of contact frequency for each interaction and `.hic`
-file, while
+returns a matrix of contact frequency for each interaction and file,
+while
 [`pullHicMatrices()`](http://ericscottdavis.com/mariner/reference/pullHicMatrices.md)
 returns an array of contact matrices. The following sections describe
 when and how to use each of these functions.
+
+Both functions accept `.hic` files as well as `.cool` and `.mcool`
+(cooler) files. The file format is detected automatically, so the same
+code works with either, and functions built on top of these – such as
+[`pileupPixels()`](http://ericscottdavis.com/mariner/reference/pileupPixels.md),
+[`pileupDomains()`](http://ericscottdavis.com/mariner/reference/pileupDomains.md),
+[`pileupBoundaries()`](http://ericscottdavis.com/mariner/reference/pileupBoundaries.md),
+and
+[`calcLoopEnrichment()`](http://ericscottdavis.com/mariner/reference/calcLoopEnrichment.md)
+– accept cooler files too. The section “Using .cool and .mcool files”
+below covers the differences that do apply.
+
+#### Using .cool and .mcool files
+
+[`pullHicPixels()`](http://ericscottdavis.com/mariner/reference/pullHicPixels.md)
+and
+[`pullHicMatrices()`](http://ericscottdavis.com/mariner/reference/pullHicMatrices.md)
+also read `.cool` and `.mcool` files produced by
+[cooler](https://github.com/open2c/cooler). No extra argument is needed
+– the file type is detected from its contents, so the calls shown
+throughout this vignette work unchanged if `hicFiles` points at cooler
+files instead.
+
+``` r
+
+coolFiles <- c("sample1.mcool", "sample2.mcool")
+
+## Identical to the .hic call
+pullHicPixels(
+    x = binned,
+    files = coolFiles,
+    binSize = 100e3
+)
+```
+
+`mariner` supplies cooler equivalents of the `strawr` inspection
+functions, for listing what a file contains before pulling from it.
+
+| `.hic` (`strawr`) | `.cool` / `.mcool` (`mariner`) |
+|----|----|
+| [`readHicChroms()`](https://rdrr.io/pkg/strawr/man/readHicChroms.html) | [`readCoolChroms()`](http://ericscottdavis.com/mariner/reference/readCoolChroms.md) |
+| [`readHicBpResolutions()`](https://rdrr.io/pkg/strawr/man/readHicBpResolutions.html) | [`readCoolBpResolutions()`](http://ericscottdavis.com/mariner/reference/readCoolBpResolutions.md) |
+| [`readHicNormTypes()`](https://rdrr.io/pkg/strawr/man/readHicNormTypes.html) | [`readCoolNormTypes()`](http://ericscottdavis.com/mariner/reference/readCoolNormTypes.md) |
+| [`strawr::straw()`](https://rdrr.io/pkg/strawr/man/straw.html) | [`coolStraw()`](http://ericscottdavis.com/mariner/reference/coolStraw.md) |
+
+``` r
+
+## Which resolutions does this .mcool file store?
+readCoolBpResolutions(coolFiles[1])
+
+## Normalizations available at a given resolution
+readCoolNormTypes(coolFiles[1], resolution = 100e3)
+
+## Chromosomes, with the index used internally for binning
+readCoolChroms(coolFiles[1], resolution = 100e3)
+```
+
+Note that
+[`readCoolNormTypes()`](http://ericscottdavis.com/mariner/reference/readCoolNormTypes.md)
+and
+[`readCoolChroms()`](http://ericscottdavis.com/mariner/reference/readCoolChroms.md)
+take a `resolution`, because an `.mcool` file stores a separate set of
+bins for each resolution it contains. A `.cool` file holds a single
+resolution, which
+[`readCoolBpResolutions()`](http://ericscottdavis.com/mariner/reference/readCoolBpResolutions.md)
+infers from its bin table.
+
+Two differences from `.hic` files are worth knowing:
+
+- Only `matrix = "observed"` is supported. Expected and
+  observed/expected matrices remain `.hic` only, since cooler files do
+  not store them.
+
+- A single call cannot mix `.hic` and cooler files. Passing both to
+  `files` is an error rather than a silent partial result.
+
+Normalizations are named differently in the two formats. Cooler stores
+balancing weights in a `weight` dataset, which `mariner` reports as
+`"BALANCE"`; use that in place of `.hic` names such as `"KR"` or
+`"SCALE"`. Raw counts are `"NONE"` in both.
+
+The two formats also disagree on how a normalization vector is applied.
+Cooler defines the balanced value as `count * w_i * w_j`, so `"BALANCE"`
+multiplies by the weights. Juicer’s vectors are divisors, so `.hic`
+normalizations divide. Cooler files converted from `.hic` sometimes
+carry the original juicer vectors along as extra bin columns; when a
+normalization other than `"BALANCE"` is requested, `mariner` treats it
+as a juicer vector and divides, matching
+[`strawr::straw()`](https://rdrr.io/pkg/strawr/man/straw.html).
 
 #### Pulling pixels
 
@@ -646,9 +735,9 @@ hicFiles
 ```
 
     ##                                                      FS 
-    ## "/home/runner/.cache/R/ExperimentHub/4d346983f336_8147" 
+    ## "/home/runner/.cache/R/ExperimentHub/194e7d95ea52_8147" 
     ##                                                      WT 
-    ## "/home/runner/.cache/R/ExperimentHub/4d34757bce80_8148"
+    ## "/home/runner/.cache/R/ExperimentHub/194e23d88bbd_8148"
 
 The `strawr` package includes functions for visualizing the available
 chromosomes, resolutions (`binSizes`), and normalizations in the `.hic`
@@ -663,10 +752,10 @@ lapply(hicFiles, readHicNormTypes)
 ```
 
     ## $FS
-    ## [1] "VC_SQRT" "KR"      "NONE"    "VC"     
+    ## [1] "NONE"    "VC"      "VC_SQRT" "KR"     
     ## 
     ## $WT
-    ## [1] "VC_SQRT" "KR"      "NONE"    "VC"
+    ## [1] "NONE"    "VC"      "VC_SQRT" "KR"
 
 ``` r
 
@@ -1281,7 +1370,7 @@ sessionInfo()
     ##  [7] GenomicRanges_1.64.0        Seqinfo_1.2.0              
     ##  [9] IRanges_2.46.0              S4Vectors_0.50.1           
     ## [11] BiocGenerics_0.58.1         generics_0.1.4             
-    ## [13] marinerData_1.12.0          mariner_1.13.0             
+    ## [13] marinerData_1.12.0          mariner_1.13.1             
     ## 
     ## loaded via a namespace (and not attached):
     ##   [1] DBI_1.3.0                bitops_1.0-9             httr2_1.3.0             

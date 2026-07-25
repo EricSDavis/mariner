@@ -74,7 +74,7 @@ imat <- pullHicPixels(x, hicFiles, 500e03)
 
 ## Access path
 path(imat)
-#> [1] "/tmp/RtmpgRedCh/file4d3451b0c806.h5"
+#> [1] "/tmp/RtmptBzY3Q/file194e1d375644.h5"
 
 #################################
 ## Updating path to HDF5 data ##
@@ -99,5 +99,5 @@ file.rename(from=h5File, to=newFile)
 ## Update path
 path(imat) <- newFile
 path(imat)
-#> [1] "/tmp/RtmpgRedCh/file4d34117fc54c_new.h5"
+#> [1] "/tmp/RtmptBzY3Q/file194e996f19c_new.h5"
 ```

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mariner</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.13.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,6 +37,17 @@
       <small>Source: <a href="https://github.com/EricSDavis/mariner/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.13.1" id="mariner-1131">mariner 1.13.1<a class="anchor" aria-label="anchor" href="#mariner-1131"></a></h2>
+<p>New features:</p>
+<p>Support for reading <code>.cool</code> and <code>.mcool</code> (cooler) files, contributed by Sarah Parker.</p>
+<ul><li><p><code><a href="../reference/pullHicPixels.html">pullHicPixels()</a></code> and <code><a href="../reference/pullHicMatrices.html">pullHicMatrices()</a></code> now accept <code>.cool</code> and <code>.mcool</code> files in addition to <code>.hic</code>. File type is detected automatically, so no change to existing code is required. Functions built on top of these, such as <code><a href="../reference/pileupPixels.html">pileupPixels()</a></code>, <code><a href="../reference/pileupDomains.html">pileupDomains()</a></code>, <code><a href="../reference/pileupBoundaries.html">pileupBoundaries()</a></code>, and <code><a href="../reference/calcLoopEnrichment.html">calcLoopEnrichment()</a></code>, therefore accept cooler files as well.</p></li>
+<li><p><code><a href="../reference/coolStraw.html">coolStraw()</a></code> extracts a sparse contact matrix from a cooler file, mirroring the interface of <code><a href="https://rdrr.io/pkg/strawr/man/straw.html" class="external-link">strawr::straw()</a></code>.</p></li>
+<li><p><code><a href="../reference/readCoolChroms.html">readCoolChroms()</a></code>, <code><a href="../reference/readCoolBpResolutions.html">readCoolBpResolutions()</a></code>, and <code><a href="../reference/readCoolNormTypes.html">readCoolNormTypes()</a></code> report the chromosomes, resolutions, and normalizations available in a cooler file.</p></li>
+</ul><p>Limitations:</p>
+<ul><li><p>Only <code>matrix = "observed"</code> is supported for cooler files. Expected and observed/expected matrices remain <code>.hic</code> only.</p></li>
+<li><p>A single call cannot mix <code>.hic</code> and cooler files.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.1" id="mariner-121">mariner 1.2.1<a class="anchor" aria-label="anchor" href="#mariner-121"></a></h2>
 <p>New features:</p>

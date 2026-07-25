@@ -1,6 +1,10 @@
-# Pull contact frequency from \`.hic\` files
+# Pull contact frequency from Hi-C files
 
-Pull contact frequency from \`.hic\` files
+Accepts \`.hic\` files as well as \`.cool\`/\`.mcool\` (cooler) files.
+The format is detected from the file contents, so no additional argument
+is required. Two restrictions apply to cooler files: only
+\`matrix="observed"\` is supported, and \`.hic\` and cooler files cannot
+be mixed in one call.
 
 ## Usage
 
@@ -45,7 +49,8 @@ pullHicPixels(
 
 - files:
 
-  Character file paths to \`.hic\` files.
+  Character file paths to \`.hic\`, \`.cool\`, or \`.mcool\` files. All
+  files must be the same format.
 
 - binSize:
 
@@ -76,14 +81,16 @@ pullHicPixels(
 
   String (length one character vector) describing the Hi-C normalization
   to apply. Use \`strawr::readHicNormTypes()\` to see accepted values
-  for each file in \`files\`.
+  for each \`.hic\` file in \`files\`, or \`readCoolNormTypes()\` for
+  cooler files.
 
 - matrix:
 
   String (length one character vector) Type of matrix to extract. Must
   be one of "observed", "oe", or "expected". "observed" is observed
   counts, "oe" is observed/expected counts, "expected" is expected
-  counts.
+  counts. Only "observed" is available for cooler files, which do not
+  store the others.
 
 - blockSize:
 

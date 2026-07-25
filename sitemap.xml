@@ -29,6 +29,7 @@
 <url><loc>http://ericscottdavis.com/mariner/reference/calcLoopEnrichment.html</loc></url>
 <url><loc>http://ericscottdavis.com/mariner/reference/changePixelRes.html</loc></url>
 <url><loc>http://ericscottdavis.com/mariner/reference/clusters.html</loc></url>
+<url><loc>http://ericscottdavis.com/mariner/reference/coolStraw.html</loc></url>
 <url><loc>http://ericscottdavis.com/mariner/reference/counts.html</loc></url>
 <url><loc>http://ericscottdavis.com/mariner/reference/defaultBuffer.html</loc></url>
 <url><loc>http://ericscottdavis.com/mariner/reference/hdf5BlockApply.html</loc></url>
@@ -47,6 +48,9 @@
 <url><loc>http://ericscottdavis.com/mariner/reference/plotMatrix.html</loc></url>
 <url><loc>http://ericscottdavis.com/mariner/reference/pullHicMatrices.html</loc></url>
 <url><loc>http://ericscottdavis.com/mariner/reference/pullHicPixels.html</loc></url>
+<url><loc>http://ericscottdavis.com/mariner/reference/readCoolBpResolutions.html</loc></url>
+<url><loc>http://ericscottdavis.com/mariner/reference/readCoolChroms.html</loc></url>
+<url><loc>http://ericscottdavis.com/mariner/reference/readCoolNormTypes.html</loc></url>
 <url><loc>http://ericscottdavis.com/mariner/reference/regularize.html</loc></url>
 <url><loc>http://ericscottdavis.com/mariner/reference/removeShortPairs.html</loc></url>
 <url><loc>http://ericscottdavis.com/mariner/reference/selectPixel.html</loc></url>
